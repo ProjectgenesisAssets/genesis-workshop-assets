@@ -1,0 +1,75 @@
+name: Genesis final master export - selected QA candidate
+on:
+  workflow_dispatch:
+    inputs:
+      asset:
+        description: Asset to package
+        required: true
+        type: choice
+        options: [anvil, forge, bellows, door]
+      version:
+        description: Candidate version, e.g. v007
+        required: true
+        type: string
+        default: v007
+permissions:
+  contents: read
+jobs:
+  full-master-package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GENESIS_ASSET: ${{ inputs.asset }}
+      GENESIS_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source candidate and deterministic Blender entry point
+        id: entry
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GENESIS_VERSION" =~ ^v[0-9]{3}$ ]] || exit 2
+          version_number="${GENESIS_VERSION#v}"
+          if [ "$GENESIS_ASSET" = "door" ]; then
+            script="scripts/puerta_herreria_art_${version_number}.py"
+            folder="output_blacksmith_door_art_${version_number}"
+            args=""
+          else
+            script="scripts/genesis_hero_assets_${GENESIS_VERSION}.py"
+            folder="output_hero_${GENESIS_ASSET}_${GENESIS_VERSION}"
+            args="-- $GENESIS_ASSET"
+          fi
+          test -s "$script"
+          echo "script=$script" >> "$GITHUB_OUTPUT"
+          echo "folder=$folder" >> "$GITHUB_OUTPUT"
+          echo "args=$args" >> "$GITHUB_OUTPUT"
+          python3 -m py_compile "$script"
+      - name: Install official Blender LTS
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/genesis-blender.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/genesis-blender.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version
+      - name: Rebuild selected reviewed source with its true PBR and geometry
+        shell: bash
+        run: |
+          /tmp/genesis-blender/blender -b -t 2 --python-exit-code 1 --python "${{ steps.entry.outputs.script }}" ${{ steps.entry.outputs.args }}
+      - name: Verify and print actual deliverable sizes
+        shell: bash
+        run: |
+          set -euo pipefail
+          folder="${{ steps.entry.outputs.folder }}"
+          test -d "$folder"
+          test "$(find "$folder" -maxdepth 1 -name '*.glb' | wc -l)" -ge 1
+          test "$(find "$folder" -maxdepth 1 -name '*.blend' | wc -l)" -ge 1
+          test "$(find "$folder" -name '*albedo.png' | wc -l)" -ge 3
+          du -sh "$folder"
+      - name: Preserve complete master, GLB, PBR, audit and renders for private-canon handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-${{ inputs.asset }}-${{ inputs.version }}-MASTER-DELIVERY
+          path: ${{ steps.entry.outputs.folder }}/
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0
