@@ -1,0 +1,53 @@
+name: Genesis V007 forged door QA Lightbox - review
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/review-qa-v007-door-lightbox.yml'
+permissions:
+  contents: write
+jobs:
+  export-art-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install small JPEG image encoder (no Blender rerender)
+        run: python3 -m pip install --quiet --break-system-packages Pillow
+      - name: Create two temporary narrow bandwidth review images as base64 UTF8
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import base64, io, json
+          review={
+            'door_3q':'previews/door_v007/three_quarter.png',
+            'door_front':'previews/door_v007/front.png',
+          }
+          dest=Path('qa_lightbox/v007');dest.mkdir(parents=True,exist_ok=True)
+          info={}
+          for name,path in review.items():
+              source=Path(path);assert source.is_file(),path
+              with Image.open(source) as inp:
+                  img=inp.convert('RGB')
+                  img.thumbnail((960,1200),resample=Image.Resampling.LANCZOS)
+                  out=io.BytesIO()
+                  img.save(out,format='JPEG',quality=79,optimize=True,progressive=True)
+              data=out.getvalue()
+              assert len(data)<750_000,(name,len(data))
+              (dest/(name+'.jpeg.b64')).write_text(base64.b64encode(data).decode('ascii'),encoding='ascii')
+              info[name]={'source':path,'width':img.width,'height':img.height,'jpeg_bytes':len(data)}
+          (dest/'manifest.json').write_text(json.dumps(info,indent=2),encoding='utf-8')
+          print(json.dumps(info,indent=2))
+          PY
+      - name: Publish QA text images only - experimental, NOT approved
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add qa_lightbox/v007
+          if ! git diff --cached --quiet; then
+            git commit -m 'Produce lightweight reviewer-only V007 contact images [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
