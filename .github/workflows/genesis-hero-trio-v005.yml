@@ -1,0 +1,85 @@
+name: Genesis hero trio V005 handcrafted PBR refinements - three parallel reviews
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/genesis_hero_assets_v005.py'
+      - '.github/workflows/genesis-hero-trio-v005.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        asset: [anvil, forge, bellows]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python script syntax
+        run: python3 -m py_compile scripts/genesis_hero_assets_v005.py
+      - name: Install Blender 4.5.13 LTS and NumPy
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-lts.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender-lts.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version
+          /tmp/blender-lts/blender -b --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Render asset V005 and save GLB blend and detailed PBR maps in runner
+        run: /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python scripts/genesis_hero_assets_v005.py -- ${{ matrix.asset }}
+      - name: Verify true deliverable production and QA previews
+        run: |
+          set -euo pipefail
+          folder="output_hero_${{ matrix.asset }}_v005"
+          test -s "$folder/${{ matrix.asset }}_hero_v005.glb"
+          test -s "$folder/${{ matrix.asset }}_hero_v005.blend"
+          test -s "$folder/AUDIT.json"
+          for name in front three_quarter rear detail; do test -s "$folder/$name.png"; done
+          test "$(find "$folder/textures" -name '*.png' | wc -l)" -ge 9
+          du -sh "$folder"
+      - name: Upload only lightweight review PNGs not huge temporary .blend and PBR duplicate storage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-hero-${{ matrix.asset }}-v005-PNG-review
+          path: |
+            output_hero_${{ matrix.asset }}_v005/*.png
+            output_hero_${{ matrix.asset }}_v005/AUDIT.json
+          if-no-files-found: warn
+          retention-days: 2
+  publish_review:
+    needs: render
+    if: ${{ needs.render.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: genesis-hero-*-v005-PNG-review
+          path: /tmp/genesis-hero-5
+      - name: Publish natural PBR V005 four-view PNGs for comparison
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in anvil forge bellows; do
+            from="/tmp/genesis-hero-5/genesis-hero-${asset}-v005-PNG-review"
+            test -s "$from/three_quarter.png"
+            mkdir -p "previews/heroes_v005/$asset"
+            for shot in front three_quarter rear detail; do
+              cp "$from/$shot.png" "previews/heroes_v005/$asset/$shot.png"
+            done
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/heroes_v005
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish hero art V005 visual QA, still awaiting >=8 [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
