@@ -7,12 +7,12 @@ Temporary **public** GitHub Actions workspace. Reusable source generators are ve
 | Asset | Source generator | Workflow | Status |
 | --- | --- | --- | --- |
 | Iron workshop door (original reconstruction) | `scripts/puerta_herreria_art_001.py` | `puerta-herreria-art-master-v001.yml` | Visual candidate; requires quality score ≥8/10 and user approval |
-| Wooden worktable | `scripts/generar_utileria_taller_v001.py mesa` | `herreria-lote-paralelo.yml` | Candidate only |
-| Workshop shelves | `scripts/generar_utileria_taller_v001.py estanteria` | `herreria-lote-paralelo.yml` | Candidate only |
-| Wall-mounted tool holder | `scripts/generar_utileria_taller_v001.py soporte_herramientas` | `herreria-lote-paralelo.yml` | Candidate only |
-| Coal storage box | `scripts/generar_utileria_taller_v001.py carbonera` | `herreria-lote-paralelo.yml` | Candidate only |
+| Wooden worktable | `scripts/generar_utileria_taller_v001.py mesa` | `herreria-lote-paralelo.yml` | **REJECTED ART DIRECTION**: simple geometry / flat colors |
+| Workshop shelves | `scripts/generar_utileria_taller_v001.py estanteria` | `herreria-lote-paralelo.yml` | **REJECTED ART DIRECTION**: simple geometry / flat colors |
+| Wall-mounted tool holder | `scripts/generar_utileria_taller_v001.py soporte_herramientas` | `herreria-lote-paralelo.yml` | **REJECTED ART DIRECTION**: simple geometry / flat colors |
+| Coal storage box | `scripts/generar_utileria_taller_v001.py carbonera` | `herreria-lote-paralelo.yml` | **REJECTED ART DIRECTION**: simple geometry / flat colors |
 
-Each work item produces a GLB, editable Blend, QA JSON and preview PNGs when successful. The independent utility models run in parallel. Results are reviewed **before** anything is promoted to the private canonical project.
+**Quality gate:** do not promote any model lacking believable wear, bevels, silhouette, realistic PBR microstructure, and multi-angle visual review. Technical CI pass is NOT artistic approval. Rejected prototypes must not be used in PlayCanvas.\n\nEach work item produces a GLB, editable Blend, QA JSON and preview PNGs when successful. The independent utility models run in parallel. Results are reviewed **before** anything is promoted to the private canonical project.
 
 ## Operational rules
 
