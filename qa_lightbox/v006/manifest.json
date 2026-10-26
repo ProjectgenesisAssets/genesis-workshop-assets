@@ -1,0 +1,50 @@
+{
+  "door_3q": {
+    "source": "previews/door_v006/three_quarter.png",
+    "width": 900,
+    "height": 1200,
+    "jpeg_bytes": 65498
+  },
+  "door_front": {
+    "source": "previews/door_v006/front.png",
+    "width": 900,
+    "height": 1200,
+    "jpeg_bytes": 63414
+  },
+  "anvil_3q": {
+    "source": "previews/heroes_v006/anvil/three_quarter.png",
+    "width": 960,
+    "height": 960,
+    "jpeg_bytes": 22568
+  },
+  "anvil_detail": {
+    "source": "previews/heroes_v006/anvil/detail.png",
+    "width": 960,
+    "height": 960,
+    "jpeg_bytes": 37712
+  },
+  "bellows_3q": {
+    "source": "previews/heroes_v006/bellows/three_quarter.png",
+    "width": 960,
+    "height": 960,
+    "jpeg_bytes": 21449
+  },
+  "bellows_detail": {
+    "source": "previews/heroes_v006/bellows/detail.png",
+    "width": 960,
+    "height": 960,
+    "jpeg_bytes": 27371
+  },
+  "forge_3q": {
+    "source": "previews/heroes_v006/forge/three_quarter.png",
+    "width": 960,
+    "height": 960,
+    "jpeg_bytes": 44439
+  },
+  "forge_detail": {
+    "source": "previews/heroes_v006/forge/detail.png",
+    "width": 960,
+    "height": 960,
+    "jpeg_bytes": 74651
+  }
+}
