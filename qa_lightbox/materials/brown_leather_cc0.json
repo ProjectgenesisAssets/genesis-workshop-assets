@@ -1,0 +1,13 @@
+{
+  "source": "https://polyhaven.com/a/brown_leather",
+  "license": "CC0 1.0",
+  "credit": "Powered by Poly Haven",
+  "api": "https://api.polyhaven.com/files/brown_leather",
+  "selected_channel": "Diffuse",
+  "selected_file_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_leather/brown_leather_albedo_1k.jpg",
+  "dimensions": [
+    1000,
+    1000
+  ],
+  "original_bytes": 503348
+}
