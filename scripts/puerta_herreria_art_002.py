@@ -31,8 +31,8 @@ def material(name, base, metallic, roughness, seed):
     bs.inputs["Roughness"].default_value=roughness
     n=1024  # detailed, web-friendly 1K directional iron PBR source
     rng=np.random.default_rng(seed)
-    lows=rng.normal(0,1,(n//12,n//12)).astype(np.float32)
-    cloud=np.repeat(np.repeat(lows,12,axis=0),12,axis=1)
+    lows=rng.normal(0,1,(math.ceil(n/12),math.ceil(n/12))).astype(np.float32)
+    cloud=np.repeat(np.repeat(lows,12,axis=0),12,axis=1)[:n,:n]
     for _ in range(8):
         cloud=(cloud*4+np.roll(cloud,1,0)+np.roll(cloud,-1,0)+np.roll(cloud,1,1)+np.roll(cloud,-1,1))/8
     micro=rng.normal(0,1,(n,n)).astype(np.float32)
