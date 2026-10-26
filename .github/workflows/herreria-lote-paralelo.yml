@@ -1,0 +1,67 @@
+name: Genesis Workshop - Four Independent Prop Candidates
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/herreria-lote-paralelo.yml'
+      - 'scripts/generar_utileria_taller_v001.py'
+permissions:
+  contents: read
+jobs:
+  producir:
+    name: Modelar y renderizar - ${{ matrix.asset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - asset: mesa
+            script: scripts/generar_utileria_taller_v001.py
+            args: mesa
+            folder: output_taller_mesa_v001
+            audit: Taller_Mesa_V001_AUDIT.json
+          - asset: estanteria
+            script: scripts/generar_utileria_taller_v001.py
+            args: estanteria
+            folder: output_taller_estanteria_v001
+            audit: Taller_Estanteria_V001_AUDIT.json
+          - asset: soporte_herramientas
+            script: scripts/generar_utileria_taller_v001.py
+            args: soporte_herramientas
+            folder: output_taller_soporte_herramientas_v001
+            audit: Taller_Soporte_herramientas_V001_AUDIT.json
+          - asset: carbonera
+            script: scripts/generar_utileria_taller_v001.py
+            args: carbonera
+            folder: output_taller_carbonera_v001
+            audit: Taller_Carbonera_V001_AUDIT.json
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official Blender 4.5.13 LTS and verify NumPy
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --max-time 180 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version | grep -F 'Blender 4.5.13'
+          /tmp/blender-lts/blender -b --python-expr 'import numpy; print("NUMPY_READY", numpy.__version__)'
+      - name: Model, export GLB and render
+        run: |
+          set -euo pipefail
+          /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python "${{ matrix.script }}" -- ${{ matrix.args }}
+          test -s "${{ matrix.folder }}/${{ matrix.audit }}"
+      - name: Verify each independent result
+        run: |
+          test -s "${{ matrix.folder }}/${{ matrix.audit }}"
+          test "$(find "${{ matrix.folder }}" -maxdepth 1 -name '*.glb' -size +0c | wc -l)" -eq 1
+          test "$(find "${{ matrix.folder }}" -maxdepth 1 -name '*.blend' -size +0c | wc -l)" -eq 1
+          test "$(find "${{ matrix.folder }}" -maxdepth 1 -name '*.png' -size +0c | wc -l)" -eq 3
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: taller-${{ matrix.asset }}-v001-candidate
+          path: ${{ matrix.folder }}/
+          if-no-files-found: warn
+          retention-days: 2
