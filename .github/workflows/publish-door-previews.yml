@@ -1,0 +1,46 @@
+name: Genesis Door - publish review PNGs from verified render
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-door-previews.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover successful Blender door artifact
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/door-deliverables
+          gh run download 40346802958 --repo ProjectgenesisAssets/genesis-workshop-assets --name genesis-blacksmith-door-art-master-v001 --dir /tmp/door-deliverables
+          test -s /tmp/door-deliverables/front_orthographic.png
+          test -s /tmp/door-deliverables/three_quarter.png
+          test -s /tmp/door-deliverables/side_orthographic.png
+          test -s /tmp/door-deliverables/rear_orthographic.png
+      - name: Publish review-only image previews to public workspace
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_v001
+          cp /tmp/door-deliverables/front_orthographic.png previews/door_v001/front.png
+          cp /tmp/door-deliverables/three_quarter.png previews/door_v001/three_quarter.png
+          cp /tmp/door-deliverables/side_orthographic.png previews/door_v001/side.png
+          cp /tmp/door-deliverables/rear_orthographic.png previews/door_v001/rear.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v001/
+          git commit -m 'Publish door V001 preview only; not approved for game [skip ci]'
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: door-v001-review-images-only
+          path: previews/door_v001/
+          retention-days: 2
+          if-no-files-found: warn
