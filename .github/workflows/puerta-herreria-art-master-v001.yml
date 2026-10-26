@@ -13,13 +13,16 @@ jobs:
     timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
-      - name: Install Blender and numpy in GitHub Actions
+      - name: Install official Blender 4.5.13 LTS (Cycles and OpenImageDenoise)
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y blender python3-numpy
+          set -euo pipefail
+          curl --fail --location --retry 2 --max-time 180 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version | grep -F 'Blender 4.5.13'
       - name: Build new reference-constrained iron door from zero
         run: |
-          blender -b -t 2 --python-exit-code 1 --python scripts/puerta_herreria_art_001.py
+          /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python scripts/puerta_herreria_art_001.py
       - name: Validate deliverables and texture budget
         run: |
           test -s output_blacksmith_door_art_001/Blacksmith_Door_Art_001.blend
