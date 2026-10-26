@@ -1,0 +1,84 @@
+name: Genesis Blacksmith Door Art Master V006 - hand-sculpted forged plate contours
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/puerta_herreria_art_006.py'
+      - '.github/workflows/puerta-herreria-art-master-v006.yml'
+permissions:
+  contents: read
+jobs:
+  door-model:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official Blender 4.5.13 LTS (Cycles and OpenImageDenoise)
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --max-time 180 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version | grep -F 'Blender 4.5.13'
+      - name: Rebuild verified manifold arched wrought iron leaf
+        run: |
+          /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python scripts/puerta_herreria_art_006.py
+      - name: Validate deliverables and texture budget
+        run: |
+          test -s output_blacksmith_door_art_006/Blacksmith_Door_Art_006.blend
+          test -s output_blacksmith_door_art_006/Blacksmith_Door_Art_006.glb
+          test -s output_blacksmith_door_art_006/DESIGN_AUDIT.json
+          test -s output_blacksmith_door_art_006/front_orthographic.png
+          test -s output_blacksmith_door_art_006/three_quarter.png
+          test -s output_blacksmith_door_art_006/side_orthographic.png
+          test -s output_blacksmith_door_art_006/rear_orthographic.png
+          python3 - <<'PY'
+          import glob, struct, json
+          p='output_blacksmith_door_art_006'
+          t=glob.glob(p+'/*_albedo.png')+glob.glob(p+'/*_roughness.png')+glob.glob(p+'/*_normal.png')
+          assert len(t)==12,('PBR maps',len(t))
+          for filename in t:
+              with open(filename,'rb') as f: h=f.read(24)
+              assert h[:8]==b'\x89PNG\r\n\x1a\n'
+              w,h=struct.unpack('>II',h[16:24])
+              assert w<=1536 and h<=1536,(filename,w,h)
+          with open(p+'/DESIGN_AUDIT.json') as f: d=json.load(f)
+          assert d['legacy_meshes_reused']==0
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-blacksmith-door-art-master-v006
+          path: |
+            output_blacksmith_door_art_006/*.png
+            output_blacksmith_door_art_006/DESIGN_AUDIT.json
+          retention-days: 2
+          if-no-files-found: warn
+  door-preview:
+    needs: door-model
+    if: ${{ needs.door-model.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-blacksmith-door-art-master-v006
+          path: /tmp/door-v006
+      - name: Publish inspected preview files - NOT approved yet
+        run: |
+          mkdir -p previews/door_v006
+          cp /tmp/door-v006/front_orthographic.png previews/door_v006/front.png
+          cp /tmp/door-v006/three_quarter.png previews/door_v006/three_quarter.png
+          cp /tmp/door-v006/side_orthographic.png previews/door_v006/side.png
+          cp /tmp/door-v006/rear_orthographic.png previews/door_v006/rear.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v006/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Review door V006 manifold fix preview - unapproved [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
