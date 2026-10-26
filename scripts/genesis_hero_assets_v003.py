@@ -297,10 +297,11 @@ def mount_bellows():
         spline.use_cyclic_u=True
         o=bpy.data.objects.new("Perimeter hand stitched leather welt "+str(z),curve)
         bpy.context.collection.objects.link(o)
-        track(o,leather)
+        o.data.materials.append(leather)
         bpy.ops.object.select_all(action="DESELECT")
         o.select_set(True);bpy.context.view_layer.objects.active=o
         bpy.ops.object.convert(target="MESH")
+        ASSETS.append(bpy.context.object)
     for i,(x,y) in enumerate(outline):
         if i%2==0:
             ico("Bronze nail fixing leather gusset "+str(i),
