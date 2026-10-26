@@ -1,0 +1,39 @@
+name: Genesis Door V002 - publish verified render for art review
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-door-v002.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch finished door V002 render without rerendering
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/door-v002
+          gh run download 40353687864 --repo ProjectgenesisAssets/genesis-workshop-assets --name genesis-blacksmith-door-art-master-v002 --dir /tmp/door-v002
+      - name: Push corrected door preview with rebase against concurrent art jobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_v002
+          cp /tmp/door-v002/front_orthographic.png previews/door_v002/front.png
+          cp /tmp/door-v002/three_quarter.png previews/door_v002/three_quarter.png
+          cp /tmp/door-v002/side_orthographic.png previews/door_v002/side.png
+          cp /tmp/door-v002/rear_orthographic.png previews/door_v002/rear.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v002
+          if ! git diff --cached --quiet; then
+            git commit -m 'Door V002 inspectable four-view renders [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
