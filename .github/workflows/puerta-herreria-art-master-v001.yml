@@ -1,0 +1,51 @@
+name: Genesis Blacksmith Door Art Master V001 - new mesh from concept
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/puerta_herreria_art_001.py'
+      - '.github/workflows/puerta-herreria-art-master-v001.yml'
+permissions:
+  contents: read
+jobs:
+  door-model:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and numpy in GitHub Actions
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Build new reference-constrained iron door from zero
+        run: |
+          blender -b -t 2 --python-exit-code 1 --python scripts/puerta_herreria_art_001.py
+      - name: Validate deliverables and texture budget
+        run: |
+          test -s output_blacksmith_door_art_001/Blacksmith_Door_Art_001.blend
+          test -s output_blacksmith_door_art_001/Blacksmith_Door_Art_001.glb
+          test -s output_blacksmith_door_art_001/DESIGN_AUDIT.json
+          test -s output_blacksmith_door_art_001/front_orthographic.png
+          test -s output_blacksmith_door_art_001/three_quarter.png
+          test -s output_blacksmith_door_art_001/side_orthographic.png
+          test -s output_blacksmith_door_art_001/rear_orthographic.png
+          python3 - <<'PY'
+          import glob, struct, json
+          p='output_blacksmith_door_art_001'
+          t=glob.glob(p+'/*_albedo.png')+glob.glob(p+'/*_roughness.png')+glob.glob(p+'/*_normal.png')
+          assert len(t)==12,('PBR maps',len(t))
+          for filename in t:
+              with open(filename,'rb') as f: h=f.read(24)
+              assert h[:8]==b'\x89PNG\r\n\x1a\n'
+              w,h=struct.unpack('>II',h[16:24])
+              assert w<=1536 and h<=1536,(filename,w,h)
+          with open(p+'/DESIGN_AUDIT.json') as f: d=json.load(f)
+          assert d['legacy_meshes_reused']==0
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-blacksmith-door-art-master-v001
+          path: output_blacksmith_door_art_001/
+          retention-days: 2
+          if-no-files-found: warn
