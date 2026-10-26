@@ -23,13 +23,15 @@ Each work item produces a GLB, editable Blend, QA JSON and preview PNGs when suc
 | Door V001 (`puerta_herreria_art_001.py`) | Four views at `previews/door_v001/` | **REJECTED** (severely misaligned leaf and trim) |
 | Door V002 (`puerta_herreria_art_002.py`) | Four views at `previews/door_v002/` | **REJECTED** (body still shifted at animation parent pivot) |
 | Door V003 (`puerta_herreria_art_003.py`) | Four views at `previews/door_v003/` | **REJECTED** for promotion, ~6.5–7/10: model aligned but black/bronze materials and perfect trim feel synthetic |
-| Door V004 (`puerta_herreria_art_004.py`) | `puerta-herreria-art-master-v004.yml` | **RUNNING**: improved soft-weathered forged PBR, more hammer scars, open peephole preserved |
+| Door V004 (`puerta_herreria_art_004.py`) | `previews/door_v004/` | **NOT APPROVED** ~7/10: stronger patinated metal, geometry still too pristine |
+| Door V005 (`puerta_herreria_art_005.py`) | `puerta-herreria-art-master-v005.yml` | **RUNNING**: hand variability, true lock escutcheon and multi-point angled highlights |
 | Anvil V001 | Four views at `previews/heroes/anvil/` | **REJECTED** at initial visual QA ~5.5/10: checkerboard iron texture |
 | Forge V001 | Four views at `previews/heroes/forge/` | **REJECTED** at initial visual QA ~5.5/10: boxy hood, weak heat |
 | Bellows V001 | Four views at `previews/heroes/bellows/` | **REJECTED** at initial visual QA ~6/10: flat folds and texture |
 | Anvil, forge and bellows V002 | `previews/heroes_v002/` | **REJECTED**: surface defects and geometric simplifications remain, ~6–7/10 |
 | Anvil, forge and bellows V003 | `previews/heroes_v003/` | **REJECTED**: anvil face still visibly blotchy, bellows flat, forge too blocky (~5.5–6.5/10) |
-| Anvil, forge and bellows V004 | `genesis-hero-trio-v004.yml` | **RUNNING IN PARALLEL**: hand-shaped leather taper + real welts, polished steel, forge fire illumination |
+| Anvil, forge and bellows V004 | `previews/heroes_v004/` | **NOT APPROVED** ~6–7/10: clean anvil, wedge bellows, coal glow; still facets, artificial oak grain and brick illumination |
+| Anvil, forge and bellows V005 | `genesis-hero-trio-v005.yml` | **RUNNING IN PARALLEL**: softened horn, natural irregular oak, lower fire bounce |
 
 A GitHub Actions job can be green even when the sculpt/material fails the art direction. The only promotion condition is four-view visual QA and explicit Gabriel approval at 8/10 or higher. The 1536px PBR experiments stay reproducible from the scripts; V002–V004 CI store only review PNGs to avoid filling public GitHub artifact storage. The original private master assets (V175 ingot, mineral 55k/1536, sword V023 and existing approved objects) remain untouched.
 
