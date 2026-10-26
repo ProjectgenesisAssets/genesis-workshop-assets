@@ -1,0 +1,42 @@
+name: Genesis Hero Trio - publish finished visual review images without rerender
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-hero-previews-v001.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download already completed three render artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/genesis-deliverables
+          gh run download 40352842306 --repo ProjectgenesisAssets/genesis-workshop-assets --pattern 'genesis-hero-*-v001-candidate' --dir /tmp/genesis-deliverables
+      - name: Publish 12 artist QA PNGs, preserving concurrent commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in anvil forge bellows; do
+            origin="/tmp/genesis-deliverables/genesis-hero-${asset}-v001-candidate"
+            test -s "$origin/three_quarter.png"
+            mkdir -p "previews/heroes/$asset"
+            for shot in front three_quarter rear detail; do
+              cp "$origin/$shot.png" "previews/heroes/$asset/$shot.png"
+            done
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/heroes
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish inspected hero trio V001 PNGs [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
