@@ -1,0 +1,84 @@
+name: Genesis hero trio V001 photoreal candidates
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/genesis_hero_assets_v001.py'
+      - '.github/workflows/genesis-hero-trio-v001.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        asset: [anvil, forge, bellows]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Validate Python syntax
+        run: python3 -m py_compile scripts/genesis_hero_assets_v001.py
+      - name: Install official Blender 4.5.13 LTS
+        run: |
+          curl -fSL --retry 3 --retry-delay 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender-4.5.13.tar.xz --strip-components=1 -C /tmp/blender-lts
+          /tmp/blender-lts/blender --version
+          /tmp/blender-lts/blender -b --python-expr 'import numpy; print("NUMPY_READY",numpy.__version__)'
+      - name: Procedural artist master and QA render
+        run: /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python scripts/genesis_hero_assets_v001.py -- ${{ matrix.asset }}
+      - name: Validate GLB blend maps and all four PNG views
+        shell: bash
+        run: |
+          set -euo pipefail
+          folder="output_hero_${{ matrix.asset }}_v001"
+          test -s "$folder/${{ matrix.asset }}_hero_v001.glb"
+          test -s "$folder/${{ matrix.asset }}_hero_v001.blend"
+          test -s "$folder/AUDIT.json"
+          for shot in front three_quarter rear detail; do test -s "$folder/$shot.png"; done
+          test "$(find "$folder/textures" -name '*.png' | wc -l)" -ge 9
+          du -sh "$folder"
+      - name: Keep 48-hour artist QA deliverables
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-hero-${{ matrix.asset }}-v001-candidate
+          path: output_hero_${{ matrix.asset }}_v001/
+          if-no-files-found: warn
+          retention-days: 2
+  publish_review:
+    needs: render
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: genesis-hero-*-v001-candidate
+          path: /tmp/genesis-hero-previews
+      - name: Publish QA views directly to repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in anvil forge bellows; do
+            origin="/tmp/genesis-hero-previews/genesis-hero-${asset}-v001-candidate"
+            if [ -f "$origin/three_quarter.png" ]; then
+              mkdir -p "previews/heroes/$asset"
+              for shot in front three_quarter rear detail; do
+                cp "$origin/$shot.png" "previews/heroes/$asset/$shot.png"
+              done
+            fi
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/heroes
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish four-view realistic artist QA contact sheets [skip ci]'
+            git push origin HEAD:main
+          fi
