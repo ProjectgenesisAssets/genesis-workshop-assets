@@ -1,0 +1,60 @@
+name: Genesis Door V014 - quick JPG art comparison
+on:
+  push:
+    branches:
+      - production/door-v014-patina-contrast-material
+    paths:
+      - .github/workflows/door-v014-review-contact.yml
+permissions:
+  contents: write
+jobs:
+  make_comparison:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble small true-render JPEG comparisons
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          root=Path('previews')
+          views=['front','three_quarter','rear','side']
+          cell=(320,438)
+          sheet=Image.new('RGB',(cell[0]*4,cell[1]*4),(26,28,31))
+          draw=ImageDraw.Draw(sheet)
+          for row,(version,directory) in enumerate([('V011 original',root/'door_v011'),('V012 brown',root/'door_v012'),('V013 iron',root/'door_v013'),('V014 aged iron',root/'door_v014')]):
+              for k,name in enumerate(views):
+                  src=directory/(name+'.png')
+                  assert src.stat().st_size>10000,src
+                  with Image.open(src) as im:
+                      im=im.convert('RGBA')
+                      im.thumbnail((290,376),Image.Resampling.LANCZOS)
+                      tile=Image.new('RGBA',(cell[0],cell[1]),(40,41,43,255))
+                      tile.alpha_composite(im,((cell[0]-im.width)//2,25+(376-im.height)//2))
+                  x=k*cell[0];y=row*cell[1]
+                  sheet.paste(tile.convert('RGB'),(x,y))
+                  draw.text((x+12,y+414),f'{version} / {name}',fill=(242,232,210))
+          target=root/'door_v014'
+          sheet.save(target/'compare_v011_v012_v013_v014.jpg',quality=82,optimize=True)
+          with Image.open(target/'three_quarter.png') as im:
+              im=im.convert('RGBA')
+              im.thumbnail((750,1000),Image.Resampling.LANCZOS)
+              bg=Image.new('RGBA',im.size,(41,43,47,255))
+              bg.alpha_composite(im)
+              bg.convert('RGB').save(target/'hero_review.jpg',quality=86,optimize=True)
+          print('COMPARISON_JPG_READY',[(x.name,x.stat().st_size) for x in target.glob('*.jpg')])
+          PY
+      - name: Publish review-only compressed images
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v014/compare_v011_v012_v013_v014.jpg previews/door_v014/hero_review.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish JPG render comparison V011, V012, V013 and V014 without altering approved silhouette [skip ci]'
+            git fetch origin production/door-v014-patina-contrast-material
+            git rebase origin/production/door-v014-patina-contrast-material
+            git push origin HEAD:production/door-v014-patina-contrast-material
+          fi
