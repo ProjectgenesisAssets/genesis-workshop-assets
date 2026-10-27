@@ -52,10 +52,10 @@ PROFILES={
         "inset":((.177,.119,.072),.74,.60,"bronze"),
     },
     "arcanista":{
-        "leaf":((.024,.043,.069),.0,.70,"arcane_lithic"),
-        "edge":((.042,.071,.088),.0,.62,"arcane_lithic"),
-        "hardware":((.081,.099,.110),.06,.54,"arcane_lithic"),
-        "inset":((.018,.030,.054),.0,.74,"arcane_lithic"),
+        "leaf":((.013,.030,.089),.0,.60,"arcane_lithic"),
+        "edge":((.023,.051,.081),.0,.54,"arcane_lithic"),
+        "hardware":((.055,.083,.121),.04,.47,"arcane_lithic"),
+        "inset":((.010,.022,.072),.0,.65,"arcane_lithic"),
     },
 }
 def material(name, base, metallic, roughness, seed, surface):
@@ -132,12 +132,12 @@ def material(name, base, metallic, roughness, seed, surface):
         rough=np.clip(roughness+.11*pores+.10*fine-.07*inclusion-.07*glow,.49,.96)
         metallicmap=np.full((n,n),metallic,dtype=np.float32)
         bump=.47+.11*sheets+.04*cleavage2+.06*pores+.09*fine-.07*core
-        colored=[.72,1.06,1.15]
+        colored=[.55,.81,1.42]
         # Material body is dark blue-violet mineral, cyan from internal fractures.
         color=np.stack([sat(base[k]*modulation*colored[k]) for k in range(3)],axis=-1)
-        color += np.stack((.006*inclusion+.012*glow,.014*inclusion+.060*glow,.025*inclusion+.13*glow),axis=-1)
+        color += np.stack((.003*inclusion+.008*glow,.013*inclusion+.058*glow,.060*inclusion+.16*glow),axis=-1)
         color=np.clip(color,0,1)
-        emission=np.stack((.015*glow,.34*glow,.55*glow),axis=-1)
+        emission=np.stack((.013*glow,.52*glow,.83*glow),axis=-1)
         print("V024_LITHIC_GLOW",name,float(glow.mean()),float((glow>.4).mean()),flush=True)
     else:
         # Metallurgy: two oxide scales, micro-pitting, impact abrasion and patches
