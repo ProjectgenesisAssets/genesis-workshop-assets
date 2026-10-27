@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T03:37:21.875393+00:00",
+  "generated_at": "2026-10-27T03:37:45.404207+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -16,7 +16,7 @@
         "rear": "previews/production_auto/forge_smithy-ironhood-v014/rear.png",
         "detail": "previews/production_auto/forge_smithy-ironhood-v014/detail.png"
       },
-      "status": "incomplete_image_download"
+      "status": "review_ready"
     },
     "bellows": {
       "branch": "production/auto-bellows-warm-oak-organic-hide-v014",
@@ -31,7 +31,7 @@
         "rear": "previews/production_auto/bellows_warm-oak-organic-hide-v014/rear.png",
         "detail": "previews/production_auto/bellows_warm-oak-organic-hide-v014/detail.png"
       },
-      "status": "incomplete_image_download"
+      "status": "review_ready"
     },
     "door": {
       "branch": "production/door-v011-triangle-budget",
@@ -39,9 +39,14 @@
       "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40435141349",
       "commit": "97ae8ccc7afa4724938ce032c0114ba0b676f293",
       "completed_at": "2026-10-27T02:02:04Z",
-      "preview_directory": null,
-      "view_paths": {},
-      "status": "missing_four_views"
+      "preview_directory": "previews/door_v011",
+      "view_paths": {
+        "front": "previews/door_v011/front.png",
+        "three_quarter": "previews/door_v011/three_quarter.png",
+        "rear": "previews/door_v011/rear.png",
+        "detail": "previews/door_v011/side.png"
+      },
+      "status": "review_ready"
     },
     "anvil": {
       "branch": "production/yunque-v022-forged-horn",
@@ -49,14 +54,14 @@
       "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40430776892",
       "commit": "82c86ef5f2101b0c1c71976f29b6017f1697b54c",
       "completed_at": "2026-10-27T01:17:34Z",
-      "preview_directory": "previews/heroes_v008/anvil",
+      "preview_directory": "previews/yunque_v022",
       "view_paths": {
-        "front": "previews/heroes_v008/anvil/front.png",
-        "three_quarter": "previews/heroes_v008/anvil/three_quarter.png",
-        "rear": "previews/heroes_v008/anvil/rear.png",
-        "detail": "previews/heroes_v008/anvil/detail.png"
+        "front": "previews/yunque_v022/front.png",
+        "three_quarter": "previews/yunque_v022/hero.png",
+        "rear": "previews/yunque_v022/rear.png",
+        "detail": "previews/yunque_v022/top.png"
       },
-      "status": "incomplete_image_download"
+      "status": "review_ready"
     }
   },
   "automatic_art_approval": false,
@@ -68,7 +73,7 @@
     "Dispatch Blender via Actions; compare new images and GLB evidence.",
     "No-op runs are not visual progress; user owns artistic approval."
   ],
-  "images_downloaded": 0,
-  "all_assets_review_ready": false,
+  "images_downloaded": 16,
+  "all_assets_review_ready": true,
   "art_review_completed": false
 }
