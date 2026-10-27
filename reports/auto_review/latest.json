@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:05:29.067188+00:00",
+  "generated_at": "2026-10-27T10:05:56.126421+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/door-v013-dark-forged-iron-local-rust",
-      "run_id": 40485676050,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485676050",
-      "commit": "3c7ab8d7053b71e9af0a20ba6a399bcc29b2926c",
-      "completed_at": "2026-10-27T10:04:58Z",
-      "preview_directory": "previews/heroes_v008/forge",
+      "branch": "production/auto-forge-irregular-refractory-bond-v022",
+      "run_id": 40477102753,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40477102753",
+      "commit": "0fece735c2eac140c1cd10db6ab0abb90c7761cf",
+      "completed_at": "2026-10-27T09:01:18Z",
+      "preview_directory": "previews/production_auto/forge_irregular-refractory-bond-v022",
       "view_paths": {
-        "front": "previews/heroes_v008/forge/front.png",
-        "three_quarter": "previews/heroes_v008/forge/three_quarter.png",
-        "rear": "previews/heroes_v008/forge/rear.png",
-        "detail": "previews/heroes_v008/forge/detail.png"
+        "front": "previews/production_auto/forge_irregular-refractory-bond-v022/front.png",
+        "three_quarter": "previews/production_auto/forge_irregular-refractory-bond-v022/three_quarter.png",
+        "rear": "previews/production_auto/forge_irregular-refractory-bond-v022/rear.png",
+        "detail": "previews/production_auto/forge_irregular-refractory-bond-v022/detail.png"
       },
       "status": "review_ready"
     },
@@ -49,7 +49,19 @@
       "status": "review_ready"
     },
     "anvil": {
-      "status": "no_successful_run"
+      "branch": "production/yunque-v022-forged-horn",
+      "run_id": 40430776892,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40430776892",
+      "commit": "82c86ef5f2101b0c1c71976f29b6017f1697b54c",
+      "completed_at": "2026-10-27T01:17:34Z",
+      "preview_directory": "previews/yunque_v022",
+      "view_paths": {
+        "front": "previews/yunque_v022/front.png",
+        "three_quarter": "previews/yunque_v022/hero.png",
+        "rear": "previews/yunque_v022/rear.png",
+        "detail": "previews/yunque_v022/top.png"
+      },
+      "status": "review_ready"
     }
   },
   "automatic_art_approval": false,
@@ -61,7 +73,7 @@
     "Dispatch Blender via Actions; compare new images and GLB evidence.",
     "No-op runs are not visual progress; user owns artistic approval."
   ],
-  "images_downloaded": 12,
-  "all_assets_review_ready": false,
+  "images_downloaded": 16,
+  "all_assets_review_ready": true,
   "art_review_completed": false
 }
