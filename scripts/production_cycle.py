@@ -80,8 +80,18 @@ def process(task: dict, busy: set[str]) -> dict:
         raise ValueError("Provide 1-8 concrete edits")
     target = f"production/auto-{asset}-{task_id}"
     if branch_exists(target):
-        return {"id": task_id, "asset": asset, "status": "already_dispatched_or_preserved",
-                "branch": target}
+        # Retry an interrupted dispatch only if GitHub has NO run for this immutable branch.
+        previous=github_json("run","list","--repo",REPO,"--workflow",workflow,
+                             "--branch",target,"--limit","10",
+                             "--json","databaseId,status,conclusion")
+        if previous:
+            return {"id":task_id,"asset":asset,"status":"already_dispatched_or_preserved",
+                    "branch":target,"run_id":previous[0]["databaseId"]}
+        if asset in busy:
+            return {"id":task_id,"asset":asset,"status":"waiting_active_render"}
+        command("gh","workflow","run",workflow,"--repo",REPO,"--ref",target)
+        busy.add(asset)
+        return {"id":task_id,"asset":asset,"status":"dispatch_retried","branch":target}
     if asset in busy:
         return {"id": task_id, "asset": asset, "status": "waiting_active_render"}
     # Both generator and change plan must be attributable to an immutable source.
@@ -105,6 +115,17 @@ def process(task: dict, busy: set[str]) -> dict:
         "approval": "NOT_ARTISTICALLY_APPROVED",
         "created_utc": dt.datetime.now(dt.timezone.utc).isoformat()
     }
+    # The dispatch workflow must exist on default AND on this isolated source ref.
+    # Copy ONLY the shared worker/QA from main; never import another asset generator.
+    if workflow == "production-asset-iteration.yml":
+        command("git","fetch","--quiet","origin","main")
+        for shared in (".github/workflows/production-asset-iteration.yml",
+                       "scripts/production_asset_qa.py"):
+            body=command("git","show",f"origin/main:{shared}")+"\\n"
+            destination=Path(shared)
+            destination.parent.mkdir(parents=True,exist_ok=True)
+            destination.write_text(body,encoding="utf-8")
+            edited.append(shared)
     out = Path("production/receipts") / f"{asset}-{task_id}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(receipt, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
