@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v024")
+OUT=ROOT/("output_hero_"+KIND+"_v025")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -532,7 +532,7 @@ def mount_forge():
             left+=width
             # Functional side-draft smoke entrance, low beside the firebed:
             # leave a central 0.8m opening in the lower rear masonry courses.
-            if course<5 and abs(x)<.41: continue
+            if course<4 and abs(x)<.32: continue
             block_mat=stone if course==5 and i==2 else hearth
             handlaid("Rear irregular refractory bond %d %d"%(course,i),
                      (x,.54,z),(width-.014,.18,.134),block_mat,.005,
@@ -589,15 +589,23 @@ def mount_forge():
                      (.160,.280,.155),hearth,.006)
         box("Visible forge-throat iron edge strap "+str(side),
             (side*.445,.415,2.23),(.033,.090,.52),steel,.006)
-    # A real low side-draft channel begins immediately behind the firebed.
-    # The smoke mouth is now open at z~0.8, not a window 1m above the coals.
+    # V025 repair of V024 white daylight hole and plank-like rear protrusion.
+    # Real side-draft intake is recessed into a soot-dark, brick-lined channel.
+    # A lower stone sill seals the daylight gap below the working smoke mouth.
+    box("Recessed smoke inlet dark refractory sill",
+        (0,.720,.770),(1.08,.125,.155),hearth,.004)
     for course in range(7):
-        z=.88+course*.135
+        z=.825+course*.135
         for side in (-1,1):
-            handlaid("Lower smoke inlet return cheek %s %d"%(side,course),
-                     (side*.510,.785,z),(.155,.220,.129),hearth,.005)
-        handlaid("Sooted inner back of low smoke duct "+str(course),
-                 (0,.915,z),(1.12,.135,.129),hearth,.005)
+            handlaid("Low smoke duct cheek bonded %s %d"%(side,course),
+                     (side*.510,.740,z),(.155,.190,.129),hearth,.005)
+        # Four individually jointed refractory stones, aligned with upper flue,
+        # replace the broad horizontal slab that looked like wooden planks.
+        for i in range(4):
+            x=-.420+i*.280
+            handlaid("Sooted recessed smoke duct brick %d %d"%(course,i),
+                     (x,.755,z),(.273,.145,.129),
+                     hearth if (course+i)%4 else stone,.005)
     # Rear smoke backplate remains sooted and vertically connected to the flue.
     for course in range(10):
         z=1.795+course*.140
@@ -718,7 +726,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V024","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V025","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -735,11 +743,11 @@ report={"asset":KIND,"version":"V024","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v024.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v025.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v024.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v025.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")

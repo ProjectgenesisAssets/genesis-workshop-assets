@@ -1,0 +1,19 @@
+{
+  "id": "sooted-recessed-smoke-duct-v025",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-low-side-draft-smoke-inlet-v024",
+  "branch": "production/auto-forge-sooted-recessed-smoke-duct-v025",
+  "reason": "Inspected actual V023→V024 four-view comparison: the new low smoke mouth is physically open, but a glaring white daylight rectangle appears behind the coals and the rear duct is a protruding flat stack resembling timber planks. V025 narrows the mouth, inserts a recessed dark sill and replaces the rear slab with individual sooted refractory bricks flush with upper chimney. This is defect recovery; V024 not promoted or approved.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T10:19:34.732965+00:00"
+}
