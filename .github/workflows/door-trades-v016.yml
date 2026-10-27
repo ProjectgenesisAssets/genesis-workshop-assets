@@ -2,7 +2,7 @@ name: Genesis workshop doors V016 - wood and leather surface quality
 on:
   push:
     branches:
-      - production/door-v016-five-workshop-materials
+      - production/door-v016-material-depth-carpenter-tanner
     paths:
       - scripts/puertas_talleres_variantes_v016.py
       - .github/workflows/door-trades-v016.yml
