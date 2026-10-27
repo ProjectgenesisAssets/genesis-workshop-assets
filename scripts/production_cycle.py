@@ -121,7 +121,7 @@ def process(task: dict, busy: set[str]) -> dict:
         command("git","fetch","--quiet","origin","main")
         for shared in (".github/workflows/production-asset-iteration.yml",
                        "scripts/production_asset_qa.py"):
-            body=command("git","show",f"origin/main:{shared}")+"\\n"
+            body=command("git","show",f"origin/main:{shared}")+"\n"
             destination=Path(shared)
             destination.parent.mkdir(parents=True,exist_ok=True)
             destination.write_text(body,encoding="utf-8")
