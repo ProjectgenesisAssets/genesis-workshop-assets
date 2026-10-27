@@ -6,7 +6,7 @@ on:
       - 'scripts/production_cycle.py'
       - 'production/correction_queue.json'
   schedule:
-    - cron: '*/10 2-11 27 10 *'  # 23:00-08:50 Argentina; only 27 Oct UTC
+    - cron: '3-59/10 2-11 27 10 *'  # offset minutes 03/13/.../53; only 27 Oct UTC
   workflow_dispatch:
 permissions:
   contents: write
