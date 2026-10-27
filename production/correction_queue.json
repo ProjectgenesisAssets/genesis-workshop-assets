@@ -198,7 +198,7 @@
         {
           "path": "scripts/genesis_hero_assets_v014.py",
           "find": "for course in range(6):\n            handlaid(\"Hood footing massive piers \"",
-          "replace": "for course in range(7):\n            handlaid(\"Hood footing massive piers "
+          "replace": "for course in range(7):\n            handlaid(\"Hood footing massive piers \""
         },
         {
           "path": "scripts/genesis_hero_assets_v014.py",
