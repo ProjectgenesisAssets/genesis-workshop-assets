@@ -63,23 +63,32 @@ def read_blob(branch: str, path: str) -> bytes | None:
         return None
 
 def candidates() -> dict:
-    runs = api("/repos/" + REPO + "/actions/runs?per_page=100").get("workflow_runs", [])
-    # A newer run ID can finish before an older, slower render. Review by
-    # completion timestamp, not creation order, to avoid stale candidates.
+    # Use exact production branch prefixes. Substring matching falsely treated
+    # door-v013-dark-FORGED-iron as a FORGE candidate, corrupting the contact sheet.
+    prefixes = {
+        "forge": ("production/auto-forge-", "production/forge-"),
+        "bellows": ("production/auto-bellows-", "production/bellows-"),
+        "door": ("production/auto-door-", "production/door-"),
+        "anvil": ("production/auto-anvil-", "production/anvil-", "production/yunque-"),
+    }
+    runs = []
+    for page in range(1, 5):
+        batch = api("/repos/" + REPO + f"/actions/runs?per_page=100&page={page}").get("workflow_runs", [])
+        runs.extend(batch)
+        if len(batch) < 100:
+            break
+    # Older approved-shape candidates must not disappear when >100 unrelated
+    # workflows run; scan paginated history, then rank by completion time.
     runs.sort(key=lambda run: run.get("updated_at") or "", reverse=True)
     found = {}
     for run in runs:
         if run.get("status") != "completed" or run.get("conclusion") != "success":
             continue
-        branch = run.get("head_branch") or ""
-        if not branch.startswith("production/"):
-            continue
-        for asset, words in TARGET_NAMES.items():
-            if asset in found:
+        branch = (run.get("head_branch") or "").lower()
+        for asset, accepted_prefixes in prefixes.items():
+            if asset in found or not branch.startswith(accepted_prefixes):
                 continue
-            if not any(word in branch.lower() for word in words):
-                continue
-            found[asset] = {"branch": branch, "run_id": run["id"],
+            found[asset] = {"branch": run["head_branch"], "run_id": run["id"],
                             "run_url": run["html_url"], "commit": run["head_sha"],
                             "completed_at": run.get("updated_at")}
     return found
