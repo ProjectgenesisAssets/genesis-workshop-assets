@@ -870,6 +870,45 @@
           "replace": "report={\"asset\":KIND,\"version\":\"V023\",\"status\":\"VISUAL_CANDIDATE_NOT_APPROVED\",\n        \"baseline_version\":\"V011\",\n        \"targeted_repairs\":[\"replace smooth leather wedge with five volumetric compression waves\",\n                            \"taper pressure folds into top and bottom seam to avoid detached ribs\",\n                            \"bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs\",\n                            \"ensure exported GLB uses the exact baked stained-oak image without MixRGB\"],\n        \"art_direction\":\"functional medieval photorealism, never stylized\",\"metric_bounds_m\":[list(mn),list(mx)],\n        \"mesh_parts\":len(ASSETS),\"source\":\"independent Blender generator, no historical master reused\",\n        \"pbr_materials\":list(MATERIALS.keys()),\"maps\":MAPS,\"render_samples\":sc.cycles.samples,\n        \"approval\":\"requires 4-view visual review and at least 8/10 by user\",\n        \"photographic_cc0_sources\":({\"oak\":\"https://polyhaven.com/a/fine_grained_wood\",\"leather\":\"https://polyhaven.com/a/brown_leather\",\"credit\":\"Powered by Poly Haven\"} if KIND==\"bellows\" else {})}\n(OUT/\"AUDIT.json\").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding=\"utf8\")\nbpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+\"_hero_v023.blend\")))\nbpy.ops.object.select_all(action=\"DESELECT\")\nfor ob in ASSETS:ob.select_set(True)\nbpy.context.view_layer.objects.active=ASSETS[0]\nbpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+\"_hero_v023.glb\")),\n"
         }
       ]
+    },
+    {
+      "id": "sooted-recessed-smoke-duct-v025",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-low-side-draft-smoke-inlet-v024",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Inspected actual V023→V024 four-view comparison: the new low smoke mouth is physically open, but a glaring white daylight rectangle appears behind the coals and the rear duct is a protruding flat stack resembling timber planks. V025 narrows the mouth, inserts a recessed dark sill and replaces the rear slab with individual sooted refractory bricks flush with upper chimney. This is defect recovery; V024 not promoted or approved.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v024\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v025\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "            if course<5 and abs(x)<.41: continue",
+          "replace": "            if course<4 and abs(x)<.32: continue"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    # A real low side-draft channel begins immediately behind the firebed.\n    # The smoke mouth is now open at z~0.8, not a window 1m above the coals.\n    for course in range(7):\n        z=.88+course*.135\n        for side in (-1,1):\n            handlaid(\"Lower smoke inlet return cheek %s %d\"%(side,course),\n                     (side*.510,.785,z),(.155,.220,.129),hearth,.005)\n        handlaid(\"Sooted inner back of low smoke duct \"+str(course),\n                 (0,.915,z),(1.12,.135,.129),hearth,.005)\n",
+          "replace": "    # V025 repair of V024 white daylight hole and plank-like rear protrusion.\n    # Real side-draft intake is recessed into a soot-dark, brick-lined channel.\n    # A lower stone sill seals the daylight gap below the working smoke mouth.\n    box(\"Recessed smoke inlet dark refractory sill\",\n        (0,.720,.770),(1.08,.125,.155),hearth,.004)\n    for course in range(7):\n        z=.825+course*.135\n        for side in (-1,1):\n            handlaid(\"Low smoke duct cheek bonded %s %d\"%(side,course),\n                     (side*.510,.740,z),(.155,.190,.129),hearth,.005)\n        # Four individually jointed refractory stones, aligned with upper flue,\n        # replace the broad horizontal slab that looked like wooden planks.\n        for i in range(4):\n            x=-.420+i*.280\n            handlaid(\"Sooted recessed smoke duct brick %d %d\"%(course,i),\n                     (x,.755,z),(.273,.145,.129),\n                     hearth if (course+i)%4 else stone,.005)\n"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V024\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V025\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v024.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v025.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v024.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v025.glb\"))"
+        }
+      ]
     }
   ]
 }
