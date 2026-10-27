@@ -1,0 +1,20 @@
+{
+  "id": "oak-grain-irregular-gusset-v017",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-grain-hide-drift-v016",
+  "branch": "production/auto-bellows-oak-grain-irregular-gusset-v017",
+  "reason": "Examined real V015/V016 four-view comparison at 02:45 ART. The upper board remains pale stone-grey and leather folds form near-parallel rigid ribs. Replace the washed-out grayscale scan tint with a warmer low-gloss photo-grain bake plus directional subtle oak grain, and replace uniform pleat sinusoid with two noncommensurate folds and minor seam-safe height drift. Keep V012 provisional; no automatic promotion.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T05:46:46.456476+00:00"
+}
