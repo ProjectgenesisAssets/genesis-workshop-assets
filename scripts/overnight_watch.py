@@ -15,10 +15,10 @@ import urllib.parse
 REPO=os.environ["GITHUB_REPOSITORY"]
 ASSETS=("door","anvil","forge","bellows")
 BRANCH_MATCH={
-    "door":re.compile(r"^production/door-v\\d+"),
-    "anvil":re.compile(r"^production/yunque-v\\d+"),
-    "forge":re.compile(r"^production/forge-v\\d+"),
-    "bellows":re.compile(r"^production/bellows-v\\d+"),
+    "door":re.compile(r"^production/door-v\d+"),
+    "anvil":re.compile(r"^production/yunque-v\d+"),
+    "forge":re.compile(r"^production/forge-v\d+"),
+    "bellows":re.compile(r"^production/bellows-v\d+"),
 }
 def gh(*args):
     p=subprocess.run(["gh",*args],capture_output=True,text=True)
@@ -26,7 +26,7 @@ def gh(*args):
         raise RuntimeError("gh "+" ".join(args)+": "+p.stderr[-500:])
     return json.loads(p.stdout)
 def comparison(asset,branch):
-    match=re.search(r"-v(\\d+)",branch)
+    match=re.search(r"-v(\d+)",branch)
     if not match or asset=="anvil":
         return None
     version="v"+match.group(1)
@@ -65,7 +65,7 @@ def main():
          "assets":statuses,"automatic_artistic_approval":False,
          "warning":"Green Actions or pixel deltas do not prove artistic quality."}
     pathlib.Path("reports").mkdir(exist_ok=True)
-    pathlib.Path("reports/overnight_status.json").write_text(json.dumps(rep,indent=2)+"\\n")
+    pathlib.Path("reports/overnight_status.json").write_text(json.dumps(rep,indent=2)+"\n")
     lines=["# Project Genesis - latest independent production checks","",
            f"UTC: {rep['checked_at_utc']}","",
            "| Asset | Branch | Latest run | Technical gate |",
@@ -76,7 +76,7 @@ def main():
         gate=receipt["technical_visual_gate"] if receipt else "pending/not published"
         lines.append(f"| {row['asset']} | {row['latest_branch'] or '-'} | {link}: {row['status']} / {row['conclusion'] or '-'} | {gate} |")
     lines+=["","**No artistic approvals.** An Actions success only confirms pipeline completion."]
-    pathlib.Path("reports/overnight_status.md").write_text("\\n".join(lines)+"\\n")
-    print("\\n".join(lines))
+    pathlib.Path("reports/overnight_status.md").write_text("\n".join(lines)+"\n")
+    print("\n".join(lines))
 if __name__=="__main__":
     main()
