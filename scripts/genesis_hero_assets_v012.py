@@ -647,7 +647,7 @@ camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
 report={"asset":KIND,"version":"V012","status":"VISUAL_CANDIDATE_NOT_APPROVED",
-        "baseline_version":"V011",
+        "baseline_version":"V010", "derived_from":"V011",
         "targeted_repairs":["replace stylized industrial hood with hand-bonded tapered stone smoke canopy",
                             "build a physically open square refractory masonry chimney",
                             "break repetitive brick courses with individually perturbed geometry and subdued stone PBR",
