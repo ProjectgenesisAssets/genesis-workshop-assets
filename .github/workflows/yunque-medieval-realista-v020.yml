@@ -1,0 +1,102 @@
+name: Project Genesis - Yunque medieval realista V020
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production/yunque-v020-playcanvas
+    paths:
+      - '.github/workflows/yunque-medieval-realista-v020.yml'
+      - 'scripts/generar_yunque_realista_v020.py'
+permissions:
+  contents: read
+jobs:
+  model_and_render_anvil:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    timeout-minutes: 80
+    steps:
+      - name: Checkout isolated candidate branch
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Pillow for the 16-view QA contact sheet
+        run: python -m pip install --disable-pip-version-check pillow
+      - name: Install official Blender 4.5.13 LTS with NumPy and OpenImageDenoise
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-lts.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender-lts.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version | grep -F 'Blender 4.5.13'
+          /tmp/blender-lts/blender -b --python-expr 'import numpy; print("GENESIS_NUMPY_OK",numpy.__version__)'
+      - name: Build V020 PBR 3D model, GLB, blend, and 19 actual camera renders
+        run: |
+          set -euo pipefail
+          /tmp/blender-lts/blender -b -t 3 --python-exit-code 1 --python scripts/generar_yunque_realista_v020.py
+      - name: Validate polygon count, texture sizes, outputs and create visual catalog sheet
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          out=Path('output_anvil_v020')
+          audit=json.loads((out/'PG_Yunque_V020_AUDIT.json').read_text(encoding='utf-8'))
+          assert audit['triangles_evaluated']<=120000, audit
+          assert audit['orbit_views']==16, audit
+          assert audit['top_steel_face_consistency'] >= .985, audit
+          assert (out/'PG_Yunque_Medieval_Realista_V020.glb').stat().st_size>10000
+          assert (out/'PG_Yunque_Medieval_Realista_V020.blend').stat().st_size>10000
+          images=sorted(out.glob('PG_Yunque_V020_vista_*.png'))
+          assert len(images)==16, [p.name for p in images]
+          # No private images or photographic masters are copied into this public build.
+          assert not Path('assets/yunque/v015').exists()
+          maps=sorted((out/'textures').glob('*.png'))
+          assert len(maps)==9, [p.name for p in maps]
+          assert all(p.stat().st_size > 90000 for p in maps), [(p.name,p.stat().st_size) for p in maps]
+          for p in maps:
+              with Image.open(p) as im:
+                  assert im.size == (1536,1536), (p.name,im.size)
+          # 4x4 contact sheet, with neutral dark backing but source PNG remains transparent.
+          side=840
+          pad=28
+          sheet=Image.new('RGB',(side*4,side*4),(32,36,41))
+          draw=ImageDraw.Draw(sheet)
+          for k,p in enumerate(images):
+              with Image.open(p) as im:
+                  im=im.convert('RGBA')
+                  im.thumbnail((side-44,side-65),Image.Resampling.LANCZOS)
+                  tile=Image.new('RGBA',(side,side),(43,47,53,255))
+                  tile.alpha_composite(im,((side-im.width)//2,(side-im.height)//2+8))
+                  x=(k%4)*side;y=(k//4)*side
+                  sheet.paste(tile.convert('RGB'),(x,y))
+                  draw.text((x+27,y+side-48),f'YUNQUE V020 — VISTA {k+1:02d} / YAW {k*22.5:.1f}°',fill=(230,231,228))
+          sheet.save(out/'PG_Yunque_V020_Catalogo_16_Vistas.png',optimize=True)
+          print('QC_PASSED:',audit['triangles_evaluated'],'evaluated triangles,',len(maps),'PBR maps,',len(images),'views')
+          PY
+      - name: Publish candidate files ONLY as downloadable review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PG-Yunque-Realista-V020-PlayCanvas-Candidato
+          path: output_anvil_v020/
+          if-no-files-found: error
+          retention-days: 2
+
+      - name: Publish four internal-review PNGs ONLY on isolated anvil branch
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/yunque_v020
+          cp output_anvil_v020/PG_Yunque_V020_hero.png previews/yunque_v020/hero.png
+          cp output_anvil_v020/PG_Yunque_V020_superior.png previews/yunque_v020/top.png
+          cp output_anvil_v020/PG_Yunque_V020_vista_01.png previews/yunque_v020/front.png
+          cp output_anvil_v020/PG_Yunque_V020_vista_09.png previews/yunque_v020/rear.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/yunque_v020
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record yunque V020 visual candidate, NOT approved [skip ci]'
+            git push origin HEAD:production/yunque-v020-playcanvas
+          fi
