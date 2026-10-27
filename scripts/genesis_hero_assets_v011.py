@@ -118,12 +118,12 @@ def pbr(name,base,metal,rough,kind,seed):
     links.new(nm.outputs["Normal"],bs.inputs["Normal"])
     if kind=="hotcoal":
         # Incandescence lives in narrow charcoal microfractures, NOT detached bright spheres.
-        thin=np.clip((.080-np.abs(f))/.065,0,1)*np.clip((.40+c)/.75,0,1)
+        thin=np.clip((.115-np.abs(f))/.075,0,1)*np.clip((.40+c)/.75,0,1)
         emission=np.stack([thin*.85,thin*.19,thin*.025],axis=2).astype(np.float32)
         emm=img("emissive",emission)
         emnode=nodes.new("ShaderNodeTexImage");emnode.image=emm
         links.new(emnode.outputs["Color"],bs.inputs["Emission Color"])
-        bs.inputs["Emission Strength"].default_value=4.4
+        bs.inputs["Emission Strength"].default_value=5.4
     MATERIALS[name]=m
     return m
 
@@ -516,7 +516,7 @@ def mount_forge():
     glow_obj=bpy.data.objects.new("STUDIO_FIREGLOW_NOT_IN_ASSET",glow_data)
     bpy.context.collection.objects.link(glow_obj)
     glow_obj.location=(0,-.05,.88)
-    glow_data.energy=110;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52
+    glow_data.energy=135;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52
     # Distinct bellows air-entry mouth built into back wall.
     cyl("Air intake tuyere",(0,.625,.79),.067,.21,steel,32,
         rot=(math.pi/2,0,0),edge=.006)
@@ -573,7 +573,7 @@ report={"asset":KIND,"version":"V011","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010",
         "targeted_repairs":["seal missing upper front smoke funnel plate without closing firebox",
                             "fill rear brick background light leaks with refractory backing",
-                            "increase emissive microfractures in charcoal, not detached glow balls",
+                            "increase the coverage and power of embedded charcoal microfractures without detached glow balls",
                             "add physical folded-rim peened rivets",
                             "recess mortar backing inside rear brick depth to expose historic masonry"],
         "art_direction":"functional medieval photorealism, never stylized","metric_bounds_m":[list(mn),list(mx)],

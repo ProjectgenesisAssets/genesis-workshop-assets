@@ -1,0 +1,17 @@
+{
+  "id": "ember-fracture-readability-v011",
+  "asset": "forge",
+  "base_branch": "production/forge-v011-ember-readability",
+  "branch": "production/auto-forge-ember-fracture-readability-v011",
+  "reason": "Actual V010 four-view render shows mostly unlit charcoal. Increase embedded microfracture emission coverage and gentle local bounce; no floating luminous objects and GLB retains emissive PBR.",
+  "edits": [
+    "scripts/genesis_hero_assets_v011.py",
+    "scripts/genesis_hero_assets_v011.py",
+    "scripts/genesis_hero_assets_v011.py",
+    "scripts/genesis_hero_assets_v011.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T01:56:36.409141+00:00"
+}
