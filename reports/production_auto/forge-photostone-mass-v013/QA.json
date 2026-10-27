@@ -1,0 +1,46 @@
+{
+  "asset": "forge",
+  "task_id": "photostone-mass-v013",
+  "source_sha": "6bcb48003bab0cc09471cc2f3793df5096df4e2f",
+  "baseline": "previews/heroes_v010/forge",
+  "candidate": "output_hero_forge_v013",
+  "glb": "forge_hero_v013.glb",
+  "blend": "forge_hero_v013.blend",
+  "glb_stats": {
+    "triangles": 70840,
+    "meshes": 345,
+    "materials": 5,
+    "base_color_textured_materials": 5,
+    "embedded_images": 16
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.02769,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.03291,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.03656,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.08172,
+      "silhouette_iou": 1.0
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Real Blender renders, objective technical checks only; final artistic approval is human."
+}
