@@ -1,0 +1,65 @@
+{
+  "asset": "door",
+  "task_id": "localized-ferric-iron-v015",
+  "source_sha": "b58ae565a82b5c9f3b74d95f270f2adcf8478587",
+  "baseline": "previews/door_v014",
+  "candidate": "output_blacksmith_door_art_015",
+  "glb": "Blacksmith_Door_Art_015.glb",
+  "blend": "Blacksmith_Door_Art_015.blend",
+  "glb_stats": {
+    "triangles": 38768,
+    "meshes": 191,
+    "materials": 4,
+    "base_color_textured_materials": 4,
+    "embedded_images": 12,
+    "texture_bindings": {
+      "iron_ferric_patina_insets_v015": {
+        "base_color_image": "iron_ferric_patina_insets_v015_albedo",
+        "emissive_texture": false
+      },
+      "iron_worn_polished_edges_v015": {
+        "base_color_image": "iron_worn_polished_edges_v015_albedo",
+        "emissive_texture": false
+      },
+      "iron_aged_blued_steel_v015": {
+        "base_color_image": "iron_aged_blued_steel_v015_albedo",
+        "emissive_texture": false
+      },
+      "copper_brass": {
+        "base_color_image": "copper_brass_albedo",
+        "emissive_texture": false
+      }
+    }
+  },
+  "audit_files": [
+    "DESIGN_AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.02014,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.01884,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "side",
+      "rgb_delta": 0.00415,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.01852,
+      "silhouette_iou": 1.0
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": true,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
