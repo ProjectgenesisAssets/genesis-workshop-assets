@@ -177,6 +177,104 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v015.glb\"))"
         }
       ]
+    },
+    {
+      "id": "open-hearth-glow-v017",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-handhewn-masonry-live-embers-v016",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Reviewed actual V016 4-view contact sheet against V015: the coal still reads almost unlit and the dark canopy hangs too close to the hearth; keep V016 as checkpoint. Raise hood lip by 6.5 cm, extend supporting masonry piers to meet it, increase local fire illumination and emissive charcoal cracks. No score or automatic artistic approval; review V017 visually before adoption.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v016\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v017\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "bottom_z=1.745",
+          "replace": "bottom_z=1.810"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "for course in range(6):\n            handlaid(\"Hood footing massive piers \"",
+          "replace": "for course in range(7):\n            handlaid(\"Hood footing massive piers "
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "glow_data.energy=108;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52",
+          "replace": "glow_data.energy=205;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "bs.inputs[\"Emission Strength\"].default_value=5.1",
+          "replace": "bs.inputs[\"Emission Strength\"].default_value=7.1"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V016\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V017\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v016.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v017.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v016.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v017.glb\"))"
+        }
+      ]
+    },
+    {
+      "id": "grain-hide-drift-v016",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-supple-hide-warm-oak-v015",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Reviewed actual V015 4-view sheet against V014: upper oak still appears cold grey; dark hide resembles evenly stacked rubber/wood slats, not flexible hand-stitched leather. Keep V012/V014/V015 as independent checkpoints. Warm photographic oak tint, restore brown leather contrast and introduce nonuniform fold phase across hand-cut hide. Verify four new renders and GLB PBR, do not autoapprove.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v015\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v016\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V015\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V015\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V016\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V016\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "rgba[:,:3]=grain[:,None]*np.array((.82,.43,.20),dtype=np.float32)",
+          "replace": "rgba[:,:3]=grain[:,None]*np.array((.95,.48,.19),dtype=np.float32)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "rgba[:,:3]*=np.array((.48,.22,.20),dtype=np.float32)",
+          "replace": "rgba[:,:3]*=np.array((.63,.32,.25),dtype=np.float32)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "phase=6.6*math.pi*t+.18*x+.56*math.sin(3.4*x+2.1*y)+.09*math.sin(8.3*y)",
+          "replace": "phase=6.2*math.pi*t+.35*x+1.10*math.sin(3.4*x+2.1*y+1.2*t)+.14*math.sin(8.3*y)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V015\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V016\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v015.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v016.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v015.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v016.glb\"))"
+        }
+      ]
     }
   ]
 }
