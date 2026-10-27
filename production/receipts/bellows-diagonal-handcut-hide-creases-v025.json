@@ -1,0 +1,21 @@
+{
+  "id": "diagonal-handcut-hide-creases-v025",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-cross-stitched-hide-seams-v024",
+  "branch": "production/auto-bellows-diagonal-handcut-hide-creases-v025",
+  "reason": "V024 Blender rendered but objective QA correctly rejected it: crossed stitches change <0.0003 RGB per view and are imperceptible at menu scale. Actual V023→V024 JPG confirms rigid horizontal leather bands and pink-grey oak persist. Replace sinusoidal ring deformation with two offset, hand-cut diagonal compression creases in real gusset mesh; tint CC0 oak to less pink, muted aged brown while preserving scan pores. Keep failed V024 and provisional V012; no artistic approval.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T11:21:57.794678+00:00"
+}
