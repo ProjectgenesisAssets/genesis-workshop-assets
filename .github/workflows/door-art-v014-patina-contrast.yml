@@ -1,0 +1,102 @@
+name: Genesis Door V014 oxidized iron — geometry locked
+on:
+  push:
+    branches:
+      - production/door-v014-patina-contrast-material
+    paths:
+      - scripts/puerta_herreria_art_014.py
+      - .github/workflows/door-art-v014-patina-contrast.yml
+permissions:
+  contents: read
+concurrency:
+  group: genesis-door-v014-oxidized-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render_and_compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify candidate syntax and four original silhouettes
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/puerta_herreria_art_014.py
+          for shot in front three_quarter rear side; do test -s "previews/door_v011/$shot.png"; done
+      - name: Install Blender 4.5.13 official binary
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/door-v014-blender.tar.xz
+          mkdir -p /tmp/door-v014-blender
+          tar -xJf /tmp/door-v014-blender.tar.xz -C /tmp/door-v014-blender --strip-components=1
+          /tmp/door-v014-blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Generate door V014 with 2K oxidized iron maps and four renders
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          set -euo pipefail
+          /tmp/door-v014-blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_014.py
+      - name: Verify PBR maps, GLB, mesh and stable silhouette
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          from PIL import Image, ImageChops
+          p=Path('output_blacksmith_door_art_014')
+          a=json.loads((p/'DESIGN_AUDIT.json').read_text())
+          r=json.loads((p/'V014_MATERIAL_TEST.json').read_text())
+          assert a['version']=='V014' and 10000<a['evaluated_triangles']<68028
+          assert r['geometry_baseline']=='V011_USER_APPROVED' and r['exact_V175_material_applied'] is False
+          assert (p/'Blacksmith_Door_Art_014.blend').stat().st_size>10000
+          glb=p/'Blacksmith_Door_Art_014.glb'
+          with glb.open('rb') as f: magic,version,length=struct.unpack('<III',f.read(12))
+          assert (magic,version,length)==(0x46546c67,2,glb.stat().st_size)
+          maps=list(p.glob('*_albedo.png'))+list(p.glob('*_normal.png'))+list(p.glob('*_roughness.png'))+list(p.glob('*_metallic.png'))
+          assert len(maps)==16,[x.name for x in maps]
+          for m in maps:
+              with Image.open(m) as im: assert im.size==(2048,2048),(m,im.size)
+          for name,out_name in [('front','front_orthographic'),('three_quarter','three_quarter'),('rear','rear_orthographic'),('side','side_orthographic')]:
+              with Image.open('previews/door_v011/'+name+'.png') as ref,Image.open(p/(out_name+'.png')) as cand:
+                  assert ref.size==cand.size
+                  x=ref.getchannel('A').point(lambda v:255 if v>127 else 0)
+                  y=cand.getchannel('A').point(lambda v:255 if v>127 else 0)
+                  union=ImageChops.lighter(x,y)
+                  intersection=ImageChops.darker(x,y)
+                  iou=sum(intersection.histogram()[128:])/max(1,sum(union.histogram()[128:]))
+                  print('SILHOUETTE_LOCK',name,round(iou,6))
+                  assert iou>=.995,(name,iou)
+          print('V014_MATERIAL_PREVIEW_READY_USER_APPROVAL_PENDING')
+          PY
+      - name: Upload V014 candidate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Genesis-door-V014-oxidized-iron-test
+          path: |
+            output_blacksmith_door_art_014/*.png
+            output_blacksmith_door_art_014/*.glb
+            output_blacksmith_door_art_014/*.json
+          retention-days: 5
+          if-no-files-found: warn
+      - name: Publish four unapproved review renders to candidate branch only
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_v014
+          cp output_blacksmith_door_art_014/front_orthographic.png previews/door_v014/front.png
+          cp output_blacksmith_door_art_014/three_quarter.png previews/door_v014/three_quarter.png
+          cp output_blacksmith_door_art_014/rear_orthographic.png previews/door_v014/rear.png
+          cp output_blacksmith_door_art_014/side_orthographic.png previews/door_v014/side.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v014
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record door V014 oxidized iron preview, not approved [skip ci]'
+            git fetch origin production/door-v014-patina-contrast-material
+            git rebase origin/production/door-v014-patina-contrast-material
+            git push origin HEAD:production/door-v014-patina-contrast-material
+          fi
