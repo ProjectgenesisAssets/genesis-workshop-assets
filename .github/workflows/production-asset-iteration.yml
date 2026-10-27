@@ -51,6 +51,8 @@ jobs:
           assert Path(script).is_file() and script.startswith("scripts/") and script.endswith(".py")
           with open(os.environ["GITHUB_ENV"],"a") as f:
             f.write(f"ASSET={asset}\nTASK_ID={task}\nGENERATOR={script}\n")
+          import py_compile
+          py_compile.compile(script,doraise=True)
           print("GENESIS_REAL_CORRECTION",asset,task,script,d["reason"])
           PY
           python3 -m py_compile scripts/production_asset_qa.py
@@ -98,6 +100,8 @@ jobs:
           path: |
             output*/*.png
             output*/*.glb
+            output*/*.blend
+            output*/textures/*.png
             output*/*AUDIT*.json
             reports/production_auto/**
           retention-days: 14
