@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v020")
+OUT=ROOT/("output_hero_"+KIND+"_v021")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -593,10 +593,10 @@ def mount_forge():
     # The open front is deliberately left EMPTY from hearth to hood lip,
     # so the fire can be worked from the front with full-length tongs.
     # Unlike V014 no overlapping ashlar slope reads as a pitched roof.
-    front_y=-.56
-    back_y=.58
+    front_y=-.45
+    back_y=.50
     bottom_z=1.810
-    top_z=2.25
+    top_z=2.40
     plate("Left hammer-shaped smoke capture hood",[
         (-.94,front_y,bottom_z),(-.46,-.30,top_z),
         (-.46,.37,top_z),(-.94,back_y,bottom_z)])
@@ -661,9 +661,9 @@ def mount_forge():
                 (.178,.290,.126),stone if course>2 else hearth,.006)
         # Forged upright reinforcement anchored to masonry, not cartoon rods.
         box("Visible wrought load bracket "+str(side),
-            (side*.807,-.570,1.46),(.048,.068,.43),steel,.008)
+            (side*.807,-.470,1.46),(.048,.068,.43),steel,.008)
         plate("Hammered triangular side brace "+str(side),[
-            (side*.81,-.58,1.56),(side*.82,-.58,1.70),
+            (side*.81,-.47,1.56),(side*.82,-.47,1.70),
             (side*.58,-.37,2.03),(side*.60,-.37,1.94)],.020)
     for x in (-.78,-.55,-.28,0,.28,.55,.78):
         rivet_z=bottom_z+.330*(1-(abs(x)/.94)**1.65)
@@ -675,18 +675,18 @@ def mount_forge():
     # Square forged transition inside a much taller, dark soot-stained stack.
     for y in (-.275,.345):
         plate("Flue front rear iron wall "+str(y),[
-            (-.46,y,2.235),(.46,y,2.235),
-            (.36,y,2.77),(-.36,y,2.77)])
+            (-.46,y,2.39),(.46,y,2.39),
+            (.36,y,3.05),(-.36,y,3.05)])
     for side in (-1,1):
         plate("Flue left right iron wall "+str(side),[
-            (side*.46,-.275,2.235),(side*.46,.345,2.235),
-            (side*.36,.345,2.77),(side*.36,-.275,2.77)])
+            (side*.46,-.275,2.39),(side*.46,.345,2.39),
+            (side*.36,.345,3.05),(side*.36,-.275,3.05)])
     for y in (-.295,.365):
-        box("Flue mouth wrought rim "+str(y),(0,y,2.77),
+        box("Flue mouth wrought rim "+str(y),(0,y,3.05),
             (.79,.032,.058),steel,.010)
     for side in (-1,1):
         box("Flue mouth return rim "+str(side),
-            (side*.37,.035,2.77),(.032,.67,.058),steel,.010)
+            (side*.37,.035,3.05),(.032,.67,.058),steel,.010)
 
     # Forged working-tool wall rack: visual function beats decoration.
     # A proper coal rake, poker and lifting hook are separate forged pieces.
@@ -758,7 +758,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V020","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V021","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -775,11 +775,11 @@ report={"asset":KIND,"version":"V020","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v020.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v021.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v020.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v021.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
