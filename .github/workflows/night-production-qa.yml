@@ -1,0 +1,116 @@
+name: Night production QA - door anvil forge bellows
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/night-production-qa.yml'
+permissions:
+  contents: read
+jobs:
+  produce:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - asset: door
+            script: scripts/puerta_herreria_art_003.py
+            output: output_blacksmith_door_art_003
+            glb: Blacksmith_Door_Art_003.glb
+            blend: Blacksmith_Door_Art_003.blend
+          - asset: anvil
+            script: scripts/genesis_hero_assets_v002.py
+            output: output_hero_anvil_v002
+            glb: anvil_hero_v002.glb
+            blend: anvil_hero_v002.blend
+          - asset: forge
+            script: scripts/genesis_hero_assets_v002.py
+            output: output_hero_forge_v002
+            glb: forge_hero_v002.glb
+            blend: forge_hero_v002.blend
+          - asset: bellows
+            script: scripts/genesis_hero_assets_v002.py
+            output: output_hero_bellows_v002
+            glb: bellows_hero_v002.glb
+            blend: bellows_hero_v002.blend
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source integrity
+        run: |
+          python3 -m py_compile "${{ matrix.script }}"
+      - name: Install official Blender LTS once per isolated runner
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 20 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version
+          /tmp/blender/blender -b --python-expr 'import numpy; print("NUMPY",numpy.__version__)'
+      - name: Rebuild modeled asset and render four inspection views
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.asset }}" = door ]; then
+            /tmp/blender/blender -b -t 3 --python-exit-code 1 --python "${{ matrix.script }}"
+          else
+            /tmp/blender/blender -b -t 3 --python-exit-code 1 --python "${{ matrix.script }}" -- "${{ matrix.asset }}"
+          fi
+      - name: Audit GLB geometry and texture limits (no automatic artistic approval)
+        run: |
+          python3 - <<'PY'
+          import os,json,struct,pathlib
+          a="${{ matrix.asset }}"; out=pathlib.Path("${{ matrix.output }}")
+          assert (out/"${{ matrix.glb }}").stat().st_size>4096
+          assert (out/"${{ matrix.blend }}").stat().st_size>4096
+          names=["front_orthographic","three_quarter","side_orthographic","rear_orthographic"] if a=="door" else ["front","three_quarter","rear","detail"]
+          for n in names:
+              assert (out/(n+".png")).stat().st_size>10000, n
+          p=out/"${{ matrix.glb }}"
+          with p.open("rb") as f:
+              head=f.read(12)
+              magic,version,total=struct.unpack("<III",head)
+              assert magic==0x46546C67 and version==2 and total==p.stat().st_size
+              n,t=struct.unpack("<I4s",f.read(8))
+              assert t==b"JSON"
+              doc=json.loads(f.read(n))
+          triangles=0
+          for mesh in doc.get("meshes",[]):
+              for primitive in mesh["primitives"]:
+                  if primitive.get("mode",4)!=4: continue
+                  ix=primitive.get("indices")
+                  if ix is not None: triangles+=doc["accessors"][ix]["count"]//3
+                  else: triangles+=doc["accessors"][primitive["attributes"]["POSITION"]]["count"]//3
+          assert triangles>100 and triangles<350000,triangles
+          maps=list(out.glob("**/*.png"))
+          textures=[]
+          for fp in maps:
+              with fp.open("rb") as f: header=f.read(24)
+              assert header[:8]==b"\\x89PNG\\r\\n\\x1a\\n"
+              w,h=struct.unpack(">II",header[16:24])
+              if fp.parent.name=="textures" or any(part in fp.name for part in ("albedo","normal","roughness")):
+                  assert w<=1536 and h<=1536,(str(fp),w,h)
+                  textures.append({"name":fp.name,"width":w,"height":h})
+          audit={"asset":a,"version":"V003" if a=="door" else "V002","triangles":triangles,
+                 "meshes":len(doc.get("meshes",[])),"materials":len(doc.get("materials",[])),
+                 "pbr_texture_files":textures,"technical_pass":True,"visual_approval":False,
+                 "instruction":"Do not promote to private master before human review >=8/10"}
+          (out/"NIGHT_QA.json").write_text(json.dumps(audit,indent=2))
+          print(json.dumps(audit,indent=2))
+          PY
+      - name: Upload candidate GLB and visual review PNGs (2 days, no heavy Blender originals)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: night-qa-${{ matrix.asset }}-${{ github.run_id }}
+          path: |
+            ${{ matrix.output }}/*.png
+            ${{ matrix.output }}/*.glb
+            ${{ matrix.output }}/*QA.json
+            ${{ matrix.output }}/DESIGN_AUDIT.json
+            ${{ matrix.output }}/AUDIT.json
+          retention-days: 2
+          if-no-files-found: warn
