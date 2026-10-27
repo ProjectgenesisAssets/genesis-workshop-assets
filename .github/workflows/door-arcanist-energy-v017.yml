@@ -1,0 +1,165 @@
+name: Genesis door Arcanist V017 - cold blue energy emissive
+on:
+  push:
+    branches:
+      - production/door-v017-arcanist-blue-energy
+    paths:
+      - scripts/puerta_arcanista_energia_azul_v017.py
+      - .github/workflows/door-trades-v017.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: genesis-door-v017-trades-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render:
+    strategy:
+      fail-fast: false
+      matrix:
+        trade: [arcanista]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    env:
+      PG_DOOR_TRADE: ${{ matrix.trade }}
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source and existing approved silhouette
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/puerta_arcanista_energia_azul_v017.py
+          test -s previews/door_v014/front.png
+          test -s previews/door_v011/front.png
+      - name: Install Blender 4.5.13 official binary
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/door-v017-blender.tar.xz
+          mkdir -p /tmp/door-v017-blender
+          tar -xJf /tmp/door-v017-blender.tar.xz -C /tmp/door-v017-blender --strip-components=1
+          /tmp/door-v017-blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Render 4 real Cycles views plus 16 PBR maps and GLB
+        run: |
+          set -euo pipefail
+          /tmp/door-v017-blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_arcanista_energia_azul_v017.py
+      - name: Verify geometry lock, outputs and physically coherent PBR maps
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,json,struct
+          from PIL import Image, ImageChops
+          trade=os.environ["PG_DOOR_TRADE"]
+          p=Path("output_workshop_door_v017_"+trade)
+          audit=json.loads((p/"DESIGN_AUDIT.json").read_text())
+          report=json.loads((p/"V017_MATERIAL_TEST.json").read_text())
+          assert report["version"]=="V017" and report["profession"]==trade
+          assert report["geometry_baseline"]=="V011_USER_APPROVED" and report["material_only"]
+          assert report["exact_V175_material_applied"] is False
+          assert 10000<audit["evaluated_triangles"]<68028,audit
+          assert (p/("Workshop_Door_V017_"+trade+".blend")).stat().st_size>10000
+          glb=p/("Workshop_Door_V017_"+trade+".glb")
+          with glb.open("rb") as f: magic,version,length=struct.unpack("<III",f.read(12))
+          assert (magic,version,length)==(0x46546c67,2,glb.stat().st_size)
+          maps=[x for t in ("albedo","roughness","normal","metallic") for x in p.glob("*_"+t+".png")]
+          assert len(maps)==16,[m.name for m in maps]
+          for m in maps:
+              with Image.open(m) as im: assert im.size==(1536,1536),m
+          for name,out_name in [("front","front_orthographic"),("three_quarter","three_quarter"),("rear","rear_orthographic"),("side","side_orthographic")]:
+              with Image.open("previews/door_v014/"+name+".png") as ref,Image.open(p/(out_name+".png")) as cand:
+                  assert ref.size==cand.size,(name,ref.size,cand.size)
+                  a=ref.getchannel("A").point(lambda v:255 if v>127 else 0)
+                  b=cand.getchannel("A").point(lambda v:255 if v>127 else 0)
+                  u=ImageChops.lighter(a,b);i=ImageChops.darker(a,b)
+                  iou=sum(i.histogram()[128:])/max(1,sum(u.histogram()[128:]))
+                  print("PROFESSION",trade,"APPROVED_SILHOUETTE",name,round(iou,6))
+                  assert iou>=.995,(trade,name,iou)
+          print("PBR_VARIANT_REVIEW_READY",trade,glb.stat().st_size)
+          PY
+      - name: Upload original 3D+PBR+render artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: door-v017-${{ matrix.trade }}
+          path: |
+            output_workshop_door_v017_${{ matrix.trade }}/*.png
+            output_workshop_door_v017_${{ matrix.trade }}/*.glb
+            output_workshop_door_v017_${{ matrix.trade }}/*.json
+            output_workshop_door_v017_${{ matrix.trade }}/*.blend
+          retention-days: 7
+          if-no-files-found: warn
+  gallery:
+    needs: render
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: door-v017-arcanista
+          path: evidence
+      - name: Assemble true Cycles JPGs including five-door blue-energy comparison
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          folder=Path("previews/door_v017_arcanista")
+          folder.mkdir(parents=True,exist_ok=True)
+          e=Path("evidence")
+          original=Image.open("previews/door_v015_profiles/arcanista_hero.jpg").convert("RGB")
+          assert original.size==(370,518),original.size
+          views=("front_orthographic","three_quarter","rear_orthographic","side_orthographic")
+          names=("frente","tres_cuartos","dorso","perfil")
+          sheet=Image.new("RGB",(900*2,1160*2),(28,29,32))
+          for i,(name,label) in enumerate(zip(views,names)):
+              f=e/(name+".png")
+              assert f.stat().st_size>10000,f
+              with Image.open(f) as im:
+                  im=im.convert("RGBA")
+                  im.thumbnail((820,1040),Image.Resampling.LANCZOS)
+                  tile=Image.new("RGBA",(900,1160),(42,44,49,255))
+                  tile.alpha_composite(im,((900-im.width)//2,40+(1040-im.height)//2))
+                  rendered=tile.convert("RGB")
+              x=(i%2)*900;y=(i//2)*1160
+              sheet.paste(rendered,(x,y))
+              ImageDraw.Draw(sheet).text((x+18,y+1110),"ARCANISTA V017 - "+label,fill=(235,241,254))
+              if i==1:
+                  rendered.save(folder/"hero_blue_energy.jpg",quality=89,optimize=True)
+                  compare=Image.new("RGB",(900*2,1160),(30,31,34))
+                  old=original.copy()
+                  old.thumbnail((670,1030),Image.Resampling.LANCZOS)
+                  compare.paste(old,((900-old.width)//2,40))
+                  compare.paste(rendered,(900,0))
+                  ImageDraw.Draw(compare).text((350,1125),"V015 SIN ENERGIA",fill=(242,235,212))
+                  ImageDraw.Draw(compare).text((1240,1125),"V017 ENERGIA AZUL",fill=(225,241,255))
+                  compare.save(folder/"arcanist_before_after.jpg",quality=85,optimize=True)
+              if i==0:
+                  allfive=Image.open("previews/door_v016_profiles/five_workshops_front_v016.jpg").convert("RGB")
+                  assert allfive.size==(1850,518),allfive.size
+                  im=Image.open(f).convert("RGBA")
+                  im.thumbnail((344,460),Image.Resampling.LANCZOS)
+                  frame=Image.new("RGBA",(370,518),(43,46,50,255))
+                  frame.alpha_composite(im,((370-im.width)//2,12+(460-im.height)//2))
+                  allfive.paste(frame.convert("RGB"),(1480,0))
+                  ImageDraw.Draw(allfive).text((1501,478),"Arcanista V017",fill=(244,236,213))
+                  allfive.save(folder/"five_workshops_blue_arcanist.jpg",quality=89,optimize=True)
+          sheet.save(folder/"arcanist_four_views.jpg",quality=86,optimize=True)
+          print("ARCANE_BLUE_REAL_RENDER_JPGS",[(p.name,p.stat().st_size) for p in folder.glob("*.jpg")])
+          PY
+      - name: Publish arcane candidate separately from approved door masters
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v017_arcanista
+          if ! git diff --cached --quiet; then
+            git commit -m 'V017 Arcanist real blue-energy renders and five-door contact [skip ci]'
+            git fetch origin production/door-v017-arcanist-blue-energy
+            git rebase origin/production/door-v017-arcanist-blue-energy
+            git push origin HEAD:production/door-v017-arcanist-blue-energy
+          fi
