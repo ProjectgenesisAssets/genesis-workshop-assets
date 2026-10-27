@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v023")
+OUT=ROOT/("output_hero_"+KIND+"_v024")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -530,6 +530,9 @@ def mount_forge():
         for i,width in enumerate(widths):
             x=left+width/2
             left+=width
+            # Functional side-draft smoke entrance, low beside the firebed:
+            # leave a central 0.8m opening in the lower rear masonry courses.
+            if course<5 and abs(x)<.41: continue
             block_mat=stone if course==5 and i==2 else hearth
             handlaid("Rear irregular refractory bond %d %d"%(course,i),
                      (x,.54,z),(width-.014,.18,.134),block_mat,.005,
@@ -537,8 +540,12 @@ def mount_forge():
     # V008 had bright background slits between the rear brick courses.
     # V014: thin mortar core lies INSIDE the masonry depth, not in front of rear bricks.
     # The V009 exterior plate hid the brickwork; a concealed core seals only actual joints.
-    box("Soot dark refractory mortar behind rear brick joints",
-        (0,.540,1.228),(1.71,.055,1.06),hearth,.003)
+    # Two structural mortar cores, NOT a solid panel covering the smoke mouth.
+    for side in (-1,1):
+        box("Side mortar core around open smoke inlet "+str(side),
+            (side*.630,.540,1.228),(.44,.055,1.06),hearth,.003)
+    box("Masonry lintel core over open smoke inlet",
+        (0,.540,1.650),(1.71,.055,.16),hearth,.003)
     # Masonry pier truly built from bricks; monolithic V005 side slabs looked wooden.
     for side in (-.77,.77):
         for course in range(5):
@@ -582,6 +589,15 @@ def mount_forge():
                      (.160,.280,.155),hearth,.006)
         box("Visible forge-throat iron edge strap "+str(side),
             (side*.445,.415,2.23),(.033,.090,.52),steel,.006)
+    # A real low side-draft channel begins immediately behind the firebed.
+    # The smoke mouth is now open at z~0.8, not a window 1m above the coals.
+    for course in range(7):
+        z=.88+course*.135
+        for side in (-1,1):
+            handlaid("Lower smoke inlet return cheek %s %d"%(side,course),
+                     (side*.510,.785,z),(.155,.220,.129),hearth,.005)
+        handlaid("Sooted inner back of low smoke duct "+str(course),
+                 (0,.915,z),(1.12,.135,.129),hearth,.005)
     # Rear smoke backplate remains sooted and vertically connected to the flue.
     for course in range(10):
         z=1.795+course*.140
@@ -651,7 +667,7 @@ def mount_forge():
     glow_obj.location=(0,-.05,.88)
     glow_data.energy=205;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52
     # Distinct bellows air-entry mouth built into back wall.
-    cyl("Air intake tuyere",(0,.625,.79),.067,.21,steel,32,
+    cyl("Air intake tuyere",(.49,.625,.79),.067,.21,steel,32,
         rot=(math.pi/2,0,0),edge=.006)
 
 if KIND=="anvil":mount_anvil()
@@ -702,7 +718,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V023","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V024","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -719,11 +735,11 @@ report={"asset":KIND,"version":"V023","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v023.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v024.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v023.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v024.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
