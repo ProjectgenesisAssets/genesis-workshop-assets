@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/art-review-handoff.yml'
       - 'scripts/prepare_art_review.py'
+  schedule:
+    - cron: '7-57/10 2-11 27 10 *' # every ~10 minutes, 26/27 Oct ART only
   workflow_run:
     workflows:
       - 'Genesis isolated asset correction build - real Blender 4.5.13'
@@ -24,16 +26,27 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
+      - name: Enforce 09:00 Argentina deadline
+        id: window
+        shell: bash
+        run: |
+          now="$(date -u +%s)"
+          cutoff="$(date -u -d '2026-10-27 12:00:00' +%s)"
+          if (( now < cutoff )); then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
       - uses: actions/checkout@v4
+        if: steps.window.outputs.run == 'true'
         with:
           ref: main
           fetch-depth: 1
       - uses: actions/setup-python@v5
+        if: steps.window.outputs.run == 'true'
         with:
           python-version: '3.11'
       - name: Install contact-sheet dependency
+        if: steps.window.outputs.run == 'true'
         run: python3 -m pip install --quiet Pillow
       - name: Inspect actual completed runs and assemble 4x4 review evidence
+        if: steps.window.outputs.run == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -42,6 +55,7 @@ jobs:
           python3 -m py_compile scripts/prepare_art_review.py
           python3 scripts/prepare_art_review.py
       - name: Upload full artistic-review handoff
+        if: steps.window.outputs.run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: genesis-review-handoff-${{ github.run_id }}
@@ -50,10 +64,26 @@ jobs:
             reports/auto_review/latest_contact_sheet.jpg
           retention-days: 7
       - name: Publish compact review packet for next autonomous AI round
+        if: steps.window.outputs.run == 'true'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Avoid a new commit every ten minutes when no candidate changed.
+          if git show HEAD:reports/auto_review/latest.json > /tmp/previous_review.json 2>/dev/null; then
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path("reports/auto_review/latest.json")
+          old=json.loads(Path("/tmp/previous_review.json").read_text())
+          new=json.loads(path.read_text())
+          old_time=old.pop("generated_at", None)
+          new.pop("generated_at", None)
+          if old == new:
+              new["generated_at"] = old_time
+              path.write_text(json.dumps(new, indent=2, ensure_ascii=False)+"\\n", encoding="utf-8")
+          PY
+          fi
           git add reports/auto_review/latest.json reports/auto_review/latest_contact_sheet.jpg
           if ! git diff --cached --quiet; then
             git commit -m 'Publish current 4-asset render review handoff [skip ci]'
