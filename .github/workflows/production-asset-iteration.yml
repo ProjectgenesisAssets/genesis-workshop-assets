@@ -147,5 +147,3 @@ jobs:
           # workflow_dispatch is explicitly allowed and ensures the new candidate
           # appears in latest.json/contact_sheet, not a stale inherited version.
           gh workflow run art-review-handoff.yml --repo "${{ github.repository }}" --ref main
-
-# Reviewed generator change trigger: umber-oak-natural-pores-v019
