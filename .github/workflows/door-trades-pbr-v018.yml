@@ -1,0 +1,150 @@
+name: Genesis doors V018 - true PBR materials not flat colors
+on:
+  push:
+    branches: [production/door-v018-physical-pbr-no-neon]
+    paths:
+      - scripts/puertas_talleres_pbr_v018.py
+      - .github/workflows/door-trades-pbr-v018.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: door-v018-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        trade: [herrero, carpintero, curtidor, joyero, arcanista]
+    env:
+      PG_DOOR_TRADE: ${{ matrix.trade }}
+      PG_PBR_RES: '2048'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source and silhouette reference
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/puertas_talleres_pbr_v018.py
+          test -s previews/door_v014/front.png
+          if grep -Fq 'ArcanePulse_' scripts/puertas_talleres_pbr_v018.py; then exit 1; fi
+      - name: Install Blender 4.5.13 official Linux
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/door-v018-blender.tar.xz
+          mkdir -p /tmp/door-v018-blender
+          tar -xJf /tmp/door-v018-blender.tar.xz -C /tmp/door-v018-blender --strip-components=1
+          /tmp/door-v018-blender/blender --version | grep 'Blender 4.5.13'
+      - name: Produce four real Cycles renders, source BLEND, GLB and 2K PBR
+        run: |
+          set -euo pipefail
+          /tmp/door-v018-blender/blender -b -t 3 --python-exit-code 1 --python scripts/puertas_talleres_pbr_v018.py
+      - name: Audit real material variation, geometry and textures
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          import os,struct,json
+          t=os.environ["PG_DOOR_TRADE"]
+          p=Path("output_workshop_door_v018_"+t)
+          for kind in ("albedo","roughness","normal","metallic"):
+              maps=list(p.glob("*_"+kind+".png"))
+              assert len(maps)==4,(t,kind,len(maps))
+              for path in maps:
+                  with Image.open(path) as im:assert im.size==(2048,2048),path
+          assert len(list(p.glob("*_emission.png")))==(3 if t=="arcanista" else 0)
+          qa=list(p.glob("*_PBR_QA.json"))
+          assert len(qa)==4
+          for q in qa:
+              stats=json.loads(q.read_text())
+              assert stats["albedo_std"]>.009 and stats["rough_std"]>.025 and stats["normal_x_std"]>.006,stats
+              print("MATERIAL_QA",t,q.name,stats,flush=True)
+          m=json.loads((p/"V018_MATERIAL_TEST.json").read_text())
+          assert m["version"]=="V018" and m["profession"]==t and m["material_only"]
+          g=p/("Workshop_Door_V018_"+t+".glb")
+          with g.open("rb") as f: magic,ver,total=struct.unpack("<III",f.read(12))
+          assert (magic,ver,total)==(0x46546c67,2,g.stat().st_size)
+          for a,b in {"front":"front_orthographic","three_quarter":"three_quarter","rear":"rear_orthographic","side":"side_orthographic"}.items():
+              with Image.open("previews/door_v014/"+a+".png") as reference,Image.open(p/(b+".png")) as candidate:
+                  aa=reference.getchannel("A").point(lambda v:255 if v>127 else 0)
+                  bb=candidate.getchannel("A").point(lambda v:255 if v>127 else 0)
+                  score=sum(ImageChops.darker(aa,bb).histogram()[128:])/max(1,sum(ImageChops.lighter(aa,bb).histogram()[128:]))
+                  print("SILHOUETTE",t,a,round(score,6),flush=True)
+                  assert score>=(.990 if a=="side" else .994)
+          print("V018_VALIDATED",t,flush=True)
+          PY
+      - name: Upload real Blender and texture outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: door-v018-${{ matrix.trade }}
+          path: |
+            output_workshop_door_v018_${{ matrix.trade }}/*.png
+            output_workshop_door_v018_${{ matrix.trade }}/*.json
+            output_workshop_door_v018_${{ matrix.trade }}/*.blend
+            output_workshop_door_v018_${{ matrix.trade }}/*.glb
+          retention-days: 14
+          if-no-files-found: warn
+  gallery:
+    needs: render
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: door-v018-*
+          path: evidence
+      - name: Produce five-workshop side-by-side JPGs and material-detail crops
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          out=Path("previews/door_v018_pbr");out.mkdir(parents=True,exist_ok=True)
+          trades=("herrero","carpintero","curtidor","joyero","arcanista")
+          views=("front_orthographic","three_quarter","rear_orthographic","side_orthographic")
+          w,h=420,588
+          combined=Image.new("RGB",(5*w,4*h),(27,29,33))
+          for c,t in enumerate(trades):
+              for r,v in enumerate(views):
+                  f=Path("evidence")/("door-v018-"+t)/(v+".png")
+                  assert f.stat().st_size>10000,f
+                  with Image.open(f) as im:
+                      img=im.convert("RGBA")
+                      img.thumbnail((390,528),Image.Resampling.LANCZOS)
+                      bg=Image.new("RGBA",(w,h),(40,43,48,255))
+                      bg.alpha_composite(img,((w-img.width)//2,12+(528-img.height)//2))
+                      tile=bg.convert("RGB")
+                  ImageDraw.Draw(tile).text((15,555),t.upper()+" V018 "+v,fill=(244,232,207))
+                  combined.paste(tile,(c*w,r*h))
+                  if r==1:
+                      tile.save(out/(t+"_hero_v018.jpg"),quality=90,optimize=True)
+                      with Image.open(f) as source:
+                          detail=source.convert("RGB")
+                          crop=detail.crop((int(detail.width*.25),int(detail.height*.26),int(detail.width*.75),int(detail.height*.78)))
+                          crop.resize((800,900),Image.Resampling.LANCZOS).save(out/(t+"_pbr_detail_v018.jpg"),quality=91,optimize=True)
+          combined.crop((0,0,5*w,h)).save(out/"five_workshops_front_pbr_v018.jpg",quality=90,optimize=True)
+          combined.save(out/"five_workshops_four_views_pbr_v018.jpg",quality=85,optimize=True)
+          print("JPGS_READY",len(list(out.glob("*.jpg"))))
+          PY
+      - name: Publish candidate visual review separately from approved masters
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v018_pbr
+          if ! git diff --cached --quiet; then
+            git commit -m 'V018 PBR candidate five workshops real render review [skip ci]'
+            git fetch origin production/door-v018-physical-pbr-no-neon
+            git rebase origin/production/door-v018-physical-pbr-no-neon
+            git push origin HEAD:production/door-v018-physical-pbr-no-neon
+          fi
