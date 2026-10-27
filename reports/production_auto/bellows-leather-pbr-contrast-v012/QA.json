@@ -1,0 +1,46 @@
+{
+  "asset": "bellows",
+  "task_id": "leather-pbr-contrast-v012",
+  "source_sha": "34cbe6d7b7c807b8c73a0ea3051197a5ba2933a8",
+  "baseline": "previews/heroes_v011/bellows",
+  "candidate": "output_hero_bellows_v012",
+  "glb": "bellows_hero_v012.glb",
+  "blend": "bellows_hero_v012.blend",
+  "glb_stats": {
+    "triangles": 22958,
+    "meshes": 37,
+    "materials": 5,
+    "base_color_textured_materials": 4,
+    "embedded_images": 12
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.00573,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.00509,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.00708,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.00798,
+      "silhouette_iou": 1.0
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Real Blender renders, objective technical checks only; final artistic approval is human."
+}
