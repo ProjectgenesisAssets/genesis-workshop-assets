@@ -52,10 +52,10 @@ PROFILES={
         "inset":((.177,.119,.072),.74,.60,"bronze"),
     },
     "arcanista":{
-        "leaf":((.066,.105,.138),.12,.49,"arcane_lithic"),
-        "edge":((.095,.152,.177),.18,.43,"arcane_lithic"),
-        "hardware":((.163,.215,.225),.30,.38,"arcane_lithic"),
-        "inset":((.041,.072,.099),.08,.55,"arcane_lithic"),
+        "leaf":((.024,.043,.069),.0,.70,"arcane_lithic"),
+        "edge":((.042,.071,.088),.0,.62,"arcane_lithic"),
+        "hardware":((.081,.099,.110),.06,.54,"arcane_lithic"),
+        "inset":((.018,.030,.054),.0,.74,"arcane_lithic"),
     },
 }
 def material(name, base, metallic, roughness, seed, surface):
@@ -118,24 +118,24 @@ def material(name, base, metallic, roughness, seed, surface):
         strata=.55*macro+.30*broad+.15*fine
         cleavage=np.sin((x*8.3+y*3.7+strata*.85)*2*np.pi)
         cleavage2=np.sin((x*17.1-y*9.4+strata*1.3)*2*np.pi)
-        sheets=sat(.50+.24*cleavage+.13*cleavage2+.30*strata)
+        sheets=sat(.50+.34*cleavage+.20*cleavage2+.42*strata)
         pores=sat(.48+.29*pore+.18*fine)
         inclusion=sat((.58*macro+.34*broad+.15*fine+.08))
-        veinfield=.55*macro+.34*broad+.11*fine
-        core=np.exp(-((veinfield-.14)/.045)**2)
-        branch=np.exp(-((veinfield+.12)/.035)**2)*.50
-        halo=np.exp(-((veinfield-.14)/.19)**2)*.35
-        glow=sat((core+branch+halo)*sat(.48+.50*inclusion))
-        modulation=np.clip(.66+.29*sheets+.22*strata+.09*pores,.32,1.25)
-        rough=np.clip(roughness+.13*pores+.11*fine-.12*inclusion-.14*glow,.23,.83)
+        veinfield=np.sin(2*np.pi*(3.2*x+1.25*y+.44*macro))*np.cos(2*np.pi*(2.3*y-.82*x+.40*broad))
+        core=np.exp(-((np.abs(veinfield)-.16)/.047)**2)
+        branch=np.exp(-((np.abs(veinfield)-.39)/.055)**2)*.38
+        halo=np.exp(-((np.abs(veinfield)-.16)/.19)**2)*.29
+        glow=sat((core+branch+halo)*sat(.67+.50*inclusion))
+        modulation=np.clip(.53+.44*sheets+.30*strata+.16*pores,.27,1.40)
+        rough=np.clip(roughness+.11*pores+.10*fine-.11*inclusion-.17*glow,.38,.96)
         metallicmap=np.full((n,n),metallic,dtype=np.float32)
-        bump=.47+.15*sheets+.08*cleavage2+.07*pores+.11*fine
+        bump=.47+.20*sheets+.10*cleavage2+.08*pores+.13*fine-.13*core
         colored=[.72,1.06,1.15]
         # Material body is dark blue-violet mineral, cyan from internal fractures.
         color=np.stack([sat(base[k]*modulation*colored[k]) for k in range(3)],axis=-1)
-        color += np.stack((.012*inclusion,.035*inclusion,.065*inclusion),axis=-1)
+        color += np.stack((.008*inclusion+.025*glow,.024*inclusion+.21*glow,.049*inclusion+.38*glow),axis=-1)
         color=np.clip(color,0,1)
-        emission=np.stack((.055*glow,.62*glow,.95*glow),axis=-1)
+        emission=np.stack((.035*glow,.72*glow,1.0*glow),axis=-1)
         print("V024_LITHIC_GLOW",name,float(glow.mean()),float((glow>.4).mean()),flush=True)
     else:
         # Metallurgy: two oxide scales, micro-pitting, impact abrasion and patches
