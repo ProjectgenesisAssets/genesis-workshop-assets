@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T11:32:32.725361+00:00",
+  "generated_at": "2026-10-27T11:34:21.798527+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -19,17 +19,17 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-diagonal-handcut-hide-creases-v025",
-      "run_id": 40495599086,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40495599086",
-      "commit": "19cdcc5dc4f4a0afbfe5d2b5f7c43d3896c54d2f",
-      "completed_at": "2026-10-27T11:26:53Z",
-      "preview_directory": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025",
+      "branch": "production/auto-bellows-restore-aged-oak-warmth-v026",
+      "run_id": 40496363512,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40496363512",
+      "commit": "82b0adc90524ccf30b6be8cd2f8c2ad3785743aa",
+      "completed_at": "2026-10-27T11:34:14Z",
+      "preview_directory": "previews/production_auto/bellows_restore-aged-oak-warmth-v026",
       "view_paths": {
-        "front": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/front.png",
-        "three_quarter": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/three_quarter.png",
-        "rear": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/rear.png",
-        "detail": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/detail.png"
+        "front": "previews/production_auto/bellows_restore-aged-oak-warmth-v026/front.png",
+        "three_quarter": "previews/production_auto/bellows_restore-aged-oak-warmth-v026/three_quarter.png",
+        "rear": "previews/production_auto/bellows_restore-aged-oak-warmth-v026/rear.png",
+        "detail": "previews/production_auto/bellows_restore-aged-oak-warmth-v026/detail.png"
       },
       "status": "review_ready"
     },
