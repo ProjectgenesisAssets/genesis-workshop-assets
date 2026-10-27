@@ -12,7 +12,20 @@ jobs:
     timeout-minutes: 110
     steps:
       - uses: actions/checkout@v4
+      - name: Enforce hard 09:00 Argentina production deadline
+        id: deadline
+        shell: bash
+        run: |
+          now="$(date -u +%s)"
+          cutoff="$(date -u -d '2026-10-27 12:00:00' +%s)"
+          if (( now < cutoff )); then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "No asset production after 09:00 ART." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Validate queued correction and source generator
+        if: steps.deadline.outputs.run == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -37,6 +50,7 @@ jobs:
           PY
           python3 -m py_compile scripts/production_asset_qa.py
       - name: Install official Blender 4.5.13 LTS on GitHub only
+        if: steps.deadline.outputs.run == 'true'
         run: |
           set -euo pipefail
           curl --fail --location --retry 3 --connect-timeout 20 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
@@ -44,15 +58,19 @@ jobs:
           tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
           /tmp/blender/blender --version | grep -F 'Blender 4.5.13'
       - name: Rebuild modified generator and four real Cycles views
+        if: steps.deadline.outputs.run == 'true'
         env:
           OPENBLAS_NUM_THREADS: '2'
           OMP_NUM_THREADS: '2'
         run: |
           set -euo pipefail
+          cutoff="$(date -u -d '2026-10-27 12:00:00' +%s)"
+          remaining=$((cutoff-$(date -u +%s)))
+          if (( remaining < 60 )); then echo "Deadline reached; skip Blender." >&2; exit 1; fi
           if [[ "$ASSET" == "bellows" || "$ASSET" == "forge" ]]; then
-            /tmp/blender/blender -b -t 3 --python-exit-code 1 --python "$GENERATOR" -- "$ASSET"
+            timeout --signal=TERM --kill-after=5s "${remaining}s" /tmp/blender/blender -b -t 3 --python-exit-code 1 --python "$GENERATOR" -- "$ASSET"
           else
-            /tmp/blender/blender -b -t 3 --python-exit-code 1 --python "$GENERATOR"
+            timeout --signal=TERM --kill-after=5s "${remaining}s" /tmp/blender/blender -b -t 3 --python-exit-code 1 --python "$GENERATOR"
           fi
           python3 - <<'PY'
           import os
@@ -62,12 +80,13 @@ jobs:
           with open(os.environ["GITHUB_ENV"],"a") as f:f.write(f"ASSET_OUTPUT={dirs[0]}\n")
           PY
       - name: Validate actual GLB and compare four renders with baseline
+        if: steps.deadline.outputs.run == 'true'
         run: |
           set -euo pipefail
           python3 -m pip install --quiet Pillow
           python3 scripts/production_asset_qa.py --asset "$ASSET" --task-id "$TASK_ID" --output "$ASSET_OUTPUT" --source '${{ github.sha }}'
       - name: Upload candidate and evidence even when objective QA fails
-        if: always()
+        if: always() && steps.deadline.outputs.run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: genesis-auto-${{ github.ref_name }}-${{ github.run_id }}
@@ -79,7 +98,7 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
       - name: Preserve objective QA or rejection in isolated branch, never approve automatically
-        if: always()
+        if: always() && steps.deadline.outputs.run == 'true'
         run: |
           set -euo pipefail
           if [[ ! -d reports/production_auto ]]; then
