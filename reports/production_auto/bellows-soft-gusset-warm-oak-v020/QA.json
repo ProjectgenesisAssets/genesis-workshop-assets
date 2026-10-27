@@ -1,0 +1,69 @@
+{
+  "asset": "bellows",
+  "task_id": "soft-gusset-warm-oak-v020",
+  "source_sha": "bb9f67d825085d21d5d50b4824e3c48c24c1e9f9",
+  "baseline": "previews/production_auto/bellows_umber-oak-natural-pores-v019",
+  "candidate": "output_hero_bellows_v020",
+  "glb": "bellows_hero_v020.glb",
+  "blend": "bellows_hero_v020.blend",
+  "glb_stats": {
+    "triangles": 20630,
+    "meshes": 37,
+    "materials": 5,
+    "base_color_textured_materials": 4,
+    "embedded_images": 12,
+    "texture_bindings": {
+      "bellows_aged_oak_long_grain": {
+        "base_color_image": "bellows_aged_oak_baked_albedo_V020",
+        "emissive_texture": false
+      },
+      "bellows_creased_dark_oxblood_leather": {
+        "base_color_image": "bellows_oxblood_leather_baked_albedo_V020",
+        "emissive_texture": false
+      },
+      "bellows_patina_riveted_brass": {
+        "base_color_image": "bellows_patina_riveted_brass_albedo",
+        "emissive_texture": false
+      },
+      "bellows_oxidized_hand_forged_iron": {
+        "base_color_image": "bellows_oxidized_hand_forged_iron_albedo",
+        "emissive_texture": false
+      },
+      "Unbleached linen saddle stitch thread": {
+        "base_color_image": null,
+        "emissive_texture": false
+      }
+    }
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.0047,
+      "silhouette_iou": null
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.00381,
+      "silhouette_iou": null
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.00476,
+      "silhouette_iou": null
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.006,
+      "silhouette_iou": null
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": false,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
