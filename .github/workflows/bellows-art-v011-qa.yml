@@ -1,0 +1,150 @@
+name: Genesis Bellows V011 leather folds and aged oak art QA
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production/bellows-v011-baked-oak
+    paths:
+      - 'scripts/genesis_bellows_art_v011.py'
+      - 'scripts/compare_art_candidate.py'
+      - '.github/workflows/bellows-art-v011-qa.yml'
+permissions:
+  contents: read
+concurrency:
+  group: genesis-bellows-v011-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  bellows_v011:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm immutable V009 reference and syntax of V011
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/genesis_bellows_art_v011.py scripts/compare_art_candidate.py
+          for shot in front three_quarter rear detail; do
+            test -s "previews/heroes_v009/bellows/$shot.png"
+          done
+      - name: Download Blender 4.5.13 LTS only on GitHub runner
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/bellows-blender.tar.xz
+          mkdir -p /tmp/bellows-blender
+          tar -xJf /tmp/bellows-blender.tar.xz -C /tmp/bellows-blender --strip-components=1
+          /tmp/bellows-blender/blender --version | grep -F 'Blender 4.5.13'
+          /tmp/bellows-blender/blender -b --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Generate volumetric Bellows V011 GLB and four Cycles images
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/bellows-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/genesis_bellows_art_v011.py -- bellows
+      - name: Validate model, audit, four renders, and changed source
+        run: |
+          set -euo pipefail
+          out=output_hero_bellows_v011
+          test -s "$out/bellows_hero_v011.glb"
+          test -s "$out/bellows_hero_v011.blend"
+          test -s "$out/AUDIT.json"
+          for shot in front three_quarter rear detail; do test -s "$out/$shot.png"; done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          p=Path('output_hero_bellows_v011/bellows_hero_v011.glb')
+          with p.open('rb') as f:
+              magic,version,length=struct.unpack('<III',f.read(12))
+          assert magic==0x46546c67 and version==2 and length==p.stat().st_size
+          a=json.loads(Path('output_hero_bellows_v011/AUDIT.json').read_text())
+          assert a['asset']=='bellows' and a['version']=='V011' and len(a['targeted_repairs'])==4
+          assert len(list(Path('output_hero_bellows_v011/textures').glob('*.png')))>=12
+          PY
+      - name: Verify baked photographic oak is really bound in exported GLB
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          out=Path("output_hero_bellows_v011")
+          baked=out/"textures"/"bellows_aged_oak_baked_albedo_V011.png"
+          assert baked.stat().st_size>25000,"Missing baked stained-oak PNG"
+          with baked.open("rb") as f:
+              header=f.read(24)
+          assert header[:8]==b"\\x89PNG\\r\\n\\x1a\\n"
+          assert struct.unpack(">II",header[16:24])==(1024,1024)
+          with (out/"bellows_hero_v011.glb").open("rb") as f:
+              magic,version,total=struct.unpack("<III",f.read(12))
+              length,typ=struct.unpack("<I4s",f.read(8))
+              assert magic==0x46546c67 and version==2 and typ==b"JSON"
+              doc=json.loads(f.read(length))
+          matches=[m for m in doc.get("materials",[]) if "bellows_aged_oak" in m.get("name","")]
+          assert matches,"Oak material missing from GLB"
+          used=[]
+          for mat in matches:
+              pbr=mat.get("pbrMetallicRoughness",{})
+              tex=pbr.get("baseColorTexture")
+              assert tex is not None,("Missing oak baseColorTexture",mat.get("name"))
+              img_index=doc["textures"][tex["index"]]["source"]
+              used.append(doc["images"][img_index])
+          assert all(im.get("mimeType")=="image/png" for im in used),used
+          assert any("baked" in im.get("name","").lower() for im in used),used
+          print("GLB_OAK_BAKED_PNG_BOUND",used)
+          PY
+      - name: Measure changed visuals against real V009 and record review receipt
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 scripts/compare_art_candidate.py \
+            --asset bellows --baseline previews/heroes_v009/bellows \
+            --candidate output_hero_bellows_v011 \
+            --baseline-version V009 --version V011 \
+            --source-sha '${{ github.sha }}' --out reports/bellows_v011
+          cat reports/bellows_v011/comparison.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve compact evidence, including actual GLB candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bellows-v011-candidate-${{ github.run_id }}
+          path: |
+            output_hero_bellows_v011/*.png
+            output_hero_bellows_v011/*.glb
+            output_hero_bellows_v011/AUDIT.json
+            reports/bellows_v011/*
+          retention-days: 14
+          if-no-files-found: warn
+  publish_review:
+    needs: bellows_v011
+    if: ${{ needs.bellows_v011.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bellows-v011-candidate-*
+          path: /tmp/bellows-v011-art
+          merge-multiple: true
+      - name: Publish unapproved V011 PNGs and comparison ONLY to candidate branch
+        run: |
+          set -euo pipefail
+          mkdir -p previews/heroes_v011/bellows
+          mkdir -p reports/bellows_v011
+          for shot in front three_quarter rear detail; do
+            cp "/tmp/bellows-v011-art/output_hero_bellows_v011/$shot.png" \
+              "previews/heroes_v011/bellows/$shot.png"
+            cp "/tmp/bellows-v011-art/reports/bellows_v011/compare_$shot.png" \
+              "reports/bellows_v011/compare_$shot.png"
+          done
+          cp /tmp/bellows-v011-art/reports/bellows_v011/comparison.json reports/bellows_v011/
+          cp /tmp/bellows-v011-art/reports/bellows_v011/comparison.md reports/bellows_v011/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/heroes_v011/bellows reports/bellows_v011
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish bellows V011 unapproved candidate and actual render comparison [skip ci]'
+            git fetch origin '${{ github.ref_name }}'
+            git rebase 'origin/${{ github.ref_name }}'
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
