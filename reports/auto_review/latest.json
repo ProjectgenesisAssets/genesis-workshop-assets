@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:23:41.689885+00:00",
+  "generated_at": "2026-10-27T11:20:50.380774+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-sooted-recessed-smoke-duct-v025",
-      "run_id": 40487578748,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40487578748",
-      "commit": "e6f9ace37450707c81784559568d2f3115e29fcb",
-      "completed_at": "2026-10-27T10:23:34Z",
-      "preview_directory": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025",
+      "branch": "production/auto-forge-short-bonded-smoke-flue-v026",
+      "run_id": 40494880282,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40494880282",
+      "commit": "8060dffce2dd31138a01088269e9730ab4dd5090",
+      "completed_at": "2026-10-27T11:20:33Z",
+      "preview_directory": "previews/production_auto/forge_short-bonded-smoke-flue-v026",
       "view_paths": {
-        "front": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/front.png",
-        "three_quarter": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/three_quarter.png",
-        "rear": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/rear.png",
-        "detail": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/detail.png"
+        "front": "previews/production_auto/forge_short-bonded-smoke-flue-v026/front.png",
+        "three_quarter": "previews/production_auto/forge_short-bonded-smoke-flue-v026/three_quarter.png",
+        "rear": "previews/production_auto/forge_short-bonded-smoke-flue-v026/rear.png",
+        "detail": "previews/production_auto/forge_short-bonded-smoke-flue-v026/detail.png"
       },
       "status": "review_ready"
     },
@@ -34,17 +34,17 @@
       "status": "review_ready"
     },
     "door": {
-      "branch": "production/door-v013-dark-forged-iron-local-rust",
-      "run_id": 40486299735,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40486299735",
-      "commit": "dc38474d65574a72e7c94127f9e45c45b6cc3c30",
-      "completed_at": "2026-10-27T10:17:40Z",
-      "preview_directory": "previews/door_v013",
+      "branch": "production/door-v014-patina-contrast-material",
+      "run_id": 40492855626,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40492855626",
+      "commit": "1038d4ef7186991edeb7ad8600c7cbc7b6c2ab53",
+      "completed_at": "2026-10-27T11:00:47Z",
+      "preview_directory": "previews/door_v014",
       "view_paths": {
-        "front": "previews/door_v013/front.png",
-        "three_quarter": "previews/door_v013/three_quarter.png",
-        "rear": "previews/door_v013/rear.png",
-        "detail": "previews/door_v013/side.png"
+        "front": "previews/door_v014/front.png",
+        "three_quarter": "previews/door_v014/three_quarter.png",
+        "rear": "previews/door_v014/rear.png",
+        "detail": "previews/door_v014/side.png"
       },
       "status": "review_ready"
     },
