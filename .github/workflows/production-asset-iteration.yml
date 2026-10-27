@@ -53,7 +53,7 @@ jobs:
             f.write(f"ASSET={asset}\nTASK_ID={task}\nGENERATOR={script}\n")
           print("GENESIS_REAL_CORRECTION",asset,task,script,d["reason"])
           PY
-          python3 -m py_compile scripts/production_asset_qa.py
+          python3 -m py_compile "$GENERATOR" scripts/production_asset_qa.py
       - name: Install official Blender 4.5.13 LTS on GitHub only
         if: steps.deadline.outputs.run == 'true'
         run: |
@@ -98,6 +98,8 @@ jobs:
           path: |
             output*/*.png
             output*/*.glb
+            output*/*.blend
+            output*/textures/*.png
             output*/*AUDIT*.json
             reports/production_auto/**
           retention-days: 14
