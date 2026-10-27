@@ -73,3 +73,9 @@
 - **Yunque V021→V022:** comparación real de `previews/yunque_v021/hero.png` y `previews/yunque_v022/hero.png`: V022 presenta cuerno más delgado y puntiagudo; materiales y base similares. No hay defecto adicional suficiente para iterar sin propósito. **Puerta V011** sin cambios ni aprobación.
 - **Espadas:** auditoría V023 y pomo separado ~19,06 mm documentados; sin GLB corregido/validado, sin integración ni modificación del repositorio del juego.
 - **Regla de la ronda:** no hay aprobaciones >=8/10, no se promueven versiones por ejecución exitosa. Conservar V012 fuelle y todas las versiones anteriores como checkpoints.
+
+
+### Verificación posterior — fuelle V019 (05:15 ART)
+- [Run 40471482266](https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40471482266) **finalizado correctamente**. QA: 19.012 triángulos, 37 mallas, cinco materiales, 12 imágenes GLB, cuatro renders y GLB/BLEND en artefacto; comparación directa V018→V019 con diferencias RGB 0,00504–0,00923.
+- **Inspección de la comparación real:** desaparecen las rayas sintéticas rosas exageradas de V018 y reaparecen poros fotográficos; el tablero queda, sin embargo, beige/grisáceo y poco parecido a roble envejecido. El cuero sigue leyendo como bandas paralelas rígidas. **Mejora parcial del albedo respecto de V018, no mejora global demostrada ni aprobación. V012 continúa siendo referencia provisional.**
+- [Handoff 40472113977](https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40472113977) actualizó `latest.json` a las 08:14:28 UTC con 16 imágenes, incluyendo fuelle V019 y fragua V019 (V020 todavía en render). `art_review_completed=false` permanece correcto.
