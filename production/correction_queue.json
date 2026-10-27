@@ -3,50 +3,79 @@
   "description": "Only reviewed, exact generator corrections go here. The 10-minute executor never invents artistic scores or relaunches identical models.",
   "tasks": [
     {
-      "id": "leather-pbr-contrast-v012",
-      "asset": "bellows",
-      "base_branch": "production/bellows-v012-leather-contrast",
+      "id": "ashlar-hammered-hood-v015",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-smithy-ironhood-v014",
       "workflow": "production-asset-iteration.yml",
-      "reason": "Review of four actual V011 renders: leather gusset is too similar to oak boards. Bake scanned oxblood-darkened leather into its own PNG and bind as GLB baseColorTexture; preserve V011 as baseline.",
+      "reason": "Four-view V014 comparison shows repetitive rectangular ashlar, flat metal canopy and a model still reading as miniature stove rather than weathered working smithy. Increase individually hewn brick variation and randomize real quarry PBR UVs; subtly curve forged hood panels while preserving open firebox, no artistic approval.",
       "edits": [
         {
-          "path": "scripts/genesis_bellows_art_v012.py",
-          "find": "        if \"oak\" in base_material.name:\n            # V012: physically bake the aged-oak stain into an actual 1K PNG.\n            # glTF cannot reliably serialize Blender's MixRGB node graph.\n            # Keep the scanned photographic grain and apply linear RGB stain.\n            w,h=img.size\n            src=np.empty(w*h*4,dtype=np.float32)\n            img.pixels.foreach_get(src)\n            rgba=src.reshape((-1,4))\n            rgba[:,:3]*=np.array((.56,.43,.32),dtype=np.float32)\n            rgba[:,:3]=np.clip(rgba[:,:3],0,1)\n            baked=bpy.data.images.new(\"bellows_aged_oak_baked_albedo_V012\",width=w,height=h,alpha=True)\n            baked.pixels.foreach_set(src)\n            baked.filepath_raw=str(TEX/\"bellows_aged_oak_baked_albedo_V012.png\")\n            baked.file_format=\"PNG\"\n            baked.save()\n            baked.pack()\n            slots[0].image=baked\n            bs=base_material.node_tree.nodes.get(\"Principled BSDF\")\n            links=base_material.node_tree.links\n            links.new(slots[0].outputs[\"Color\"],bs.inputs[\"Base Color\"])\n            MAPS.append(str((TEX/\"bellows_aged_oak_baked_albedo_V012.png\").relative_to(OUT)))\n",
-          "replace": "        if \"oak\" in base_material.name or \"leather\" in base_material.name:\n            # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.\n            # The original V011 leather JPG remained light tan and resembled timber.\n            is_oak=\"oak\" in base_material.name\n            stain=(.56,.43,.32) if is_oak else (.48,.22,.20)\n            baked_name=\"bellows_aged_oak_baked_albedo_V012\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V012\"\n            w,h=img.size\n            src=np.empty(w*h*4,dtype=np.float32)\n            img.pixels.foreach_get(src)\n            rgba=src.reshape((-1,4))\n            rgba[:,:3]*=np.array(stain,dtype=np.float32)\n            rgba[:,:3]=np.clip(rgba[:,:3],0,1)\n            baked=bpy.data.images.new(baked_name,width=w,height=h,alpha=True)\n            baked.pixels.foreach_set(src)\n            baked.filepath_raw=str(TEX/(baked_name+\".png\"))\n            baked.file_format=\"PNG\"\n            baked.save()\n            baked.pack()\n            slots[0].image=baked\n            bs=base_material.node_tree.nodes.get(\"Principled BSDF\")\n            links=base_material.node_tree.links\n            links.new(slots[0].outputs[\"Color\"],bs.inputs[\"Base Color\"])\n            MAPS.append(str((TEX/(baked_name+\".png\")).relative_to(OUT)))\n"
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v014\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v015\")"
         },
         {
-          "path": "scripts/genesis_bellows_art_v012.py",
-          "find": "\"bake aged-oak stain into packed photographic albedo PNG for glTF compatibility\"",
-          "replace": "\"bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs\""
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "def handlaid(name,center,dims,mat,edge=.006,rz=0):\n    \"\"\"Physical masonry variation in dimensions and vertices, not a color-only randomizer.\"\"\"\n    rng=random.Random(8109+sum((i+1)*ord(ch) for i,ch in enumerate(name)))\n    size=tuple(max(.035,d*(1+rng.uniform(-.045,.045))) for d in dims)\n    offset=(rng.uniform(-.004,.004),rng.uniform(-.003,.003),rng.uniform(-.003,.003))\n    pos=tuple(center[i]+offset[i] for i in range(3))\n    obj=box(name,pos,size,mat,edge=edge*rng.uniform(.60,1.18),\n            rz=rz+rng.uniform(-.012,.012))\n    for v in obj.data.vertices:\n        v.co.x+=rng.uniform(-.006,.006)\n        v.co.y+=rng.uniform(-.005,.005)\n        v.co.z+=rng.uniform(-.003,.003)\n    return obj\n\n",
+          "replace": "def handlaid(name,center,dims,mat,edge=.006,rz=0):\n    \"\"\"Individually hewn ashlar: unequal stones, broken arrises, unique photo UV sampling.\"\"\"\n    rng=random.Random(8109+sum((i+1)*ord(ch) for i,ch in enumerate(name)))\n    size=tuple(max(.035,d*(1+rng.uniform(-.105,.105))) for d in dims)\n    offset=(rng.uniform(-.009,.009),rng.uniform(-.008,.008),rng.uniform(-.006,.006))\n    pos=tuple(center[i]+offset[i] for i in range(3))\n    obj=box(name,pos,size,mat,edge=edge*rng.uniform(.65,1.40),\n            rz=rz+rng.uniform(-.028,.028))\n    for v in obj.data.vertices:\n        v.co.x+=rng.uniform(-.013,.013)\n        v.co.y+=rng.uniform(-.010,.010)\n        v.co.z+=rng.uniform(-.008,.008)\n    # Stop identical quarry-wall photo patches repeating on every masonry course.\n    if obj.data.uv_layers.active:\n        du,dv=rng.random(),rng.random()\n        for uvloop in obj.data.uv_layers.active.data:\n            uvloop.uv.x=uvloop.uv.x*.92+du\n            uvloop.uv.y=uvloop.uv.y*.92+dv\n    return obj\n\n"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    def plate(name,poly,thickness=.016):\n        obj=made_mesh(name,poly,[(0,1,2,3)],steel,0)\n        solid=obj.modifiers.new(\"Actual forged iron gauge\",\"SOLIDIFY\")\n        solid.thickness=thickness\n        bevel(obj,.005,2)\n        return obj\n\n",
+          "replace": "    def plate(name,poly,thickness=.016):\n        # True gently hammered convex panels, not mathematically flat toy roof planes.\n        # A 6x6 surface patch preserves all four corner anchors and hood aperture.\n        p=[Vector(v) for v in poly]\n        normal=(p[1]-p[0]).cross(p[3]-p[0]).normalized()\n        count=6\n        verts=[]\n        for i in range(count+1):\n            u=i/count\n            for j in range(count+1):\n                v=j/count\n                point=(1-u)*(1-v)*p[0]+u*(1-v)*p[1]+u*v*p[2]+(1-u)*v*p[3]\n                dome=.018*math.sin(math.pi*u)*math.sin(math.pi*v)\n                ripple=.0025*math.sin(5*math.pi*u+2*math.pi*v)*math.sin(math.pi*u)*math.sin(math.pi*v)\n                verts.append(tuple(point+normal*(dome+ripple)))\n        faces=[]\n        for i in range(count):\n            for j in range(count):\n                a=i*(count+1)+j\n                faces.append((a,a+count+1,a+count+2,a+1))\n        obj=made_mesh(name,verts,faces,steel,0)\n        solid=obj.modifiers.new(\"Actual forged iron gauge\",\"SOLIDIFY\")\n        solid.thickness=thickness\n        bevel(obj,.005,2)\n        return obj\n\n"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V014\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V015\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v014.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v015.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v014.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v015.glb\"))"
         }
       ]
     },
     {
-      "id": "ember-fracture-readability-v011",
-      "asset": "forge",
-      "base_branch": "production/forge-v011-ember-readability",
-      "workflow": "production-asset-iteration.yml",
-      "reason": "Actual V010 four-view render shows mostly unlit charcoal. Increase embedded microfracture emission coverage and gentle local bounce; no floating luminous objects and GLB retains emissive PBR.",
+      "id": "warm-oak-organic-hide-v014",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-leather-pbr-contrast-v012",
+      "workflow": "Actual V012/V013 four-view comparison: oak board still resembles grey stone, and five leather compression rings are unnaturally uniform; V013 darkened all folds and worsened leather readability. Bake warm photographic oak albedo with preserved scanned luminance detail and phase-vary hide folds, keeping V012 as best provisional.",
       "edits": [
         {
-          "path": "scripts/genesis_hero_assets_v011.py",
-          "find": "thin=np.clip((.080-np.abs(f))/.065,0,1)*np.clip((.40+c)/.75,0,1)",
-          "replace": "thin=np.clip((.115-np.abs(f))/.075,0,1)*np.clip((.40+c)/.75,0,1)"
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v012\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v014\")"
         },
         {
-          "path": "scripts/genesis_hero_assets_v011.py",
-          "find": "bs.inputs[\"Emission Strength\"].default_value=4.4",
-          "replace": "bs.inputs[\"Emission Strength\"].default_value=5.4"
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            stain=(.56,.43,.32) if is_oak else (.48,.22,.20)\n            baked_name=\"bellows_aged_oak_baked_albedo_V012\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V012\"\n            w,h=img.size\n            src=np.empty(w*h*4,dtype=np.float32)\n            img.pixels.foreach_get(src)\n            rgba=src.reshape((-1,4))\n            rgba[:,:3]*=np.array(stain,dtype=np.float32)\n            rgba[:,:3]=np.clip(rgba[:,:3],0,1)",
+          "replace": "            baked_name=\"bellows_aged_oak_baked_albedo_V014\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V014\"\n            w,h=img.size\n            src=np.empty(w*h*4,dtype=np.float32)\n            img.pixels.foreach_get(src)\n            rgba=src.reshape((-1,4))\n            if is_oak:\n                # Preserve real scanned photographic grain, but avoid grey stone-looking timber.\n                luminance=(rgba[:,:3]*np.array((.2126,.7152,.0722),dtype=np.float32)).sum(axis=1)\n                grain=np.clip(.56+1.35*(luminance-.46),.24,.92)\n                rgba[:,:3]=grain[:,None]*np.array((.70,.385,.175),dtype=np.float32)\n            else:\n                rgba[:,:3]*=np.array((.48,.22,.20),dtype=np.float32)\n            rgba[:,:3]=np.clip(rgba[:,:3],0,1)"
         },
         {
-          "path": "scripts/genesis_hero_assets_v011.py",
-          "find": "glow_data.energy=110;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52",
-          "replace": "glow_data.energy=135;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52"
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            fold=math.sin(10*math.pi*t+.28*x)\n            factor=1+amplitude*(.080+.027*math.sin(1.7*x)+.100*fold)",
+          "replace": "            # Fold phase drifts across hand-cut hide; no five perfectly rigid rings.\n            phase=10*math.pi*t+.20*x+.25*math.sin(3.4*x+2.1*y)+.06*math.sin(8.3*y)\n            fold=math.sin(phase)\n            factor=1+amplitude*(.075+.023*math.sin(1.7*x)+(.075+.013*math.cos(3.1*x))*fold)"
         },
         {
-          "path": "scripts/genesis_hero_assets_v011.py",
-          "find": "\"increase emissive microfractures in charcoal, not detached glow balls\"",
-          "replace": "\"increase the coverage and power of embedded charcoal microfractures without detached glow balls\""
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V012\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V014\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v012.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v014.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v012.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v014.glb\"))"
         }
       ]
     }
