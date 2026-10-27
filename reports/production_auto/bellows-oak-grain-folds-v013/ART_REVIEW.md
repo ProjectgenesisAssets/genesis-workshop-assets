@@ -1,6 +1,6 @@
 # Bellows V013 — qualitative art review, 27 October 2026
 
-Source: actual Blender 4.5.13 GitHub Actions render from run 40440701246, four views, compared against V012 from run 40440084011. Both GLBs and their preview PNGs were inspected. No local Blender execution.
+Source: actual Blender 4.5.13 GitHub Actions render from run 40440701246, four views, compared against V012 from run 40440084011. V012 GLB JSON was directly inspected; V013 GLB was validated by GitHub QA, and both preview PNGs were visually compared. No local Blender execution.
 
 ## Technical
 - Build succeeded, GLB 22,576 triangles, 37 meshes, 5 materials, 12 embedded images; objective QA passed against V011 baseline.
