@@ -1,0 +1,19 @@
+{
+  "id": "opened-wedge-handbellows-v023",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-handcut-leather-gusset-stitched-seams-v022",
+  "branch": "production/auto-bellows-opened-wedge-handbellows-v023",
+  "reason": "Inspected actual V021→V022 four-view comparison: stitched seams are now real geometry but the closed, nearly parallel oak boards and side gusset still read as a rigid rectangular slab. V023 tests an opened functional wedge: raise rear upper board/handle, retain narrow nozzle tip, recompute gusset, upper welts, nails and linen stitches from the same top profile. Preserve V012 and V022, require real renders and QA; not automatically approved. Queue repair: consolidated 12 contiguous exact source substitutions into 6 edits to satisfy executor's 1–8 limit; no generator content changed.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T10:12:23.873420+00:00"
+}

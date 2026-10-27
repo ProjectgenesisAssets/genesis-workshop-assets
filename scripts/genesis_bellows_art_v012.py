@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v022")
+OUT=ROOT/("output_hero_"+KIND+"_v023")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,7 +297,7 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            baked_name="bellows_aged_oak_baked_albedo_V022" if is_oak else "bellows_oxblood_leather_baked_albedo_V022"
+            baked_name="bellows_aged_oak_baked_albedo_V023" if is_oak else "bellows_oxblood_leather_baked_albedo_V023"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
@@ -351,7 +351,7 @@ def mount_bellows():
     def board(name,z,thickness):
         n=len(outline)
         # Top plank is raised toward the handles, lower near the air outlet.
-        verts=[(x,y,(.43-.125*x if name.startswith("Top") else z)+oz)
+        verts=[(x,y,(.49-.24*x if name.startswith("Top") else z)+oz)
                for oz in (-thickness/2,thickness/2) for x,y in outline]
         faces=[tuple(reversed(range(n))),tuple(range(n,2*n))]
         for i in range(n):
@@ -387,7 +387,7 @@ def mount_bellows():
             fold=.56*math.sin(phase)+.12*math.sin(1.71*phase+1.5*x)
             tension=(.15+.85*math.sin(math.pi*t)**.7)*(.85-.40*x)
             factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.060*fold*tension)
-            top=.43-.125*x
+            top=.49-.24*x
             z=.126+(top-.126)*t+.018*amplitude*math.sin(2.7*x+1.8*y+8.4*t)
             verts.append((x,y*factor,z))
     faces=[]
@@ -400,11 +400,11 @@ def mount_bellows():
     # Distinct leather edge seams and hand hammered perimeter rivets.
     for i,(x,y) in enumerate(outline):
         if i%8==0:
-            for z in (.133,.426-.125*x):
+            for z in (.133,.486-.24*x):
                 ico("Small peened brass nail %02d "%i+str(z),(x*.985,y*.96,z),.009,brass,subdiv=2,scale=(1,.78,.45))
     cyl("Forged tubular forward air nozzle",(.70,0,.224),.060,.32,iron,40,rot=(0,math.pi/2,0),edge=.006)
     cyl("Narrow brass nozzle ring",(.852,0,.224),.063,.019,brass,40,rot=(0,math.pi/2,0),edge=.003)
-    for z in (.116,.535):
+    for z in (.116,.672):
         box("Hinged oak rear squeeze handle "+str(z),(-.755,0,z),(.35,.085,.056),wood,.022)
         cyl("Forged rear pivot pin "+str(z),(-.62,0,z),.027,.10,iron,20,rot=(math.pi/2,0,0),edge=.002)
     # The dark inner bore prevents the brass mouth from reading as a solid wooden plug.
@@ -417,7 +417,7 @@ def mount_bellows():
         curve.bevel_depth=.008;curve.bevel_resolution=2
         spline=curve.splines.new("POLY");spline.points.add(len(outline)-1)
         for point,(x,y) in zip(spline.points,outline):
-            point.co=(x*.992,y*.990,(.43-.125*x if z>.20 else z),1)
+            point.co=(x*.992,y*.990,(.49-.24*x if z>.20 else z),1)
         spline.use_cyclic_u=True
         o=bpy.data.objects.new("Perimeter hand stitched leather welt "+str(z),curve)
         bpy.context.collection.objects.link(o)
@@ -429,7 +429,7 @@ def mount_bellows():
     for i,(x,y) in enumerate(outline):
         if i%8==0:
             ico("Bronze nail fixing leather gusset "+str(i),
-                (x*.975,y*.97,.428-.125*x),.009,brass,subdiv=2,scale=(1,1,.5))
+                (x*.975,y*.97,.488-.24*x),.009,brass,subdiv=2,scale=(1,1,.5))
     # Individual off-white linen saddle stitches as a single efficient mesh.
     linen=bpy.data.materials.new("Unbleached linen saddle stitch thread")
     linen.diffuse_color=(.42,.34,.22,1)
@@ -443,7 +443,7 @@ def mount_bellows():
         tx,ty=nextx-x,nexty-y
         ln=max(.0001,math.sqrt(tx*tx+ty*ty));tx/=ln;ty/=ln
         normal_x=-ty;normal_y=tx
-        for z in (.142,.418-.125*x):
+        for z in (.142,.478-.24*x):
             cx=x+normal_x*.004;cy=y+normal_y*.004
             idx=len(sts_verts)
             sts_verts.extend([(cx-tx*.009,cy-ty*.009,z-.001),
@@ -641,7 +641,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V022","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V023","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
@@ -653,11 +653,11 @@ report={"asset":KIND,"version":"V022","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v022.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v023.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v022.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v023.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
