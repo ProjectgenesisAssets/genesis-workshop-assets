@@ -5,7 +5,7 @@ on:
       - production/door-v017-arcanist-blue-energy
     paths:
       - scripts/puerta_arcanista_energia_azul_v017.py
-      - .github/workflows/door-trades-v017.yml
+      - .github/workflows/door-arcanist-energy-v017.yml
   workflow_dispatch:
 permissions:
   contents: read
