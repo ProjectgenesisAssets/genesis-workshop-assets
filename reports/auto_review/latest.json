@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:17:50.056247+00:00",
+  "generated_at": "2026-10-27T10:18:51.590801+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -19,17 +19,17 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-handcut-leather-gusset-stitched-seams-v022",
-      "run_id": 40485058477,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485058477",
-      "commit": "2bd2132ccdd2a323d02b1651560e3e68a20b33aa",
-      "completed_at": "2026-10-27T10:05:18Z",
-      "preview_directory": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022",
+      "branch": "production/auto-bellows-opened-wedge-handbellows-v023",
+      "run_id": 40486683904,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40486683904",
+      "commit": "61772b9656177c328eeebf1fb4d367fae64b5e0f",
+      "completed_at": "2026-10-27T10:18:27Z",
+      "preview_directory": "previews/production_auto/bellows_opened-wedge-handbellows-v023",
       "view_paths": {
-        "front": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/front.png",
-        "three_quarter": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/three_quarter.png",
-        "rear": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/rear.png",
-        "detail": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/detail.png"
+        "front": "previews/production_auto/bellows_opened-wedge-handbellows-v023/front.png",
+        "three_quarter": "previews/production_auto/bellows_opened-wedge-handbellows-v023/three_quarter.png",
+        "rear": "previews/production_auto/bellows_opened-wedge-handbellows-v023/rear.png",
+        "detail": "previews/production_auto/bellows_opened-wedge-handbellows-v023/detail.png"
       },
       "status": "review_ready"
     },
