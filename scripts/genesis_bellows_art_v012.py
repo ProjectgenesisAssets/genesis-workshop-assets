@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v012")
+OUT=ROOT/("output_hero_"+KIND+"_v014")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,13 +297,18 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            stain=(.56,.43,.32) if is_oak else (.48,.22,.20)
-            baked_name="bellows_aged_oak_baked_albedo_V012" if is_oak else "bellows_oxblood_leather_baked_albedo_V012"
+            baked_name="bellows_aged_oak_baked_albedo_V014" if is_oak else "bellows_oxblood_leather_baked_albedo_V014"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
             rgba=src.reshape((-1,4))
-            rgba[:,:3]*=np.array(stain,dtype=np.float32)
+            if is_oak:
+                # Preserve real scanned photographic grain, but avoid grey stone-looking timber.
+                luminance=(rgba[:,:3]*np.array((.2126,.7152,.0722),dtype=np.float32)).sum(axis=1)
+                grain=np.clip(.56+1.35*(luminance-.46),.24,.92)
+                rgba[:,:3]=grain[:,None]*np.array((.70,.385,.175),dtype=np.float32)
+            else:
+                rgba[:,:3]*=np.array((.48,.22,.20),dtype=np.float32)
             rgba[:,:3]=np.clip(rgba[:,:3],0,1)
             baked=bpy.data.images.new(baked_name,width=w,height=h,alpha=True)
             baked.pixels.foreach_set(src)
@@ -361,8 +366,10 @@ def mount_bellows():
         t=level/(layers-1)
         for x,y in outline:
             amplitude=math.sin(math.pi*t)**.72
-            fold=math.sin(10*math.pi*t+.28*x)
-            factor=1+amplitude*(.080+.027*math.sin(1.7*x)+.100*fold)
+            # Fold phase drifts across hand-cut hide; no five perfectly rigid rings.
+            phase=10*math.pi*t+.20*x+.25*math.sin(3.4*x+2.1*y)+.06*math.sin(8.3*y)
+            fold=math.sin(phase)
+            factor=1+amplitude*(.075+.023*math.sin(1.7*x)+(.075+.013*math.cos(3.1*x))*fold)
             top=.43-.125*x
             z=.126+(top-.126)*t
             verts.append((x,y*factor,z))
@@ -582,7 +589,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V012","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V014","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
@@ -594,11 +601,11 @@ report={"asset":KIND,"version":"V012","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v012.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v014.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v012.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v014.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
