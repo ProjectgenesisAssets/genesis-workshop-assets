@@ -1,0 +1,144 @@
+name: Genesis Arcanist V019 - photographic CC0 scanned steel PBR
+on:
+  push:
+    branches: [production/door-v019-scanned-iron-arcanist]
+    paths:
+      - scripts/puerta_arcanista_scanned_pbr_v019.py
+      - scripts/download_polyhaven_pbr_v019.py
+      - .github/workflows/door-arcanist-pbr-v019.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: genesis-arcanist-v019-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      PG_DOOR_TRADE: arcanista
+      PG_PBR_RES: '2048'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Python scripts and CC0 source
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/download_polyhaven_pbr_v019.py scripts/puerta_arcanista_scanned_pbr_v019.py
+          test -s previews/door_v014/front.png
+          if grep -Fq 'ArcanePulse_' scripts/puerta_arcanista_scanned_pbr_v019.py; then exit 1; fi
+      - name: Download real Poly Haven scanned diffuse, roughness and normal 2K
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 scripts/download_polyhaven_pbr_v019.py
+      - name: Install Blender 4.5.13
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/door-v019-blender.tar.xz
+          mkdir -p /tmp/door-v019-blender
+          tar -xJf /tmp/door-v019-blender.tar.xz -C /tmp/door-v019-blender --strip-components=1
+          /tmp/door-v019-blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: True Cycles front, 3/4, side, rear and export GLB
+        run: |
+          set -euo pipefail
+          /tmp/door-v019-blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_arcanista_scanned_pbr_v019.py
+      - name: Validate physical material workflow and silhouette
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,struct
+          from PIL import Image,ImageChops
+          from pathlib import Path
+          p=Path("output_workshop_door_v019_arcanista")
+          for kind in ("diff","rough","nor_gl"):
+              with Image.open("ph_scans_v019/rusty_metal_sheet/"+kind+".jpg") as im:
+                  assert im.size==(2048,2048),kind
+          r=json.loads(Path("ph_scans_v019/rusty_metal_sheet/SOURCE_RECEIPT.json").read_text())
+          assert r["license"]=="CC0" and len(r["maps"])==3
+          for view,output in {"front":"front_orthographic","three_quarter":"three_quarter","rear":"rear_orthographic","side":"side_orthographic"}.items():
+              with Image.open("previews/door_v014/"+view+".png") as ref,Image.open(p/(output+".png")) as new:
+                  aa=ref.getchannel("A").point(lambda n:255 if n>127 else 0)
+                  bb=new.getchannel("A").point(lambda n:255 if n>127 else 0)
+                  score=sum(ImageChops.darker(aa,bb).histogram()[128:])/max(1,sum(ImageChops.lighter(aa,bb).histogram()[128:]))
+                  assert score>=(.99 if view=="side" else .994),(view,score)
+                  print("V019_SILHOUETTE",view,score)
+          glb=p/"Workshop_Door_V019_arcanista.glb"
+          with glb.open("rb") as f:magic,version,total=struct.unpack("<III",f.read(12))
+          assert (magic,version,total)==(0x46546c67,2,glb.stat().st_size)
+          report=json.loads((p/"V019_MATERIAL_TEST.json").read_text())
+          assert report["version"]=="V019"
+          print("SCAN_PBR_3D_VALID",glb.stat().st_size,flush=True)
+          PY
+      - name: Preserve PBR captured maps, BLEND, GLB and real renders
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcanist-v019-scanned-real-pbr
+          path: |
+            output_workshop_door_v019_arcanista/*.png
+            output_workshop_door_v019_arcanista/*.json
+            output_workshop_door_v019_arcanista/*.glb
+            output_workshop_door_v019_arcanista/*.blend
+            ph_scans_v019/rusty_metal_sheet/*.jpg
+            ph_scans_v019/rusty_metal_sheet/*.json
+          retention-days: 14
+          if-no-files-found: warn
+  gallery:
+    needs: render
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: arcanist-v019-scanned-real-pbr
+          path: evidence
+      - name: Export exact actual render review against V018
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          out=Path("previews/door_v019_scan");out.mkdir(parents=True,exist_ok=True)
+          views=("front_orthographic","three_quarter","side_orthographic","rear_orthographic")
+          sheet=Image.new("RGB",(900*2,1150*2),(31,33,38))
+          for i,view in enumerate(views):
+              with Image.open(Path("evidence")/(view+".png")) as im:
+                  art=im.convert("RGBA")
+                  art.thumbnail((825,1020),Image.Resampling.LANCZOS)
+                  bg=Image.new("RGBA",(900,1150),(39,42,47,255))
+                  bg.alpha_composite(art,((900-art.width)//2,50+(1020-art.height)//2))
+                  cell=bg.convert("RGB")
+              ImageDraw.Draw(cell).text((20,1100),"ARcanista V019 scanned CC0 steel - "+view,fill=(228,239,247))
+              sheet.paste(cell,((i%2)*900,(i//2)*1150))
+              if i==1:
+                  cell.save(out/"arcanista_hero_v019.jpg",quality=90,optimize=True)
+                  with Image.open("previews/door_v018_pbr/arcanista_hero_v018.jpg") as older:
+                      old=older.convert("RGB")
+                  before=Image.new("RGB",(1800,1150),(36,38,43))
+                  old.thumbnail((900,1130),Image.Resampling.LANCZOS)
+                  before.paste(old,((900-old.width)//2,0))
+                  before.paste(cell,(900,0))
+                  ImageDraw.Draw(before).text((240,1110),"V018 flat procedural",fill=(242,238,216))
+                  ImageDraw.Draw(before).text((1100,1110),"V019 real scanned PBR",fill=(230,240,252))
+                  before.save(out/"v018_vs_v019.jpg",quality=88,optimize=True)
+          sheet.save(out/"four_real_views_v019.jpg",quality=87,optimize=True)
+          print("PBR_SCANNED_REVIEW_READY",[(p.name,p.stat().st_size) for p in out.glob("*.jpg")])
+          PY
+      - name: Publish scanned art preview independently of approved door master
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v019_scan
+          if ! git diff --cached --quiet; then
+            git commit -m 'V019 Arcanist real photographed steel Cycles review [skip ci]'
+            git fetch origin production/door-v019-scanned-iron-arcanist
+            git rebase origin/production/door-v019-scanned-iron-arcanist
+            git push origin HEAD:production/door-v019-scanned-iron-arcanist
+          fi
