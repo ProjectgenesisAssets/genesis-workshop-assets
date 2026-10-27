@@ -37,3 +37,12 @@
 - El paquete de 16 vistas anterior se generó correctamente a las 04:46 UTC con V016 de fragua y V015 de fuelle; la siguiente ronda de handoff debe incorporar V017/V016.
 - La QA de **estos dos nuevos candidatos** ya compara con la versión inmediatamente anterior; las QA de versiones anteriores usaron referencias antiguas, por lo que no deben citarse como prueba de progreso incremental.
 - **Aprobación final:** sólo Gabriel; nunca asignar puntuación automática ni declarar assets definitivos.
+
+## Ronda ~02:55 ART — Fragua V018: QA técnica correcta, revisión artística RECHAZADA
+- **Rama:** `production/auto-forge-open-throat-hood-bonded-rear-v018`; **run:** https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40457244321.
+- **Comparación realmente inspeccionada:** `reports/production_auto/forge-open-throat-hood-bonded-rear-v018/four_view_comparison.jpg` (fila superior V017; inferior V018).
+- **QA:** 68.474 triángulos, 312 mallas, cinco materiales texturizados, 16 imágenes GLB, cuatro renders; diferencia RGB 0,00468–0,02128 respecto de V017; aprobación **técnica** únicamente.
+- **Resultado artístico:** la apertura central del frente dejó una discontinuidad grande entre el conducto y los laterales. En tres cuartos se ve como una campana rota/incompleta, no como una solución artesanal funcional. El aparejo posterior de bloques grandes y pequeños sí rompe algo la repetición, pero introduce parches claros aislados. **No promover V018 sobre V017**; conservar V018 como prueba descartada.
+- **Próxima intervención justificable:** rediseñar un frente de campana CONTINUO con captación real de humo, sin techo de parrilla ni abertura que parezca pieza faltante; mantener mampostería sin parches claros sueltos. No repetir V018 ni aprobar por el workflow.
+- **Nota:** el fuelle V017 tuvo un primer fallo real de arrays `(1048576,)` vs `(1024,1024)` en run 40457252233. Se despachó corrección exacta de `fibres.reshape(-1)` en nueva rama `production/auto-bellows-oak-grain-gusset-array-fix-v017`, run 40457420163; pendiente QA/render y revisión artística.
+- **Espada:** se recuperó el artefacto V023 original del repositorio privado de modelado, sin modificarlo. GLB real: 80 mallas, 16 materiales, 1 imagen; separación pomo–empuñadura ~19,06 mm. Ver auditoría ampliada en rama `production/sword-families-fabrication-candidates-20261027`. Sin integración en juego.
