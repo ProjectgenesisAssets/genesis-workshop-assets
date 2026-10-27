@@ -89,7 +89,7 @@ jobs:
           textures=[]
           for fp in maps:
               with fp.open("rb") as f: header=f.read(24)
-              assert header[:8]==b"\\x89PNG\\r\\n\\x1a\\n"
+              assert header[:4]==bytes([137,80,78,71])
               w,h=struct.unpack(">II",header[16:24])
               if fp.parent.name=="textures" or any(part in fp.name for part in ("albedo","normal","roughness")):
                   assert w<=1536 and h<=1536,(str(fp),w,h)
