@@ -41,7 +41,7 @@ jobs:
           else
             echo "final=false" >> "$GITHUB_OUTPUT"
           fi
-          if (( now <= cutoff )); then
+          if (( now < cutoff )); then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
