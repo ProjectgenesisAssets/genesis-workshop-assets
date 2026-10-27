@@ -538,6 +538,94 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v019.glb\"))"
         }
       ]
+    },
+    {
+      "id": "compact-hood-tall-flue-v021",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-raised-smoke-arch-v020",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Reviewed real V019→V020 four-view JPG and 16-view contact sheet at 05:46 ART. V020's arch change is tiny (QA front RGB delta 0.00155) and its broad black sloping canopy still reads as barbecue roof; rear remains repetitive toy masonry. Test a physically compact hood with eaves pulled 11 cm inward, a higher transition to a taller functional exhaust flue, and braces aligned to the shifted hood. This is a structural silhouette experiment, not approval; preserve V019/V020 checkpoints.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v020\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v021\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    front_y=-.56\n    back_y=.58\n    bottom_z=1.810\n    top_z=2.25",
+          "replace": "    front_y=-.45\n    back_y=.50\n    bottom_z=1.810\n    top_z=2.40"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    for side in (-1,1):\n        box(\"Side smoke hood return lip \"+str(side),\n            (side*.947,.02,bottom_z),( .056,1.19,.050),steel,.008)\n        # Front firebox posts carry the hood as a genuine structural assembly.\n        for course in range(7):\n            handlaid(\"Hood footing massive piers \"+str((side,course)),\n                (side*.865,-.405,.94+course*.133),\n                (.178,.290,.126),stone if course>2 else hearth,.006)\n        # Forged upright reinforcement anchored to masonry, not cartoon rods.\n        box(\"Visible wrought load bracket \"+str(side),\n            (side*.807,-.570,1.46),(.048,.068,.43),steel,.008)\n        plate(\"Hammered triangular side brace \"+str(side),[\n            (side*.81,-.58,1.56),(side*.82,-.58,1.70),\n            (side*.58,-.37,2.03),(side*.60,-.37,1.94)],.020)\n",
+          "replace": "    for side in (-1,1):\n        box(\"Side smoke hood return lip \"+str(side),\n            (side*.947,.02,bottom_z),( .056,1.19,.050),steel,.008)\n        # Front firebox posts carry the hood as a genuine structural assembly.\n        for course in range(7):\n            handlaid(\"Hood footing massive piers \"+str((side,course)),\n                (side*.865,-.405,.94+course*.133),\n                (.178,.290,.126),stone if course>2 else hearth,.006)\n        # Forged upright reinforcement anchored to masonry, not cartoon rods.\n        box(\"Visible wrought load bracket \"+str(side),\n            (side*.807,-.470,1.46),(.048,.068,.43),steel,.008)\n        plate(\"Hammered triangular side brace \"+str(side),[\n            (side*.81,-.47,1.56),(side*.82,-.47,1.70),\n            (side*.58,-.37,2.03),(side*.60,-.37,1.94)],.020)\n"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    # Tall utilitarian refractory flue: correct working-proportion exhaust.\n    # Square forged transition inside a much taller, dark soot-stained stack.\n    for y in (-.275,.345):\n        plate(\"Flue front rear iron wall \"+str(y),[\n            (-.46,y,2.235),(.46,y,2.235),\n            (.36,y,2.77),(-.36,y,2.77)])\n    for side in (-1,1):\n        plate(\"Flue left right iron wall \"+str(side),[\n            (side*.46,-.275,2.235),(side*.46,.345,2.235),\n            (side*.36,.345,2.77),(side*.36,-.275,2.77)])\n    for y in (-.295,.365):\n        box(\"Flue mouth wrought rim \"+str(y),(0,y,2.77),\n            (.79,.032,.058),steel,.010)\n    for side in (-1,1):\n        box(\"Flue mouth return rim \"+str(side),\n            (side*.37,.035,2.77),(.032,.67,.058),steel,.010)\n\n",
+          "replace": "    # Tall utilitarian refractory flue: correct working-proportion exhaust.\n    # Square forged transition inside a much taller, dark soot-stained stack.\n    for y in (-.275,.345):\n        plate(\"Flue front rear iron wall \"+str(y),[\n            (-.46,y,2.39),(.46,y,2.39),\n            (.36,y,3.05),(-.36,y,3.05)])\n    for side in (-1,1):\n        plate(\"Flue left right iron wall \"+str(side),[\n            (side*.46,-.275,2.39),(side*.46,.345,2.39),\n            (side*.36,.345,3.05),(side*.36,-.275,3.05)])\n    for y in (-.295,.365):\n        box(\"Flue mouth wrought rim \"+str(y),(0,y,3.05),\n            (.79,.032,.058),steel,.010)\n    for side in (-1,1):\n        box(\"Flue mouth return rim \"+str(side),\n            (side*.37,.035,3.05),(.032,.67,.058),steel,.010)\n\n"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V020\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V021\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v020.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v021.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v020.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v021.glb\"))"
+        }
+      ]
+    },
+    {
+      "id": "soft-gusset-warm-oak-v020",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-umber-oak-natural-pores-v019",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Inspected real V018→V019 comparison at 05:46 ART. V019 removes the artificial salmon stripes but the board is still chalky grey-tan and the leather side remains four straight parallel slats instead of hand-tensioned soft hide. Test subtler warm umber scan-based albedo, narrower drifting diagonal leather creases and nonuniform chamber height. Do not autoapprove or displace V012 provisional.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v019\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v020\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V019\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V019\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V020\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V020\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "                grain=np.clip(.55+1.05*(luminance-luminance.mean())+\n                              .017*fine.reshape(-1)+.024*broad.reshape(-1),.25,.82)\n                rgba[:,:3]=np.stack((.43*grain+.025,\n                                     .27*grain+.012,\n                                     .16*grain+.008),axis=1)\n",
+          "replace": "                grain=np.clip(.53+1.07*(luminance-luminance.mean())+\n                              .014*fine.reshape(-1)+.020*broad.reshape(-1),.25,.82)\n                rgba[:,:3]=np.stack((.47*grain+.032,\n                                     .265*grain+.012,\n                                     .125*grain+.006),axis=1)\n"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            phase=7.0*math.pi*t+.52*x+.95*math.sin(2.7*x+2.4*y+1.7*t)\n            fold=.72*math.sin(phase)+.21*math.sin(2.2*phase+1.1*x)\n            tension=.45+.55*math.sin(math.pi*t)**.8\n            factor=1+amplitude*(.044+.016*math.sin(1.7*x)+\n                                (.048+.012*math.cos(2.5*x))*fold*tension)\n            top=.43-.125*x\n            z=.126+(top-.126)*t+.004*amplitude*math.sin(2.7*x+8.4*t)\n",
+          "replace": "            # More frequent narrow creases drift diagonally across the hide;\n            # vertical deformation breaks the previous rigid parallel bands.\n            phase=10.3*math.pi*t+.85*x+1.20*math.sin(2.3*x+3.1*y+2.1*t)\n            fold=.57*math.sin(phase)+.18*math.sin(1.93*phase+.7*x)\n            tension=.35+.65*math.sin(math.pi*t)**.9\n            factor=1+amplitude*(.040+.015*math.sin(2.2*x)+\n                                (.055+.010*math.cos(2.8*x))*fold*tension)\n            top=.43-.125*x\n            z=.126+(top-.126)*t+.009*amplitude*math.sin(2.2*x+3.5*y+9.3*t)\n"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V019\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V020\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v019.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v020.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v019.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v020.glb\"))"
+        }
+      ]
     }
   ]
 }
