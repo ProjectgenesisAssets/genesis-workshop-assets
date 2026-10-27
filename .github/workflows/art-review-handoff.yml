@@ -1,0 +1,58 @@
+name: Genesis art review handoff (Python)
+on:
+  workflow_run:
+    workflows:
+      - 'Genesis isolated asset correction build - real Blender 4.5.13'
+      - 'Genesis Door V011 triangle optimization with silhouette QA'
+      - 'Project Genesis - Yunque medieval realista V022'
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: genesis-art-review-handoff
+  cancel-in-progress: false
+jobs:
+  prepare-review:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install contact-sheet dependency
+        run: python3 -m pip install --quiet Pillow
+      - name: Inspect actual completed runs and assemble 4x4 review evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/prepare_art_review.py
+          python3 scripts/prepare_art_review.py
+      - name: Upload full artistic-review handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-review-handoff-${{ github.run_id }}
+          path: |
+            reports/auto_review/latest.json
+            reports/auto_review/latest_contact_sheet.jpg
+          retention-days: 7
+      - name: Publish compact review packet for next autonomous AI round
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/auto_review/latest.json reports/auto_review/latest_contact_sheet.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish current 4-asset render review handoff [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
