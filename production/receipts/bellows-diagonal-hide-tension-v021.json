@@ -1,0 +1,19 @@
+{
+  "id": "diagonal-hide-tension-v021",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-soft-gusset-warm-oak-v020",
+  "branch": "production/auto-bellows-diagonal-hide-tension-v021",
+  "reason": "Actual V019→V020 four-view comparison: the new narrow folds create even more repeated horizontal stripes (five rigid bands), despite warmer oak and technically valid GLB. Test stronger diagonal phase drift, lengthwise taper of leather tension and vertical undulation to remove stacked-wood appearance. Preserve V012 as user provisional and V019/V020 as comparisons; no automatic art approval.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T08:56:56.385885+00:00"
+}

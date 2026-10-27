@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v020")
+OUT=ROOT/("output_hero_"+KIND+"_v021")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,7 +297,7 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            baked_name="bellows_aged_oak_baked_albedo_V020" if is_oak else "bellows_oxblood_leather_baked_albedo_V020"
+            baked_name="bellows_aged_oak_baked_albedo_V021" if is_oak else "bellows_oxblood_leather_baked_albedo_V021"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
@@ -381,15 +381,14 @@ def mount_bellows():
             # Fold phase drifts across hand-cut hide; no five perfectly rigid rings.
             # Two noncommensurate, drifting creases break the rigid stacked-band look.
             # Smaller, nonuniform tension creases instead of three rigid bands.
-            # More frequent narrow creases drift diagonally across the hide;
-            # vertical deformation breaks the previous rigid parallel bands.
-            phase=10.3*math.pi*t+.85*x+1.20*math.sin(2.3*x+3.1*y+2.1*t)
-            fold=.57*math.sin(phase)+.18*math.sin(1.93*phase+.7*x)
-            tension=.35+.65*math.sin(math.pi*t)**.9
-            factor=1+amplitude*(.040+.015*math.sin(2.2*x)+
-                                (.055+.010*math.cos(2.8*x))*fold*tension)
+            # Hand-cut hide: diagonally wandering tension folds, not horizontal slats.
+            # The leather compresses more near the broad handles than the nozzle.
+            phase=8.2*math.pi*t+2.8*x+1.7*math.sin(2.6*x+1.7*y+3.5*t)
+            fold=.58*math.sin(phase)+.13*math.sin(1.71*phase+1.5*x)
+            tension=(.15+.85*math.sin(math.pi*t)**.7)*(.85-.40*x)
+            factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.047*fold*tension)
             top=.43-.125*x
-            z=.126+(top-.126)*t+.009*amplitude*math.sin(2.2*x+3.5*y+9.3*t)
+            z=.126+(top-.126)*t+.018*amplitude*math.sin(2.7*x+1.8*y+8.4*t)
             verts.append((x,y*factor,z))
     faces=[]
     for level in range(layers-1):
@@ -607,7 +606,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V020","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V021","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
@@ -619,11 +618,11 @@ report={"asset":KIND,"version":"V020","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v020.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v021.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v020.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v021.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
