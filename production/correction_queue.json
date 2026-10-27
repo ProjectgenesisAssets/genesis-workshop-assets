@@ -1217,6 +1217,50 @@
           "replace": "KIND+\"_hero_v028.glb\""
         }
       ]
+    },
+    {
+      "id": "irregular-dark-smoke-stack-v027",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-short-bonded-smoke-flue-v026",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Direct inspection of real V025→V026 four-view comparison confirms 9.98% fewer triangles and shorter chimney, but the pale regular brick stack and broad square metal mouth still read as a grill roof. Replace upper flue courses with irregular real masonry widths and mostly soot-dark bricks, slim the forged mouth ring while keeping open bore and existing low side-draft. Geometry and materials change, not a clone. No artistic approval; preserve V026 and all checkpoints.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v026\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v027\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    # Rectangular vertical flue: four brick walls with a truly open top.\n    for course in range(3):\n        z=2.305+course*.139\n        rng=random.Random(27191+course*37)\n        for y in (.465,.790):\n            for i in range(5):\n                x=-.49+i*.245\n                handlaid(\"Hollow vertical flue front/rear %d %s %d\"%(course,y,i),\n                         (x,y,z),(.236,.135,.132),\n                         hearth if course<2 else weathered,.005,\n                         rz=rng.uniform(-.005,.005))\n        for side in (-1,1):\n            for y in (.545,.680):\n                handlaid(\"Hollow flue side wall %d %s %s\"%(course,side,y),\n                         (side*.605,y,z),(.135,.144,.132),\n                         hearth if course<2 else stone,.005)",
+          "replace": "    # V027: real irregular running bond in the short chimney. V026 top\n    # looked like a pale, perfectly rectangular stacked barbecue block.\n    # Keep all four shaft walls and the real open chimney bore.\n    for course in range(3):\n        z=2.305+course*.139\n        rng=random.Random(27191+course*37)\n        widths=[rng.uniform(.18,.30) for _ in range(5)]\n        factor=1.20/sum(widths)\n        positions=[]\n        left=-.60\n        for raw in widths:\n            width=raw*factor\n            positions.append((left+width/2,width))\n            left+=width\n        for y in (.465,.790):\n            for i,(x,width) in enumerate(positions):\n                handlaid(\"Hollow vertical flue front/rear %d %s %d\"%(course,y,i),\n                         (x,y,z),(width-.012,.135,.132),\n                         hearth if course<2 or (course+i)%3 else stone,.005,\n                         rz=rng.uniform(-.009,.009))\n        for side in (-1,1):\n            for y in (.545,.680):\n                handlaid(\"Hollow flue side wall %d %s %s\"%(course,side,y),\n                         (side*.605,y,z),(.135,.144,.132),\n                         hearth if course<2 or (course+int(y*100))%3 else stone,.005)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    # Metal chimney-mouth collar, four separate sides, no lid.\n    mouth_z=2.76\n    for y in (.420,.835):\n        box(\"Open chimney throat iron collar front/back \"+str(y),\n            (0,y,mouth_z),(1.31,.060,.052),steel,.009)\n    for side in (-1,1):\n        box(\"Open chimney throat iron collar return \"+str(side),\n            (side*.630,.625,mouth_z),(.060,.440,.052),steel,.009)",
+          "replace": "    # V027: thin forged lip around an open draft throat, not a broad grill rim.\n    mouth_z=2.76\n    for y in (.420,.835):\n        box(\"Open chimney throat iron collar front/back \"+str(y),\n            (0,y,mouth_z),(1.29,.035,.032),steel,.006)\n    for side in (-1,1):\n        box(\"Open chimney throat iron collar return \"+str(side),\n            (side*.630,.625,mouth_z),(.035,.425,.032),steel,.006)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V026\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V027\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "\"targeted_repairs\":[\"remove barbecue-like pitched masonry hood and replace with forged metal smoke collector\",",
+          "replace": "\"targeted_repairs\":[\"replace pale uniform chimney top with physically irregular darker running-bond masonry and slim functional open iron lip\","
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "KIND+\"_hero_v026.blend\"",
+          "replace": "KIND+\"_hero_v027.blend\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "KIND+\"_hero_v026.glb\"",
+          "replace": "KIND+\"_hero_v027.glb\""
+        }
+      ]
     }
   ]
 }
