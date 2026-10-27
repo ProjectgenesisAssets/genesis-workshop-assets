@@ -293,19 +293,21 @@ def mount_bellows():
         slots=[nd for nd in base_material.node_tree.nodes if nd.type=="TEX_IMAGE" and nd.image and nd.image.name.endswith("_albedo")]
         assert len(slots)==1,(base_material.name,len(slots))
         slots[0].image=img
-        if "oak" in base_material.name:
-            # V012: physically bake the aged-oak stain into an actual 1K PNG.
-            # glTF cannot reliably serialize Blender's MixRGB node graph.
-            # Keep the scanned photographic grain and apply linear RGB stain.
+        if "oak" in base_material.name or "leather" in base_material.name:
+            # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
+            # The original V011 leather JPG remained light tan and resembled timber.
+            is_oak="oak" in base_material.name
+            stain=(.56,.43,.32) if is_oak else (.48,.22,.20)
+            baked_name="bellows_aged_oak_baked_albedo_V012" if is_oak else "bellows_oxblood_leather_baked_albedo_V012"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
             rgba=src.reshape((-1,4))
-            rgba[:,:3]*=np.array((.56,.43,.32),dtype=np.float32)
+            rgba[:,:3]*=np.array(stain,dtype=np.float32)
             rgba[:,:3]=np.clip(rgba[:,:3],0,1)
-            baked=bpy.data.images.new("bellows_aged_oak_baked_albedo_V012",width=w,height=h,alpha=True)
+            baked=bpy.data.images.new(baked_name,width=w,height=h,alpha=True)
             baked.pixels.foreach_set(src)
-            baked.filepath_raw=str(TEX/"bellows_aged_oak_baked_albedo_V012.png")
+            baked.filepath_raw=str(TEX/(baked_name+".png"))
             baked.file_format="PNG"
             baked.save()
             baked.pack()
@@ -313,7 +315,7 @@ def mount_bellows():
             bs=base_material.node_tree.nodes.get("Principled BSDF")
             links=base_material.node_tree.links
             links.new(slots[0].outputs["Color"],bs.inputs["Base Color"])
-            MAPS.append(str((TEX/"bellows_aged_oak_baked_albedo_V012.png").relative_to(OUT)))
+            MAPS.append(str((TEX/(baked_name+".png")).relative_to(OUT)))
         MAPS.append(str(target.relative_to(OUT)))
     scanned_material(wood,"bellows_scanned_old_oak_CC0_1k.jpg",
         "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fine_grained_wood/fine_grained_wood_col_1k.jpg")
@@ -584,7 +586,7 @@ report={"asset":KIND,"version":"V012","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
-                            "bake aged-oak stain into packed photographic albedo PNG for glTF compatibility",
+                            "bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs",
                             "ensure exported GLB uses the exact baked stained-oak image without MixRGB"],
         "art_direction":"functional medieval photorealism, never stylized","metric_bounds_m":[list(mn),list(mx)],
         "mesh_parts":len(ASSETS),"source":"independent Blender generator, no historical master reused",
