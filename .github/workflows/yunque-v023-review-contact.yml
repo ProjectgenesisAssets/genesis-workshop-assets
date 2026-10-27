@@ -1,0 +1,60 @@
+name: Genesis Yunque V023 - 2K metal PBR four-view comparison
+on:
+  push:
+    branches:
+      - production/yunque-v023-burnished-steel-pbr2k-geometry-locked
+    paths:
+      - .github/workflows/yunque-v023-review-contact.yml
+permissions:
+  contents: write
+jobs:
+  compare_true_renders:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build V022 versus V023 contact sheet from real Cycles renders
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          root=Path('previews')
+          views=['front','hero','rear','top']
+          w,h=330,370
+          sheet=Image.new('RGB',(4*w,2*h),(28,29,32))
+          draw=ImageDraw.Draw(sheet)
+          for row,version in enumerate(('v022','v023')):
+              for col,view in enumerate(views):
+                  path=root/('yunque_'+version)/(view+'.png')
+                  assert path.is_file() and path.stat().st_size>10000,path
+                  with Image.open(path) as im:
+                      im=im.convert('RGBA')
+                      im.thumbnail((w-28,h-54),Image.Resampling.LANCZOS)
+                      tile=Image.new('RGBA',(w,h),(41,43,47,255))
+                      tile.alpha_composite(im,((w-im.width)//2,(h-54-im.height)//2+12))
+                  sheet.paste(tile.convert('RGB'),(col*w,row*h))
+                  draw.text((col*w+12,row*h+h-33),f'Yunque {version.upper()} / {view}',fill=(242,232,210))
+          out=root/'yunque_v023'
+          sheet.save(out/'compare_v022_v023.jpg',quality=87,optimize=True)
+          with Image.open(out/'hero.png') as im:
+              im=im.convert('RGBA')
+              im.thumbnail((900,900),Image.Resampling.LANCZOS)
+              bg=Image.new('RGBA',im.size,(38,40,44,255))
+              bg.alpha_composite(im)
+              bg.convert('RGB').save(out/'hero_review.jpg',quality=88,optimize=True)
+          print('ANVIL_MATERIAL_COMPARISON_READY')
+          PY
+      - name: Publish JPG comparisons on candidate branch only
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/yunque_v023/compare_v022_v023.jpg previews/yunque_v023/hero_review.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V022/V023 anvil PBR comparison; silhouette approved, material pending [skip ci]'
+            git fetch origin production/yunque-v023-burnished-steel-pbr2k-geometry-locked
+            git rebase origin/production/yunque-v023-burnished-steel-pbr2k-geometry-locked
+            git push origin HEAD:production/yunque-v023-burnished-steel-pbr2k-geometry-locked
+          fi
