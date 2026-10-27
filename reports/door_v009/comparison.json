@@ -1,0 +1,87 @@
+{
+  "asset": "door",
+  "baseline_version": "V008",
+  "candidate_version": "V009",
+  "source_sha": "7f1bfb11e9da08a59b48622340aaaf6f68470e2a",
+  "checked_utc": "2026-10-27T01:07:05.665657+00:00",
+  "comparison": [
+    {
+      "view": "front",
+      "baseline": {
+        "mean_luma": 0.11492,
+        "near_black_fraction": 0.47226,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.03405
+      },
+      "candidate": {
+        "mean_luma": 0.12964,
+        "near_black_fraction": 0.47033,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.03726
+      },
+      "mean_absolute_rgb_change": 0.0146
+    },
+    {
+      "view": "three_quarter",
+      "baseline": {
+        "mean_luma": 0.11022,
+        "near_black_fraction": 0.49916,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.03487
+      },
+      "candidate": {
+        "mean_luma": 0.12427,
+        "near_black_fraction": 0.49643,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.03863
+      },
+      "mean_absolute_rgb_change": 0.01396
+    },
+    {
+      "view": "side",
+      "baseline": {
+        "mean_luma": 0.02114,
+        "near_black_fraction": 0.90009,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.00855
+      },
+      "candidate": {
+        "mean_luma": 0.02521,
+        "near_black_fraction": 0.89376,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.01033
+      },
+      "mean_absolute_rgb_change": 0.00529
+    },
+    {
+      "view": "rear",
+      "baseline": {
+        "mean_luma": 0.07031,
+        "near_black_fraction": 0.47655,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.01089
+      },
+      "candidate": {
+        "mean_luma": 0.13963,
+        "near_black_fraction": 0.45353,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.01501
+      },
+      "mean_absolute_rgb_change": 0.06997
+    }
+  ],
+  "objective_defects": [
+    "side: UNDEREXPOSURE"
+  ],
+  "technical_visual_gate": "fail",
+  "artistic_score": null,
+  "artist_approved": false,
+  "approval_status": "CANDIDATE_NEEDS_HUMAN_REVIEW",
+  "best_candidate_changed": false,
+  "art_review_checklist": [
+    "hinges, handle and latch connected to solid leaf",
+    "no floating plate or ornaments",
+    "forged metal reads under neutral lighting"
+  ],
+  "note": "Pixel differences are evidence of a change, NOT proof of artistic improvement."
+}
