@@ -107,8 +107,13 @@ def find_four_views(asset: str, branch: str) -> tuple[str | None, dict]:
             roots.add(prefix)
     matches = []
     for prefix in roots:
+        # Auto-door candidates render a real hardware detail; legacy door
+        # branches supply a side orthographic view instead. Never mix them.
+        source_views = (("front","three_quarter","rear","detail")
+                        if asset == "door" and branch.startswith("production/auto-door-")
+                        else VIEW_FILES[asset])
         views = {slot: f"{prefix}/{source}.png"
-                 for slot, source in zip(VIEWS, VIEW_FILES[asset])
+                 for slot, source in zip(VIEWS, source_views)
                  if f"{prefix}/{source}.png" in files}
         if len(views) == 4:
             matches.append((prefix, views))
