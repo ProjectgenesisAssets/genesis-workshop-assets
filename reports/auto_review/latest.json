@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T09:03:11.840309+00:00",
+  "generated_at": "2026-10-27T10:00:33.924448+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -34,34 +34,22 @@
       "status": "review_ready"
     },
     "door": {
-      "branch": "production/door-v011-triangle-budget",
-      "run_id": 40435141349,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40435141349",
-      "commit": "97ae8ccc7afa4724938ce032c0114ba0b676f293",
-      "completed_at": "2026-10-27T02:02:04Z",
-      "preview_directory": "previews/door_v011",
+      "branch": "production/door-v012-oxidized-iron-material-test",
+      "run_id": 40483978276,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40483978276",
+      "commit": "5453b64122fbbe5fb771051f587d165c42473105",
+      "completed_at": "2026-10-27T09:51:49Z",
+      "preview_directory": "previews/door_v012",
       "view_paths": {
-        "front": "previews/door_v011/front.png",
-        "three_quarter": "previews/door_v011/three_quarter.png",
-        "rear": "previews/door_v011/rear.png",
-        "detail": "previews/door_v011/side.png"
+        "front": "previews/door_v012/front.png",
+        "three_quarter": "previews/door_v012/three_quarter.png",
+        "rear": "previews/door_v012/rear.png",
+        "detail": "previews/door_v012/side.png"
       },
       "status": "review_ready"
     },
     "anvil": {
-      "branch": "production/yunque-v022-forged-horn",
-      "run_id": 40430776892,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40430776892",
-      "commit": "82c86ef5f2101b0c1c71976f29b6017f1697b54c",
-      "completed_at": "2026-10-27T01:17:34Z",
-      "preview_directory": "previews/yunque_v022",
-      "view_paths": {
-        "front": "previews/yunque_v022/front.png",
-        "three_quarter": "previews/yunque_v022/hero.png",
-        "rear": "previews/yunque_v022/rear.png",
-        "detail": "previews/yunque_v022/top.png"
-      },
-      "status": "review_ready"
+      "status": "no_successful_run"
     }
   },
   "automatic_art_approval": false,
@@ -73,7 +61,7 @@
     "Dispatch Blender via Actions; compare new images and GLB evidence.",
     "No-op runs are not visual progress; user owns artistic approval."
   ],
-  "images_downloaded": 16,
-  "all_assets_review_ready": true,
+  "images_downloaded": 12,
+  "all_assets_review_ready": false,
   "art_review_completed": false
 }
