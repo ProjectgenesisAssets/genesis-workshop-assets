@@ -1,0 +1,20 @@
+{
+  "id": "radial-leather-fan-pleats-v027",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-restore-aged-oak-warmth-v026",
+  "branch": "production/auto-bellows-radial-leather-fan-pleats-v027",
+  "reason": "Direct V025→V026 four-view comparison shows oak recovered some warmth but leather still has rigid horizontal cardboard bands. Historical blacksmith bellows references (museum collections) show pleats radiating from a broad handle end and converging at the narrow nozzle, not parallel strips. Modify actual gusset vertices to three converging, asymmetrical radial leather creases; retain V026 oak/PBR and all checkpoints. No automatic artistic approval.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T11:35:24.959502+00:00"
+}

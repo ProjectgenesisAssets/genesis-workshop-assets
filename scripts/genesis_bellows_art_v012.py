@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v026")
+OUT=ROOT/("output_hero_"+KIND+"_v027")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,7 +297,7 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            baked_name="bellows_aged_oak_baked_albedo_V026" if is_oak else "bellows_oxblood_leather_baked_albedo_V026"
+            baked_name="bellows_aged_oak_baked_albedo_V027" if is_oak else "bellows_oxblood_leather_baked_albedo_V027"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
@@ -386,14 +386,18 @@ def mount_bellows():
             # Smaller, nonuniform tension creases instead of three rigid bands.
             # Hand-cut hide: diagonally wandering tension folds, not horizontal slats.
             # The leather compresses more near the broad handles than the nozzle.
-            # V025: two hand-cut diagonal compression creases, one outward
-            # and one inward. Their centreline wanders across the actual leather
-            # mesh, rather than generating identical sinusoidal horizontal rings.
-            crease_a=max(0.0,1.0-abs(t-(.31+.11*x+.025*y))/.115)**2
-            crease_b=max(0.0,1.0-abs(t-(.65-.09*x+.035*y))/.120)**2
-            tension=(.20+.80*math.sin(math.pi*t)**.7)*(.90-.30*x)
-            fold=.75*crease_a-.58*crease_b
-            factor=1+amplitude*(.032+.130*fold*tension)
+            # V027: three real radial leather pleats converge at the nozzle,
+            # as on historical blacksmith bellows; wide at handle end, narrow
+            # at the tuyere. No three identical horizontal cardboard bands.
+            nozzle_progress=max(0.0,min(1.0,(x+.80)/1.60))
+            fan=.24*(1.0-nozzle_progress)**.80
+            crease_width=.065+.018*(1.0-nozzle_progress)
+            crease_a=max(0.0,1.0-abs(t-(.50-fan+.020*y))/crease_width)**2
+            crease_b=max(0.0,1.0-abs(t-(.50-.012*y))/crease_width)**2
+            crease_c=max(0.0,1.0-abs(t-(.50+fan+.016*y))/crease_width)**2
+            fan_tension=.20+.80*(1.0-nozzle_progress)
+            fold=(.75*crease_a-.65*crease_b+.52*crease_c)*fan_tension
+            factor=1+amplitude*(.022+.150*fold)
             top=.49-.24*x
             z=.126+(top-.126)*t+.018*amplitude*math.sin(2.7*x+1.8*y+8.4*t)
             verts.append((x,y*factor,z))
@@ -656,9 +660,9 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V026","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V027","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
-        "targeted_repairs":["restore aged warm oak from cold grey V025 regression with scanned CC0 grain contrast",
+        "targeted_repairs":["physically reshape leather gusset into three radial pleats converging at nozzle from wide handle end",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
                             "bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs",
                             "ensure exported GLB uses the exact baked stained-oak image without MixRGB"],
@@ -668,11 +672,11 @@ report={"asset":KIND,"version":"V026","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v026.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v027.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v026.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v027.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
