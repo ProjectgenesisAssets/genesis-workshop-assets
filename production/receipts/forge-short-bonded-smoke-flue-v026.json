@@ -1,0 +1,19 @@
+{
+  "id": "short-bonded-smoke-flue-v026",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-sooted-recessed-smoke-duct-v025",
+  "branch": "production/auto-forge-short-bonded-smoke-flue-v026",
+  "reason": "Inspected actual V024→V025 four-view JPG: the glaring white firebox gap and rear plank slab are repaired in V025, but a disproportionately tall pale-topped chimney tower still dominates the silhouette. Physically shorten the upper load cheeks, lintel, flue and bracing (chimney collar 3.33m→2.76m), preserve recessed low side-draft smoke mouth, real individual masonry and open chimney top. This is a new proportion experiment, NOT a claim of improvement or artistic approval.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T11:16:15.228404+00:00"
+}

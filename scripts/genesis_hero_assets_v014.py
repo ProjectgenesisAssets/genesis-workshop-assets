@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v025")
+OUT=ROOT/("output_hero_"+KIND+"_v026")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -575,7 +575,7 @@ def mount_forge():
     # This is physical geometry, not a roof texture or a recolored V022 hood.
     # Existing V022 is preserved for side-by-side artistic review.
     for side in (-1,1):
-        for course in range(6):
+        for course in range(4):
             zz=1.785+course*.135
             masonry_rng=random.Random(27001+course*41+(0 if side<0 else 17))
             handlaid("Open-throat masonry load cheek %s %d"%(side,course),
@@ -583,12 +583,12 @@ def mount_forge():
                      (.220,.295,.130),hearth if course<3 else stone,.006,
                      rz=masonry_rng.uniform(-.008,.008))
         # Solid cheek-to-rear-wall buttress transfers chimney load into firebox.
-        for course in range(3):
+        for course in range(2):
             handlaid("Flue masonry side buttress %s %d"%(side,course),
                      (side*.640,.640,1.85+course*.165),
                      (.160,.280,.155),hearth,.006)
         box("Visible forge-throat iron edge strap "+str(side),
-            (side*.445,.415,2.23),(.033,.090,.52),steel,.006)
+            (side*.445,.415,2.08),(.033,.090,.32),steel,.006)
     # V025 repair of V024 white daylight hole and plank-like rear protrusion.
     # Real side-draft intake is recessed into a soot-dark, brick-lined channel.
     # A lower stone sill seals the daylight gap below the working smoke mouth.
@@ -607,7 +607,7 @@ def mount_forge():
                      (x,.755,z),(.273,.145,.129),
                      hearth if (course+i)%4 else stone,.005)
     # Rear smoke backplate remains sooted and vertically connected to the flue.
-    for course in range(10):
+    for course in range(7):
         z=1.795+course*.140
         rng=random.Random(27031+course*97)
         widths=[rng.uniform(.16,.30) for _ in range(5)]
@@ -624,20 +624,20 @@ def mount_forge():
     # The throat opening below the lintel is physically empty (no front hood).
     # A genuine forged lintel supports the upper shaft above working height.
     box("Blackened wrought smoke-throat lintel",
-        (0,.460,2.53),(1.31,.120,.080),steel,.008)
+        (0,.460,2.22),(1.31,.120,.080),steel,.008)
     for x in (-.50,.50):
         box("Flue lintel load transfer bracket "+str(x),
-            (x,.420,2.47),(.070,.130,.180),steel,.008)
+            (x,.420,2.18),(.070,.130,.180),steel,.008)
     # Rectangular vertical flue: four brick walls with a truly open top.
-    for course in range(5):
-        z=2.615+course*.139
+    for course in range(3):
+        z=2.305+course*.139
         rng=random.Random(27191+course*37)
         for y in (.465,.790):
             for i in range(5):
                 x=-.49+i*.245
                 handlaid("Hollow vertical flue front/rear %d %s %d"%(course,y,i),
                          (x,y,z),(.236,.135,.132),
-                         hearth if course<2 else stone,.005,
+                         hearth if course<2 else weathered,.005,
                          rz=rng.uniform(-.005,.005))
         for side in (-1,1):
             for y in (.545,.680):
@@ -645,7 +645,7 @@ def mount_forge():
                          (side*.605,y,z),(.135,.144,.132),
                          hearth if course<2 else stone,.005)
     # Metal chimney-mouth collar, four separate sides, no lid.
-    mouth_z=3.33
+    mouth_z=2.76
     for y in (.420,.835):
         box("Open chimney throat iron collar front/back "+str(y),
             (0,y,mouth_z),(1.31,.060,.052),steel,.009)
@@ -655,7 +655,7 @@ def mount_forge():
     # Darkened vertical flue straps are restrained fittings, not roof rafters.
     for side in (-1,1):
         box("Forged vertical chimney brace "+str(side),
-            (side*.635,.438,2.94),(.028,.034,.68),steel,.005)
+            (side*.635,.438,2.48),(.028,.034,.43),steel,.005)
     # Forged working-tool wall rack: visual function beats decoration.
     # A proper coal rake, poker and lifting hook are separate forged pieces.
     box("Practical side wall forge tool rack",(.93,.46,1.37),
@@ -726,7 +726,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V025","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V026","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -743,11 +743,11 @@ report={"asset":KIND,"version":"V025","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v025.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v026.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v025.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v026.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
