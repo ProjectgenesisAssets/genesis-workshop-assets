@@ -36,7 +36,6 @@ jobs:
           print("GENESIS_REAL_CORRECTION",asset,task,script,d["reason"])
           PY
           python3 -m py_compile scripts/production_asset_qa.py
-          python3 -m py_compile scripts/production_asset_qa.py
       - name: Install official Blender 4.5.13 LTS on GitHub only
         run: |
           set -euo pipefail
@@ -79,10 +78,14 @@ jobs:
             reports/production_auto/**
           retention-days: 14
           if-no-files-found: warn
-      - name: Preserve reviewed report in isolated branch, never approve automatically
-        if: success()
+      - name: Preserve objective QA or rejection in isolated branch, never approve automatically
+        if: always()
         run: |
           set -euo pipefail
+          if [[ ! -d reports/production_auto ]]; then
+            echo "QA did not produce a report; inspect build logs." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add reports/production_auto/
