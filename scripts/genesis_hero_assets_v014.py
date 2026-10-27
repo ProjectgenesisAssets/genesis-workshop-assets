@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v026")
+OUT=ROOT/("output_hero_"+KIND+"_v027")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -628,30 +628,39 @@ def mount_forge():
     for x in (-.50,.50):
         box("Flue lintel load transfer bracket "+str(x),
             (x,.420,2.18),(.070,.130,.180),steel,.008)
-    # Rectangular vertical flue: four brick walls with a truly open top.
+    # V027: real irregular running bond in the short chimney. V026 top
+    # looked like a pale, perfectly rectangular stacked barbecue block.
+    # Keep all four shaft walls and the real open chimney bore.
     for course in range(3):
         z=2.305+course*.139
         rng=random.Random(27191+course*37)
+        widths=[rng.uniform(.18,.30) for _ in range(5)]
+        factor=1.20/sum(widths)
+        positions=[]
+        left=-.60
+        for raw in widths:
+            width=raw*factor
+            positions.append((left+width/2,width))
+            left+=width
         for y in (.465,.790):
-            for i in range(5):
-                x=-.49+i*.245
+            for i,(x,width) in enumerate(positions):
                 handlaid("Hollow vertical flue front/rear %d %s %d"%(course,y,i),
-                         (x,y,z),(.236,.135,.132),
-                         hearth if course<2 else weathered,.005,
-                         rz=rng.uniform(-.005,.005))
+                         (x,y,z),(width-.012,.135,.132),
+                         hearth if course<2 or (course+i)%3 else stone,.005,
+                         rz=rng.uniform(-.009,.009))
         for side in (-1,1):
             for y in (.545,.680):
                 handlaid("Hollow flue side wall %d %s %s"%(course,side,y),
                          (side*.605,y,z),(.135,.144,.132),
-                         hearth if course<2 else stone,.005)
-    # Metal chimney-mouth collar, four separate sides, no lid.
+                         hearth if course<2 or (course+int(y*100))%3 else stone,.005)
+    # V027: thin forged lip around an open draft throat, not a broad grill rim.
     mouth_z=2.76
     for y in (.420,.835):
         box("Open chimney throat iron collar front/back "+str(y),
-            (0,y,mouth_z),(1.31,.060,.052),steel,.009)
+            (0,y,mouth_z),(1.29,.035,.032),steel,.006)
     for side in (-1,1):
         box("Open chimney throat iron collar return "+str(side),
-            (side*.630,.625,mouth_z),(.060,.440,.052),steel,.009)
+            (side*.630,.625,mouth_z),(.035,.425,.032),steel,.006)
     # Darkened vertical flue straps are restrained fittings, not roof rafters.
     for side in (-1,1):
         box("Forged vertical chimney brace "+str(side),
@@ -726,12 +735,12 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V026","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V027","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
         "quarry_wall_source":"https://polyhaven.com/a/quarry_wall",
-        "targeted_repairs":["remove barbecue-like pitched masonry hood and replace with forged metal smoke collector",
+        "targeted_repairs":["replace pale uniform chimney top with physically irregular darker running-bond masonry and slim functional open iron lip",
                             "preserve unblocked frontal working access above hot charcoal firebed",
                             "add taller functional flue, forged rivets, side braces and tool rack",
                             "apply actual CC0 quarry stone photo PBR maps with explicit fallback",
@@ -743,11 +752,11 @@ report={"asset":KIND,"version":"V026","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v026.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v027.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v026.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v027.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")

@@ -1,0 +1,20 @@
+{
+  "id": "irregular-dark-smoke-stack-v027",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-short-bonded-smoke-flue-v026",
+  "branch": "production/auto-forge-irregular-dark-smoke-stack-v027",
+  "reason": "Direct inspection of real V025→V026 four-view comparison confirms 9.98% fewer triangles and shorter chimney, but the pale regular brick stack and broad square metal mouth still read as a grill roof. Replace upper flue courses with irregular real masonry widths and mostly soot-dark bricks, slim the forged mouth ring while keeping open bore and existing low side-draft. Geometry and materials change, not a clone. No artistic approval; preserve V026 and all checkpoints.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T11:45:06.149390+00:00"
+}
