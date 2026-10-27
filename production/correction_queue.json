@@ -699,6 +699,55 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v021.glb\"))"
         }
       ]
+    },
+    {
+      "id": "handcut-leather-gusset-stitched-seams-v022",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-diagonal-hide-tension-v021",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Visual inspection of the real V021 four-view contact sheet: the gusset still resembles rigid stacked bands, the oak is pale, and no distinct sewn leather panels are legible. V022 tests four physically modeled vertical hide panel welts with linen cross-stitches, fewer nonuniform compression folds and deeper oak brown. V012 remains best provisional; V022 is only a test pending four-view visual review and GLB QA.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v021\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v022\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V021\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V021\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V022\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V022\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "rgba[:,:3]=np.stack((.47*grain+.032,\n                                     .265*grain+.012,\n                                     .125*grain+.006),axis=1)",
+          "replace": "rgba[:,:3]=np.stack((.415*grain+.026,\n                                     .218*grain+.010,\n                                     .100*grain+.005),axis=1)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "phase=8.2*math.pi*t+2.8*x+1.7*math.sin(2.6*x+1.7*y+3.5*t)\n            fold=.58*math.sin(phase)+.13*math.sin(1.71*phase+1.5*x)\n            tension=(.15+.85*math.sin(math.pi*t)**.7)*(.85-.40*x)\n            factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.047*fold*tension)",
+          "replace": "phase=5.6*math.pi*t+2.6*x+1.5*math.sin(2.6*x+1.7*y+3.5*t)\n            fold=.56*math.sin(phase)+.12*math.sin(1.71*phase+1.5*x)\n            tension=(.15+.85*math.sin(math.pi*t)**.7)*(.85-.40*x)\n            factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.060*fold*tension)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "    made_mesh(\"Visible stitch by stitch linen gusset seams\",sts_verts,sts_faces,linen,0)",
+          "replace": "    # V022 physical construction: narrow hand-cut leather join welts with individual\n    # linen cross-stitches, following actual gusset vertex positions on four seams.\n    # This is geometry exported to glTF, not a painted stripe or a 2D overlay.\n    for seam_index in (9,25,41,57):\n        seam_curve=bpy.data.curves.new(\"Handcut hide panel seam %d\"%seam_index,\"CURVE\")\n        seam_curve.dimensions=\"3D\"\n        seam_curve.bevel_depth=.0045\n        seam_curve.bevel_resolution=2\n        seam_spline=seam_curve.splines.new(\"POLY\")\n        seam_spline.points.add(layers-5)\n        for j,level in enumerate(range(2,layers-2)):\n            px,py,pz=verts[level*n+seam_index]\n            seam_spline.points[j].co=(px*1.009,py*1.009,pz,1)\n        seam_obj=bpy.data.objects.new(\"Leather stitched panel welt %d\"%seam_index,seam_curve)\n        bpy.context.collection.objects.link(seam_obj)\n        seam_obj.data.materials.append(leather)\n        bpy.ops.object.select_all(action=\"DESELECT\")\n        seam_obj.select_set(True)\n        bpy.context.view_layer.objects.active=seam_obj\n        bpy.ops.object.convert(target=\"MESH\")\n        ASSETS.append(bpy.context.object)\n        prevx,prevy=outline[(seam_index-1)%n]\n        nextx,nexty=outline[(seam_index+1)%n]\n        tx,ty=nextx-prevx,nexty-prevy\n        tl=max(.0001,math.sqrt(tx*tx+ty*ty))\n        tx/=tl;ty/=tl\n        for level in range(6,layers-5,6):\n            px,py,pz=verts[level*n+seam_index]\n            cx=px*1.014;cy=py*1.014\n            idx=len(sts_verts)\n            sts_verts.extend([(cx-.010*tx,cy-.010*ty,pz-.002),\n                              (cx+.010*tx,cy+.010*ty,pz-.002),\n                              (cx+.010*tx,cy+.010*ty,pz+.002),\n                              (cx-.010*tx,cy-.010*ty,pz+.002)])\n            sts_faces.append((idx,idx+1,idx+2,idx+3))\n    made_mesh(\"Visible stitch by stitch linen gusset seams\",sts_verts,sts_faces,linen,0)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V021\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V022\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v021.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v022.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v021.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v022.glb\"))"
+        }
+      ]
     }
   ]
 }
