@@ -1,0 +1,156 @@
+name: Genesis workshop doors V015 - four profession PBR previews
+on:
+  push:
+    branches:
+      - production/door-v015-five-workshop-materials
+    paths:
+      - scripts/puertas_talleres_variantes_v015.py
+      - .github/workflows/door-trades-v015.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: genesis-door-v015-trades-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  render:
+    strategy:
+      fail-fast: false
+      matrix:
+        trade: [carpintero, curtidor, joyero, arcanista]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    env:
+      PG_DOOR_TRADE: ${{ matrix.trade }}
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source and existing approved silhouette
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/puertas_talleres_variantes_v015.py
+          test -s previews/door_v014/front.png
+          test -s previews/door_v011/front.png
+      - name: Install Blender 4.5.13 official binary
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/door-v015-blender.tar.xz
+          mkdir -p /tmp/door-v015-blender
+          tar -xJf /tmp/door-v015-blender.tar.xz -C /tmp/door-v015-blender --strip-components=1
+          /tmp/door-v015-blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Render 4 real Cycles views plus 16 PBR maps and GLB
+        run: |
+          set -euo pipefail
+          /tmp/door-v015-blender/blender -b -t 3 --python-exit-code 1 --python scripts/puertas_talleres_variantes_v015.py
+      - name: Verify geometry lock, outputs and physically coherent PBR maps
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,json,struct
+          from PIL import Image, ImageChops
+          trade=os.environ["PG_DOOR_TRADE"]
+          p=Path("output_workshop_door_v015_"+trade)
+          audit=json.loads((p/"DESIGN_AUDIT.json").read_text())
+          report=json.loads((p/"V015_MATERIAL_TEST.json").read_text())
+          assert report["version"]=="V015" and report["profession"]==trade
+          assert report["geometry_baseline"]=="V011_USER_APPROVED" and report["material_only"]
+          assert report["exact_V175_material_applied"] is False
+          assert 10000<audit["evaluated_triangles"]<68028,audit
+          assert (p/("Workshop_Door_V015_"+trade+".blend")).stat().st_size>10000
+          glb=p/("Workshop_Door_V015_"+trade+".glb")
+          with glb.open("rb") as f: magic,version,length=struct.unpack("<III",f.read(12))
+          assert (magic,version,length)==(0x46546c67,2,glb.stat().st_size)
+          maps=[x for t in ("albedo","roughness","normal","metallic") for x in p.glob("*_"+t+".png")]
+          assert len(maps)==16,[m.name for m in maps]
+          for m in maps:
+              with Image.open(m) as im: assert im.size==(1024,1024),m
+          for name,out_name in [("front","front_orthographic"),("three_quarter","three_quarter"),("rear","rear_orthographic"),("side","side_orthographic")]:
+              with Image.open("previews/door_v014/"+name+".png") as ref,Image.open(p/(out_name+".png")) as cand:
+                  assert ref.size==cand.size,(name,ref.size,cand.size)
+                  a=ref.getchannel("A").point(lambda v:255 if v>127 else 0)
+                  b=cand.getchannel("A").point(lambda v:255 if v>127 else 0)
+                  u=ImageChops.lighter(a,b);i=ImageChops.darker(a,b)
+                  iou=sum(i.histogram()[128:])/max(1,sum(u.histogram()[128:]))
+                  print("PROFESSION",trade,"APPROVED_SILHOUETTE",name,round(iou,6))
+                  assert iou>=.995,(trade,name,iou)
+          print("PBR_VARIANT_REVIEW_READY",trade,glb.stat().st_size)
+          PY
+      - name: Upload original 3D+PBR+render artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: door-v015-${{ matrix.trade }}
+          path: |
+            output_workshop_door_v015_${{ matrix.trade }}/*.png
+            output_workshop_door_v015_${{ matrix.trade }}/*.glb
+            output_workshop_door_v015_${{ matrix.trade }}/*.json
+            output_workshop_door_v015_${{ matrix.trade }}/*.blend
+          retention-days: 7
+          if-no-files-found: warn
+  gallery:
+    needs: render
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: door-v015-*
+          path: evidence
+      - name: Publish five-workshop true-render photo contact sheets
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          ref=Path("previews/door_v014")
+          target=Path("previews/door_v015_profiles")
+          target.mkdir(parents=True,exist_ok=True)
+          trades=[("Herrero",ref),("Carpintero",Path("evidence/door-v015-carpintero")),
+             ("Curtidor",Path("evidence/door-v015-curtidor")),
+             ("Joyero",Path("evidence/door-v015-joyero")),
+             ("Arcanista",Path("evidence/door-v015-arcanista"))]
+          names={"front":"front_orthographic","three_quarter":"three_quarter",
+                 "rear":"rear_orthographic","side":"side_orthographic"}
+          width,height=370,518
+          all_views=Image.new("RGB",(width*len(trades),height*len(names)),(25,28,31))
+          fronts=Image.new("RGB",(width*len(trades),height),(25,28,31))
+          draw=ImageDraw.Draw(all_views);frontdraw=ImageDraw.Draw(fronts)
+          for col,(label,folder) in enumerate(trades):
+              for row,view in enumerate(names):
+                  path=folder/(view+".png" if label=="Herrero" else names[view]+".png")
+                  assert path.stat().st_size>10000,path
+                  with Image.open(path) as im:
+                      im=im.convert("RGBA")
+                      im.thumbnail((344,460),Image.Resampling.LANCZOS)
+                      tile=Image.new("RGBA",(width,height),(43,46,50,255))
+                      tile.alpha_composite(im,((width-im.width)//2,12+(460-im.height)//2))
+                  x=col*width;y=row*height
+                  all_views.paste(tile.convert("RGB"),(x,y))
+                  draw.text((x+17,y+478),label+" - "+view,fill=(244,236,213))
+                  if view=="front":
+                      fronts.paste(tile.convert("RGB"),(x,0))
+                      frontdraw.text((x+17,478),label,fill=(244,236,213))
+                  if view=="three_quarter":
+                      tile.convert("RGB").save(target/(label.lower()+"_hero.jpg"),quality=88,optimize=True)
+          all_views.save(target/"five_workshops_all_views.jpg",quality=84,optimize=True)
+          fronts.save(target/"five_workshops_front.jpg",quality=89,optimize=True)
+          print("FINAL_JPG_FILES",[(p.name,p.stat().st_size) for p in target.glob("*.jpg")])
+          PY
+      - name: Publish candidate images only, never overwrite approved V014
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v015_profiles
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish comparative real renders for five workshop door material proposals [skip ci]'
+            git fetch origin production/door-v015-five-workshop-materials
+            git rebase origin/production/door-v015-five-workshop-materials
+            git push origin HEAD:production/door-v015-five-workshop-materials
+          fi
