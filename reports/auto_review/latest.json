@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T09:01:25.343496+00:00",
+  "generated_at": "2026-10-27T09:03:11.840309+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -19,17 +19,17 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-soft-gusset-warm-oak-v020",
-      "run_id": 40476064778,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40476064778",
-      "commit": "bb9f67d825085d21d5d50b4824e3c48c24c1e9f9",
-      "completed_at": "2026-10-27T08:51:52Z",
-      "preview_directory": "previews/production_auto/bellows_soft-gusset-warm-oak-v020",
+      "branch": "production/auto-bellows-diagonal-hide-tension-v021",
+      "run_id": 40477111243,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40477111243",
+      "commit": "e5144622e03cd16153800c88bfbe669c92f3b2fa",
+      "completed_at": "2026-10-27T09:03:04Z",
+      "preview_directory": "previews/production_auto/bellows_diagonal-hide-tension-v021",
       "view_paths": {
-        "front": "previews/production_auto/bellows_soft-gusset-warm-oak-v020/front.png",
-        "three_quarter": "previews/production_auto/bellows_soft-gusset-warm-oak-v020/three_quarter.png",
-        "rear": "previews/production_auto/bellows_soft-gusset-warm-oak-v020/rear.png",
-        "detail": "previews/production_auto/bellows_soft-gusset-warm-oak-v020/detail.png"
+        "front": "previews/production_auto/bellows_diagonal-hide-tension-v021/front.png",
+        "three_quarter": "previews/production_auto/bellows_diagonal-hide-tension-v021/three_quarter.png",
+        "rear": "previews/production_auto/bellows_diagonal-hide-tension-v021/rear.png",
+        "detail": "previews/production_auto/bellows_diagonal-hide-tension-v021/detail.png"
       },
       "status": "review_ready"
     },
