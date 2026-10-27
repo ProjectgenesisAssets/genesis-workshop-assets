@@ -1,0 +1,13 @@
+{
+  "id": "handlaid-masonry-v012",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-ember-fracture-readability-v011",
+  "branch": "production/auto-forge-handlaid-masonry-v012",
+  "reason": "User rejected stylized forge. V012 replaces perfect industrial smoke hood and round flue with bonded irregular refractory masonry, square hollow chimney, muted stone PBR, rubble foundation and retains heat-sooted working hearth; no artistic approval.",
+  "edits": [
+    "scripts/genesis_hero_assets_v012.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "comparison": "V010 baseline four views; derived from V011 generator; V011 V012 artistic decision remains human",
+  "created_utc": "2026-10-27T02:45:00Z"
+}
