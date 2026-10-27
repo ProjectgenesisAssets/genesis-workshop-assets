@@ -121,21 +121,23 @@ def material(name, base, metallic, roughness, seed, surface):
         sheets=sat(.50+.34*cleavage+.20*cleavage2+.42*strata)
         pores=sat(.48+.29*pore+.18*fine)
         inclusion=sat((.58*macro+.34*broad+.15*fine+.08))
-        veinfield=np.sin(2*np.pi*(3.2*x+1.25*y+.44*macro))*np.cos(2*np.pi*(2.3*y-.82*x+.40*broad))
-        core=np.exp(-((np.abs(veinfield)-.16)/.047)**2)
-        branch=np.exp(-((np.abs(veinfield)-.39)/.055)**2)*.38
-        halo=np.exp(-((np.abs(veinfield)-.16)/.19)**2)*.29
-        glow=sat((core+branch+halo)*sat(.67+.50*inclusion))
-        modulation=np.clip(.53+.44*sheets+.30*strata+.16*pores,.27,1.40)
-        rough=np.clip(roughness+.11*pores+.10*fine-.11*inclusion-.17*glow,.38,.96)
+        # Sparse seams from large-scale mineral pressure, NOT repeating wave
+        # fields or decorative neon loops. A few deep luminous inclusions only.
+        veinfield=.70*macro+.23*broad+.07*fine
+        core=np.exp(-((veinfield-.27)/.045)**2)*sat(.54+.35*macro)
+        branch=np.exp(-((veinfield+.42)/.033)**2)*.25
+        halo=np.exp(-((veinfield-.27)/.18)**2)*.13
+        glow=sat((core+branch+halo)*sat(.38+.45*inclusion))
+        modulation=np.clip(.44+.38*sheets+.24*strata+.13*pores,.24,1.10)
+        rough=np.clip(roughness+.11*pores+.10*fine-.07*inclusion-.07*glow,.49,.96)
         metallicmap=np.full((n,n),metallic,dtype=np.float32)
-        bump=.47+.20*sheets+.10*cleavage2+.08*pores+.13*fine-.13*core
+        bump=.47+.11*sheets+.04*cleavage2+.06*pores+.09*fine-.07*core
         colored=[.72,1.06,1.15]
         # Material body is dark blue-violet mineral, cyan from internal fractures.
         color=np.stack([sat(base[k]*modulation*colored[k]) for k in range(3)],axis=-1)
-        color += np.stack((.008*inclusion+.025*glow,.024*inclusion+.21*glow,.049*inclusion+.38*glow),axis=-1)
+        color += np.stack((.006*inclusion+.012*glow,.014*inclusion+.060*glow,.025*inclusion+.13*glow),axis=-1)
         color=np.clip(color,0,1)
-        emission=np.stack((.035*glow,.72*glow,1.0*glow),axis=-1)
+        emission=np.stack((.015*glow,.34*glow,.55*glow),axis=-1)
         print("V024_LITHIC_GLOW",name,float(glow.mean()),float((glow>.4).mean()),flush=True)
     else:
         # Metallurgy: two oxide scales, micro-pitting, impact abrasion and patches
