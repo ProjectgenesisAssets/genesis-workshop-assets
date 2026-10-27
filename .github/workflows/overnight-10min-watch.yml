@@ -1,48 +1,57 @@
-name: Genesis 10-minute latest production branch monitor
+name: Genesis ten-minute correction executor
 on:
   push:
     paths:
       - '.github/workflows/overnight-10min-watch.yml'
-      - 'scripts/overnight_watch.py'
+      - 'scripts/production_cycle.py'
+      - 'production/correction_queue.json'
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
 permissions:
-  actions: read
-  contents: read
+  contents: write
+  actions: write
+concurrency:
+  group: genesis-production-cycle
+  cancel-in-progress: false
 jobs:
-  monitor:
+  execute-reviewed-corrections:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Limit nightly schedule to Oct 26-27 Argentina night only
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Restrict overnight execution through 09:00 Argentina, 27 October
         id: window
         shell: bash
         run: |
           set -euo pipefail
           now="$(date -u +%s)"
-          from="$(date -u -d '2026-10-27 00:00:00' +%s)"
-          until="$(date -u -d '2026-10-27 12:00:00' +%s)"
-          if [[ "${{ github.event_name }}" != "schedule" ]] || (( now >= from && now <= until )); then
+          cutoff="$(date -u -d '2026-10-27 12:00:00' +%s)"
+          if (( now <= cutoff )); then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "Outside authorized overnight window." >> "$GITHUB_STEP_SUMMARY"
+            echo "Overnight production window closed." >> "$GITHUB_STEP_SUMMARY"
           fi
-      - name: Inspect newest independent runs and QA receipts for all four assets
+      - name: Run actual queued generator corrections and dispatch per asset
         if: steps.window.outputs.run == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
-          python3 scripts/overnight_watch.py
-          cat reports/overnight_status.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload checkpoint and errors for this ten-minute check
+          set -euo pipefail
+          python3 -m py_compile scripts/production_cycle.py
+          python3 scripts/production_cycle.py
+          cat reports/production_cycle.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Persist cycle execution receipt
         if: steps.window.outputs.run == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: project-genesis-watch-${{ github.run_id }}
-          path: |
-            reports/overnight_status.*
+          name: genesis-cycle-${{ github.run_id }}
+          path: reports/production_cycle.json
           retention-days: 1
           if-no-files-found: warn
