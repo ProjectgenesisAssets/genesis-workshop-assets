@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T11:20:50.380774+00:00",
+  "generated_at": "2026-10-27T11:27:05.115335+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -19,17 +19,17 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-opened-wedge-handbellows-v023",
-      "run_id": 40486683904,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40486683904",
-      "commit": "61772b9656177c328eeebf1fb4d367fae64b5e0f",
-      "completed_at": "2026-10-27T10:18:27Z",
-      "preview_directory": "previews/production_auto/bellows_opened-wedge-handbellows-v023",
+      "branch": "production/auto-bellows-diagonal-handcut-hide-creases-v025",
+      "run_id": 40495599086,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40495599086",
+      "commit": "19cdcc5dc4f4a0afbfe5d2b5f7c43d3896c54d2f",
+      "completed_at": "2026-10-27T11:26:53Z",
+      "preview_directory": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025",
       "view_paths": {
-        "front": "previews/production_auto/bellows_opened-wedge-handbellows-v023/front.png",
-        "three_quarter": "previews/production_auto/bellows_opened-wedge-handbellows-v023/three_quarter.png",
-        "rear": "previews/production_auto/bellows_opened-wedge-handbellows-v023/rear.png",
-        "detail": "previews/production_auto/bellows_opened-wedge-handbellows-v023/detail.png"
+        "front": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/front.png",
+        "three_quarter": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/three_quarter.png",
+        "rear": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/rear.png",
+        "detail": "previews/production_auto/bellows_diagonal-handcut-hide-creases-v025/detail.png"
       },
       "status": "review_ready"
     },
