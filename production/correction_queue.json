@@ -85,22 +85,12 @@
       "asset": "forge",
       "base_branch": "production/auto-forge-ashlar-hammered-hood-v015",
       "workflow": "production-asset-iteration.yml",
-      "reason": "Actual V015 four-view render inspection: masonry still reads as uniform Lego courses and coal bed looks inactive; increase chipped hand-hewn edge relief moderately, introduce physically curved hammered hood panels and visible ember microfractures without cartoon glow. Preserve V015 checkpoint; no artistic approval.",
+      "reason": "Actual V015 four-view inspection: exposed masonry still reads as machined brick, coal bed appears inactive, hood looks too planar. Increase chipped edge bevels, physically curve hammered hood and strengthen only ember microfractures (no detached glow). Preserve V015; no artistic approval.",
       "edits": [
         {
           "path": "scripts/genesis_hero_assets_v014.py",
           "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v015\")",
           "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v016\")"
-        },
-        {
-          "path": "scripts/genesis_hero_assets_v014.py",
-          "find": "size=tuple(max(.035,d*(1+rng.uniform(-.105,.105))) for d in dims)",
-          "replace": "size=tuple(max(.035,d*(1+rng.uniform(-.14,.14))) for d in dims)"
-        },
-        {
-          "path": "scripts/genesis_hero_assets_v014.py",
-          "find": "offset=(rng.uniform(-.009,.009),rng.uniform(-.008,.008),rng.uniform(-.006,.006))",
-          "replace": "offset=(rng.uniform(-.012,.012),rng.uniform(-.011,.011),rng.uniform(-.008,.008))"
         },
         {
           "path": "scripts/genesis_hero_assets_v014.py",
