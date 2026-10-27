@@ -45,7 +45,7 @@
       "id": "warm-oak-organic-hide-v014",
       "asset": "bellows",
       "base_branch": "production/auto-bellows-leather-pbr-contrast-v012",
-      "workflow": "Actual V012/V013 four-view comparison: oak board still resembles grey stone, and five leather compression rings are unnaturally uniform; V013 darkened all folds and worsened leather readability. Bake warm photographic oak albedo with preserved scanned luminance detail and phase-vary hide folds, keeping V012 as best provisional.",
+      "workflow": "production-asset-iteration.yml",
       "edits": [
         {
           "path": "scripts/genesis_bellows_art_v012.py",
@@ -77,7 +77,8 @@
           "find": "filepath=str(OUT/(KIND+\"_hero_v012.glb\"))",
           "replace": "filepath=str(OUT/(KIND+\"_hero_v014.glb\"))"
         }
-      ]
+      ],
+      "reason": "Actual V012/V013 four-view comparison: oak board still resembles grey stone, and five leather compression rings are unnaturally uniform; V013 darkened all folds and worsened leather readability. Bake warm photographic oak albedo with preserved scanned luminance detail and phase-vary hide folds, keeping V012 as best provisional."
     }
   ]
 }
