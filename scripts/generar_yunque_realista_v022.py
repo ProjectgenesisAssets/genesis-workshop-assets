@@ -607,7 +607,7 @@ scene.render.image_settings.file_format = "PNG"
 scene.render.image_settings.color_mode = "RGBA"
 scene.render.film_transparent = True
 scene.view_settings.view_transform = "AgX"
-scene.view_settings.look = "Medium High Contrast"
+scene.view_settings.look = "AgX - Medium High Contrast"
 scene.view_settings.exposure = -.01
 scene.view_settings.gamma = 1
 
