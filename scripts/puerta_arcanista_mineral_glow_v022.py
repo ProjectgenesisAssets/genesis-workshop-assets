@@ -523,6 +523,20 @@ for ob in objects:
         bpy.context.view_layer.objects.active=ob
         bpy.ops.object.convert(target="MESH")
 
+# UVs must exist BEFORE Cycles preview: otherwise image-node textures can
+# collapse to constant samples and misrepresent both mineral PBR and emission.
+if TRADE=="arcanista":
+    for ob in root.children:
+        if ob.type!="MESH": continue
+        bpy.ops.object.select_all(action="DESELECT")
+        ob.select_set(True)
+        bpy.context.view_layer.objects.active=ob
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.uv.smart_project(island_margin=.015)
+        bpy.ops.object.mode_set(mode="OBJECT")
+    print("V024_UV_CREATED_BEFORE_RENDER",len(root.children),flush=True)
+
 def light(loc,power,size):
     ld=bpy.data.lights.new("studio area","AREA")
     obj=bpy.data.objects.new("studio area",ld)
