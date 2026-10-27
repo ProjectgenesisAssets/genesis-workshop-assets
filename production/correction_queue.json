@@ -909,6 +909,45 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v025.glb\"))"
         }
       ]
+    },
+    {
+      "id": "cross-stitched-hide-seams-v024",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-opened-wedge-handbellows-v023",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Real V022→V023 four-view review found a mechanically improved wedge but rigid dotted linen seams. Source inspection confirms each seam stitch is a single flat rectangular quad. Replace every seam dash with two raised crossing linen ribbons in a single exported mesh, leaving leather wedge/wood unchanged. Distinct geometric repair; no artistic approval until V023→V024 renders are inspected.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v023\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v024\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            idx=len(sts_verts)\n            sts_verts.extend([(cx-.010*tx,cy-.010*ty,pz-.002),\n                              (cx+.010*tx,cy+.010*ty,pz-.002),\n                              (cx+.010*tx,cy+.010*ty,pz+.002),\n                              (cx-.010*tx,cy-.010*ty,pz+.002)])\n            sts_faces.append((idx,idx+1,idx+2,idx+3))",
+          "replace": "            # V024: two raised, crossing linen threads; no flat rectangular\n            # dash pretending to be a hand stitch. Both threads remain one mesh.\n            nx,ny=-ty,tx\n            for slope in (-1,1):\n                idx=len(sts_verts)\n                z0=pz-.006*slope+.002\n                z1=pz+.006*slope+.002\n                half_width=.0017\n                sts_verts.extend([\n                    (cx-.010*tx-half_width*nx,cy-.010*ty-half_width*ny,z0),\n                    (cx-.010*tx+half_width*nx,cy-.010*ty+half_width*ny,z0),\n                    (cx+.010*tx+half_width*nx,cy+.010*ty+half_width*ny,z1),\n                    (cx+.010*tx-half_width*nx,cy+.010*ty-half_width*ny,z1)])\n                sts_faces.append((idx,idx+1,idx+2,idx+3))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V023\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V024\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "\"targeted_repairs\":[\"replace smooth leather wedge with five volumetric compression waves\",",
+          "replace": "\"targeted_repairs\":[\"replace flat dotted seam quads with two physically raised crossed linen threads per stitch\","
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v023.blend\"",
+          "replace": "KIND+\"_hero_v024.blend\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v023.glb\"",
+          "replace": "KIND+\"_hero_v024.glb\""
+        }
+      ]
     }
   ]
 }
