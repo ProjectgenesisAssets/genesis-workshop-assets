@@ -1,7 +1,7 @@
 name: Genesis Arcanist V020 - weathered blue oxidized steel from CC0 photo PBR
 on:
   push:
-    branches: [production/door-v020-scanned-iron-arcanist]
+    branches: [production/door-v020-scanned-blue-oxidation]
     paths:
       - scripts/puerta_arcanista_scanned_pbr_v020.py
       - scripts/download_polyhaven_pbr_v020.py
@@ -138,7 +138,7 @@ jobs:
           git add previews/door_v020_scan
           if ! git diff --cached --quiet; then
             git commit -m 'V020 Arcanist real photographed steel Cycles review [skip ci]'
-            git fetch origin production/door-v020-scanned-iron-arcanist
-            git rebase origin/production/door-v020-scanned-iron-arcanist
-            git push origin HEAD:production/door-v020-scanned-iron-arcanist
+            git fetch origin production/door-v020-scanned-blue-oxidation
+            git rebase origin/production/door-v020-scanned-blue-oxidation
+            git push origin HEAD:production/door-v020-scanned-blue-oxidation
           fi
