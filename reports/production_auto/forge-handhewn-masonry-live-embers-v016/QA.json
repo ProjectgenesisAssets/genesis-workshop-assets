@@ -1,0 +1,69 @@
+{
+  "asset": "forge",
+  "task_id": "handhewn-masonry-live-embers-v016",
+  "source_sha": "2db80f8b4f76edc2e2f93e1c95e98947b004220a",
+  "baseline": "previews/heroes_v010/forge",
+  "candidate": "output_hero_forge_v016",
+  "glb": "forge_hero_v016.glb",
+  "blend": "forge_hero_v016.blend",
+  "glb_stats": {
+    "triangles": 68186,
+    "meshes": 314,
+    "materials": 5,
+    "base_color_textured_materials": 5,
+    "embedded_images": 16,
+    "texture_bindings": {
+      "forge_heat_blackened_brick": {
+        "base_color_image": "forge_heat_blackened_brick_albedo",
+        "emissive_texture": false
+      },
+      "forge_aged_refractory_sandstone": {
+        "base_color_image": "quarry_wall_CC0_albedo_1k",
+        "emissive_texture": false
+      },
+      "forge_hammered_hood_black_iron": {
+        "base_color_image": "forge_hammered_hood_black_iron_albedo",
+        "emissive_texture": false
+      },
+      "forge_cracked_hot_charcoal_ember_map": {
+        "base_color_image": "forge_cracked_hot_charcoal_ember_map_albedo",
+        "emissive_texture": true
+      },
+      "forge_real_charcoal_porous": {
+        "base_color_image": "forge_real_charcoal_porous_albedo",
+        "emissive_texture": false
+      }
+    }
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.02989,
+      "silhouette_iou": null
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.03621,
+      "silhouette_iou": null
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.03357,
+      "silhouette_iou": null
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.08038,
+      "silhouette_iou": null
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": false,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
