@@ -1,5 +1,5 @@
 name: Genesis isolated asset correction build - real Blender 4.5.13
-# Branch-specific dispatch: forge photostone-mass V013, no shared generator edits.
+# Branch-specific retry: forge V013 scan bound; fix audit provenance scope.
 on:
   push:
     branches:
