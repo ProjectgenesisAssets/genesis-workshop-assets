@@ -43,29 +43,23 @@ def api(path: str) -> dict:
     return json.loads(result.stdout)
 
 def read_blob(branch: str, path: str) -> bytes | None:
-    # Repo contents API returns base64 only for ordinary-size review PNGs.
-    import base64
-    resource = ("/repos/" + REPO + "/contents/" + urllib.parse.quote(path, safe="/")
-                + "?ref=" + urllib.parse.quote(branch, safe=""))
+    # GitHub Contents API omits inline base64 for PNGs over 1MB.
+    # Download the actual image bytes using the canonical GitHub raw URL.
+    path_fragment = "/".join(urllib.parse.quote(part, safe="") for part in path.split("/"))
+    url = "https://raw.githubusercontent.com/" + REPO + "/" + urllib.parse.quote(branch, safe="/") + "/" + path_fragment
+    headers = {"User-Agent": "GenesisArtReview/1.0"}
+    token = os.environ.get("GH_TOKEN", "")
+    if token:
+        headers["Authorization"] = "Bearer " + token
     try:
-        result = api(resource)
-        if result.get("encoding") == "base64" and result.get("content"):
-            return base64.b64decode(result["content"])
-        # GitHub contents API stops embedding base64 for larger images.
-        # Download from the trusted raw.githubusercontent.com URL instead.
-        url = result.get("download_url") or ""
-        parsed = urllib.parse.urlparse(url)
-        if parsed.scheme != "https" or parsed.hostname != "raw.githubusercontent.com":
-            return None
-        token = os.environ.get("GH_TOKEN", "")
-        headers = {"User-Agent": "genesis-review-handoff"}
-        if token:
-            headers["Authorization"] = "Bearer " + token
         request = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(request, timeout=25) as response:
-            blob = response.read(12 * 1024 * 1024 + 1)
-        return blob if 0 < len(blob) <= 12 * 1024 * 1024 else None
-    except (subprocess.CalledProcessError, ValueError, KeyError, OSError, urllib.error.URLError):
+        with urllib.request.urlopen(request, timeout=45) as response:
+            data = response.read(12_000_000)
+        if not data.startswith(bytes.fromhex("89504e470d0a1a0a")):
+            raise ValueError("Preview is not a PNG: " + path)
+        return data
+    except (OSError, ValueError, urllib.error.URLError) as exc:
+        print("PREVIEW_DOWNLOAD_ERROR", branch, path, str(exc)[:120])
         return None
 
 def candidates() -> dict:
