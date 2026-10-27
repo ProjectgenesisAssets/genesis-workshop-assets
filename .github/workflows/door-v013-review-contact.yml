@@ -51,7 +51,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add previews/door_v013/compare_v011_v013.jpg previews/door_v013/hero_review.jpg
+          git add previews/door_v013/compare_v012_v013.jpg previews/door_v013/hero_review.jpg
           if ! git diff --cached --quiet; then
             git commit -m 'Publish JPG render comparison V012 versus V013 without altering approved silhouette [skip ci]'
             git fetch origin production/door-v013-dark-forged-iron-local-rust
