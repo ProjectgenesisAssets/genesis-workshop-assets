@@ -12,6 +12,8 @@ on:
       - 'Genesis isolated asset correction build - real Blender 4.5.13'
       - 'Genesis Door V011 triangle optimization with silhouette QA'
       - 'Project Genesis - Yunque medieval realista V022'
+      - 'Genesis Door V013 dark iron localized rust — geometry locked'
+      - 'Project Genesis - Yunque medieval realista V023'
     types: [completed]
   workflow_dispatch:
 permissions:
