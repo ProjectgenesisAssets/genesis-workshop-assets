@@ -1,5 +1,25 @@
 {
   "schema": 1,
   "description": "Only reviewed, exact generator corrections go here. The 10-minute executor never invents artistic scores or relaunches identical models.",
-  "tasks": []
+  "tasks": [
+    {
+      "id": "leather-pbr-contrast-v012",
+      "asset": "bellows",
+      "base_branch": "production/bellows-v012-leather-contrast",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Review of four actual V011 renders: leather gusset is too similar to oak boards. Bake scanned oxblood-darkened leather into its own PNG and bind as GLB baseColorTexture; preserve V011 as baseline.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "        if \"oak\" in base_material.name:\n            # V012: physically bake the aged-oak stain into an actual 1K PNG.\n            # glTF cannot reliably serialize Blender's MixRGB node graph.\n            # Keep the scanned photographic grain and apply linear RGB stain.\n            w,h=img.size\n            src=np.empty(w*h*4,dtype=np.float32)\n            img.pixels.foreach_get(src)\n            rgba=src.reshape((-1,4))\n            rgba[:,:3]*=np.array((.56,.43,.32),dtype=np.float32)\n            rgba[:,:3]=np.clip(rgba[:,:3],0,1)\n            baked=bpy.data.images.new(\"bellows_aged_oak_baked_albedo_V012\",width=w,height=h,alpha=True)\n            baked.pixels.foreach_set(src)\n            baked.filepath_raw=str(TEX/\"bellows_aged_oak_baked_albedo_V012.png\")\n            baked.file_format=\"PNG\"\n            baked.save()\n            baked.pack()\n            slots[0].image=baked\n            bs=base_material.node_tree.nodes.get(\"Principled BSDF\")\n            links=base_material.node_tree.links\n            links.new(slots[0].outputs[\"Color\"],bs.inputs[\"Base Color\"])\n            MAPS.append(str((TEX/\"bellows_aged_oak_baked_albedo_V012.png\").relative_to(OUT)))\n",
+          "replace": "        if \"oak\" in base_material.name or \"leather\" in base_material.name:\n            # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.\n            # The original V011 leather JPG remained light tan and resembled timber.\n            is_oak=\"oak\" in base_material.name\n            stain=(.56,.43,.32) if is_oak else (.48,.22,.20)\n            baked_name=\"bellows_aged_oak_baked_albedo_V012\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V012\"\n            w,h=img.size\n            src=np.empty(w*h*4,dtype=np.float32)\n            img.pixels.foreach_get(src)\n            rgba=src.reshape((-1,4))\n            rgba[:,:3]*=np.array(stain,dtype=np.float32)\n            rgba[:,:3]=np.clip(rgba[:,:3],0,1)\n            baked=bpy.data.images.new(baked_name,width=w,height=h,alpha=True)\n            baked.pixels.foreach_set(src)\n            baked.filepath_raw=str(TEX/(baked_name+\".png\"))\n            baked.file_format=\"PNG\"\n            baked.save()\n            baked.pack()\n            slots[0].image=baked\n            bs=base_material.node_tree.nodes.get(\"Principled BSDF\")\n            links=base_material.node_tree.links\n            links.new(slots[0].outputs[\"Color\"],bs.inputs[\"Base Color\"])\n            MAPS.append(str((TEX/(baked_name+\".png\")).relative_to(OUT)))\n"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "\"bake aged-oak stain into packed photographic albedo PNG for glTF compatibility\"",
+          "replace": "\"bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs\""
+        }
+      ]
+    }
+  ]
 }
