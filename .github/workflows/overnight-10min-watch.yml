@@ -46,6 +46,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: project-genesis-watch-${{ github.run_id }}
-          path: reports/overnight_status.*
+          path: |
+            reports/overnight_status.*
+            reports/visual_quality.*
           retention-days: 1
           if-no-files-found: warn
