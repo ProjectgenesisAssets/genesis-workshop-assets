@@ -92,6 +92,22 @@ def main():
     }
     preferred=preferred_baselines.get((asset,args.task_id))
     baseline=preferred if preferred and all((preferred/(v+".png")).is_file() for v in VIEWS[asset]) else None
+    # Automatically prefer the nearest preceding production checkpoint.
+    # Future V017/V018 candidates must not silently compare against old V010.
+    if baseline is None and asset in ("forge", "bellows"):
+        m=re.search(r"v([0-9]+)", args.task_id)
+        if m:
+            current_version=int(m.group(1))
+            checkpoints=[]
+            for folder in Path("previews/production_auto").glob(asset+"_*"):
+                found=re.search(r"v([0-9]+)$", folder.name)
+                if not found: continue
+                version=int(found.group(1))
+                if version>=current_version: continue
+                if all((folder/(view+".png")).is_file() for view in VIEWS[asset]):
+                    checkpoints.append((version,folder))
+            if checkpoints:
+                baseline=max(checkpoints,key=lambda item:item[0])[1]
     if baseline is None:
         for folder in preview_candidates(asset):
             base=folder/asset if asset in ("forge","bellows") else folder
