@@ -1,0 +1,12 @@
+{
+  "id": "oak-grain-folds-v013",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-leather-pbr-contrast-v012",
+  "branch": "production/auto-bellows-oak-grain-folds-v013",
+  "reason": "Actual V012 four-view inspection: top oak board reads pale gray/stone-like and five leather folds appear mechanically parallel. Warm the scanned oak albedo, enhance existing photographic grain, introduce subtle hide fold phase variation; preserve verified oxblood leather GLB binding.",
+  "edits": [
+    "scripts/genesis_bellows_art_v013.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T02:50:00Z"
+}
