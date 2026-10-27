@@ -1,0 +1,21 @@
+{
+  "id": "supple-hide-warm-oak-v015",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-warm-oak-organic-hide-v014",
+  "branch": "production/auto-bellows-supple-hide-warm-oak-v015",
+  "reason": "Actual V014 four-view render inspection: five repeated leather pleats still look like stacked wooden slats; oak face remains cool grey. Reduce compression wave count and drift phase organically; warm scanned oak albedo moderately without changing approved functional silhouette. Preserve V014; no artistic approval.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T03:40:22.222862+00:00"
+}
