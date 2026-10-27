@@ -782,6 +782,55 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v023.glb\"))"
         }
       ]
+    },
+    {
+      "id": "low-side-draft-smoke-inlet-v024",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-open-hearth-masonry-throat-v023",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Actual V022→V023 comparison: removing the BBQ-like roof was a substantial improvement in concept, but V023 shows a high disconnected chimney window above the fire, so smoke cannot plausibly enter from the hearth. Reference traditional side-draft forge chimney practice: smoke entrance begins level with or just above the fire. V024 opens the lower central rear masonry, replaces solid mortar core with side returns, builds a continuous soot-lined low duct behind the fire and shifts the tuyere to one side. Preserve V022/V023; no artistic approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v023\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v024\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "            x=left+width/2\n            left+=width\n            block_mat=stone if course==5 and i==2 else hearth",
+          "replace": "            x=left+width/2\n            left+=width\n            # Functional side-draft smoke entrance, low beside the firebed:\n            # leave a central 0.8m opening in the lower rear masonry courses.\n            if course<5 and abs(x)<.41: continue\n            block_mat=stone if course==5 and i==2 else hearth"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    box(\"Soot dark refractory mortar behind rear brick joints\",\n        (0,.540,1.228),(1.71,.055,1.06),hearth,.003)",
+          "replace": "    # Two structural mortar cores, NOT a solid panel covering the smoke mouth.\n    for side in (-1,1):\n        box(\"Side mortar core around open smoke inlet \"+str(side),\n            (side*.630,.540,1.228),(.44,.055,1.06),hearth,.003)\n    box(\"Masonry lintel core over open smoke inlet\",\n        (0,.540,1.650),(1.71,.055,.16),hearth,.003)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    # Rear smoke backplate remains sooted and vertically connected to the flue.\n    for course in range(10):",
+          "replace": "    # A real low side-draft channel begins immediately behind the firebed.\n    # The smoke mouth is now open at z~0.8, not a window 1m above the coals.\n    for course in range(7):\n        z=.88+course*.135\n        for side in (-1,1):\n            handlaid(\"Lower smoke inlet return cheek %s %d\"%(side,course),\n                     (side*.510,.785,z),(.155,.220,.129),hearth,.005)\n        handlaid(\"Sooted inner back of low smoke duct \"+str(course),\n                 (0,.915,z),(1.12,.135,.129),hearth,.005)\n    # Rear smoke backplate remains sooted and vertically connected to the flue.\n    for course in range(10):"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "cyl(\"Air intake tuyere\",(0,.625,.79),.067,.21,steel,32,",
+          "replace": "cyl(\"Air intake tuyere\",(.49,.625,.79),.067,.21,steel,32,"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V023\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V024\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v023.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v024.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v023.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v024.glb\"))"
+        }
+      ]
     }
   ]
 }
