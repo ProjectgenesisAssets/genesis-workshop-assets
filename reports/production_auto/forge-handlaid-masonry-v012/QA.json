@@ -1,0 +1,46 @@
+{
+  "asset": "forge",
+  "task_id": "handlaid-masonry-v012",
+  "source_sha": "6a25cd4035edb8d6c3d4df4442c73013a56a35e5",
+  "baseline": "previews/heroes_v010/forge",
+  "candidate": "output_hero_forge_v012",
+  "glb": "forge_hero_v012.glb",
+  "blend": "forge_hero_v012.blend",
+  "glb_stats": {
+    "triangles": 80664,
+    "meshes": 397,
+    "materials": 7,
+    "base_color_textured_materials": 7,
+    "embedded_images": 22
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.02027,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.02479,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.02725,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.06275,
+      "silhouette_iou": 1.0
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Real Blender renders, objective technical checks only; final artistic approval is human."
+}
