@@ -1,0 +1,64 @@
+name: Arcanist V024 - luminous metamorphic material preview
+on:
+  push:
+    branches: [production/door-v024-arcane-lithic-material]
+    paths:
+      - scripts/puerta_arcanista_mineral_glow_v022.py
+      - .github/workflows/door-arcanist-v024-lithic-preview.yml
+permissions:
+  contents: write
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      PG_DOOR_TRADE: arcanista
+      PG_PBR_RES: '1536'
+      PG_CYCLES_SAMPLES: '32'
+      PG_RENDER_WIDTH: '900'
+      PG_RENDER_HEIGHT: '1200'
+      PG_ARCANE_EMISSIVE_STRENGTH: '3.5'
+      PG_REVIEW_ONLY: '1'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-v024.tar.xz
+          mkdir -p /tmp/blender-v024
+          tar -xJf /tmp/blender-v024.tar.xz -C /tmp/blender-v024 --strip-components=1
+      - name: Render material-only candidate
+        run: /tmp/blender-v024/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_arcanista_mineral_glow_v022.py
+      - name: Prepare review image
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          source=Path('output_workshop_door_v022_arcanista/three_quarter.png')
+          assert source.is_file() and source.stat().st_size>100000
+          folder=Path('previews/door_v024_lithic')
+          folder.mkdir(parents=True,exist_ok=True)
+          image=Image.open(source).convert('RGBA')
+          canvas=Image.new('RGBA',image.size,(22,26,33,255))
+          canvas.alpha_composite(image)
+          canvas.convert('RGB').save(folder/'arcanista_lithic_hero_v024.jpg',quality=95)
+          PY
+      - name: Publish only isolated preview
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v024_lithic/arcanista_lithic_hero_v024.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'V024 first lithic material render [skip ci]'
+            git push origin HEAD:production/door-v024-arcane-lithic-material
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcanist-v024-render-and-pbr
+          path: |
+            output_workshop_door_v022_arcanista/three_quarter.png
+            output_workshop_door_v022_arcanista/*_emission.png
+          retention-days: 14
