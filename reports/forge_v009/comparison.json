@@ -1,0 +1,85 @@
+{
+  "asset": "forge",
+  "baseline_version": "V008",
+  "candidate_version": "V009",
+  "source_sha": "0a1b16252cf0bd0ade76ad0f8e4357c7cfce68cf",
+  "checked_utc": "2026-10-27T00:58:11.976028+00:00",
+  "comparison": [
+    {
+      "view": "front",
+      "baseline": {
+        "mean_luma": 0.49238,
+        "near_black_fraction": 0.00371,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02702
+      },
+      "candidate": {
+        "mean_luma": 0.49079,
+        "near_black_fraction": 0.00301,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.025
+      },
+      "mean_absolute_rgb_change": 0.00595
+    },
+    {
+      "view": "three_quarter",
+      "baseline": {
+        "mean_luma": 0.51491,
+        "near_black_fraction": 0.00393,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02688
+      },
+      "candidate": {
+        "mean_luma": 0.50947,
+        "near_black_fraction": 0.00425,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02606
+      },
+      "mean_absolute_rgb_change": 0.00791
+    },
+    {
+      "view": "rear",
+      "baseline": {
+        "mean_luma": 0.50648,
+        "near_black_fraction": 0.00264,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.03108
+      },
+      "candidate": {
+        "mean_luma": 0.50195,
+        "near_black_fraction": 0.00206,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02394
+      },
+      "mean_absolute_rgb_change": 0.00869
+    },
+    {
+      "view": "detail",
+      "baseline": {
+        "mean_luma": 0.37253,
+        "near_black_fraction": 0.0162,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.04155
+      },
+      "candidate": {
+        "mean_luma": 0.35652,
+        "near_black_fraction": 0.01719,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.04037
+      },
+      "mean_absolute_rgb_change": 0.02184
+    }
+  ],
+  "objective_defects": [],
+  "technical_visual_gate": "pass",
+  "artistic_score": null,
+  "artist_approved": false,
+  "approval_status": "CANDIDATE_NEEDS_HUMAN_REVIEW",
+  "best_candidate_changed": false,
+  "art_review_checklist": [
+    "front funnel plate catches smoke while firebox stays open",
+    "rear brick joints no longer show bright empty gaps",
+    "embers glow within charcoal cracks; no detached light spheres"
+  ],
+  "note": "Pixel differences are evidence of a change, NOT proof of artistic improvement."
+}
