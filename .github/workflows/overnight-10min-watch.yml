@@ -1,0 +1,43 @@
+name: Genesis 10-minute overnight production watch
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  monitor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Limit nightly schedule to Oct 26-27 Argentina night only
+        id: window
+        shell: bash
+        run: |
+          set -euo pipefail
+          now="$(date -u +%s)"
+          from="$(date -u -d '2026-10-27 00:00:00' +%s)"
+          until="$(date -u -d '2026-10-27 12:00:00' +%s)"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || (( now >= from && now <= until )); then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Outside authorized overnight window." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Inspect all four assets and recent workflows
+        if: steps.window.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/overnight_watch.py
+          cat reports/overnight_status.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload checkpoint and errors for this ten-minute check
+        if: steps.window.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-genesis-watch-${{ github.run_id }}
+          path: reports/overnight_status.*
+          retention-days: 1
+          if-no-files-found: warn
