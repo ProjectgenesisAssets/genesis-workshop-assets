@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T11:27:05.115335+00:00",
+  "generated_at": "2026-10-27T11:32:32.725361+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -34,17 +34,17 @@
       "status": "review_ready"
     },
     "door": {
-      "branch": "production/door-v014-patina-contrast-material",
-      "run_id": 40492855626,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40492855626",
-      "commit": "1038d4ef7186991edeb7ad8600c7cbc7b6c2ab53",
-      "completed_at": "2026-10-27T11:00:47Z",
-      "preview_directory": "previews/door_v014",
+      "branch": "production/auto-door-localized-ferric-iron-v015",
+      "run_id": 40495813116,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40495813116",
+      "commit": "b58ae565a82b5c9f3b74d95f270f2adcf8478587",
+      "completed_at": "2026-10-27T11:32:23Z",
+      "preview_directory": "previews/production_auto/door_localized-ferric-iron-v015",
       "view_paths": {
-        "front": "previews/door_v014/front.png",
-        "three_quarter": "previews/door_v014/three_quarter.png",
-        "rear": "previews/door_v014/rear.png",
-        "detail": "previews/door_v014/side.png"
+        "front": "previews/production_auto/door_localized-ferric-iron-v015/front.png",
+        "three_quarter": "previews/production_auto/door_localized-ferric-iron-v015/three_quarter.png",
+        "rear": "previews/production_auto/door_localized-ferric-iron-v015/rear.png",
+        "detail": "previews/production_auto/door_localized-ferric-iron-v015/detail.png"
       },
       "status": "review_ready"
     },
