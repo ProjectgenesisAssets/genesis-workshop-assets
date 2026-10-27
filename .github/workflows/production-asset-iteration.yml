@@ -1,5 +1,10 @@
 name: Genesis isolated asset correction build - real Blender 4.5.13
 on:
+  push:
+    branches:
+      - 'production/auto-*'
+    paths:
+      - '.github/workflows/production-asset-iteration.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -89,7 +94,7 @@ jobs:
         if: always() && steps.deadline.outputs.run == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: genesis-auto-${{ github.ref_name }}-${{ github.run_id }}
+          name: genesis-auto-${{ github.run_id }}
           path: |
             output*/*.png
             output*/*.glb
@@ -107,7 +112,21 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add reports/production_auto/
+          # Publish only review-sized renders and QA; GLB stays in the workflow artifact.
+          mkdir -p reports/production_auto previews/production_auto
+          if [[ -n "${ASSET:-}" && -n "${TASK_ID:-}" && -d "${ASSET_OUTPUT:-/nonexistent}" ]]; then
+            dest="previews/production_auto/${ASSET}_${TASK_ID}"
+            mkdir -p "$dest"
+            for view in front three_quarter rear detail; do
+              if [[ -f "$ASSET_OUTPUT/$view.png" ]]; then
+                cp "$ASSET_OUTPUT/$view.png" "$dest/$view.png"
+              fi
+            done
+            for qa in reports/production_auto/*.json; do
+              if [[ -f "$qa" ]]; then cp "$qa" "$dest/"; fi
+            done
+          fi
+          git add -A -- reports/production_auto/ previews/production_auto/
           if ! git diff --cached --quiet; then
             git commit -m 'Record objective candidate QA; human artistic approval pending [skip ci]'
             git fetch origin "${{ github.ref_name }}"
