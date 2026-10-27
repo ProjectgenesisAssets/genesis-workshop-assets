@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v015")
+OUT=ROOT/("output_hero_"+KIND+"_v016")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,7 +297,7 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            baked_name="bellows_aged_oak_baked_albedo_V015" if is_oak else "bellows_oxblood_leather_baked_albedo_V015"
+            baked_name="bellows_aged_oak_baked_albedo_V016" if is_oak else "bellows_oxblood_leather_baked_albedo_V016"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
@@ -306,9 +306,9 @@ def mount_bellows():
                 # Preserve real scanned photographic grain, but avoid grey stone-looking timber.
                 luminance=(rgba[:,:3]*np.array((.2126,.7152,.0722),dtype=np.float32)).sum(axis=1)
                 grain=np.clip(.56+1.35*(luminance-.46),.24,.92)
-                rgba[:,:3]=grain[:,None]*np.array((.82,.43,.20),dtype=np.float32)
+                rgba[:,:3]=grain[:,None]*np.array((.95,.48,.19),dtype=np.float32)
             else:
-                rgba[:,:3]*=np.array((.48,.22,.20),dtype=np.float32)
+                rgba[:,:3]*=np.array((.63,.32,.25),dtype=np.float32)
             rgba[:,:3]=np.clip(rgba[:,:3],0,1)
             baked=bpy.data.images.new(baked_name,width=w,height=h,alpha=True)
             baked.pixels.foreach_set(src)
@@ -367,7 +367,7 @@ def mount_bellows():
         for x,y in outline:
             amplitude=math.sin(math.pi*t)**.72
             # Fold phase drifts across hand-cut hide; no five perfectly rigid rings.
-            phase=6.6*math.pi*t+.18*x+.56*math.sin(3.4*x+2.1*y)+.09*math.sin(8.3*y)
+            phase=6.2*math.pi*t+.35*x+1.10*math.sin(3.4*x+2.1*y+1.2*t)+.14*math.sin(8.3*y)
             fold=math.sin(phase)
             factor=1+amplitude*(.068+.020*math.sin(1.7*x)+(.062+.014*math.cos(3.1*x))*fold)
             top=.43-.125*x
@@ -589,7 +589,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V015","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V016","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
@@ -601,11 +601,11 @@ report={"asset":KIND,"version":"V015","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v015.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v016.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v015.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v016.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
