@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v017")
+OUT=ROOT/("output_hero_"+KIND+"_v018")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,21 +297,26 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            baked_name="bellows_aged_oak_baked_albedo_V017" if is_oak else "bellows_oxblood_leather_baked_albedo_V017"
+            baked_name="bellows_aged_oak_baked_albedo_V018" if is_oak else "bellows_oxblood_leather_baked_albedo_V018"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
             rgba=src.reshape((-1,4))
             if is_oak:
-                # Keep the CC0 scan's pores while bringing out oak's longitudinal grain.
-                # The plank UV maps U across width and V along the bellows' long axis.
+                # V017 visibly washed the board grey. Keep the CC0 photo's
+                # pores, but center scan luminance before adding LONGITUDINAL
+                # oak fibres. U is board width; V is the long pear-shaped axis.
                 luminance=(rgba[:,:3]*np.array((.2126,.7152,.0722),dtype=np.float32)).sum(axis=1)
                 yy,xx=np.indices((h,w),dtype=np.float32)
                 u=xx/max(1,w-1);v=yy/max(1,h-1)
-                warp=.045*np.sin(2*math.pi*(v*2.3+u*.9))
-                fibres=np.sin(2*math.pi*(u*17+warp+.012*np.sin(2*math.pi*v*3)))
-                grain=np.clip(.39+1.55*(luminance-.46)+.055*fibres.reshape(-1),.18,.78)
-                rgba[:,:3]=grain[:,None]*np.array((.88,.48,.24),dtype=np.float32)
+                warp=.060*np.sin(2*math.pi*v*1.8)+.012*np.sin(2*math.pi*v*7.1)
+                fine=np.sin(2*math.pi*(u*24+warp))
+                broad=np.sin(2*math.pi*(u*6+.5*warp))
+                grain=np.clip(.56+.80*(luminance-luminance.mean())+
+                              .09*fine.reshape(-1)+.08*broad.reshape(-1),.27,.85)
+                rgba[:,:3]=np.stack((.72*grain+.075,
+                                     .32*grain+.022,
+                                     .105*grain+.008),axis=1)
             else:
                 rgba[:,:3]*=np.array((.63,.32,.25),dtype=np.float32)
             rgba[:,:3]=np.clip(rgba[:,:3],0,1)
@@ -373,11 +378,14 @@ def mount_bellows():
             amplitude=math.sin(math.pi*t)**.72
             # Fold phase drifts across hand-cut hide; no five perfectly rigid rings.
             # Two noncommensurate, drifting creases break the rigid stacked-band look.
-            phase=5.3*math.pi*t+.34*x+.92*math.sin(3.1*x+1.7*y+1.4*t)
-            fold=math.sin(phase)+.22*math.sin(1.81*phase+.8*x)
-            factor=1+amplitude*(.064+.020*math.sin(1.7*x)+(.078+.015*math.cos(3.1*x))*fold)
+            # Smaller, nonuniform tension creases instead of three rigid bands.
+            phase=7.0*math.pi*t+.52*x+.95*math.sin(2.7*x+2.4*y+1.7*t)
+            fold=.72*math.sin(phase)+.21*math.sin(2.2*phase+1.1*x)
+            tension=.45+.55*math.sin(math.pi*t)**.8
+            factor=1+amplitude*(.044+.016*math.sin(1.7*x)+
+                                (.048+.012*math.cos(2.5*x))*fold*tension)
             top=.43-.125*x
-            z=.126+(top-.126)*t+.006*amplitude*math.sin(3.1*x+7.5*t)
+            z=.126+(top-.126)*t+.004*amplitude*math.sin(2.7*x+8.4*t)
             verts.append((x,y*factor,z))
     faces=[]
     for level in range(layers-1):
@@ -595,7 +603,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V017","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V018","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
@@ -607,11 +615,11 @@ report={"asset":KIND,"version":"V017","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v017.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v018.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v017.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v018.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")

@@ -1,0 +1,20 @@
+{
+  "id": "oak-pigment-warped-fibres-v018",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-oak-grain-gusset-array-fix-v017",
+  "branch": "production/auto-bellows-oak-pigment-warped-fibres-v018",
+  "reason": "Actual V016→V017 four-view comparison: V017 oak top turned even greyer; photo scan lost longitudinal grain and leather remains three stiff bands. Rebuild baked oak albedo with mean-centered CC0 pores, physically plausible warm pigments and warped longitudinal fibres; reduce rigid band amplitude and increase local crease irregularity. Preserve V012 provisional and V017 candidate; no automatic artistic approval.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T06:50:11.485522+00:00"
+}
