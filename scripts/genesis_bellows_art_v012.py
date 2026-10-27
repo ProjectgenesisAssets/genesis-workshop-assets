@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v023")
+OUT=ROOT/("output_hero_"+KIND+"_v024")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -480,12 +480,20 @@ def mount_bellows():
         for level in range(6,layers-5,6):
             px,py,pz=verts[level*n+seam_index]
             cx=px*1.014;cy=py*1.014
-            idx=len(sts_verts)
-            sts_verts.extend([(cx-.010*tx,cy-.010*ty,pz-.002),
-                              (cx+.010*tx,cy+.010*ty,pz-.002),
-                              (cx+.010*tx,cy+.010*ty,pz+.002),
-                              (cx-.010*tx,cy-.010*ty,pz+.002)])
-            sts_faces.append((idx,idx+1,idx+2,idx+3))
+            # V024: two raised, crossing linen threads; no flat rectangular
+            # dash pretending to be a hand stitch. Both threads remain one mesh.
+            nx,ny=-ty,tx
+            for slope in (-1,1):
+                idx=len(sts_verts)
+                z0=pz-.006*slope+.002
+                z1=pz+.006*slope+.002
+                half_width=.0017
+                sts_verts.extend([
+                    (cx-.010*tx-half_width*nx,cy-.010*ty-half_width*ny,z0),
+                    (cx-.010*tx+half_width*nx,cy-.010*ty+half_width*ny,z0),
+                    (cx+.010*tx+half_width*nx,cy+.010*ty+half_width*ny,z1),
+                    (cx+.010*tx-half_width*nx,cy+.010*ty-half_width*ny,z1)])
+                sts_faces.append((idx,idx+1,idx+2,idx+3))
     made_mesh("Visible stitch by stitch linen gusset seams",sts_verts,sts_faces,linen,0)
     # No unverified animation: independent boards remain animation-ready components.
 
@@ -641,9 +649,9 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V023","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V024","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
-        "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
+        "targeted_repairs":["replace flat dotted seam quads with two physically raised crossed linen threads per stitch",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
                             "bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs",
                             "ensure exported GLB uses the exact baked stained-oak image without MixRGB"],
@@ -653,11 +661,11 @@ report={"asset":KIND,"version":"V023","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v023.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v024.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v023.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v024.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
