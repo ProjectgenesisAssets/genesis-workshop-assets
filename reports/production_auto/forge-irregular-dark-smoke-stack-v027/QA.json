@@ -1,0 +1,69 @@
+{
+  "asset": "forge",
+  "task_id": "irregular-dark-smoke-stack-v027",
+  "source_sha": "c0b9be2cc2f7d237e5a3249d24a8ca5820448feb",
+  "baseline": "previews/production_auto/forge_short-bonded-smoke-flue-v026",
+  "candidate": "output_hero_forge_v027",
+  "glb": "forge_hero_v027.glb",
+  "blend": "forge_hero_v027.blend",
+  "glb_stats": {
+    "triangles": 83052,
+    "meshes": 405,
+    "materials": 5,
+    "base_color_textured_materials": 5,
+    "embedded_images": 16,
+    "texture_bindings": {
+      "forge_heat_blackened_brick": {
+        "base_color_image": "forge_heat_blackened_brick_albedo",
+        "emissive_texture": false
+      },
+      "forge_aged_refractory_sandstone": {
+        "base_color_image": "quarry_wall_CC0_albedo_1k",
+        "emissive_texture": false
+      },
+      "forge_hammered_hood_black_iron": {
+        "base_color_image": "forge_hammered_hood_black_iron_albedo",
+        "emissive_texture": false
+      },
+      "forge_cracked_hot_charcoal_ember_map": {
+        "base_color_image": "forge_cracked_hot_charcoal_ember_map_albedo",
+        "emissive_texture": true
+      },
+      "forge_real_charcoal_porous": {
+        "base_color_image": "forge_real_charcoal_porous_albedo",
+        "emissive_texture": false
+      }
+    }
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.00817,
+      "silhouette_iou": null
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.00792,
+      "silhouette_iou": null
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.0072,
+      "silhouette_iou": null
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.01724,
+      "silhouette_iou": null
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": false,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
