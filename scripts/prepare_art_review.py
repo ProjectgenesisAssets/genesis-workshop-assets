@@ -20,6 +20,13 @@ import urllib.request
 
 ASSETS = ("forge", "bellows", "door", "anvil")
 VIEWS = ("front", "three_quarter", "rear", "detail")
+# Legacy asset pipelines use different camera names; normalize into 4 review slots.
+VIEW_FILES = {
+    "forge": ("front", "three_quarter", "rear", "detail"),
+    "bellows": ("front", "three_quarter", "rear", "detail"),
+    "door": ("front", "three_quarter", "rear", "side"),
+    "anvil": ("front", "hero", "rear", "top"),
+}
 REPO = os.environ.get("GITHUB_REPOSITORY", "ProjectgenesisAssets/genesis-workshop-assets")
 OUTPUT = Path("reports/auto_review")
 CUTOFF = dt.datetime(2026, 10, 27, 12, tzinfo=dt.timezone.utc)
@@ -42,10 +49,23 @@ def read_blob(branch: str, path: str) -> bytes | None:
                 + "?ref=" + urllib.parse.quote(branch, safe=""))
     try:
         result = api(resource)
-        if result.get("encoding") != "base64":
+        if result.get("encoding") == "base64" and result.get("content"):
+            return base64.b64decode(result["content"])
+        # GitHub contents API stops embedding base64 for larger images.
+        # Download from the trusted raw.githubusercontent.com URL instead.
+        url = result.get("download_url") or ""
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme != "https" or parsed.hostname != "raw.githubusercontent.com":
             return None
-        return base64.b64decode(result["content"])
-    except (subprocess.CalledProcessError, ValueError, KeyError):
+        token = os.environ.get("GH_TOKEN", "")
+        headers = {"User-Agent": "genesis-review-handoff"}
+        if token:
+            headers["Authorization"] = "Bearer " + token
+        request = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(request, timeout=25) as response:
+            blob = response.read(12 * 1024 * 1024 + 1)
+        return blob if 0 < len(blob) <= 12 * 1024 * 1024 else None
+    except (subprocess.CalledProcessError, ValueError, KeyError, OSError, urllib.error.URLError):
         return None
 
 def candidates() -> dict:
@@ -81,15 +101,16 @@ def find_four_views(asset: str, branch: str) -> tuple[str | None, dict]:
             roots.add(prefix)
     matches = []
     for prefix in roots:
-        views = {view: f"{prefix}/{view}.png" for view in VIEWS
-                 if f"{prefix}/{view}.png" in files}
+        views = {slot: f"{prefix}/{source}.png"
+                 for slot, source in zip(VIEWS, VIEW_FILES[asset])
+                 if f"{prefix}/{source}.png" in files}
         if len(views) == 4:
             matches.append((prefix, views))
     if not matches:
         return None, {}
     # Favor a task-specific auto-preview over inherited baseline images.
     matches.sort(key=lambda pair: ("/production_auto/" in pair[0],
-                                    pair[0].count("v"), pair[0]))
+                                    pair[0]))
     return matches[-1]
 
 def main() -> int:
