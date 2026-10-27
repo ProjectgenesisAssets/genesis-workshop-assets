@@ -831,6 +831,75 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v024.glb\"))"
         }
       ]
+    },
+    {
+      "id": "opened-wedge-handbellows-v023",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-handcut-leather-gusset-stitched-seams-v022",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Inspected actual V021→V022 four-view comparison: stitched seams are now real geometry but the closed, nearly parallel oak boards and side gusset still read as a rigid rectangular slab. V023 tests an opened functional wedge: raise rear upper board/handle, retain narrow nozzle tip, recompute gusset, upper welts, nails and linen stitches from the same top profile. Preserve V012 and V022, require real renders and QA; not automatically approved.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v022\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v023\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V022\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V022\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V023\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V023\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "(.43-.125*x if name.startswith(\"Top\") else z)+oz",
+          "replace": "(.49-.24*x if name.startswith(\"Top\") else z)+oz"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            top=.43-.125*x",
+          "replace": "            top=.49-.24*x"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "for z in (.133,.426-.125*x):",
+          "replace": "for z in (.133,.486-.24*x):"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "for z in (.116,.535):",
+          "replace": "for z in (.116,.672):"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "(x*.992,y*.990,(.43-.125*x if z>.20 else z),1)",
+          "replace": "(x*.992,y*.990,(.49-.24*x if z>.20 else z),1)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "(x*.975,y*.97,.428-.125*x)",
+          "replace": "(x*.975,y*.97,.488-.24*x)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "for z in (.142,.418-.125*x):",
+          "replace": "for z in (.142,.478-.24*x):"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V022\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V023\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v022.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v023.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v022.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v023.glb\"))"
+        }
+      ]
     }
   ]
 }
