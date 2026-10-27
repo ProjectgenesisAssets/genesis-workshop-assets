@@ -7,6 +7,11 @@ on:
       - 'production/correction_queue.json'
   schedule:
     - cron: '3-59/10 2-11 27 10 *'  # offset minutes 03/13/.../53; only 27 Oct UTC
+  workflow_run:
+    workflows:
+      - 'Genesis isolated asset correction build - real Blender 4.5.13'
+    types:
+      - completed
   workflow_dispatch:
 permissions:
   contents: write
