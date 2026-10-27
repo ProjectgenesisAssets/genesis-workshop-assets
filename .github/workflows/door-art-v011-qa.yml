@@ -66,7 +66,28 @@ jobs:
           assert len(list(out.glob('*_roughness.png')))==4
           assert len(list(out.glob('*_normal.png')))==4
           PY
-      - name: Compare actual V009 and V011 render pixels without fake aesthetic score
+      - name: Audit exported GLB triangle count against V010
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          p=Path("output_blacksmith_door_art_011/Blacksmith_Door_Art_011.glb")
+          with p.open("rb") as f:
+              magic,version,total=struct.unpack("<III",f.read(12))
+              length,typ=struct.unpack("<I4s",f.read(8))
+              assert magic==0x46546c67 and version==2 and typ==b"JSON"
+              doc=json.loads(f.read(length))
+          triangles=0
+          for mesh in doc.get("meshes",[]):
+              for prim in mesh.get("primitives",[]):
+                  if prim.get("mode",4)!=4:continue
+                  idx=prim.get("indices")
+                  n=doc["accessors"][idx]["count"] if idx is not None else doc["accessors"][prim["attributes"]["POSITION"]]["count"]
+                  triangles+=n//3
+          print("DOOR_V011_GLB_TRIANGLES",triangles)
+          assert 10000<triangles<68028,("No exported GLB triangle improvement",triangles)
+          PY
+      - name: Compare V010 and V011 four-view silhouette and evaluated geometry
         run: |
           set -euo pipefail
           python3 -m pip install --quiet Pillow
