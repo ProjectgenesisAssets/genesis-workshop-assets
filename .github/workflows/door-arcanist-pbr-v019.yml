@@ -108,7 +108,7 @@ jobs:
           views=("front_orthographic","three_quarter","side_orthographic","rear_orthographic")
           sheet=Image.new("RGB",(900*2,1150*2),(31,33,38))
           for i,view in enumerate(views):
-              with Image.open(Path("evidence")/(view+".png")) as im:
+              with Image.open(Path("evidence")/"output_workshop_door_v019_arcanista"/(view+".png")) as im:
                   art=im.convert("RGBA")
                   art.thumbnail((825,1020),Image.Resampling.LANCZOS)
                   bg=Image.new("RGBA",(900,1150),(39,42,47,255))
