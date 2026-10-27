@@ -1,0 +1,75 @@
+name: Genesis night artistic contact sheet - four independent candidates
+on:
+  push:
+    branches: [production/night-review-20261027]
+    paths: ['.github/workflows/night-review-contact-sheet.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch only current isolated candidates
+        run: |
+          set -euo pipefail
+          for branch in door-v011-triangle-budget bellows-v011-baked-oak forge-v010-rear-mortar yunque-v022-forged-horn; do
+            git fetch origin "refs/heads/production/$branch:refs/remotes/origin/production/$branch"
+          done
+      - name: Build 16-image qualitative review catalog, no Blender reruns
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          import io,subprocess
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageFont
+          sources={
+            "door":("production/door-v011-triangle-budget",["front","three_quarter","side","rear"],["previews/door_v011","previews/door_v010"]),
+            "bellows":("production/bellows-v011-baked-oak",["front","three_quarter","rear","detail"],["previews/heroes_v011/bellows"]),
+            "forge":("production/forge-v010-rear-mortar",["front","three_quarter","rear","detail"],["previews/heroes_v010/forge"]),
+            "anvil":("production/yunque-v022-forged-horn",["front","hero","rear","top"],["previews/yunque_v022"])
+          }
+          output=Path("previews/night_review_20261027")
+          output.mkdir(parents=True,exist_ok=True)
+          tile=430; catalog=Image.new("RGB",(tile*4,tile*4),(30,34,40))
+          font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",19)
+          for row,(asset,(branch,views,folders)) in enumerate(sources.items()):
+            for col,view in enumerate(views):
+              payload=None; chosen=None
+              for folder in folders:
+                p=f"{folder}/{view}.png"
+                q=subprocess.run(["git","show",f"origin/{branch}:{p}"],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+                if q.returncode==0 and len(q.stdout)>10000:
+                  payload=q.stdout;chosen=p;break
+              if payload is None: raise RuntimeError(f"Missing real candidate PNG: {asset}/{view}")
+              with Image.open(io.BytesIO(payload)) as original:
+                im=original.convert("RGBA")
+                im.thumbnail((tile-28,tile-56),Image.Resampling.LANCZOS)
+              canvas=Image.new("RGBA",(tile,tile),(36,40,46,255))
+              canvas.alpha_composite(im,((tile-im.width)//2,(tile-55-im.height)//2+8))
+              d=ImageDraw.Draw(canvas)
+              d.text((15,tile-37),f"{asset.upper()} / {view}",font=font,fill=(237,237,232,255))
+              catalog.paste(canvas.convert("RGB"),(col*tile,row*tile))
+          catalog.save(output/"all_four_contact_sheet.jpg",quality=81,optimize=True)
+          for row,asset in enumerate(sources):
+            catalog.crop((0,row*tile,tile*4,(row+1)*tile)).save(output/f"{asset}_four_views.jpg",quality=83,optimize=True)
+          print("Four independent assets, 16 real renders cataloged",[(p.name,p.stat().st_size) for p in output.glob("*.jpg")])
+          PY
+      - name: Publish thumbnails only to isolated review branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/night_review_20261027/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Review four existing 3D candidates without art approval [skip ci]'
+            git push origin HEAD:production/night-review-20261027
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: genesis-night-four-asset-catalog
+          path: previews/night_review_20261027/*.jpg
+          retention-days: 7
