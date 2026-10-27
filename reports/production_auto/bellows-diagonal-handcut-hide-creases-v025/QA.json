@@ -1,0 +1,69 @@
+{
+  "asset": "bellows",
+  "task_id": "diagonal-handcut-hide-creases-v025",
+  "source_sha": "19cdcc5dc4f4a0afbfe5d2b5f7c43d3896c54d2f",
+  "baseline": "previews/production_auto/bellows_cross-stitched-hide-seams-v024",
+  "candidate": "output_hero_bellows_v025",
+  "glb": "bellows_hero_v025.glb",
+  "blend": "bellows_hero_v025.blend",
+  "glb_stats": {
+    "triangles": 23608,
+    "meshes": 41,
+    "materials": 5,
+    "base_color_textured_materials": 4,
+    "embedded_images": 12,
+    "texture_bindings": {
+      "bellows_aged_oak_long_grain": {
+        "base_color_image": "bellows_aged_oak_baked_albedo_V025",
+        "emissive_texture": false
+      },
+      "bellows_creased_dark_oxblood_leather": {
+        "base_color_image": "bellows_oxblood_leather_baked_albedo_V025",
+        "emissive_texture": false
+      },
+      "bellows_patina_riveted_brass": {
+        "base_color_image": "bellows_patina_riveted_brass_albedo",
+        "emissive_texture": false
+      },
+      "bellows_oxidized_hand_forged_iron": {
+        "base_color_image": "bellows_oxidized_hand_forged_iron_albedo",
+        "emissive_texture": false
+      },
+      "Unbleached linen saddle stitch thread": {
+        "base_color_image": null,
+        "emissive_texture": false
+      }
+    }
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.00392,
+      "silhouette_iou": null
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.00353,
+      "silhouette_iou": null
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.00519,
+      "silhouette_iou": null
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.00561,
+      "silhouette_iou": null
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": false,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
