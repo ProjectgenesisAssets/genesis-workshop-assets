@@ -6,7 +6,7 @@ from pathlib import Path
 from mathutils import Vector
 import numpy as np
 
-OUT=Path("output_blacksmith_door_art_014")
+OUT=Path("output_blacksmith_door_art_015")
 OUT.mkdir(exist_ok=True)
 bpy.ops.object.select_all(action="SELECT")
 bpy.ops.object.delete(use_global=False)
@@ -53,19 +53,21 @@ def material(name, base, metallic, roughness, seed):
     # Each channel is physically consistent: iron metallic, ferric patina rough/nonmetal.
     broad_oxide=smooth_noise(11)
     weather=np.clip(.68*broad+.30*broad_oxide+.21*fine,-2.2,2.2)
-    oxide_seed=np.maximum(0.0, weather-.16)
+    # V015: localized corrosion pockets on dark wrought iron, not a
+    # uniform lavender/brown film over the entire approved V011 silhouette.
+    oxide_seed=np.maximum(0.0, weather-.29)
     if "brass" in name:
         oxide=np.zeros_like(oxide_seed)
         ageing=.016
     elif "inset" in name:
-        oxide=np.clip(.58*oxide_seed+.038*np.maximum(0,broad_oxide),0,.53)
-        ageing=.064
+        oxide=np.clip(1.02*oxide_seed+.045*np.maximum(0,broad_oxide),0,.66)
+        ageing=.045
     elif "highlights" in name:
-        oxide=np.clip(.12*oxide_seed,0,.13)
+        oxide=np.clip(.08*oxide_seed,0,.09)
         ageing=.009
     else:
-        oxide=np.clip(.39*oxide_seed+.021*np.maximum(0,broad_oxide),0,.41)
-        ageing=.019
+        oxide=np.clip(.48*oxide_seed+.008*np.maximum(0,broad_oxide),0,.43)
+        ageing=.012
     variation=np.clip(1+.085*broad+.036*fine+.045*scratches,.78,1.17)
     # Subtle graphite/blue steel, visible only as specular texture variation.
     axis=np.linspace(0,1,n,dtype=np.float32)
@@ -118,10 +120,10 @@ def material(name, base, metallic, roughness, seed):
     links.new(nm.outputs["Normal"],bs.inputs["Normal"])
     return m
 
-iron=material("iron_aged_blued_steel_v013",(.142,.150,.158),.94,.54,17)
-edge=material("iron_worn_polished_edges_v013",(.195,.198,.199),.94,.45,18)
+iron=material("iron_aged_blued_steel_v015",(.104,.117,.126),.94,.54,17)
+edge=material("iron_worn_polished_edges_v015",(.160,.167,.169),.94,.45,18)
 copper=material("copper_brass",(.268,.184,.100),.78,.60,19)
-shade=material("iron_ferric_patina_insets_v013",(.087,.090,.094),.86,.66,20)
+shade=material("iron_ferric_patina_insets_v015",(.075,.078,.082),.86,.66,20)
 objects=[]
 def keep(o):
     objects.append(o)
@@ -401,6 +403,21 @@ for name,pos in [
     sc.camera=cam;sc.render.filepath=str(OUT/(name+".png"))
     bpy.ops.render.render(write_still=True)
 
+# Canonical four-view handoff names, without losing the original V011 QA views.
+for original,alias in (("front_orthographic.png","front.png"),
+                       ("rear_orthographic.png","rear.png"),
+                       ("side_orthographic.png","side.png")):
+    (OUT/alias).write_bytes((OUT/original).read_bytes())
+# Fifth optional hardware close-up is an actual new camera render, not a crop.
+bpy.ops.object.camera_add(location=(1.5,-3.1,1.55))
+detail_cam=bpy.context.object
+detail_cam.rotation_euler=(Vector((.34,FRONT,1.22))-detail_cam.location).to_track_quat("-Z","Y").to_euler()
+detail_cam.data.type="ORTHO"
+detail_cam.data.ortho_scale=.84
+sc.camera=detail_cam
+sc.render.filepath=str(OUT/"detail.png")
+bpy.ops.render.render(write_still=True)
+
 # GLB PBR export: only modeled hierarchy; UV unwrap on separate pieces.
 bpy.ops.object.select_all(action="DESELECT")
 root.select_set(True)
@@ -412,9 +429,9 @@ for ob in root.children:
         bpy.ops.mesh.select_all(action="SELECT")
         bpy.ops.uv.smart_project(island_margin=.015)
         bpy.ops.object.mode_set(mode="OBJECT")
-bpy.ops.export_scene.gltf(filepath=str(OUT/"Blacksmith_Door_Art_014.glb"),
+bpy.ops.export_scene.gltf(filepath=str(OUT/"Blacksmith_Door_Art_015.glb"),
     export_format="GLB",use_selection=True,export_apply=True)
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/"Blacksmith_Door_Art_014.blend"))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/"Blacksmith_Door_Art_015.blend"))
 # Evaluated triangles include bevels and converted ornamental curves.
 dg=bpy.context.evaluated_depsgraph_get()
 triangles=0
@@ -427,7 +444,7 @@ for ob in root.children:
 print("DOOR_V011_EVALUATED_TRIANGLES",triangles,flush=True)
 with (OUT/"DESIGN_AUDIT.json").open("w") as f:
     json.dump({"source":"V012 material-only preview: V011 approved geometry preserved; oxidized iron proxy, not exact private V175 shader",
-        "version":"V014","baseline_version":"V010",
+        "version":"V015","baseline_version":"V014",
         "targeted_repairs":["preserve connected rear structural braces and peephole through-mesh",
                             "reduce tiny rivet cylinders and curve tessellation below silhouette threshold",
                             "reduce hidden hammer plate subdivisions without removing PBR relief",

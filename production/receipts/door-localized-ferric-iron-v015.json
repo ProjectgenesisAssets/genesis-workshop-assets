@@ -1,0 +1,20 @@
+{
+  "id": "localized-ferric-iron-v015",
+  "asset": "door",
+  "base_branch": "production/door-v014-patina-contrast-material",
+  "branch": "production/auto-door-localized-ferric-iron-v015",
+  "reason": "Direct inspection of V011/V012/V013/V014 four-view JPG: V014 has an overly uniform pale lavender-grey film and localized rust is barely legible; V013 reads more convincingly as dark wrought iron. Preserve V011 geometry and all checkpoints. Darken the iron substrate, confine stronger ferric oxide to recesses, keep brass unaffected, and render an additional true hardware detail plus canonical handoff filenames. No artistic approval until direct V014→V015 review.",
+  "edits": [
+    "scripts/puerta_herreria_art_014.py",
+    "scripts/puerta_herreria_art_014.py",
+    "scripts/puerta_herreria_art_014.py",
+    "scripts/puerta_herreria_art_014.py",
+    "scripts/puerta_herreria_art_014.py",
+    "scripts/puerta_herreria_art_014.py",
+    "scripts/puerta_herreria_art_014.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T11:23:39.819392+00:00"
+}
