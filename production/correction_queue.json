@@ -1036,6 +1036,50 @@
           "replace": "KIND+\"_hero_v025.glb\""
         }
       ]
+    },
+    {
+      "id": "localized-ferric-iron-v015",
+      "asset": "door",
+      "base_branch": "production/door-v014-patina-contrast-material",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Direct inspection of V011/V012/V013/V014 four-view JPG: V014 has an overly uniform pale lavender-grey film and localized rust is barely legible; V013 reads more convincingly as dark wrought iron. Preserve V011 geometry and all checkpoints. Darken the iron substrate, confine stronger ferric oxide to recesses, keep brass unaffected, and render an additional true hardware detail plus canonical handoff filenames. No artistic approval until direct V014→V015 review.",
+      "edits": [
+        {
+          "path": "scripts/puerta_herreria_art_014.py",
+          "find": "OUT=Path(\"output_blacksmith_door_art_014\")",
+          "replace": "OUT=Path(\"output_blacksmith_door_art_015\")"
+        },
+        {
+          "path": "scripts/puerta_herreria_art_014.py",
+          "find": "    oxide_seed=np.maximum(0.0, weather-.16)\n    if \"brass\" in name:\n        oxide=np.zeros_like(oxide_seed)\n        ageing=.016\n    elif \"inset\" in name:\n        oxide=np.clip(.58*oxide_seed+.038*np.maximum(0,broad_oxide),0,.53)\n        ageing=.064\n    elif \"highlights\" in name:\n        oxide=np.clip(.12*oxide_seed,0,.13)\n        ageing=.009\n    else:\n        oxide=np.clip(.39*oxide_seed+.021*np.maximum(0,broad_oxide),0,.41)\n        ageing=.019",
+          "replace": "    # V015: localized corrosion pockets on dark wrought iron, not a\n    # uniform lavender/brown film over the entire approved V011 silhouette.\n    oxide_seed=np.maximum(0.0, weather-.29)\n    if \"brass\" in name:\n        oxide=np.zeros_like(oxide_seed)\n        ageing=.016\n    elif \"inset\" in name:\n        oxide=np.clip(1.02*oxide_seed+.045*np.maximum(0,broad_oxide),0,.66)\n        ageing=.045\n    elif \"highlights\" in name:\n        oxide=np.clip(.08*oxide_seed,0,.09)\n        ageing=.009\n    else:\n        oxide=np.clip(.48*oxide_seed+.008*np.maximum(0,broad_oxide),0,.43)\n        ageing=.012"
+        },
+        {
+          "path": "scripts/puerta_herreria_art_014.py",
+          "find": "iron=material(\"iron_aged_blued_steel_v013\",(.142,.150,.158),.94,.54,17)\nedge=material(\"iron_worn_polished_edges_v013\",(.195,.198,.199),.94,.45,18)\ncopper=material(\"copper_brass\",(.268,.184,.100),.78,.60,19)\nshade=material(\"iron_ferric_patina_insets_v013\",(.087,.090,.094),.86,.66,20)",
+          "replace": "iron=material(\"iron_aged_blued_steel_v015\",(.104,.117,.126),.94,.54,17)\nedge=material(\"iron_worn_polished_edges_v015\",(.160,.167,.169),.94,.45,18)\ncopper=material(\"copper_brass\",(.268,.184,.100),.78,.60,19)\nshade=material(\"iron_ferric_patina_insets_v015\",(.075,.078,.082),.86,.66,20)"
+        },
+        {
+          "path": "scripts/puerta_herreria_art_014.py",
+          "find": "    sc.camera=cam;sc.render.filepath=str(OUT/(name+\".png\"))\n    bpy.ops.render.render(write_still=True)\n\n# GLB PBR export: only modeled hierarchy; UV unwrap on separate pieces.",
+          "replace": "    sc.camera=cam;sc.render.filepath=str(OUT/(name+\".png\"))\n    bpy.ops.render.render(write_still=True)\n\n# Canonical four-view handoff names, without losing the original V011 QA views.\nfor original,alias in ((\"front_orthographic.png\",\"front.png\"),\n                       (\"rear_orthographic.png\",\"rear.png\"),\n                       (\"side_orthographic.png\",\"side.png\")):\n    (OUT/alias).write_bytes((OUT/original).read_bytes())\n# Fifth optional hardware close-up is an actual new camera render, not a crop.\nbpy.ops.object.camera_add(location=(1.5,-3.1,1.55))\ndetail_cam=bpy.context.object\ndetail_cam.rotation_euler=(Vector((.34,FRONT,1.22))-detail_cam.location).to_track_quat(\"-Z\",\"Y\").to_euler()\ndetail_cam.data.type=\"ORTHO\"\ndetail_cam.data.ortho_scale=.84\nsc.camera=detail_cam\nsc.render.filepath=str(OUT/\"detail.png\")\nbpy.ops.render.render(write_still=True)\n\n# GLB PBR export: only modeled hierarchy; UV unwrap on separate pieces."
+        },
+        {
+          "path": "scripts/puerta_herreria_art_014.py",
+          "find": "OUT/\"Blacksmith_Door_Art_014.glb\"",
+          "replace": "OUT/\"Blacksmith_Door_Art_015.glb\""
+        },
+        {
+          "path": "scripts/puerta_herreria_art_014.py",
+          "find": "OUT/\"Blacksmith_Door_Art_014.blend\"",
+          "replace": "OUT/\"Blacksmith_Door_Art_015.blend\""
+        },
+        {
+          "path": "scripts/puerta_herreria_art_014.py",
+          "find": "\"version\":\"V014\",\"baseline_version\":\"V010\"",
+          "replace": "\"version\":\"V015\",\"baseline_version\":\"V014\""
+        }
+      ]
     }
   ]
 }
