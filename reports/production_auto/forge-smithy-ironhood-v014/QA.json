@@ -1,0 +1,46 @@
+{
+  "asset": "forge",
+  "task_id": "smithy-ironhood-v014",
+  "source_sha": "9d35835bf10ec9b52a0469de14b8153b97b147b0",
+  "baseline": "previews/heroes_v010/forge",
+  "candidate": "output_hero_forge_v014",
+  "glb": "forge_hero_v014.glb",
+  "blend": "forge_hero_v014.blend",
+  "glb_stats": {
+    "triangles": 64356,
+    "meshes": 314,
+    "materials": 5,
+    "base_color_textured_materials": 5,
+    "embedded_images": 16
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.02752,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.03381,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.03278,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.07655,
+      "silhouette_iou": 1.0
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Real Blender renders, objective technical checks only; final artistic approval is human."
+}
