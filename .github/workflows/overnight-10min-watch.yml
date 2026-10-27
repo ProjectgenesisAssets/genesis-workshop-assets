@@ -4,6 +4,7 @@ on:
     paths:
       - '.github/workflows/overnight-10min-watch.yml'
       - 'scripts/overnight_watch.py'
+      - 'scripts/visual_quality_gate.py'
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
@@ -36,7 +37,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 scripts/overnight_watch.py
+          python3 -m pip install --quiet --break-system-packages Pillow
+          python3 scripts/visual_quality_gate.py
           cat reports/overnight_status.md >> "$GITHUB_STEP_SUMMARY"
+          cat reports/visual_quality.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload checkpoint and errors for this ten-minute check
         if: steps.window.outputs.run == 'true'
         uses: actions/upload-artifact@v4
