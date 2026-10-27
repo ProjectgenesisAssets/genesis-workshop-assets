@@ -108,8 +108,13 @@ def find_four_views(asset: str, branch: str) -> tuple[str | None, dict]:
             matches.append((prefix, views))
     if not matches:
         return None, {}
-    # Favor a task-specific auto-preview over inherited baseline images.
-    matches.sort(key=lambda pair: ("/production_auto/" in pair[0],
+    # Match the completed candidate task exactly. Lexicographic sorting alone
+    # can wrongly select inherited V014 (smithy) over new V015 (ashlar).
+    task_prefix = f"production/auto-{asset}-"
+    expected = ("previews/production_auto/" + asset + "_" +
+                branch[len(task_prefix):]) if branch.startswith(task_prefix) else None
+    matches.sort(key=lambda pair: (pair[0] == expected,
+                                    "/production_auto/" in pair[0],
                                     pair[0]))
     return matches[-1]
 
