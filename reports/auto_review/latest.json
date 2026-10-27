@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "generated_at": "2026-10-27T03:37:21.875393+00:00",
+  "deadline_utc": "2026-10-27T12:00:00+00:00",
+  "asset_candidates": {
+    "forge": {
+      "branch": "production/auto-forge-ashlar-hammered-hood-v015",
+      "run_id": 40444298011,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40444298011",
+      "commit": "e2eb1f3564111add28b9be599728e0903de3ab34",
+      "completed_at": "2026-10-27T03:34:56Z",
+      "preview_directory": "previews/production_auto/forge_smithy-ironhood-v014",
+      "view_paths": {
+        "front": "previews/production_auto/forge_smithy-ironhood-v014/front.png",
+        "three_quarter": "previews/production_auto/forge_smithy-ironhood-v014/three_quarter.png",
+        "rear": "previews/production_auto/forge_smithy-ironhood-v014/rear.png",
+        "detail": "previews/production_auto/forge_smithy-ironhood-v014/detail.png"
+      },
+      "status": "incomplete_image_download"
+    },
+    "bellows": {
+      "branch": "production/auto-bellows-warm-oak-organic-hide-v014",
+      "run_id": 40444359557,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40444359557",
+      "commit": "6f1858bcab38c9d2195e86bd92a75078ef0c7429",
+      "completed_at": "2026-10-27T03:34:26Z",
+      "preview_directory": "previews/production_auto/bellows_warm-oak-organic-hide-v014",
+      "view_paths": {
+        "front": "previews/production_auto/bellows_warm-oak-organic-hide-v014/front.png",
+        "three_quarter": "previews/production_auto/bellows_warm-oak-organic-hide-v014/three_quarter.png",
+        "rear": "previews/production_auto/bellows_warm-oak-organic-hide-v014/rear.png",
+        "detail": "previews/production_auto/bellows_warm-oak-organic-hide-v014/detail.png"
+      },
+      "status": "incomplete_image_download"
+    },
+    "door": {
+      "branch": "production/door-v011-triangle-budget",
+      "run_id": 40435141349,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40435141349",
+      "commit": "97ae8ccc7afa4724938ce032c0114ba0b676f293",
+      "completed_at": "2026-10-27T02:02:04Z",
+      "preview_directory": null,
+      "view_paths": {},
+      "status": "missing_four_views"
+    },
+    "anvil": {
+      "branch": "production/yunque-v022-forged-horn",
+      "run_id": 40430776892,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40430776892",
+      "commit": "82c86ef5f2101b0c1c71976f29b6017f1697b54c",
+      "completed_at": "2026-10-27T01:17:34Z",
+      "preview_directory": "previews/heroes_v008/anvil",
+      "view_paths": {
+        "front": "previews/heroes_v008/anvil/front.png",
+        "three_quarter": "previews/heroes_v008/anvil/three_quarter.png",
+        "rear": "previews/heroes_v008/anvil/rear.png",
+        "detail": "previews/heroes_v008/anvil/detail.png"
+      },
+      "status": "incomplete_image_download"
+    }
+  },
+  "automatic_art_approval": false,
+  "correction_queue": "production/correction_queue.json",
+  "review_instructions": [
+    "Inspect real 4-view images against previous candidate and reference.",
+    "Write specific silhouette, material, shading and usability defects.",
+    "Apply only warranted, exact generator edits in a distinct version.",
+    "Dispatch Blender via Actions; compare new images and GLB evidence.",
+    "No-op runs are not visual progress; user owns artistic approval."
+  ],
+  "images_downloaded": 0,
+  "all_assets_review_ready": false,
+  "art_review_completed": false
+}
