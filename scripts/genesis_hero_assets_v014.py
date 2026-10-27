@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v021")
+OUT=ROOT/("output_hero_"+KIND+"_v022")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -518,20 +518,22 @@ def mount_forge():
     for x in (-.75,.75):
         box("Guard rail "+str(x),(x,0,.710),(.076,.96,.105),steel,.012)
     # Rear masonry wall is built from individually visible soot-stained blocks.
-    # Mixed-length bonded rear courses interrupt the repeated toy-brick grid.
+    # Variable-width refractory blocks rather than a repeated toy-brick grid.
+    # Deterministic masonry joints and individual hewn arrises are real geometry.
     for course in range(7):
         z=.785+course*.145
-        broad=course in (1,4,6)
-        count=5 if broad else 8
-        spacing=.325 if broad else .225
-        start=-.66 if broad else -.78
-        for i in range(count):
-            x=start+i*spacing+(.045 if course%2 else 0)
-            if abs(x)>.89:continue
-            block_dims=(.308,.18,.139) if broad else (.213,.18,.139)
-            block_mat=sooted if course<4 else (hearth if (i+course)%4 else weathered)
-            handlaid("Rear masonry mixed bonded block %d %d"%(course,i),
-                     (x,.54,z),block_dims,block_mat,.006)
+        masonry_rng=random.Random(20261027+course*113)
+        count=6+(course%3)
+        weights=[masonry_rng.uniform(.75,1.35) for _ in range(count)]
+        widths=[1.66*w/sum(weights) for w in weights]
+        left=-.83
+        for i,width in enumerate(widths):
+            x=left+width/2
+            left+=width
+            block_mat=stone if course==5 and i==2 else hearth
+            handlaid("Rear irregular refractory bond %d %d"%(course,i),
+                     (x,.54,z),(width-.014,.18,.134),block_mat,.005,
+                     rz=masonry_rng.uniform(-.006,.006))
     # V008 had bright background slits between the rear brick courses.
     # V014: thin mortar core lies INSIDE the masonry depth, not in front of rear bricks.
     # The V009 exterior plate hid the brickwork; a concealed core seals only actual joints.
@@ -758,7 +760,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V021","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V022","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -775,11 +777,11 @@ report={"asset":KIND,"version":"V021","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v021.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v022.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v021.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v022.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
