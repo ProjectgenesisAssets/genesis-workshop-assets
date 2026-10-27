@@ -1,5 +1,10 @@
 name: Genesis art review handoff (Python)
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/art-review-handoff.yml'
+      - 'scripts/prepare_art_review.py'
   workflow_run:
     workflows:
       - 'Genesis isolated asset correction build - real Blender 4.5.13'
