@@ -1,0 +1,85 @@
+{
+  "asset": "bellows",
+  "baseline_version": "V008",
+  "candidate_version": "V009",
+  "source_sha": "61d04716c95a369601baeb2e1cd96cd94af14fe2",
+  "checked_utc": "2026-10-27T01:03:20.535529+00:00",
+  "comparison": [
+    {
+      "view": "front",
+      "baseline": {
+        "mean_luma": 0.67389,
+        "near_black_fraction": 0.00136,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02019
+      },
+      "candidate": {
+        "mean_luma": 0.66877,
+        "near_black_fraction": 0.00298,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02141
+      },
+      "mean_absolute_rgb_change": 0.00909
+    },
+    {
+      "view": "three_quarter",
+      "baseline": {
+        "mean_luma": 0.68078,
+        "near_black_fraction": 0.00076,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.01864
+      },
+      "candidate": {
+        "mean_luma": 0.67639,
+        "near_black_fraction": 0.00186,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.0201
+      },
+      "mean_absolute_rgb_change": 0.00767
+    },
+    {
+      "view": "rear",
+      "baseline": {
+        "mean_luma": 0.65284,
+        "near_black_fraction": 5e-05,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.01962
+      },
+      "candidate": {
+        "mean_luma": 0.64746,
+        "near_black_fraction": 5e-05,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02092
+      },
+      "mean_absolute_rgb_change": 0.00931
+    },
+    {
+      "view": "detail",
+      "baseline": {
+        "mean_luma": 0.64784,
+        "near_black_fraction": 0.00137,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02253
+      },
+      "candidate": {
+        "mean_luma": 0.64084,
+        "near_black_fraction": 0.00299,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02337
+      },
+      "mean_absolute_rgb_change": 0.01207
+    }
+  ],
+  "objective_defects": [],
+  "technical_visual_gate": "pass",
+  "artistic_score": null,
+  "artist_approved": false,
+  "approval_status": "CANDIDATE_NEEDS_HUMAN_REVIEW",
+  "best_candidate_changed": false,
+  "art_review_checklist": [
+    "leather gusset has volumetric functional folds",
+    "upper/lower boards and handles are independently functional",
+    "grain follows timber, period-appropriate rivets and stitching"
+  ],
+  "note": "Pixel differences are evidence of a change, NOT proof of artistic improvement."
+}
