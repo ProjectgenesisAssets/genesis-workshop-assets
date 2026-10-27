@@ -1168,6 +1168,55 @@
           "replace": "KIND+\"_hero_v027.glb\""
         }
       ]
+    },
+    {
+      "id": "soft-radial-hide-pleats-v028",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-radial-leather-fan-pleats-v027",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Direct inspection of real V026→V027 four-view comparison after successful run 40497288562 shows physically new radial folds but a sharply black, cut-like horizontal crease that looks like a slit in the leather, not supple compression; top oak remains pale. Broaden and reduce actual gusset fold displacement and shift oak toward muted aged brown. Keep V012 provisional, V026 and V027 as checkpoints; no automatic artistic approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v027\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v028\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V027\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V027\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V028\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V028\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "rgba[:,:3]=np.stack((.375*grain+.018,\n                                     .190*grain+.009,\n                                     .076*grain+.004),axis=1)",
+          "replace": "rgba[:,:3]=np.stack((.380*grain+.015,\n                                     .170*grain+.008,\n                                     .067*grain+.004),axis=1)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            # V027: three real radial leather pleats converge at the nozzle,\n            # as on historical blacksmith bellows; wide at handle end, narrow\n            # at the tuyere. No three identical horizontal cardboard bands.\n            nozzle_progress=max(0.0,min(1.0,(x+.80)/1.60))\n            fan=.24*(1.0-nozzle_progress)**.80\n            crease_width=.065+.018*(1.0-nozzle_progress)\n            crease_a=max(0.0,1.0-abs(t-(.50-fan+.020*y))/crease_width)**2\n            crease_b=max(0.0,1.0-abs(t-(.50-.012*y))/crease_width)**2\n            crease_c=max(0.0,1.0-abs(t-(.50+fan+.016*y))/crease_width)**2\n            fan_tension=.20+.80*(1.0-nozzle_progress)\n            fold=(.75*crease_a-.65*crease_b+.52*crease_c)*fan_tension\n            factor=1+amplitude*(.022+.150*fold)",
+          "replace": "            # V028: actual V026->V027 four-view renders exposed an unnaturally\n            # black, razor-thin central seam, not supple leather. Broaden and\n            # soften the three converging pleats on the actual gusset mesh.\n            nozzle_progress=max(0.0,min(1.0,(x+.80)/1.60))\n            fan=.19*(1.0-nozzle_progress)**.85\n            crease_width=.105+.025*(1.0-nozzle_progress)\n            crease_a=max(0.0,1.0-abs(t-(.50-fan+.020*y))/crease_width)**2\n            crease_b=max(0.0,1.0-abs(t-(.50-.012*y))/crease_width)**2\n            crease_c=max(0.0,1.0-abs(t-(.50+fan+.016*y))/crease_width)**2\n            fan_tension=.20+.80*(1.0-nozzle_progress)\n            fold=(.48*crease_a-.24*crease_b+.36*crease_c)*fan_tension\n            factor=1+amplitude*(.024+.095*fold)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V027\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V028\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "\"targeted_repairs\":[\"physically reshape leather gusset into three radial pleats converging at nozzle from wide handle end\",",
+          "replace": "\"targeted_repairs\":[\"broaden and soften radial leather pleats to remove V027 black cut-like central seam, while preserving tapered physical gusset\","
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v027.blend\"",
+          "replace": "KIND+\"_hero_v028.blend\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v027.glb\"",
+          "replace": "KIND+\"_hero_v028.glb\""
+        }
+      ]
     }
   ]
 }
