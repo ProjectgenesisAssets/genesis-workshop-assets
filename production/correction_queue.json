@@ -275,6 +275,89 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v016.glb\"))"
         }
       ]
+    },
+    {
+      "id": "open-throat-hood-bonded-rear-v018",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-open-hearth-glow-v017",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Four-view V017/V016 comparison examined at 02:45 ART: full black sloped front canopy still looks like a roof or barbecue and repetitive rear courses read as machined brick. Physically replace opaque front face with two forged side cheeks plus upper baffle, leaving the central smoke throat visibly open, and mix broad and narrow staggered refractory rear courses. Do not autoapprove; preserve V017.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v017\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v018\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    for course in range(7):\n        z=.785+course*.145\n        for i in range(8):\n            x=-.78+i*.225+(.10 if course%2 else 0)\n            if abs(x)>.89:continue\n            handlaid(\"Rear masonry block %d %d\"%(course,i),(x,.54,z),(.213,.18,.139),\n                sooted if course<3 else (hearth if course<5 else weathered),.005)",
+          "replace": "    # Mixed-length bonded rear courses interrupt the repeated toy-brick grid.\n    for course in range(7):\n        z=.785+course*.145\n        broad=course in (1,4,6)\n        count=5 if broad else 8\n        spacing=.325 if broad else .225\n        start=-.66 if broad else -.78\n        for i in range(count):\n            x=start+i*spacing+(.045 if course%2 else 0)\n            if abs(x)>.89:continue\n            block_dims=(.308,.18,.139) if broad else (.213,.18,.139)\n            block_mat=sooted if course<4 else (hearth if (i+course)%4 else weathered)\n            handlaid(\"Rear masonry mixed bonded block %d %d\"%(course,i),\n                     (x,.54,z),block_dims,block_mat,.006)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    plate(\"Front forged iron canopy face\",[\n        (.94,front_y,bottom_z),(-.94,front_y,bottom_z),\n        (-.46,-.30,top_z),(.46,-.30,top_z)])",
+          "replace": "    # Open-throat smithy: two structural forged cheeks, no opaque pitched roof\n    # across the central front. The upper baffle captures rising smoke.\n    plate(\"Left forged open-throat cheek\",[\n        (-.94,front_y,bottom_z),(-.66,front_y,bottom_z),\n        (-.36,-.30,top_z),(-.46,-.30,top_z)])\n    plate(\"Right forged open-throat cheek\",[\n        (.66,front_y,bottom_z),(.94,front_y,bottom_z),\n        (.46,-.30,top_z),(.36,-.30,top_z)])\n    plate(\"Short upper forged smoke baffle\",[\n        (-.46,-.30,top_z-.13),(.46,-.30,top_z-.13),\n        (.46,-.30,top_z),(-.46,-.30,top_z)])"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V017\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V018\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v017.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v018.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v017.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v018.glb\"))"
+        }
+      ]
+    },
+    {
+      "id": "oak-grain-irregular-gusset-v017",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-grain-hide-drift-v016",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Examined real V015/V016 four-view comparison at 02:45 ART. The upper board remains pale stone-grey and leather folds form near-parallel rigid ribs. Replace the washed-out grayscale scan tint with a warmer low-gloss photo-grain bake plus directional subtle oak grain, and replace uniform pleat sinusoid with two noncommensurate folds and minor seam-safe height drift. Keep V012 provisional; no automatic promotion.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v016\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v017\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V016\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V016\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V017\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V017\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "                # Preserve real scanned photographic grain, but avoid grey stone-looking timber.\n                luminance=(rgba[:,:3]*np.array((.2126,.7152,.0722),dtype=np.float32)).sum(axis=1)\n                grain=np.clip(.56+1.35*(luminance-.46),.24,.92)\n                rgba[:,:3]=grain[:,None]*np.array((.95,.48,.19),dtype=np.float32)",
+          "replace": "                # Keep the CC0 scan's pores while bringing out oak's longitudinal grain.\n                # The plank UV maps U across width and V along the bellows' long axis.\n                luminance=(rgba[:,:3]*np.array((.2126,.7152,.0722),dtype=np.float32)).sum(axis=1)\n                yy,xx=np.indices((h,w),dtype=np.float32)\n                u=xx/max(1,w-1);v=yy/max(1,h-1)\n                warp=.045*np.sin(2*math.pi*(v*2.3+u*.9))\n                fibres=np.sin(2*math.pi*(u*17+warp+.012*np.sin(2*math.pi*v*3)))\n                grain=np.clip(.39+1.55*(luminance-.46)+.055*fibres,.18,.78)\n                rgba[:,:3]=grain[:,None]*np.array((.88,.48,.24),dtype=np.float32)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            phase=6.2*math.pi*t+.35*x+1.10*math.sin(3.4*x+2.1*y+1.2*t)+.14*math.sin(8.3*y)\n            fold=math.sin(phase)\n            factor=1+amplitude*(.068+.020*math.sin(1.7*x)+(.062+.014*math.cos(3.1*x))*fold)\n            top=.43-.125*x\n            z=.126+(top-.126)*t",
+          "replace": "            # Two noncommensurate, drifting creases break the rigid stacked-band look.\n            phase=5.3*math.pi*t+.34*x+.92*math.sin(3.1*x+1.7*y+1.4*t)\n            fold=math.sin(phase)+.22*math.sin(1.81*phase+.8*x)\n            factor=1+amplitude*(.064+.020*math.sin(1.7*x)+(.078+.015*math.cos(3.1*x))*fold)\n            top=.43-.125*x\n            z=.126+(top-.126)*t+.006*amplitude*math.sin(3.1*x+7.5*t)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V016\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V017\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v016.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v017.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v016.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v017.glb\"))"
+        }
+      ]
     }
   ]
 }
