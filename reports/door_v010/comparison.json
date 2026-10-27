@@ -1,0 +1,93 @@
+{
+  "asset": "door",
+  "baseline_version": "V009",
+  "candidate_version": "V010",
+  "source_sha": "fd8464d5dc957ed77f7a5b7746ab59aafa15d889",
+  "checked_utc": "2026-10-27T01:18:05.890783+00:00",
+  "comparison": [
+    {
+      "view": "front",
+      "baseline": {
+        "mean_luma": 0.23451,
+        "near_black_fraction": 0.04442,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.06352,
+        "subject_coverage": 0.55244
+      },
+      "candidate": {
+        "mean_luma": 0.23986,
+        "near_black_fraction": 0.04254,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.06423,
+        "subject_coverage": 0.55244
+      },
+      "mean_absolute_rgb_change": 0.00397
+    },
+    {
+      "view": "three_quarter",
+      "baseline": {
+        "mean_luma": 0.23962,
+        "near_black_fraction": 0.03316,
+        "near_white_fraction": 1e-05,
+        "edge_energy": 0.07068,
+        "subject_coverage": 0.51822
+      },
+      "candidate": {
+        "mean_luma": 0.24167,
+        "near_black_fraction": 0.02976,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.07002,
+        "subject_coverage": 0.51822
+      },
+      "mean_absolute_rgb_change": 0.00565
+    },
+    {
+      "view": "side",
+      "baseline": {
+        "mean_luma": 0.23626,
+        "near_black_fraction": 0.02288,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.07538,
+        "subject_coverage": 0.10669
+      },
+      "candidate": {
+        "mean_luma": 0.27757,
+        "near_black_fraction": 0.00619,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.07914,
+        "subject_coverage": 0.10669
+      },
+      "mean_absolute_rgb_change": 0.00619
+    },
+    {
+      "view": "rear",
+      "baseline": {
+        "mean_luma": 0.2527,
+        "near_black_fraction": 0.01356,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.02661,
+        "subject_coverage": 0.55244
+      },
+      "candidate": {
+        "mean_luma": 0.20914,
+        "near_black_fraction": 0.01541,
+        "near_white_fraction": 0.0,
+        "edge_energy": 0.0256,
+        "subject_coverage": 0.55244
+      },
+      "mean_absolute_rgb_change": 0.0252
+    }
+  ],
+  "objective_defects": [],
+  "technical_visual_gate": "pass",
+  "artistic_score": null,
+  "artist_approved": false,
+  "approval_status": "CANDIDATE_NEEDS_HUMAN_REVIEW",
+  "best_candidate_changed": false,
+  "art_review_checklist": [
+    "hinges, handle and latch connected to solid leaf",
+    "no floating plate or ornaments",
+    "forged metal reads under neutral lighting"
+  ],
+  "note": "Exposure metrics exclude transparent pixels; changes do NOT prove artistic improvement."
+}
