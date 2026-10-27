@@ -1,6 +1,5 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T03:37:45.404207+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -75,5 +74,6 @@
   ],
   "images_downloaded": 16,
   "all_assets_review_ready": true,
-  "art_review_completed": false
-}
+  "art_review_completed": false,
+  "generated_at": "2026-10-27T03:37:45.404207+00:00"
+}\n
