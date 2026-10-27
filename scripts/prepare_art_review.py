@@ -64,6 +64,9 @@ def read_blob(branch: str, path: str) -> bytes | None:
 
 def candidates() -> dict:
     runs = api("/repos/" + REPO + "/actions/runs?per_page=100").get("workflow_runs", [])
+    # A newer run ID can finish before an older, slower render. Review by
+    # completion timestamp, not creation order, to avoid stale candidates.
+    runs.sort(key=lambda run: run.get("updated_at") or "", reverse=True)
     found = {}
     for run in runs:
         if run.get("status") != "completed" or run.get("conclusion") != "success":
@@ -107,9 +110,14 @@ def find_four_views(asset: str, branch: str) -> tuple[str | None, dict]:
     task_prefix = f"production/auto-{asset}-"
     expected = ("previews/production_auto/" + asset + "_" +
                 branch[len(task_prefix):]) if branch.startswith(task_prefix) else None
-    matches.sort(key=lambda pair: (pair[0] == expected,
-                                    "/production_auto/" in pair[0],
-                                    pair[0]))
+    # New auto-iteration branches inherit earlier previews. Never present
+    # inherited V014/V015 pictures as if they were the new candidate's renders.
+    if expected:
+        exact = [pair for pair in matches if pair[0] == expected]
+        if not exact:
+            return None, {}
+        return exact[0]
+    matches.sort(key=lambda pair: ("/production_auto/" in pair[0], pair[0]))
     return matches[-1]
 
 def main() -> int:
