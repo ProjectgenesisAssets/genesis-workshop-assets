@@ -1,0 +1,19 @@
+{
+  "id": "arched-smoke-capture-v019",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-open-throat-hood-bonded-rear-v018",
+  "branch": "production/auto-forge-arched-smoke-capture-v019",
+  "reason": "Actual V017→V018 four-view comparison: V018 front central panel is missing, producing a disconnected black frame; V017 has a broad straight barbecue-like roof. Replace disconnected cheeks and baffle with one physically connected, curved, arched smoke-capture apron, and roll the lip along the actual arch. Preserve V017 and V018; V019 is only a visual candidate.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T06:50:06.822570+00:00"
+}

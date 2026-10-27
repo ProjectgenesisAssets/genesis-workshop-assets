@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v018")
+OUT=ROOT/("output_hero_"+KIND+"_v019")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -606,21 +606,51 @@ def mount_forge():
     plate("Rear tapered capture hood",[
         (-.94,back_y,bottom_z),(.94,back_y,bottom_z),
         (.46,.37,top_z),(-.46,.37,top_z)])
-    # Open-throat smithy: two structural forged cheeks, no opaque pitched roof
-    # across the central front. The upper baffle captures rising smoke.
-    plate("Left forged open-throat cheek",[
-        (-.94,front_y,bottom_z),(-.66,front_y,bottom_z),
-        (-.36,-.30,top_z),(-.46,-.30,top_z)])
-    plate("Right forged open-throat cheek",[
-        (.66,front_y,bottom_z),(.94,front_y,bottom_z),
-        (.46,-.30,top_z),(.36,-.30,top_z)])
-    plate("Short upper forged smoke baffle",[
-        (-.46,-.30,top_z-.13),(.46,-.30,top_z-.13),
-        (.46,-.30,top_z),(-.46,-.30,top_z)])
+    # Continuous hand-raised front apron with an arched lower working opening.
+    # The V018 missing central panel was a genuine visual defect; the V017 flat
+    # apron looked like a barbecue roof. This curved iron surface is connected.
+    arch_sections=20
+    arch_verts=[]
+    for j in range(arch_sections+1):
+        q=j/arch_sections
+        xlow=-.94+1.88*q
+        xhigh=-.46+.92*q
+        rise=.255*(1-(abs(xlow)/.94)**1.65)
+        for k in range(7):
+            t=k/6
+            x=xlow*(1-t)+xhigh*t
+            y=front_y*(1-t)-.30*t
+            z=(bottom_z+rise)*(1-t)+top_z*t
+            z+=.013*math.sin(math.pi*t)*math.sin(math.pi*q)
+            arch_verts.append((x,y,z))
+    arch_faces=[]
+    for j in range(arch_sections):
+        for k in range(6):
+            a=j*7+k
+            arch_faces.append((a,a+7,a+8,a+1))
+    apron=made_mesh("Continuous arched wrought smoke capture apron",
+                    arch_verts,arch_faces,steel,0)
+    apron_solid=apron.modifiers.new("Forged apron thickness","SOLIDIFY")
+    apron_solid.thickness=.020
+    bevel(apron,.006,2)
 
     # Stiffening rims, hammered strap ribs and riveted forged fittings.
-    box("Wide rolled smoke capture front lip",(0,front_y-.025,bottom_z),
-        (1.98,.058,.070),steel,.016)
+    # Rolled iron lip follows the arch instead of floating across the opening.
+    lip_verts=[]
+    for j in range(arch_sections+1):
+        q=j/arch_sections
+        x=-.94+1.88*q
+        z=bottom_z+.255*(1-(abs(x)/.94)**1.65)
+        lip_verts.extend([(x,front_y-.045,z-.024),(x,front_y+.014,z-.024),
+                          (x,front_y+.014,z+.024),(x,front_y-.045,z+.024)])
+    lip_faces=[]
+    for j in range(arch_sections):
+        for k in range(4):
+            a=j*4+k;b=(j+1)*4+k
+            lip_faces.append((a,b,(j+1)*4+(k+1)%4,j*4+(k+1)%4))
+    lip_faces.extend([tuple(reversed(range(4))),
+                      tuple(arch_sections*4+k for k in range(4))])
+    made_mesh("Arched rolled forged front lip",lip_verts,lip_faces,steel,.006)
     for side in (-1,1):
         box("Side smoke hood return lip "+str(side),
             (side*.947,.02,bottom_z),( .056,1.19,.050),steel,.008)
@@ -727,7 +757,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V018","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V019","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -744,11 +774,11 @@ report={"asset":KIND,"version":"V018","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v018.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v019.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v018.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v019.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")

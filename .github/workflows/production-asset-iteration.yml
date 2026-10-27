@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: write  # explicitly dispatch the evidence handoff after a real Blender build
 concurrency:
   group: genesis-auto-build-${{ github.ref }}
   cancel-in-progress: false
@@ -137,3 +138,12 @@ jobs:
             git rebase "origin/${{ github.ref_name }}"
             git push origin "HEAD:${{ github.ref_name }}"
           fi
+      - name: Dispatch fresh four-view art review after successful real build
+        if: success() && steps.deadline.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # workflow_run may be suppressed for runs dispatched using GITHUB_TOKEN.
+          # workflow_dispatch is explicitly allowed and ensures the new candidate
+          # appears in latest.json/contact_sheet, not a stale inherited version.
+          gh workflow run art-review-handoff.yml --repo "${{ github.repository }}" --ref main
