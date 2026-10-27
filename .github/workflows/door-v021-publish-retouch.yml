@@ -1,0 +1,86 @@
+name: Genesis Arcanist V021 - publish calibrated cyan emissive render
+on:
+  push:
+    branches: [production/door-v021-arcanist-cyan-texture-glow]
+    paths:
+      - .github/workflows/door-v021-publish-retouch.yml
+permissions:
+  contents: write
+  actions: read
+  gallery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: door-v021-arcanist-cyan-emissive
+          run-id: 40573208435
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: evidence
+      - name: Calibrate soft emissive coverage
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          p=next(Path("evidence").rglob("three_quarter.png")).parent
+          for imfile in sorted(p.glob("*_emission.png")):
+              with Image.open(imfile) as img:
+                  t=ImageStat.Stat(img.convert("RGB").resize((256,256)))
+                  print("TEXTURED_GLOW_NOT_PAINT",imfile.name, "blue_mean", t.mean[2], "blue_std", t.stddev[2])
+                  assert 12<t.mean[2]<75,imfile
+                  assert t.stddev[2]>16,imfile
+          PY
+      - name: Publish V018 versus V021 authentic Blender views
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          folder=Path("previews/door_v021_cyan_glow")
+          folder.mkdir(parents=True,exist_ok=True)
+          files=list(Path("evidence").rglob("three_quarter.png"))
+          assert len(files)==1,files
+          p=files[0].parent
+          views=("front_orthographic","three_quarter","side_orthographic","rear_orthographic")
+          sheet=Image.new("RGB",(1600,2100),(28,30,35))
+          for i,view in enumerate(views):
+              file=p/(view+".png")
+              assert file.stat().st_size>10000,file
+              with Image.open(file) as im:
+                  img=im.convert("RGBA")
+                  img.thumbnail((710,955),Image.Resampling.LANCZOS)
+                  tile=Image.new("RGBA",(800,1050),(34,37,42,255))
+                  tile.alpha_composite(img,((800-img.width)//2,36+(955-img.height)//2))
+                  final=tile.convert("RGB")
+              ImageDraw.Draw(final).text((18,1010),"Arcanista V021 glow texture - "+view,fill=(233,241,248))
+              sheet.paste(final,((i%2)*800,(i//2)*1050))
+              if i==1: final.save(folder/"arcanista_glow_hero_v021.jpg",quality=90,optimize=True)
+          sheet.save(folder/"four_views_v021.jpg",quality=88,optimize=True)
+          old=Image.open("previews/door_v018_pbr/arcanista_hero_v018.jpg").convert("RGB")
+          new=Image.open(folder/"arcanista_glow_hero_v021.jpg").convert("RGB")
+          comp=Image.new("RGB",(1600,1050),(30,32,36))
+          old.thumbnail((750,990),Image.Resampling.LANCZOS)
+          comp.paste(old,((800-old.width)//2,25))
+          comp.paste(new,(800,0))
+          draw=ImageDraw.Draw(comp)
+          draw.text((180,1010),"V018 - sin glow fuerte",fill=(232,230,219))
+          draw.text((960,1010),"V021 - glow celeste en PBR",fill=(229,242,249))
+          comp.save(folder/"v018_vs_v021.jpg",quality=89,optimize=True)
+          print("REAL_RENDER_REVIEW",[(x.name,x.stat().st_size) for x in folder.glob("*.jpg")])
+          PY
+      - name: Commit V021 previews only to candidate branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v021_cyan_glow
+          if ! git diff --cached --quiet; then
+            git commit -m 'V021 real Cycles preview: strong cyan emissive embedded in V018 door [skip ci]'
+            git fetch origin production/door-v021-arcanist-cyan-texture-glow
+            git rebase origin/production/door-v021-arcanist-cyan-texture-glow
+            git push origin HEAD:production/door-v021-arcanist-cyan-texture-glow
+          fi
