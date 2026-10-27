@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:08:00.341006+00:00",
+  "generated_at": "2026-10-27T10:17:50.056247+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-open-hearth-masonry-throat-v023",
-      "run_id": 40485165072,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485165072",
-      "commit": "ac0c68112b336cbd2eeabb02dce745da31780f05",
-      "completed_at": "2026-10-27T10:07:52Z",
-      "preview_directory": "previews/production_auto/forge_open-hearth-masonry-throat-v023",
+      "branch": "production/auto-forge-low-side-draft-smoke-inlet-v024",
+      "run_id": 40486487053,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40486487053",
+      "commit": "792f8a24f3b7d1b2568fccf165122698798436b3",
+      "completed_at": "2026-10-27T10:17:43Z",
+      "preview_directory": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024",
       "view_paths": {
-        "front": "previews/production_auto/forge_open-hearth-masonry-throat-v023/front.png",
-        "three_quarter": "previews/production_auto/forge_open-hearth-masonry-throat-v023/three_quarter.png",
-        "rear": "previews/production_auto/forge_open-hearth-masonry-throat-v023/rear.png",
-        "detail": "previews/production_auto/forge_open-hearth-masonry-throat-v023/detail.png"
+        "front": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/front.png",
+        "three_quarter": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/three_quarter.png",
+        "rear": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/rear.png",
+        "detail": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/detail.png"
       },
       "status": "review_ready"
     },
@@ -35,10 +35,10 @@
     },
     "door": {
       "branch": "production/door-v013-dark-forged-iron-local-rust",
-      "run_id": 40485676050,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485676050",
-      "commit": "3c7ab8d7053b71e9af0a20ba6a399bcc29b2926c",
-      "completed_at": "2026-10-27T10:04:58Z",
+      "run_id": 40486299735,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40486299735",
+      "commit": "dc38474d65574a72e7c94127f9e45c45b6cc3c30",
+      "completed_at": "2026-10-27T10:17:40Z",
       "preview_directory": "previews/door_v013",
       "view_paths": {
         "front": "previews/door_v013/front.png",
@@ -50,10 +50,10 @@
     },
     "anvil": {
       "branch": "production/yunque-v023-burnished-steel-pbr2k-geometry-locked",
-      "run_id": 40484891682,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40484891682",
-      "commit": "50a65274a2041a556afbcb002cbc246a293d432e",
-      "completed_at": "2026-10-27T10:07:48Z",
+      "run_id": 40486191048,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40486191048",
+      "commit": "183df0fdea05ab8aa8878301c6039b06dc632db3",
+      "completed_at": "2026-10-27T10:08:53Z",
       "preview_directory": "previews/yunque_v023",
       "view_paths": {
         "front": "previews/yunque_v023/front.png",
