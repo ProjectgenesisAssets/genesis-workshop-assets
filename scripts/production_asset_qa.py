@@ -82,12 +82,20 @@ def main():
     assert stats["materials"]>=1
     paths=candidate_pngs(out,asset)
     for name,path in paths.items():assert path.is_file(),("MISSING_RENDER",name,str(path))
-    baseline=None
-    for folder in preview_candidates(asset):
-        base=folder/asset if asset in ("forge","bellows") else folder
-        if all((base/(view+".png")).is_file() for view in VIEWS[asset]):
-            baseline=base
-            break
+    # Compare a correction to its actual best preceding checkpoint, not only old
+    # heroes_v010; never infer artistic improvement from a different baseline.
+    preferred_baselines={
+        ("forge","ashlar-hammered-hood-v015"):Path("previews/production_auto/forge_smithy-ironhood-v014"),
+        ("bellows","warm-oak-organic-hide-v014"):Path("previews/production_auto/bellows_leather-pbr-contrast-v012"),
+    }
+    preferred=preferred_baselines.get((asset,args.task_id))
+    baseline=preferred if preferred and all((preferred/(v+".png")).is_file() for v in VIEWS[asset]) else None
+    if baseline is None:
+        for folder in preview_candidates(asset):
+            base=folder/asset if asset in ("forge","bellows") else folder
+            if all((base/(view+".png")).is_file() for view in VIEWS[asset]):
+                baseline=base
+                break
     assert baseline,("NO_BASELINE",asset)
     qa=Path("reports/production_auto")/f"{asset}-{args.task_id}"
     qa.mkdir(parents=True,exist_ok=True)

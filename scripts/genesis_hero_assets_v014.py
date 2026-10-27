@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v015")
+OUT=ROOT/("output_hero_"+KIND+"_v016")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -118,12 +118,12 @@ def pbr(name,base,metal,rough,kind,seed):
     links.new(nm.outputs["Normal"],bs.inputs["Normal"])
     if kind=="hotcoal":
         # Incandescence lives in narrow charcoal microfractures, NOT detached bright spheres.
-        thin=np.clip((.092-np.abs(f))/.070,0,1)*np.clip((.40+c)/.75,0,1)
+        thin=np.clip((.115-np.abs(f))/.085,0,1)*np.clip((.40+c)/.75,0,1)
         emission=np.stack([thin*.85,thin*.19,thin*.025],axis=2).astype(np.float32)
         emm=img("emissive",emission)
         emnode=nodes.new("ShaderNodeTexImage");emnode.image=emm
         links.new(emnode.outputs["Color"],bs.inputs["Emission Color"])
-        bs.inputs["Emission Strength"].default_value=3.9
+        bs.inputs["Emission Strength"].default_value=5.1
     MATERIALS[name]=m
     return m
 
@@ -164,7 +164,7 @@ def handlaid(name,center,dims,mat,edge=.006,rz=0):
     size=tuple(max(.035,d*(1+rng.uniform(-.105,.105))) for d in dims)
     offset=(rng.uniform(-.009,.009),rng.uniform(-.008,.008),rng.uniform(-.006,.006))
     pos=tuple(center[i]+offset[i] for i in range(3))
-    obj=box(name,pos,size,mat,edge=edge*rng.uniform(.65,1.40),
+    obj=box(name,pos,size,mat,edge=edge*rng.uniform(1.15,1.85),
             rz=rz+rng.uniform(-.028,.028))
     for v in obj.data.vertices:
         v.co.x+=rng.uniform(-.013,.013)
@@ -569,7 +569,7 @@ def mount_forge():
             for j in range(count+1):
                 v=j/count
                 point=(1-u)*(1-v)*p[0]+u*(1-v)*p[1]+u*v*p[2]+(1-u)*v*p[3]
-                dome=.018*math.sin(math.pi*u)*math.sin(math.pi*v)
+                dome=.055*math.sin(math.pi*u)*math.sin(math.pi*v)
                 ripple=.0025*math.sin(5*math.pi*u+2*math.pi*v)*math.sin(math.pi*u)*math.sin(math.pi*v)
                 verts.append(tuple(point+normal*(dome+ripple)))
         faces=[]
@@ -712,7 +712,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V015","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V016","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -729,11 +729,11 @@ report={"asset":KIND,"version":"V015","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v015.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v016.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v015.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v016.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
