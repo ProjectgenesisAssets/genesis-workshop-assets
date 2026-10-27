@@ -154,9 +154,15 @@ def material(name, base, metallic, roughness, seed, surface):
         # V021: strong cyan glow baked into the DOOR'S PBR emission map itself.
         # No neon tubing, no opaque overlay meshes; wide weathered mineral pools
         # and luminous micro-pits transition softly across the real iron texture.
-        mineral_field=sat(.25+.64*clouds+.29*oxide+.19*caverns)
-        glow=sat(.12+.82*(mineral_field**1.9))
-        emission=np.stack((.065*glow,.68*glow,1.0*glow),axis=-1)
+        # Patchy sub-surface illumination: dark steel remains visible over most
+        # of the leaf. Only cloudy areas with higher mineral activity fluoresce.
+        # This is a genuine textured emission map, not extra neon geometry.
+        mineral_field=.65*macro+.48*broad+.22*fine+.10*pore
+        diffusion=sat((mineral_field-.10)/.75)
+        luminous_pools=sat((mineral_field-.35)/.55)**1.6
+        glow=sat((.06*diffusion**2+.88*luminous_pools)*
+                 sat(.90+.16*freckles))
+        emission=np.stack((.018*glow,.60*glow,1.0*glow),axis=-1)
     # OpenGL (+Y) tangent-space normal map, derivatives of genuine procedural height.
     dx=np.gradient(bump,axis=1)*3.6
     dy=np.gradient(bump,axis=0)*3.6
@@ -191,7 +197,7 @@ def material(name, base, metallic, roughness, seed, surface):
         em=write_img("emission",emission,False)
         emnode=nodes.new("ShaderNodeTexImage");emnode.image=em
         links.new(emnode.outputs["Color"],bs.inputs["Emission Color"])
-        bs.inputs["Emission Strength"].default_value=float(os.environ.get("PG_ARCANE_EMISSIVE_STRENGTH","3.8"))
+        bs.inputs["Emission Strength"].default_value=float(os.environ.get("PG_ARCANE_EMISSIVE_STRENGTH","2.7"))
     # Flag real material variance for CI: flat-color textures are rejected.
     metrics={"albedo_std":float(color.std(axis=(0,1)).mean()),
              "rough_std":float(rough.std()),
