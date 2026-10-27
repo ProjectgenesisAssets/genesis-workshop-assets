@@ -987,6 +987,55 @@
           "replace": "KIND+\"_hero_v026.glb\""
         }
       ]
+    },
+    {
+      "id": "diagonal-handcut-hide-creases-v025",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-cross-stitched-hide-seams-v024",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "V024 Blender rendered but objective QA correctly rejected it: crossed stitches change <0.0003 RGB per view and are imperceptible at menu scale. Actual V023→V024 JPG confirms rigid horizontal leather bands and pink-grey oak persist. Replace sinusoidal ring deformation with two offset, hand-cut diagonal compression creases in real gusset mesh; tint CC0 oak to less pink, muted aged brown while preserving scan pores. Keep failed V024 and provisional V012; no artistic approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v024\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v025\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V023\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V023\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V025\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V025\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "                rgba[:,:3]=np.stack((.415*grain+.026,\n                                     .218*grain+.010,\n                                     .100*grain+.005),axis=1)",
+          "replace": "                # Muted brown old oak, not pink/grey varnish; scanned pores\n                # and the existing longitudinal UV pattern remain untouched.\n                rgba[:,:3]=np.stack((.340*grain+.018,\n                                     .242*grain+.010,\n                                     .130*grain+.005),axis=1)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            phase=5.6*math.pi*t+2.6*x+1.5*math.sin(2.6*x+1.7*y+3.5*t)\n            fold=.56*math.sin(phase)+.12*math.sin(1.71*phase+1.5*x)\n            tension=(.15+.85*math.sin(math.pi*t)**.7)*(.85-.40*x)\n            factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.060*fold*tension)",
+          "replace": "            # V025: two hand-cut diagonal compression creases, one outward\n            # and one inward. Their centreline wanders across the actual leather\n            # mesh, rather than generating identical sinusoidal horizontal rings.\n            crease_a=max(0.0,1.0-abs(t-(.31+.11*x+.025*y))/.115)**2\n            crease_b=max(0.0,1.0-abs(t-(.65-.09*x+.035*y))/.120)**2\n            tension=(.20+.80*math.sin(math.pi*t)**.7)*(.90-.30*x)\n            fold=.75*crease_a-.58*crease_b\n            factor=1+amplitude*(.032+.130*fold*tension)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V024\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V025\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "\"targeted_repairs\":[\"replace flat dotted seam quads with two physically raised crossed linen threads per stitch\",",
+          "replace": "\"targeted_repairs\":[\"create two physically asymmetric diagonal leather compression creases instead of sinusoidal ring bands\",\"re-tint CC0 oak scan to aged muted brown while preserving wood pores\","
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v024.blend\"",
+          "replace": "KIND+\"_hero_v025.blend\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v024.glb\"",
+          "replace": "KIND+\"_hero_v025.glb\""
+        }
+      ]
     }
   ]
 }
