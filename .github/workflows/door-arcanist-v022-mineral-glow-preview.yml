@@ -1,0 +1,95 @@
+name: Genesis Arcanist V022 - dark iron with localized glowing mineral
+on:
+  push:
+    branches: [production/door-v022-arcanist-mineral-glow-preview]
+    paths:
+      - scripts/puerta_arcanista_mineral_glow_v022.py
+      - .github/workflows/door-arcanist-v022-mineral-glow-preview.yml
+permissions:
+  contents: write
+concurrency:
+  group: genesis-v022-preview-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PG_DOOR_TRADE: arcanista
+      PG_PBR_RES: '1536'
+      PG_CYCLES_SAMPLES: '24'
+      PG_RENDER_WIDTH: '900'
+      PG_RENDER_HEIGHT: '1200'
+      PG_ARCANE_EMISSIVE_STRENGTH: '6.0'
+      PG_REVIEW_ONLY: '1'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify model script and required V018 original
+        run: |
+          python3 -m py_compile scripts/puerta_arcanista_mineral_glow_v022.py
+          test -s previews/door_v018_pbr/arcanista_hero_v018.jpg
+      - name: Install official Blender 4.5.13
+        run: |
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/door-v022-blender.tar.xz
+          mkdir -p /tmp/door-v022-blender
+          tar -xJf /tmp/door-v022-blender.tar.xz -C /tmp/door-v022-blender --strip-components=1
+      - name: Render one high-quality material review view
+        run: |
+          /tmp/door-v022-blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_arcanista_mineral_glow_v022.py
+      - name: Validate cyan emission and preserve Blender render
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat,ImageDraw
+          src=Path("output_workshop_door_v022_arcanista")
+          renders=list(src.glob("three_quarter.png"))
+          assert len(renders)==1 and renders[0].stat().st_size>10000,renders
+          emissions=sorted(src.glob("*_emission.png"))
+          assert len(emissions)==3,emissions
+          for em in emissions:
+              with Image.open(em) as img:
+                  assert img.size==(1536,1536)
+                  stats=ImageStat.Stat(img.convert("RGB").resize((256,256)))
+                  print("V022_MASK_STATS",em.name,stats.mean,stats.stddev)
+                  assert stats.mean[2]>2 and stats.stddev[2]>5
+          dest=Path("previews/door_v022_mineral_glow")
+          dest.mkdir(parents=True,exist_ok=True)
+          with Image.open(renders[0]) as raw:
+              im=raw.convert("RGBA")
+              background=Image.new("RGBA",im.size,(31,34,39,255))
+              background.alpha_composite(im)
+              full=background.convert("RGB")
+              full.save(dest/"arcanista_hero_v022.jpg",quality=94,optimize=True)
+          old=Image.open("previews/door_v018_pbr/arcanista_hero_v018.jpg").convert("RGB")
+          both=Image.new("RGB",(1800,1200),(30,33,38))
+          old.thumbnail((820,1100))
+          both.paste(old,((900-old.width)//2,(1200-old.height)//2))
+          both.paste(full,(900,0))
+          draw=ImageDraw.Draw(both)
+          draw.text((35,1168),"V018 dark blue cold iron",fill=(228,235,239))
+          draw.text((930,1168),"V022 PBR + selective cyan glow",fill=(228,242,247))
+          both.save(dest/"v018_vs_v022.jpg",quality=90,optimize=True)
+          print("V022_RENDER_READY",[(x.name,x.stat().st_size) for x in dest.glob("*.jpg")])
+          PY
+      - name: Publish candidate preview to isolated branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v022_mineral_glow
+          if ! git diff --cached --quiet; then
+            git commit -m 'V022 material glow quick visual test [skip ci]'
+            git push origin HEAD:production/door-v022-arcanist-mineral-glow-preview
+          fi
+      - name: Retain the real rendered PNG and PBR emission maps
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: door-v022-preview-cyan-glow
+          path: |
+            output_workshop_door_v022_arcanista/three_quarter.png
+            output_workshop_door_v022_arcanista/*_emission.png
+          retention-days: 14
+          if-no-files-found: warn
