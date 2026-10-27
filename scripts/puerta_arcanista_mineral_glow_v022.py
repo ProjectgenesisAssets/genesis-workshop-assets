@@ -52,10 +52,10 @@ PROFILES={
         "inset":((.177,.119,.072),.74,.60,"bronze"),
     },
     "arcanista":{
-        "leaf":((.068,.083,.111),.90,.62,"arcane_iron"),
-        "edge":((.142,.168,.184),.89,.57,"arcane_iron"),
-        "hardware":((.220,.170,.109),.77,.61,"bronze"),
-        "inset":((.062,.073,.106),.84,.68,"arcane_iron"),
+        "leaf":((.066,.105,.138),.12,.49,"arcane_lithic"),
+        "edge":((.095,.152,.177),.18,.43,"arcane_lithic"),
+        "hardware":((.163,.215,.225),.30,.38,"arcane_lithic"),
+        "inset":((.041,.072,.099),.08,.55,"arcane_lithic"),
     },
 }
 def material(name, base, metallic, roughness, seed, surface):
@@ -112,6 +112,31 @@ def material(name, base, metallic, roughness, seed, surface):
         metallicmap=np.zeros((n,n),dtype=np.float32)
         bump=.48+.13*cell+.035*folded-.13*dents+.035*fine
         colored=[1.0,.91,.83]
+    elif surface=="arcane_lithic":
+        # V024: translucent-seeming, metamorphic arcane stone with sub-surface
+        # blue inclusions. It is deliberately NON-METALLIC, never blue iron.
+        strata=.55*macro+.30*broad+.15*fine
+        cleavage=np.sin((x*8.3+y*3.7+strata*.85)*2*np.pi)
+        cleavage2=np.sin((x*17.1-y*9.4+strata*1.3)*2*np.pi)
+        sheets=sat(.50+.24*cleavage+.13*cleavage2+.30*strata)
+        pores=sat(.48+.29*pore+.18*fine)
+        inclusion=sat((.58*macro+.34*broad+.15*fine+.08))
+        veinfield=.55*macro+.34*broad+.11*fine
+        core=np.exp(-((veinfield-.14)/.045)**2)
+        branch=np.exp(-((veinfield+.12)/.035)**2)*.50
+        halo=np.exp(-((veinfield-.14)/.19)**2)*.35
+        glow=sat((core+branch+halo)*sat(.48+.50*inclusion))
+        modulation=np.clip(.66+.29*sheets+.22*strata+.09*pores,.32,1.25)
+        rough=np.clip(roughness+.13*pores+.11*fine-.12*inclusion-.14*glow,.23,.83)
+        metallicmap=np.full((n,n),metallic,dtype=np.float32)
+        bump=.47+.15*sheets+.08*cleavage2+.07*pores+.11*fine
+        colored=[.72,1.06,1.15]
+        # Material body is dark blue-violet mineral, cyan from internal fractures.
+        color=np.stack([sat(base[k]*modulation*colored[k]) for k in range(3)],axis=-1)
+        color += np.stack((.012*inclusion,.035*inclusion,.065*inclusion),axis=-1)
+        color=np.clip(color,0,1)
+        emission=np.stack((.055*glow,.62*glow,.95*glow),axis=-1)
+        print("V024_LITHIC_GLOW",name,float(glow.mean()),float((glow>.4).mean()),flush=True)
     else:
         # Metallurgy: two oxide scales, micro-pitting, impact abrasion and patches
         # of intact forge-polished metal. Metallic and roughness follow the corrosion.
@@ -139,7 +164,8 @@ def material(name, base, metallic, roughness, seed, surface):
         metallicmap=np.clip(metallic*(1-ox_strength*oxide-.22*caverns),.12,1.)
         bump=.47+.085*broad+.085*fine+.075*caverns+.055*freckles-.030*scratches
         colored=[1.,1.,1.]
-    color=np.stack([np.clip(base[k]*modulation*colored[k],0,1) for k in range(3)],axis=-1)
+    if surface!="arcane_lithic":
+        color=np.stack([np.clip(base[k]*modulation*colored[k],0,1) for k in range(3)],axis=-1)
     if oxide is not None:
         tint_mask=np.clip(oxide*.69+.20*caverns,0,.88)
         color=color*(1-tint_mask[:,:,None])+oxide_color[None,None,:]*tint_mask[:,:,None]
