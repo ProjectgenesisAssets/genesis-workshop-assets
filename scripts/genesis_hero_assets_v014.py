@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v022")
+OUT=ROOT/("output_hero_"+KIND+"_v023")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -562,134 +562,76 @@ def mount_forge():
         for vert in rock.data.vertices:
             roughshape=1+.10*math.sin(vert.index*2.71+i*.84)+.055*math.cos(vert.index*.78+i*3.2)
             vert.co*=roughshape
-    # V014 architectural redesign: open working smithy, forged iron capture hood.
-    # Independent construction inspired by historic working blacksmith shops.
-    # No downloaded Fab mesh, proprietary texture, or commercial geometry.
-    # Broad dark smoke canopy, unobstructed working aperture, deep soot stonework.
-    def plate(name,poly,thickness=.016):
-        # True gently hammered convex panels, not mathematically flat toy roof planes.
-        # A 6x6 surface patch preserves all four corner anchors and hood aperture.
-        p=[Vector(v) for v in poly]
-        normal=(p[1]-p[0]).cross(p[3]-p[0]).normalized()
-        count=6
-        verts=[]
-        for i in range(count+1):
-            u=i/count
-            for j in range(count+1):
-                v=j/count
-                point=(1-u)*(1-v)*p[0]+u*(1-v)*p[1]+u*v*p[2]+(1-u)*v*p[3]
-                dome=.055*math.sin(math.pi*u)*math.sin(math.pi*v)
-                ripple=.0025*math.sin(5*math.pi*u+2*math.pi*v)*math.sin(math.pi*u)*math.sin(math.pi*v)
-                verts.append(tuple(point+normal*(dome+ripple)))
-        faces=[]
-        for i in range(count):
-            for j in range(count):
-                a=i*(count+1)+j
-                faces.append((a,a+count+1,a+count+2,a+1))
-        obj=made_mesh(name,verts,faces,steel,0)
-        solid=obj.modifiers.new("Actual forged iron gauge","SOLIDIFY")
-        solid.thickness=thickness
-        bevel(obj,.005,2)
-        return obj
-
-    # The open front is deliberately left EMPTY from hearth to hood lip,
-    # so the fire can be worked from the front with full-length tongs.
-    # Unlike V014 no overlapping ashlar slope reads as a pitched roof.
-    front_y=-.45
-    back_y=.50
-    bottom_z=1.810
-    top_z=2.40
-    plate("Left hammer-shaped smoke capture hood",[
-        (-.94,front_y,bottom_z),(-.46,-.30,top_z),
-        (-.46,.37,top_z),(-.94,back_y,bottom_z)])
-    plate("Right hammer-shaped smoke capture hood",[
-        (.94,back_y,bottom_z),(.46,.37,top_z),
-        (.46,-.30,top_z),(.94,front_y,bottom_z)])
-    plate("Rear tapered capture hood",[
-        (-.94,back_y,bottom_z),(.94,back_y,bottom_z),
-        (.46,.37,top_z),(-.46,.37,top_z)])
-    # Continuous hand-raised front apron with an arched lower working opening.
-    # The V018 missing central panel was a genuine visual defect; the V017 flat
-    # apron looked like a barbecue roof. This curved iron surface is connected.
-    arch_sections=20
-    arch_verts=[]
-    for j in range(arch_sections+1):
-        q=j/arch_sections
-        xlow=-.94+1.88*q
-        xhigh=-.46+.92*q
-        rise=.330*(1-(abs(xlow)/.94)**1.65)
-        for k in range(7):
-            t=k/6
-            x=xlow*(1-t)+xhigh*t
-            y=front_y*(1-t)-.30*t
-            z=(bottom_z+rise)*(1-t)+top_z*t
-            z+=.013*math.sin(math.pi*t)*math.sin(math.pi*q)
-            arch_verts.append((x,y,z))
-    arch_faces=[]
-    for j in range(arch_sections):
-        for k in range(6):
-            a=j*7+k
-            arch_faces.append((a,a+7,a+8,a+1))
-    apron=made_mesh("Continuous arched wrought smoke capture apron",
-                    arch_verts,arch_faces,steel,0)
-    apron_solid=apron.modifiers.new("Forged apron thickness","SOLIDIFY")
-    apron_solid.thickness=.020
-    bevel(apron,.006,2)
-
-    # Stiffening rims, hammered strap ribs and riveted forged fittings.
-    # Rolled iron lip follows the arch instead of floating across the opening.
-    lip_verts=[]
-    for j in range(arch_sections+1):
-        q=j/arch_sections
-        x=-.94+1.88*q
-        z=bottom_z+.330*(1-(abs(x)/.94)**1.65)
-        lip_verts.extend([(x,front_y-.045,z-.024),(x,front_y+.014,z-.024),
-                          (x,front_y+.014,z+.024),(x,front_y-.045,z+.024)])
-    lip_faces=[]
-    for j in range(arch_sections):
-        for k in range(4):
-            a=j*4+k;b=(j+1)*4+k
-            lip_faces.append((a,b,(j+1)*4+(k+1)%4,j*4+(k+1)%4))
-    lip_faces.extend([tuple(reversed(range(4))),
-                      tuple(arch_sections*4+k for k in range(4))])
-    made_mesh("Arched rolled forged front lip",lip_verts,lip_faces,steel,.006)
+    # V023 CONCEPT EXPERIMENT: masonry open hearth with vertical rear smoke throat.
+    # Remove the dominant roof-shaped iron hood. The lower forge/firebed remains
+    # reachable from the front; soot-stained stone cheeks carry a hollow chimney.
+    # This is physical geometry, not a roof texture or a recolored V022 hood.
+    # Existing V022 is preserved for side-by-side artistic review.
     for side in (-1,1):
-        box("Side smoke hood return lip "+str(side),
-            (side*.947,.02,bottom_z),( .056,1.19,.050),steel,.008)
-        # Front firebox posts carry the hood as a genuine structural assembly.
-        for course in range(7):
-            handlaid("Hood footing massive piers "+str((side,course)),
-                (side*.865,-.405,.94+course*.133),
-                (.178,.290,.126),stone if course>2 else hearth,.006)
-        # Forged upright reinforcement anchored to masonry, not cartoon rods.
-        box("Visible wrought load bracket "+str(side),
-            (side*.807,-.470,1.46),(.048,.068,.43),steel,.008)
-        plate("Hammered triangular side brace "+str(side),[
-            (side*.81,-.47,1.56),(side*.82,-.47,1.70),
-            (side*.58,-.37,2.03),(side*.60,-.37,1.94)],.020)
-    for x in (-.78,-.55,-.28,0,.28,.55,.78):
-        rivet_z=bottom_z+.330*(1-(abs(x)/.94)**1.65)
-        ico("Visible peened rivet "+str(x),
-            (x,front_y-.061,rivet_z),.012,steel,subdiv=2,
-            scale=(1,.42,.72))
-
-    # Tall utilitarian refractory flue: correct working-proportion exhaust.
-    # Square forged transition inside a much taller, dark soot-stained stack.
-    for y in (-.275,.345):
-        plate("Flue front rear iron wall "+str(y),[
-            (-.46,y,2.39),(.46,y,2.39),
-            (.36,y,3.05),(-.36,y,3.05)])
+        for course in range(6):
+            zz=1.785+course*.135
+            masonry_rng=random.Random(27001+course*41+(0 if side<0 else 17))
+            handlaid("Open-throat masonry load cheek %s %d"%(side,course),
+                     (side*.570,.555,zz),
+                     (.220,.295,.130),hearth if course<3 else stone,.006,
+                     rz=masonry_rng.uniform(-.008,.008))
+        # Solid cheek-to-rear-wall buttress transfers chimney load into firebox.
+        for course in range(3):
+            handlaid("Flue masonry side buttress %s %d"%(side,course),
+                     (side*.640,.640,1.85+course*.165),
+                     (.160,.280,.155),hearth,.006)
+        box("Visible forge-throat iron edge strap "+str(side),
+            (side*.445,.415,2.23),(.033,.090,.52),steel,.006)
+    # Rear smoke backplate remains sooted and vertically connected to the flue.
+    for course in range(10):
+        z=1.795+course*.140
+        rng=random.Random(27031+course*97)
+        widths=[rng.uniform(.16,.30) for _ in range(5)]
+        factor=1.20/sum(widths)
+        left=-.60
+        for i,width in enumerate(widths):
+            actual=width*factor
+            x=left+actual/2
+            left+=actual
+            handlaid("Backwall fire-smoke refractory course %d %d"%(course,i),
+                     (x,.735,z),(actual-.012,.150,.133),
+                     hearth if (course+i)%4 else stone,.005,
+                     rz=rng.uniform(-.005,.005))
+    # The throat opening below the lintel is physically empty (no front hood).
+    # A genuine forged lintel supports the upper shaft above working height.
+    box("Blackened wrought smoke-throat lintel",
+        (0,.460,2.53),(1.31,.120,.080),steel,.008)
+    for x in (-.50,.50):
+        box("Flue lintel load transfer bracket "+str(x),
+            (x,.420,2.47),(.070,.130,.180),steel,.008)
+    # Rectangular vertical flue: four brick walls with a truly open top.
+    for course in range(5):
+        z=2.615+course*.139
+        rng=random.Random(27191+course*37)
+        for y in (.465,.790):
+            for i in range(5):
+                x=-.49+i*.245
+                handlaid("Hollow vertical flue front/rear %d %s %d"%(course,y,i),
+                         (x,y,z),(.236,.135,.132),
+                         hearth if course<2 else stone,.005,
+                         rz=rng.uniform(-.005,.005))
+        for side in (-1,1):
+            for y in (.545,.680):
+                handlaid("Hollow flue side wall %d %s %s"%(course,side,y),
+                         (side*.605,y,z),(.135,.144,.132),
+                         hearth if course<2 else stone,.005)
+    # Metal chimney-mouth collar, four separate sides, no lid.
+    mouth_z=3.33
+    for y in (.420,.835):
+        box("Open chimney throat iron collar front/back "+str(y),
+            (0,y,mouth_z),(1.31,.060,.052),steel,.009)
     for side in (-1,1):
-        plate("Flue left right iron wall "+str(side),[
-            (side*.46,-.275,2.39),(side*.46,.345,2.39),
-            (side*.36,.345,3.05),(side*.36,-.275,3.05)])
-    for y in (-.295,.365):
-        box("Flue mouth wrought rim "+str(y),(0,y,3.05),
-            (.79,.032,.058),steel,.010)
+        box("Open chimney throat iron collar return "+str(side),
+            (side*.630,.625,mouth_z),(.060,.440,.052),steel,.009)
+    # Darkened vertical flue straps are restrained fittings, not roof rafters.
     for side in (-1,1):
-        box("Flue mouth return rim "+str(side),
-            (side*.37,.035,3.05),(.032,.67,.058),steel,.010)
-
+        box("Forged vertical chimney brace "+str(side),
+            (side*.635,.438,2.94),(.028,.034,.68),steel,.005)
     # Forged working-tool wall rack: visual function beats decoration.
     # A proper coal rake, poker and lifting hook are separate forged pieces.
     box("Practical side wall forge tool rack",(.93,.46,1.37),
@@ -760,7 +702,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V022","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V023","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -777,11 +719,11 @@ report={"asset":KIND,"version":"V022","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v022.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v023.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v022.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v023.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
