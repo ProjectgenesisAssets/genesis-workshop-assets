@@ -1,0 +1,20 @@
+{
+  "id": "restore-aged-oak-warmth-v026",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-diagonal-handcut-hide-creases-v025",
+  "branch": "production/auto-bellows-restore-aged-oak-warmth-v026",
+  "reason": "Inspected actual V024→V025 four-view JPG: V025 diagonal hide compression is visible but still too regular, and the newly tinted oak regressed to conspicuously cold grey. Do not promote V025. Restore warm brown old oak via red/green/blue ratio while increasing real CC0 photo luminance grain contrast and reducing synthetic stripes; retain V025 physical hide geometry only as experimental baseline. No artistic approval.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T11:28:05.293386+00:00"
+}

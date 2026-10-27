@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v025")
+OUT=ROOT/("output_hero_"+KIND+"_v026")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,7 +297,7 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            baked_name="bellows_aged_oak_baked_albedo_V025" if is_oak else "bellows_oxblood_leather_baked_albedo_V025"
+            baked_name="bellows_aged_oak_baked_albedo_V026" if is_oak else "bellows_oxblood_leather_baked_albedo_V026"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
@@ -314,13 +314,14 @@ def mount_bellows():
                 broad=np.sin(2*math.pi*(u*6+.5*warp))
                 # V018 looked salmon pink with artificial parallel lines.
                 # Let the real CC0 wood pores dominate, with subdued warped grain.
-                grain=np.clip(.53+1.07*(luminance-luminance.mean())+
-                              .014*fine.reshape(-1)+.020*broad.reshape(-1),.25,.82)
-                # Muted brown old oak, not pink/grey varnish; scanned pores
-                # and the existing longitudinal UV pattern remain untouched.
-                rgba[:,:3]=np.stack((.340*grain+.018,
-                                     .242*grain+.010,
-                                     .130*grain+.005),axis=1)
+                # Restore the warm iron-rich oak hue lost in V025: its
+                # green/blue-heavy tint washed the actual board to cold grey.
+                # The CC0 scan supplies dominant grain, not painted stripes.
+                grain=np.clip(.53+1.34*(luminance-luminance.mean())+
+                              .012*fine.reshape(-1)+.017*broad.reshape(-1),.24,.82)
+                rgba[:,:3]=np.stack((.375*grain+.018,
+                                     .190*grain+.009,
+                                     .076*grain+.004),axis=1)
             else:
                 rgba[:,:3]*=np.array((.63,.32,.25),dtype=np.float32)
             rgba[:,:3]=np.clip(rgba[:,:3],0,1)
@@ -655,9 +656,9 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V025","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V026","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
-        "targeted_repairs":["create two physically asymmetric diagonal leather compression creases instead of sinusoidal ring bands","re-tint CC0 oak scan to aged muted brown while preserving wood pores",
+        "targeted_repairs":["restore aged warm oak from cold grey V025 regression with scanned CC0 grain contrast",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
                             "bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs",
                             "ensure exported GLB uses the exact baked stained-oak image without MixRGB"],
@@ -667,11 +668,11 @@ report={"asset":KIND,"version":"V025","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v025.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v026.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v025.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v026.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
