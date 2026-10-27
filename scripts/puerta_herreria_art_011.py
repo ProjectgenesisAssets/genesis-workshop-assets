@@ -417,5 +417,6 @@ with (OUT/"DESIGN_AUDIT.json").open("w") as f:
         "legacy_meshes_reused":0,"shape":"arched_iron_merchant_shop",
         "true_circular_peep_hole":True,"lever_count":1,"wood":False,
         "texture_pixels":1024,"texture_max_allowed":1536,
-        "geometry_budget_target_triangles":25000,"evaluated_triangles":triangles,\n        "budget_met":triangles<=25000,
+        "geometry_budget_target_triangles":25000,"evaluated_triangles":triangles,
+        "budget_met":triangles<=25000,
         "note":"Budget is a target, not an automatic art approval; compare silhouette in four views"},f,indent=2)
