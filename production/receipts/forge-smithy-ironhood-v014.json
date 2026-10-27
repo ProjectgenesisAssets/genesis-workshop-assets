@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "id": "smithy-ironhood-v014",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-photostone-mass-v013",
+  "workflow": "production-asset-iteration.yml",
+  "reason": "Actual V013 four-view art review rejected roofed-brick barbecue silhouette. Independently rebuild historically grounded forged iron capture canopy, full frontal hearth access, tall open flue, load-bearing masonry and forged working tools. No Fab-proprietary mesh or texture used.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py"
+  ],
+  "status": "VISUAL_CANDIDATE_NOT_APPROVED"
+}
