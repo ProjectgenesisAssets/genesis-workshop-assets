@@ -1,5 +1,4 @@
 name: Genesis isolated asset correction build - real Blender 4.5.13
-# Forge V014: independently modeled iron smoke capture hood with open front and taller flue.
 on:
   push:
     branches:

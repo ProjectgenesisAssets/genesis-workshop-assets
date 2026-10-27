@@ -42,10 +42,20 @@ def glb_stats(path):
             ix=prim.get("indices")
             count=doc["accessors"][ix]["count"] if ix is not None else doc["accessors"][prim["attributes"]["POSITION"]]["count"]
             triangles+=count//3
-    textured=sum(bool(mat.get("pbrMetallicRoughness",{}).get("baseColorTexture")) for mat in doc.get("materials",[]))
+    bindings={}
+    for mat in doc.get("materials",[]):
+        pbr=mat.get("pbrMetallicRoughness",{})
+        tex=pbr.get("baseColorTexture")
+        image_name=None
+        if tex:
+            texture=doc["textures"][tex["index"]]
+            image_name=doc["images"][texture["source"]].get("name")
+        bindings[mat.get("name","unnamed")]={"base_color_image":image_name,
+            "emissive_texture":bool(mat.get("emissiveTexture"))}
+    textured=sum(bool(v["base_color_image"]) for v in bindings.values())
     return {"triangles":triangles,"meshes":len(doc.get("meshes",[])),
             "materials":len(doc.get("materials",[])),"base_color_textured_materials":textured,
-            "embedded_images":len(doc.get("images",[]))}
+            "embedded_images":len(doc.get("images",[])),"texture_bindings":bindings}
 
 def load(path):
     with Image.open(path) as im:
@@ -65,6 +75,9 @@ def main():
     audits=list(out.glob("*AUDIT*.json"))
     assert len(glbs)==1 and len(blends)==1 and audits,(glbs,blends,audits)
     stats=glb_stats(glbs[0])
+    if asset=="bellows" and ("leather" in args.task_id or "oxblood" in args.task_id):
+        matches=[v for k,v in stats["texture_bindings"].items() if "leather" in k.lower()]
+        assert any("oxblood" in (m["base_color_image"] or "").lower() for m in matches),("LEATHER_PBR_NOT_BOUND_IN_GLB",matches)
     assert 100<stats["triangles"]<350000,stats
     assert stats["materials"]>=1
     paths=candidate_pngs(out,asset)
@@ -87,13 +100,22 @@ def main():
         new=load(paths[view])
         diff=ImageChops.difference(old,new)
         delta=sum(ImageStat.Stat(diff.convert("RGB")).mean)/(255*3)
-        a0=old.getchannel("A").point(lambda x:255 if x>=32 else 0)
-        a1=new.getchannel("A").point(lambda x:255 if x>=32 else 0)
-        union=ImageStat.Stat(ImageChops.lighter(a0,a1)).sum[0]
-        intersect=ImageStat.Stat(ImageChops.darker(a0,a1)).sum[0]
-        iou=intersect/max(union,1)
-        changes.append({"view":view,"rgb_delta":round(delta,5),"silhouette_iou":round(iou,5)})
-        silhouettes.append(iou)
+        # Opaque studio renders have alpha=255 everywhere. They cannot yield
+        # a silhouette IoU: reporting 1.0 would falsely imply shape preservation.
+        a0=old.getchannel("A")
+        a1=new.getchannel("A")
+        alpha_valid=a0.getextrema()[0]<250 and a1.getextrema()[0]<250
+        if alpha_valid:
+            a0=a0.point(lambda x:255 if x>=32 else 0)
+            a1=a1.point(lambda x:255 if x>=32 else 0)
+            union=ImageStat.Stat(ImageChops.lighter(a0,a1)).sum[0]
+            intersect=ImageStat.Stat(ImageChops.darker(a0,a1)).sum[0]
+            iou=intersect/max(union,1)
+            silhouettes.append(iou)
+        else:
+            iou=None
+        changes.append({"view":view,"rgb_delta":round(delta,5),
+                        "silhouette_iou":round(iou,5) if iou is not None else None})
         for row,img in enumerate((old,new)):
             frame=Image.new("RGBA",(tile,tile),(31,35,41,255))
             img.thumbnail((tile-16,tile-35))
@@ -109,9 +131,10 @@ def main():
       "glb":glbs[0].name,"blend":blends[0].name,
       "glb_stats":stats,"audit_files":[p.name for p in audits],
       "comparison":changes,"visual_changed":visual_changed,
-      "technical_pass":visual_changed and min(silhouettes)>.75,
+      "technical_pass":visual_changed and (not silhouettes or min(silhouettes)>.75),
+      "silhouette_verifiable":len(silhouettes)==len(VIEWS[asset]),
       "artistic_score":None,"artist_approved":False,
-      "note":"Real Blender renders, objective technical checks only; final artistic approval is human."
+      "note":"Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
     }
     (qa/"QA.json").write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n")
     print(json.dumps(report,indent=2))

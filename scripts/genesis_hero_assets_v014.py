@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v014")
+OUT=ROOT/("output_hero_"+KIND+"_v015")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -159,17 +159,23 @@ def box(name,center,dims,mat,edge=.007,rz=0):
     return o
 
 def handlaid(name,center,dims,mat,edge=.006,rz=0):
-    """Physical masonry variation in dimensions and vertices, not a color-only randomizer."""
+    """Individually hewn ashlar: unequal stones, broken arrises, unique photo UV sampling."""
     rng=random.Random(8109+sum((i+1)*ord(ch) for i,ch in enumerate(name)))
-    size=tuple(max(.035,d*(1+rng.uniform(-.045,.045))) for d in dims)
-    offset=(rng.uniform(-.004,.004),rng.uniform(-.003,.003),rng.uniform(-.003,.003))
+    size=tuple(max(.035,d*(1+rng.uniform(-.105,.105))) for d in dims)
+    offset=(rng.uniform(-.009,.009),rng.uniform(-.008,.008),rng.uniform(-.006,.006))
     pos=tuple(center[i]+offset[i] for i in range(3))
-    obj=box(name,pos,size,mat,edge=edge*rng.uniform(.60,1.18),
-            rz=rz+rng.uniform(-.012,.012))
+    obj=box(name,pos,size,mat,edge=edge*rng.uniform(.65,1.40),
+            rz=rz+rng.uniform(-.028,.028))
     for v in obj.data.vertices:
-        v.co.x+=rng.uniform(-.006,.006)
-        v.co.y+=rng.uniform(-.005,.005)
-        v.co.z+=rng.uniform(-.003,.003)
+        v.co.x+=rng.uniform(-.013,.013)
+        v.co.y+=rng.uniform(-.010,.010)
+        v.co.z+=rng.uniform(-.008,.008)
+    # Stop identical quarry-wall photo patches repeating on every masonry course.
+    if obj.data.uv_layers.active:
+        du,dv=rng.random(),rng.random()
+        for uvloop in obj.data.uv_layers.active.data:
+            uvloop.uv.x=uvloop.uv.x*.92+du
+            uvloop.uv.y=uvloop.uv.y*.92+dv
     return obj
 
 def cyl(name,pos,r,depth,mat,vertices=32,rot=(0,0,0),edge=.002):
@@ -552,7 +558,26 @@ def mount_forge():
     # No downloaded Fab mesh, proprietary texture, or commercial geometry.
     # Broad dark smoke canopy, unobstructed working aperture, deep soot stonework.
     def plate(name,poly,thickness=.016):
-        obj=made_mesh(name,poly,[(0,1,2,3)],steel,0)
+        # True gently hammered convex panels, not mathematically flat toy roof planes.
+        # A 6x6 surface patch preserves all four corner anchors and hood aperture.
+        p=[Vector(v) for v in poly]
+        normal=(p[1]-p[0]).cross(p[3]-p[0]).normalized()
+        count=6
+        verts=[]
+        for i in range(count+1):
+            u=i/count
+            for j in range(count+1):
+                v=j/count
+                point=(1-u)*(1-v)*p[0]+u*(1-v)*p[1]+u*v*p[2]+(1-u)*v*p[3]
+                dome=.018*math.sin(math.pi*u)*math.sin(math.pi*v)
+                ripple=.0025*math.sin(5*math.pi*u+2*math.pi*v)*math.sin(math.pi*u)*math.sin(math.pi*v)
+                verts.append(tuple(point+normal*(dome+ripple)))
+        faces=[]
+        for i in range(count):
+            for j in range(count):
+                a=i*(count+1)+j
+                faces.append((a,a+count+1,a+count+2,a+1))
+        obj=made_mesh(name,verts,faces,steel,0)
         solid=obj.modifiers.new("Actual forged iron gauge","SOLIDIFY")
         solid.thickness=thickness
         bevel(obj,.005,2)
@@ -687,7 +712,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V014","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V015","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -704,11 +729,11 @@ report={"asset":KIND,"version":"V014","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v014.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v015.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v014.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v015.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
