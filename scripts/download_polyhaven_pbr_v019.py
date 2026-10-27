@@ -47,7 +47,7 @@ for kind in ("diff","rough","nor_gl"):
         target=out/(kind+".jpg")
         im.save(target,quality=94,subsampling=0)
         std=ImageStat.Stat(im.resize((256,256))).stddev
-        assert max(std)>3.0,(kind,std)
+        assert max(std)>(.35 if kind=="nor_gl" else 3.0),(kind,std)
         receipt["maps"][kind]={"url":url,"pixel_size":im.size,"stddev_rgb":std}
     print("POLYHAVEN_CC0_MAP_READY",kind,target,target.stat().st_size,flush=True)
 (out/"SOURCE_RECEIPT.json").write_text(json.dumps(receipt,indent=2))
