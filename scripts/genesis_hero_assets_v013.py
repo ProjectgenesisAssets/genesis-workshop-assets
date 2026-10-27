@@ -418,6 +418,7 @@ def mount_bellows():
     # No unverified animation: independent boards remain animation-ready components.
 
 def mount_forge():
+    global quarry_photo_bound
     # V013: desaturated refractory stone, weathered stone, and deeply soot-stained courses.
     # Three physically textured masonry materials avoid a single cartoon-uniform brick palette.
     stone=pbr("forge_aged_refractory_sandstone",(.245,.234,.215),.0,.92,"stone",71)
