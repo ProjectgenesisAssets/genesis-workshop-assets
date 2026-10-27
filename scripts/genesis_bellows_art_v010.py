@@ -294,7 +294,8 @@ def mount_bellows():
         assert len(slots)==1,(base_material.name,len(slots))
         slots[0].image=img
         if "oak" in base_material.name:
-            # V010: deeper warm aged-oak stain, preserving actual scanned pores.\n            # Scanned 1K oak V008 was washed-out nearly white. Tint the *same*
+            # V010: deeper warm aged-oak stain, preserving actual scanned pores.
+            # Scanned 1K oak V008 was washed-out nearly white. Tint the *same*
             # photographic grain, rather than swapping it for a flat color.
             nodes=base_material.node_tree.nodes
             links=base_material.node_tree.links
@@ -575,7 +576,8 @@ report={"asset":KIND,"version":"V010","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V009",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
-                            "warm/darken scanned oak while preserving photographic grain",\n                            "correct washed-out top board with deeper warm aged-oak stain"],
+                            "warm/darken scanned oak while preserving photographic grain",
+                            "correct washed-out top board with deeper warm aged-oak stain"],
         "art_direction":"functional medieval photorealism, never stylized","metric_bounds_m":[list(mn),list(mx)],
         "mesh_parts":len(ASSETS),"source":"independent Blender generator, no historical master reused",
         "pbr_materials":list(MATERIALS.keys()),"maps":MAPS,"render_samples":sc.cycles.samples,
