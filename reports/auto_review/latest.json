@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T05:54:39.437891+00:00",
+  "generated_at": "2026-10-27T06:56:26.592944+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -19,17 +19,17 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-oak-grain-gusset-array-fix-v017",
-      "run_id": 40457420163,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40457420163",
-      "commit": "a4a698d6938ab24845fd7a3402c0b347be28bcba",
-      "completed_at": "2026-10-27T05:54:30Z",
-      "preview_directory": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017",
+      "branch": "production/auto-bellows-oak-pigment-warped-fibres-v018",
+      "run_id": 40463469162,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40463469162",
+      "commit": "9e40024a509a81273df6c857102590f422ee24aa",
+      "completed_at": "2026-10-27T06:56:17Z",
+      "preview_directory": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018",
       "view_paths": {
-        "front": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/front.png",
-        "three_quarter": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/three_quarter.png",
-        "rear": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/rear.png",
-        "detail": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/detail.png"
+        "front": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/front.png",
+        "three_quarter": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/three_quarter.png",
+        "rear": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/rear.png",
+        "detail": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/detail.png"
       },
       "status": "review_ready"
     },
