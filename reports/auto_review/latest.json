@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:18:51.590801+00:00",
+  "generated_at": "2026-10-27T10:23:41.689885+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-low-side-draft-smoke-inlet-v024",
-      "run_id": 40486487053,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40486487053",
-      "commit": "792f8a24f3b7d1b2568fccf165122698798436b3",
-      "completed_at": "2026-10-27T10:17:43Z",
-      "preview_directory": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024",
+      "branch": "production/auto-forge-sooted-recessed-smoke-duct-v025",
+      "run_id": 40487578748,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40487578748",
+      "commit": "e6f9ace37450707c81784559568d2f3115e29fcb",
+      "completed_at": "2026-10-27T10:23:34Z",
+      "preview_directory": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025",
       "view_paths": {
-        "front": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/front.png",
-        "three_quarter": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/three_quarter.png",
-        "rear": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/rear.png",
-        "detail": "previews/production_auto/forge_low-side-draft-smoke-inlet-v024/detail.png"
+        "front": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/front.png",
+        "three_quarter": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/three_quarter.png",
+        "rear": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/rear.png",
+        "detail": "previews/production_auto/forge_sooted-recessed-smoke-duct-v025/detail.png"
       },
       "status": "review_ready"
     },
