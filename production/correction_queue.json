@@ -455,6 +455,89 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v018.glb\"))"
         }
       ]
+    },
+    {
+      "id": "raised-smoke-arch-v020",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-arched-smoke-capture-v019",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Inspected actual V018→V019 four-view JPG and 16-view handoff: V019 fixes missing central hood but front black apron still forms a heavy roof-like brow, and peened rivets lie on the old straight baseline instead of the new arched lip. Raise the functional smoke aperture crown 7.5 cm, update the rolled lip to the identical curve and move rivets onto that real curved edge. Do not claim artistic approval; preserve V019.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v019\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v020\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "rise=.255*(1-(abs(xlow)/.94)**1.65)",
+          "replace": "rise=.330*(1-(abs(xlow)/.94)**1.65)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "z=bottom_z+.255*(1-(abs(x)/.94)**1.65)",
+          "replace": "z=bottom_z+.330*(1-(abs(x)/.94)**1.65)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    for x in (-.78,-.55,-.28,0,.28,.55,.78):\n        ico(\"Visible peened rivet \"+str(x),\n            (x,front_y-.061,bottom_z),.012,steel,subdiv=2,",
+          "replace": "    for x in (-.78,-.55,-.28,0,.28,.55,.78):\n        rivet_z=bottom_z+.330*(1-(abs(x)/.94)**1.65)\n        ico(\"Visible peened rivet \"+str(x),\n            (x,front_y-.061,rivet_z),.012,steel,subdiv=2,"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V019\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V020\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v019.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v020.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v019.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v020.glb\"))"
+        }
+      ]
+    },
+    {
+      "id": "umber-oak-natural-pores-v019",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-oak-pigment-warped-fibres-v018",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Actual V017→V018 four-view comparison: V018 turns the oak top salmon-pink with perfectly parallel high-contrast stripes, a visible artistic regression from the neutral but photographic V017. Reduce synthetic sinusoidal fibre amplitudes ~4x, restore scanned CC0 pores as the dominant variation, shift oak to subdued umber with balanced RGB. Keep V012 as provisional checkpoint; review real V019 renders before any promotion.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v018\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v019\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V018\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V018\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V019\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V019\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "                grain=np.clip(.56+.80*(luminance-luminance.mean())+\n                              .09*fine.reshape(-1)+.08*broad.reshape(-1),.27,.85)\n                rgba[:,:3]=np.stack((.72*grain+.075,\n                                     .32*grain+.022,\n                                     .105*grain+.008),axis=1)",
+          "replace": "                # V018 looked salmon pink with artificial parallel lines.\n                # Let the real CC0 wood pores dominate, with subdued warped grain.\n                grain=np.clip(.55+1.05*(luminance-luminance.mean())+\n                              .017*fine.reshape(-1)+.024*broad.reshape(-1),.25,.82)\n                rgba[:,:3]=np.stack((.43*grain+.025,\n                                     .27*grain+.012,\n                                     .16*grain+.008),axis=1)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V018\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V019\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v018.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v019.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v018.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v019.glb\"))"
+        }
+      ]
     }
   ]
 }
