@@ -90,3 +90,10 @@
 - **Fuelle V020, corrección exacta en cola:** `soft-gusset-warm-oak-v020`, rama objetivo `production/auto-bellows-soft-gusset-warm-oak-v020`. Introducir pliegues más estrechos con deriva diagonal y variación vertical; probar roble umber algo más cálido conservando la fotografía CC0. No suplantar V012 sin evidencia de mejora.
 - **Commit de cola:** `3e45556b31dcd582c4dabab6b2b22e219a735690` en `main`, 15 tareas históricas, dos nuevas con siete sustituciones exactas cada una. El ejecutor GitHub Actions se creó como run `40476006165`; en el instante de esta anotación estaba en cola, no se declara render ni GLB nuevo.
 - **Puerta V011, yunque V022 y espadas V023:** sin nuevas ediciones; no alterar menús de `gburdesedev/Project-genesis`. Los checkpoints y la aprobación artística exclusiva de Gabriel siguen intactos.
+
+
+### Verificación de despacho de esta ronda — 05:48 ART
+- Controlador [40476006165](https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40476006165) **completado correctamente**; recibo en logs registra ambas tareas como `dispatched`, no como simulación ni reenvío duplicado.
+- **Fragua V021:** [run 40476056629](https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40476056629), rama `production/auto-forge-compact-hood-tall-flue-v021`; validación inicial del generador superada, instalación oficial Blender en curso al revisar. **Sin renders ni QA nuevos confirmados todavía.**
+- **Fuelle V020:** [run 40476064778](https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40476064778), rama `production/auto-bellows-soft-gusset-warm-oak-v020`; validación inicial superada, instalación Blender en curso. **Sin renders ni QA nuevos confirmados todavía.**
+- Las próximas rondas deben consultar los artefactos, cuatro vistas y comparaciones de estas ejecuciones antes de introducir cambios adicionales. **No autoaprobar** ni dar por resueltos los defectos por un run verde.
