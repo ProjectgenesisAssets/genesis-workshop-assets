@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:03:08.448205+00:00",
+  "generated_at": "2026-10-27T10:05:29.067188+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
       "branch": "production/door-v013-dark-forged-iron-local-rust",
-      "run_id": 40484812251,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40484812251",
-      "commit": "c07a0cb705ec42b61ee95b7ff81d41805e9019ac",
-      "completed_at": "2026-10-27T10:02:56Z",
+      "run_id": 40485676050,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485676050",
+      "commit": "3c7ab8d7053b71e9af0a20ba6a399bcc29b2926c",
+      "completed_at": "2026-10-27T10:04:58Z",
       "preview_directory": "previews/heroes_v008/forge",
       "view_paths": {
         "front": "previews/heroes_v008/forge/front.png",
@@ -19,26 +19,26 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-diagonal-hide-tension-v021",
-      "run_id": 40477111243,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40477111243",
-      "commit": "e5144622e03cd16153800c88bfbe669c92f3b2fa",
-      "completed_at": "2026-10-27T09:03:04Z",
-      "preview_directory": "previews/production_auto/bellows_diagonal-hide-tension-v021",
+      "branch": "production/auto-bellows-handcut-leather-gusset-stitched-seams-v022",
+      "run_id": 40485058477,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485058477",
+      "commit": "2bd2132ccdd2a323d02b1651560e3e68a20b33aa",
+      "completed_at": "2026-10-27T10:05:18Z",
+      "preview_directory": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022",
       "view_paths": {
-        "front": "previews/production_auto/bellows_diagonal-hide-tension-v021/front.png",
-        "three_quarter": "previews/production_auto/bellows_diagonal-hide-tension-v021/three_quarter.png",
-        "rear": "previews/production_auto/bellows_diagonal-hide-tension-v021/rear.png",
-        "detail": "previews/production_auto/bellows_diagonal-hide-tension-v021/detail.png"
+        "front": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/front.png",
+        "three_quarter": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/three_quarter.png",
+        "rear": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/rear.png",
+        "detail": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022/detail.png"
       },
       "status": "review_ready"
     },
     "door": {
       "branch": "production/door-v013-dark-forged-iron-local-rust",
-      "run_id": 40484812251,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40484812251",
-      "commit": "c07a0cb705ec42b61ee95b7ff81d41805e9019ac",
-      "completed_at": "2026-10-27T10:02:56Z",
+      "run_id": 40485676050,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485676050",
+      "commit": "3c7ab8d7053b71e9af0a20ba6a399bcc29b2926c",
+      "completed_at": "2026-10-27T10:04:58Z",
       "preview_directory": "previews/door_v013",
       "view_paths": {
         "front": "previews/door_v013/front.png",
