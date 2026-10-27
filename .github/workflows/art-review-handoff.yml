@@ -80,8 +80,7 @@ jobs:
           old_time=old.pop("generated_at", None)
           new.pop("generated_at", None)
           if old == new:
-              new["generated_at"] = old_time
-              path.write_text(json.dumps(new, indent=2, ensure_ascii=False)+"\n", encoding="utf-8")
+              path.write_text(Path("/tmp/previous_review.json").read_text(), encoding="utf-8")
           PY
           fi
           git add reports/auto_review/latest.json reports/auto_review/latest_contact_sheet.jpg
