@@ -358,6 +358,20 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v017.glb\"))"
         }
       ]
+    },
+    {
+      "id": "oak-grain-gusset-array-fix-v017",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-oak-grain-irregular-gusset-v017",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Real Blender 4.5.13 run 40457252233 failed in scanned_material: 1,048,576 flat luminance samples cannot broadcast against 1024x1024 directional fibres. Flatten fibres before elementwise photo-grain combination. This is a necessary exact bug fix of the new artistic candidate, not a duplicate or approval. Preserve failed run and V016 checkpoint.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "grain=np.clip(.39+1.55*(luminance-.46)+.055*fibres,.18,.78)",
+          "replace": "grain=np.clip(.39+1.55*(luminance-.46)+.055*fibres.reshape(-1),.18,.78)"
+        }
+      ]
     }
   ]
 }
