@@ -12,6 +12,7 @@ Actualizado: 2026-10-27 (hora argentina). Catálogo de evaluación; **ningún as
 | FAB-04 | [Ashen Oath Greatsword / NexVara](https://www.fab.com/listings/202054ca-4eda-45be-914a-8e2d66a699eb) | Captura del usuario muestra Personal gratis; verificar la opción vigente | Familia de espada distinta, exhibición de inventario/comparación si corresponde | Media | Confirmar licencia y acceso; FBX/Blend a GLB, PBR; ficha declara 5.790 triángulos |
 | FAB-05 | [Sword / Gerardo Justel](https://www.fab.com/listings/f25cf33e-596b-4899-9e20-202f26999b68) | Gratis en ficha | Candidata para espada sobria del tutorial; comparar con Genesis V023 | Muy alta | Inspección de geometría, PBR, licencia y exportación GLB |
 | FAB-06 | [Vintage Wooden Treasure Chest / dimension Dazzle](https://www.fab.com/listings/83aff177-a1d7-4ac6-8ecb-aeec05f27b1a) | Gratis en ficha | Cofre de tutorial Q1 llave/cofre, apertura y acceso a contenido | Muy alta | Licencia, tapa interior separable, pivote de bisagra, cerradura, colisiones y animación en GitHub Actions |
+| FAB-07 | [Sword corta / Gerardo Justel](https://www.fab.com/listings/554f19f8-a5fb-4895-9cec-ab5edb7cca70) | Gratis en ficha | Nueva familia candidata de espada corta / hoja breve; distinta de la espada larga FAB-05 | Alta | Contrastar escala y silueta con FAB-05 y V023; malla, texturas, licencia y GLB |
 
 ## Reglas de diseño y adopción
 
@@ -39,4 +40,5 @@ Los enlaces de Actions acreditan ejecución, **no calidad final**. Para auditor�
 2. FAB-05 espada sobria: enfrentarla a V023 en catálogo idéntico.
 3. FAB-02 yunque: enfrentarla a V022.
 4. FAB-01: inventariar piezas individuales, licencias y costos WebGL.
-5. FAB-03 y FAB-04: referencias de familias alternativas, sin dependencia con rareza.
+5. FAB-07 espada corta: verificar como familia independiente frente a FAB-05, sin relación con rareza.
+6. FAB-03 y FAB-04: referencias de familias alternativas, sin dependencia con rareza.
