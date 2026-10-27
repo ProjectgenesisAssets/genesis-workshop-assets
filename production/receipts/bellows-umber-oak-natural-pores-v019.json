@@ -1,0 +1,12 @@
+{
+  "id": "umber-oak-natural-pores-v019",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-oak-pigment-warped-fibres-v018",
+  "branch": "production/auto-bellows-umber-oak-natural-pores-v019",
+  "reason": "Actual V017→V018 four-view comparison: V018 turns the oak top salmon-pink with perfectly parallel high-contrast stripes, a visible artistic regression from the neutral but photographic V017. Reduce synthetic sinusoidal fibre amplitudes ~4x, restore scanned CC0 pores as the dominant variation, shift oak to subdued umber with balanced RGB. Keep V012 as provisional checkpoint; review real V019 renders before any promotion.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T08:06:58Z"
+}
