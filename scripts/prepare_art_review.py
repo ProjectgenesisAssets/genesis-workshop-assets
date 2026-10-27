@@ -133,21 +133,37 @@ def main() -> int:
             entry["status"] = "inspection_error"
             entry["error"] = str(exc)[:200]
             manifest["asset_candidates"][asset] = entry
-    if images:
-        from PIL import Image, ImageDraw, ImageOps
-        width, height = 430, 445
-        board = Image.new("RGB", (width * len(VIEWS), height * len(ASSETS)), "#1d1d1d")
-        drawing = ImageDraw.Draw(board)
-        for row, asset in enumerate(ASSETS):
-            for col, view in enumerate(VIEWS):
-                left, top = col * width, row * height
-                raw = images.get((asset, view))
-                if raw:
-                    with Image.open(io.BytesIO(raw)) as image:
-                        thumbnail = ImageOps.contain(image.convert("RGB"), (width - 16, height - 42))
+    # Always publish a contact sheet, including explicit failure placeholders.
+    # The former conditional silently omitted the JPG when API/image access failed,
+    # making the subsequent git add fail and hiding the actual review problem.
+    from PIL import Image, ImageDraw, ImageOps
+    width, height = 430, 445
+    board = Image.new("RGB", (width * len(VIEWS), height * len(ASSETS)), "#1d1d1d")
+    drawing = ImageDraw.Draw(board)
+    for row, asset in enumerate(ASSETS):
+        entry = manifest["asset_candidates"][asset]
+        for col, view in enumerate(VIEWS):
+            left, top = col * width, row * height
+            raw = images.get((asset, view))
+            if raw:
+                try:
+                    with Image.open(io.BytesIO(raw)) as im:
+                        thumbnail = ImageOps.contain(im.convert("RGB"), (width - 16, height - 42))
                         board.paste(thumbnail, (left + (width - thumbnail.width)//2, top + 28))
-                drawing.text((left + 12, top + 9), asset.upper() + " · " + view, fill="#f0e9d9")
-        board.save(OUTPUT / "latest_contact_sheet.jpg", quality=85, optimize=True)
+                except Exception as exc:
+                    entry["status"] = "invalid_render_image"
+                    entry.setdefault("image_errors", {})[view] = str(exc)[:180]
+            else:
+                drawing.text((left + 12, top + 48), "MISSING RENDER / NOT REVIEWED", fill="#ff9d85")
+                drawing.text((left + 12, top + 72), entry["status"][:50], fill="#ff9d85")
+            drawing.text((left + 12, top + 9), asset.upper() + " - " + view, fill="#f0e9d9")
+    board.save(OUTPUT / "latest_contact_sheet.jpg", quality=85, optimize=True)
+    manifest["images_downloaded"] = len(images)
+    manifest["all_assets_review_ready"] = (
+        len(images) == len(ASSETS) * len(VIEWS)
+        and all(e["status"] == "review_ready" for e in manifest["asset_candidates"].values())
+    )
+    manifest["art_review_completed"] = False
     (OUTPUT / "latest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     for asset, entry in manifest["asset_candidates"].items():
