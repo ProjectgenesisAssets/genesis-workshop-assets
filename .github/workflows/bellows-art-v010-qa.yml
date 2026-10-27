@@ -1,0 +1,120 @@
+name: Genesis Bellows V010 leather folds and aged oak art QA
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production/bellows-v010-aged-oak
+    paths:
+      - 'scripts/genesis_bellows_art_v010.py'
+      - 'scripts/compare_art_candidate.py'
+      - '.github/workflows/bellows-art-v010-qa.yml'
+permissions:
+  contents: read
+concurrency:
+  group: genesis-bellows-v010-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  bellows_v010:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm immutable V009 reference and syntax of V010
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/genesis_bellows_art_v010.py scripts/compare_art_candidate.py
+          for shot in front three_quarter rear detail; do
+            test -s "previews/heroes_v009/bellows/$shot.png"
+          done
+      - name: Download Blender 4.5.13 LTS only on GitHub runner
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/bellows-blender.tar.xz
+          mkdir -p /tmp/bellows-blender
+          tar -xJf /tmp/bellows-blender.tar.xz -C /tmp/bellows-blender --strip-components=1
+          /tmp/bellows-blender/blender --version | grep -F 'Blender 4.5.13'
+          /tmp/bellows-blender/blender -b --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Generate volumetric Bellows V010 GLB and four Cycles images
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/bellows-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/genesis_bellows_art_v010.py -- bellows
+      - name: Validate model, audit, four renders, and changed source
+        run: |
+          set -euo pipefail
+          out=output_hero_bellows_v010
+          test -s "$out/bellows_hero_v010.glb"
+          test -s "$out/bellows_hero_v010.blend"
+          test -s "$out/AUDIT.json"
+          for shot in front three_quarter rear detail; do test -s "$out/$shot.png"; done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          p=Path('output_hero_bellows_v010/bellows_hero_v010.glb')
+          with p.open('rb') as f:
+              magic,version,length=struct.unpack('<III',f.read(12))
+          assert magic==0x46546c67 and version==2 and length==p.stat().st_size
+          a=json.loads(Path('output_hero_bellows_v010/AUDIT.json').read_text())
+          assert a['asset']=='bellows' and a['version']=='V010' and len(a['targeted_repairs'])==4
+          assert len(list(Path('output_hero_bellows_v010/textures').glob('*.png')))>=12
+          PY
+      - name: Measure changed visuals against real V009 and record review receipt
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 scripts/compare_art_candidate.py \
+            --asset bellows --baseline previews/heroes_v009/bellows \
+            --candidate output_hero_bellows_v010 \
+            --baseline-version V009 --version V010 \
+            --source-sha '${{ github.sha }}' --out reports/bellows_v010
+          cat reports/bellows_v010/comparison.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve compact evidence, including actual GLB candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bellows-v010-candidate-${{ github.run_id }}
+          path: |
+            output_hero_bellows_v010/*.png
+            output_hero_bellows_v010/*.glb
+            output_hero_bellows_v010/AUDIT.json
+            reports/bellows_v010/*
+          retention-days: 14
+          if-no-files-found: warn
+  publish_review:
+    needs: bellows_v010
+    if: ${{ needs.bellows_v010.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bellows-v010-candidate-*
+          path: /tmp/bellows-v010-art
+          merge-multiple: true
+      - name: Publish unapproved V010 PNGs and comparison ONLY to candidate branch
+        run: |
+          set -euo pipefail
+          mkdir -p previews/heroes_v010/bellows
+          mkdir -p reports/bellows_v010
+          for shot in front three_quarter rear detail; do
+            cp "/tmp/bellows-v010-art/output_hero_bellows_v010/$shot.png" \
+              "previews/heroes_v010/bellows/$shot.png"
+            cp "/tmp/bellows-v010-art/reports/bellows_v010/compare_$shot.png" \
+              "reports/bellows_v010/compare_$shot.png"
+          done
+          cp /tmp/bellows-v010-art/reports/bellows_v010/comparison.json reports/bellows_v010/
+          cp /tmp/bellows-v010-art/reports/bellows_v010/comparison.md reports/bellows_v010/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/heroes_v010/bellows reports/bellows_v010
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish bellows V010 unapproved candidate and actual render comparison [skip ci]'
+            git fetch origin '${{ github.ref_name }}'
+            git rebase 'origin/${{ github.ref_name }}'
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
