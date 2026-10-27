@@ -1080,6 +1080,50 @@
           "replace": "\"version\":\"V015\",\"baseline_version\":\"V014\""
         }
       ]
+    },
+    {
+      "id": "restore-aged-oak-warmth-v026",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-diagonal-handcut-hide-creases-v025",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Inspected actual V024→V025 four-view JPG: V025 diagonal hide compression is visible but still too regular, and the newly tinted oak regressed to conspicuously cold grey. Do not promote V025. Restore warm brown old oak via red/green/blue ratio while increasing real CC0 photo luminance grain contrast and reducing synthetic stripes; retain V025 physical hide geometry only as experimental baseline. No artistic approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v025\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v026\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V025\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V025\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V026\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V026\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "                grain=np.clip(.53+1.07*(luminance-luminance.mean())+\n                              .014*fine.reshape(-1)+.020*broad.reshape(-1),.25,.82)\n                # Muted brown old oak, not pink/grey varnish; scanned pores\n                # and the existing longitudinal UV pattern remain untouched.\n                rgba[:,:3]=np.stack((.340*grain+.018,\n                                     .242*grain+.010,\n                                     .130*grain+.005),axis=1)",
+          "replace": "                # Restore the warm iron-rich oak hue lost in V025: its\n                # green/blue-heavy tint washed the actual board to cold grey.\n                # The CC0 scan supplies dominant grain, not painted stripes.\n                grain=np.clip(.53+1.34*(luminance-luminance.mean())+\n                              .012*fine.reshape(-1)+.017*broad.reshape(-1),.24,.82)\n                rgba[:,:3]=np.stack((.375*grain+.018,\n                                     .190*grain+.009,\n                                     .076*grain+.004),axis=1)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V025\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V026\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "\"targeted_repairs\":[\"create two physically asymmetric diagonal leather compression creases instead of sinusoidal ring bands\",\"re-tint CC0 oak scan to aged muted brown while preserving wood pores\",",
+          "replace": "\"targeted_repairs\":[\"restore aged warm oak from cold grey V025 regression with scanned CC0 grain contrast\","
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v025.blend\"",
+          "replace": "KIND+\"_hero_v026.blend\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v025.glb\"",
+          "replace": "KIND+\"_hero_v026.glb\""
+        }
+      ]
     }
   ]
 }
