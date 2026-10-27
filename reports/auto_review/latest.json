@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T11:41:40.750718+00:00",
+  "generated_at": "2026-10-27T11:49:33.102722+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -19,17 +19,17 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-radial-leather-fan-pleats-v027",
-      "run_id": 40497288562,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40497288562",
-      "commit": "41c2f3ae36642b85d6d2050ce96ce85630a040a0",
-      "completed_at": "2026-10-27T11:41:32Z",
-      "preview_directory": "previews/production_auto/bellows_radial-leather-fan-pleats-v027",
+      "branch": "production/auto-bellows-soft-radial-hide-pleats-v028",
+      "run_id": 40498251066,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40498251066",
+      "commit": "4d25ac3c99ccff7d0e79a3b26c4e2845cc18c57c",
+      "completed_at": "2026-10-27T11:49:25Z",
+      "preview_directory": "previews/production_auto/bellows_soft-radial-hide-pleats-v028",
       "view_paths": {
-        "front": "previews/production_auto/bellows_radial-leather-fan-pleats-v027/front.png",
-        "three_quarter": "previews/production_auto/bellows_radial-leather-fan-pleats-v027/three_quarter.png",
-        "rear": "previews/production_auto/bellows_radial-leather-fan-pleats-v027/rear.png",
-        "detail": "previews/production_auto/bellows_radial-leather-fan-pleats-v027/detail.png"
+        "front": "previews/production_auto/bellows_soft-radial-hide-pleats-v028/front.png",
+        "three_quarter": "previews/production_auto/bellows_soft-radial-hide-pleats-v028/three_quarter.png",
+        "rear": "previews/production_auto/bellows_soft-radial-hide-pleats-v028/rear.png",
+        "detail": "previews/production_auto/bellows_soft-radial-hide-pleats-v028/detail.png"
       },
       "status": "review_ready"
     },
