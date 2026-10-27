@@ -42,10 +42,20 @@ def glb_stats(path):
             ix=prim.get("indices")
             count=doc["accessors"][ix]["count"] if ix is not None else doc["accessors"][prim["attributes"]["POSITION"]]["count"]
             triangles+=count//3
-    textured=sum(bool(mat.get("pbrMetallicRoughness",{}).get("baseColorTexture")) for mat in doc.get("materials",[]))
+    bindings={}
+    for mat in doc.get("materials",[]):
+        pbr=mat.get("pbrMetallicRoughness",{})
+        tex=pbr.get("baseColorTexture")
+        image_name=None
+        if tex:
+            texture=doc["textures"][tex["index"]]
+            image_name=doc["images"][texture["source"]].get("name")
+        bindings[mat.get("name","unnamed")]={"base_color_image":image_name,
+            "emissive_texture":bool(mat.get("emissiveTexture"))}
+    textured=sum(bool(v["base_color_image"]) for v in bindings.values())
     return {"triangles":triangles,"meshes":len(doc.get("meshes",[])),
             "materials":len(doc.get("materials",[])),"base_color_textured_materials":textured,
-            "embedded_images":len(doc.get("images",[]))}
+            "embedded_images":len(doc.get("images",[])),"texture_bindings":bindings}
 
 def load(path):
     with Image.open(path) as im:
@@ -65,6 +75,9 @@ def main():
     audits=list(out.glob("*AUDIT*.json"))
     assert len(glbs)==1 and len(blends)==1 and audits,(glbs,blends,audits)
     stats=glb_stats(glbs[0])
+    if asset=="bellows" and "oxblood" in args.task_id:
+        matches=[v for k,v in stats["texture_bindings"].items() if "leather" in k.lower()]
+        assert any("oxblood" in (m["base_color_image"] or "").lower() for m in matches),("LEATHER_PBR_NOT_BOUND_IN_GLB",matches)
     assert 100<stats["triangles"]<350000,stats
     assert stats["materials"]>=1
     paths=candidate_pngs(out,asset)
