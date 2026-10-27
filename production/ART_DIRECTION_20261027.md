@@ -33,3 +33,6 @@ The ten-minute GitHub cron is present in `.github/workflows/overnight-10min-watc
 ## Independent four-asset visual cross-check
 - Anvil V022 actual hero PNG from run 40430776892 inspected: believable forged silhouette, work face, horn and dark body. No specific new defect warrants modifying it.
 - Door V011 actual three-quarter PNG from run 40435141349 inspected: sound arched geometry and functional hardware, but the nearly all-metal surface and circular fitting may read as a vault/safe rather than an artisan's medieval timber workshop door. **Flag for user direction, not an automatic rejection or redesign.** Preserve V011 while the user evaluates the visual style.
+
+## 03:01 UTC — forge V013 result
+Run 40441267800 **succeeded** after technical retry. `AUDIT.json` verifies official CC0 Quarry Wall photographic albedo/normal/roughness were bound. GLB fell from ~79 MB in V012 to ~49 MB in V013, 70,840 triangles and 5 materials. Actual four-view render inspected: masonry piers and photographic stone are better, but **still reads as a small roofed brick barbecue, not a convincing historical blacksmith forge**. Do not artistically approve V013. Next correction must rethink forge architecture with authentic reference images, not repeat tint/roof-course tweaks. Full review in V013 branch `reports/production_auto/forge-photostone-mass-v013/ART_REVIEW.md`.
