@@ -1,0 +1,12 @@
+{
+  "id": "raised-smoke-arch-v020",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-arched-smoke-capture-v019",
+  "branch": "production/auto-forge-raised-smoke-arch-v020",
+  "reason": "Inspected actual V018→V019 four-view JPG and 16-view handoff: V019 fixes missing central hood but front black apron still forms a heavy roof-like brow, and peened rivets lie on the old straight baseline instead of the new arched lip. Raise the functional smoke aperture crown 7.5 cm, update the rolled lip to the identical curve and move rivets onto that real curved edge. Do not claim artistic approval; preserve V019.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T08:06:58Z"
+}

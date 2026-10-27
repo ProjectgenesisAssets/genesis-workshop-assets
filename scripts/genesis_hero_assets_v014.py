@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v019")
+OUT=ROOT/("output_hero_"+KIND+"_v020")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -615,7 +615,7 @@ def mount_forge():
         q=j/arch_sections
         xlow=-.94+1.88*q
         xhigh=-.46+.92*q
-        rise=.255*(1-(abs(xlow)/.94)**1.65)
+        rise=.330*(1-(abs(xlow)/.94)**1.65)
         for k in range(7):
             t=k/6
             x=xlow*(1-t)+xhigh*t
@@ -640,7 +640,7 @@ def mount_forge():
     for j in range(arch_sections+1):
         q=j/arch_sections
         x=-.94+1.88*q
-        z=bottom_z+.255*(1-(abs(x)/.94)**1.65)
+        z=bottom_z+.330*(1-(abs(x)/.94)**1.65)
         lip_verts.extend([(x,front_y-.045,z-.024),(x,front_y+.014,z-.024),
                           (x,front_y+.014,z+.024),(x,front_y-.045,z+.024)])
     lip_faces=[]
@@ -666,8 +666,9 @@ def mount_forge():
             (side*.81,-.58,1.56),(side*.82,-.58,1.70),
             (side*.58,-.37,2.03),(side*.60,-.37,1.94)],.020)
     for x in (-.78,-.55,-.28,0,.28,.55,.78):
+        rivet_z=bottom_z+.330*(1-(abs(x)/.94)**1.65)
         ico("Visible peened rivet "+str(x),
-            (x,front_y-.061,bottom_z),.012,steel,subdiv=2,
+            (x,front_y-.061,rivet_z),.012,steel,subdiv=2,
             scale=(1,.42,.72))
 
     # Tall utilitarian refractory flue: correct working-proportion exhaust.
@@ -757,7 +758,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V019","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V020","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -774,11 +775,11 @@ report={"asset":KIND,"version":"V019","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v019.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v020.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v019.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v020.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")
