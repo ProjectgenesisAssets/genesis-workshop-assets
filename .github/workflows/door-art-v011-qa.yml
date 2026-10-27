@@ -5,7 +5,7 @@ on:
     branches:
       - production/door-v011-triangle-budget
     paths:
-      - 'scripts/puerta_herreria_art_010.py'
+      - 'scripts/puerta_herreria_art_011.py'
       - 'scripts/compare_door_geometry_v011.py'
       - '.github/workflows/door-art-v011-qa.yml'
 permissions:
@@ -22,7 +22,7 @@ jobs:
       - name: Verify V009 baseline and source syntax
         run: |
           set -euo pipefail
-          python3 -m py_compile scripts/puerta_herreria_art_010.py scripts/compare_door_geometry_v011.py
+          python3 -m py_compile scripts/puerta_herreria_art_011.py scripts/compare_door_geometry_v011.py
           for shot in front three_quarter side rear; do test -s "previews/door_v009/$shot.png"; done
       - name: Install official Blender 4.5.13 on GitHub runner only
         run: |
@@ -40,13 +40,13 @@ jobs:
           OMP_NUM_THREADS: '2'
         run: |
           /tmp/door-blender/blender -b -t 3 --python-exit-code 1 \
-            --python scripts/puerta_herreria_art_010.py
+            --python scripts/puerta_herreria_art_011.py
       - name: Check GLB, source master, audit, 12 PBR files and four views
         run: |
           set -euo pipefail
-          out=output_blacksmith_door_art_010
-          test -s "$out/Blacksmith_Door_Art_010.glb"
-          test -s "$out/Blacksmith_Door_Art_010.blend"
+          out=output_blacksmith_door_art_011
+          test -s "$out/Blacksmith_Door_Art_011.glb"
+          test -s "$out/Blacksmith_Door_Art_011.blend"
           test -s "$out/DESIGN_AUDIT.json"
           for shot in front_orthographic three_quarter side_orthographic rear_orthographic; do
             test -s "$out/$shot.png"
@@ -54,8 +54,8 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import json,struct
-          out=Path('output_blacksmith_door_art_010')
-          p=out/'Blacksmith_Door_Art_010.glb'
+          out=Path('output_blacksmith_door_art_011')
+          p=out/'Blacksmith_Door_Art_011.glb'
           with p.open('rb') as f:
               magic,version,length=struct.unpack('<III',f.read(12))
           assert magic==0x46546c67 and version==2 and length==p.stat().st_size
@@ -92,10 +92,10 @@ jobs:
           set -euo pipefail
           python3 -m pip install --quiet Pillow
           mkdir -p /tmp/door-v011-staged
-          cp output_blacksmith_door_art_010/front_orthographic.png /tmp/door-v011-staged/front.png
-          cp output_blacksmith_door_art_010/side_orthographic.png /tmp/door-v011-staged/side.png
-          cp output_blacksmith_door_art_010/rear_orthographic.png /tmp/door-v011-staged/rear.png
-          cp output_blacksmith_door_art_010/three_quarter.png /tmp/door-v011-staged/three_quarter.png
+          cp output_blacksmith_door_art_011/front_orthographic.png /tmp/door-v011-staged/front.png
+          cp output_blacksmith_door_art_011/side_orthographic.png /tmp/door-v011-staged/side.png
+          cp output_blacksmith_door_art_011/rear_orthographic.png /tmp/door-v011-staged/rear.png
+          cp output_blacksmith_door_art_011/three_quarter.png /tmp/door-v011-staged/three_quarter.png
           python3 scripts/compare_door_geometry_v011.py \
             --asset door --baseline previews/door_v010 \
             --candidate /tmp/door-v011-staged \
@@ -109,12 +109,12 @@ jobs:
         with:
           name: door-v011-candidate-${{ github.run_id }}
           path: |
-            output_blacksmith_door_art_010/front_orthographic.png
-            output_blacksmith_door_art_010/three_quarter.png
-            output_blacksmith_door_art_010/side_orthographic.png
-            output_blacksmith_door_art_010/rear_orthographic.png
-            output_blacksmith_door_art_010/Blacksmith_Door_Art_010.glb
-            output_blacksmith_door_art_010/DESIGN_AUDIT.json
+            output_blacksmith_door_art_011/front_orthographic.png
+            output_blacksmith_door_art_011/three_quarter.png
+            output_blacksmith_door_art_011/side_orthographic.png
+            output_blacksmith_door_art_011/rear_orthographic.png
+            output_blacksmith_door_art_011/Blacksmith_Door_Art_011.glb
+            output_blacksmith_door_art_011/DESIGN_AUDIT.json
             reports/door_v011/*
           retention-days: 14
           if-no-files-found: warn
@@ -135,10 +135,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p previews/door_v011 reports/door_v011
-          cp /tmp/door-v011-art/output_blacksmith_door_art_010/front_orthographic.png previews/door_v011/front.png
-          cp /tmp/door-v011-art/output_blacksmith_door_art_010/three_quarter.png previews/door_v011/three_quarter.png
-          cp /tmp/door-v011-art/output_blacksmith_door_art_010/side_orthographic.png previews/door_v011/side.png
-          cp /tmp/door-v011-art/output_blacksmith_door_art_010/rear_orthographic.png previews/door_v011/rear.png
+          cp /tmp/door-v011-art/output_blacksmith_door_art_011/front_orthographic.png previews/door_v011/front.png
+          cp /tmp/door-v011-art/output_blacksmith_door_art_011/three_quarter.png previews/door_v011/three_quarter.png
+          cp /tmp/door-v011-art/output_blacksmith_door_art_011/side_orthographic.png previews/door_v011/side.png
+          cp /tmp/door-v011-art/output_blacksmith_door_art_011/rear_orthographic.png previews/door_v011/rear.png
           cp /tmp/door-v011-art/reports/door_v011/* reports/door_v011/
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
