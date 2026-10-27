@@ -440,7 +440,8 @@ def mount_forge():
             box("Rear masonry block %d %d"%(course,i),(x,.54,z),(.213,.18,.139),
                 hearth if course<4 else stone,.011)
     # V008 had bright background slits between the rear brick courses.
-    # V010: thin mortar core lies INSIDE the masonry depth, not in front of rear bricks.\n    # The V009 exterior plate hid the brickwork; a concealed core seals only actual joints.
+    # V010: thin mortar core lies INSIDE the masonry depth, not in front of rear bricks.
+    # The V009 exterior plate hid the brickwork; a concealed core seals only actual joints.
     box("Soot dark refractory mortar behind rear brick joints",
         (0,.540,1.228),(1.71,.055,1.06),hearth,.003)
     # Masonry pier truly built from bricks; monolithic V005 side slabs looked wooden.
@@ -573,7 +574,8 @@ report={"asset":KIND,"version":"V010","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "targeted_repairs":["seal missing upper front smoke funnel plate without closing firebox",
                             "fill rear brick background light leaks with refractory backing",
                             "increase emissive microfractures in charcoal, not detached glow balls",
-                            "add physical folded-rim peened rivets",\n                            "recess mortar backing inside rear brick depth to expose historic masonry"],
+                            "add physical folded-rim peened rivets",
+                            "recess mortar backing inside rear brick depth to expose historic masonry"],
         "art_direction":"functional medieval photorealism, never stylized","metric_bounds_m":[list(mn),list(mx)],
         "mesh_parts":len(ASSETS),"source":"independent Blender generator, no historical master reused",
         "pbr_materials":list(MATERIALS.keys()),"maps":MAPS,"render_samples":sc.cycles.samples,
