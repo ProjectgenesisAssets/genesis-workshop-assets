@@ -6,7 +6,7 @@ from pathlib import Path
 from mathutils import Vector
 import numpy as np
 
-OUT=Path("output_blacksmith_door_art_010")
+OUT=Path("output_blacksmith_door_art_011")
 OUT.mkdir(exist_ok=True)
 bpy.ops.object.select_all(action="SELECT")
 bpy.ops.object.delete(use_global=False)
@@ -394,9 +394,9 @@ for ob in root.children:
         bpy.ops.mesh.select_all(action="SELECT")
         bpy.ops.uv.smart_project(island_margin=.015)
         bpy.ops.object.mode_set(mode="OBJECT")
-bpy.ops.export_scene.gltf(filepath=str(OUT/"Blacksmith_Door_Art_010.glb"),
+bpy.ops.export_scene.gltf(filepath=str(OUT/"Blacksmith_Door_Art_011.glb"),
     export_format="GLB",use_selection=True,export_apply=True)
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/"Blacksmith_Door_Art_010.blend"))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/"Blacksmith_Door_Art_011.blend"))
 # Evaluated triangles include bevels and converted ornamental curves.
 dg=bpy.context.evaluated_depsgraph_get()
 triangles=0
