@@ -72,7 +72,7 @@ jobs:
           assert baked.stat().st_size>25000,"Missing baked stained-oak PNG"
           with baked.open("rb") as f:
               header=f.read(24)
-          assert header[:8]==b"\\x89PNG\\r\\n\\x1a\\n"
+          assert header[:8]==bytes((137,80,78,71,13,10,26,10))
           assert struct.unpack(">II",header[16:24])==(1024,1024)
           with (out/"bellows_hero_v011.glb").open("rb") as f:
               magic,version,total=struct.unpack("<III",f.read(12))
