@@ -1124,6 +1124,50 @@
           "replace": "KIND+\"_hero_v026.glb\""
         }
       ]
+    },
+    {
+      "id": "radial-leather-fan-pleats-v027",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-restore-aged-oak-warmth-v026",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Direct V025→V026 four-view comparison shows oak recovered some warmth but leather still has rigid horizontal cardboard bands. Historical blacksmith bellows references (museum collections) show pleats radiating from a broad handle end and converging at the narrow nozzle, not parallel strips. Modify actual gusset vertices to three converging, asymmetrical radial leather creases; retain V026 oak/PBR and all checkpoints. No automatic artistic approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v026\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v027\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V026\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V026\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V027\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V027\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            # V025: two hand-cut diagonal compression creases, one outward\n            # and one inward. Their centreline wanders across the actual leather\n            # mesh, rather than generating identical sinusoidal horizontal rings.\n            crease_a=max(0.0,1.0-abs(t-(.31+.11*x+.025*y))/.115)**2\n            crease_b=max(0.0,1.0-abs(t-(.65-.09*x+.035*y))/.120)**2\n            tension=(.20+.80*math.sin(math.pi*t)**.7)*(.90-.30*x)\n            fold=.75*crease_a-.58*crease_b\n            factor=1+amplitude*(.032+.130*fold*tension)",
+          "replace": "            # V027: three real radial leather pleats converge at the nozzle,\n            # as on historical blacksmith bellows; wide at handle end, narrow\n            # at the tuyere. No three identical horizontal cardboard bands.\n            nozzle_progress=max(0.0,min(1.0,(x+.80)/1.60))\n            fan=.24*(1.0-nozzle_progress)**.80\n            crease_width=.065+.018*(1.0-nozzle_progress)\n            crease_a=max(0.0,1.0-abs(t-(.50-fan+.020*y))/crease_width)**2\n            crease_b=max(0.0,1.0-abs(t-(.50-.012*y))/crease_width)**2\n            crease_c=max(0.0,1.0-abs(t-(.50+fan+.016*y))/crease_width)**2\n            fan_tension=.20+.80*(1.0-nozzle_progress)\n            fold=(.75*crease_a-.65*crease_b+.52*crease_c)*fan_tension\n            factor=1+amplitude*(.022+.150*fold)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V026\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V027\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "\"targeted_repairs\":[\"restore aged warm oak from cold grey V025 regression with scanned CC0 grain contrast\",",
+          "replace": "\"targeted_repairs\":[\"physically reshape leather gusset into three radial pleats converging at nozzle from wide handle end\","
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v026.blend\"",
+          "replace": "KIND+\"_hero_v027.blend\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "KIND+\"_hero_v026.glb\"",
+          "replace": "KIND+\"_hero_v027.glb\""
+        }
+      ]
     }
   ]
 }
