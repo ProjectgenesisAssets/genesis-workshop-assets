@@ -14,7 +14,7 @@ assert ARG == ["forge"], "V014 is forge-only; preserve independent anvil/bellows
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v016")
+OUT=ROOT/("output_hero_"+KIND+"_v017")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -123,7 +123,7 @@ def pbr(name,base,metal,rough,kind,seed):
         emm=img("emissive",emission)
         emnode=nodes.new("ShaderNodeTexImage");emnode.image=emm
         links.new(emnode.outputs["Color"],bs.inputs["Emission Color"])
-        bs.inputs["Emission Strength"].default_value=5.1
+        bs.inputs["Emission Strength"].default_value=7.1
     MATERIALS[name]=m
     return m
 
@@ -588,7 +588,7 @@ def mount_forge():
     # Unlike V014 no overlapping ashlar slope reads as a pitched roof.
     front_y=-.56
     back_y=.58
-    bottom_z=1.745
+    bottom_z=1.810
     top_z=2.25
     plate("Left hammer-shaped smoke capture hood",[
         (-.94,front_y,bottom_z),(-.46,-.30,top_z),
@@ -610,7 +610,7 @@ def mount_forge():
         box("Side smoke hood return lip "+str(side),
             (side*.947,.02,bottom_z),( .056,1.19,.050),steel,.008)
         # Front firebox posts carry the hood as a genuine structural assembly.
-        for course in range(6):
+        for course in range(7):
             handlaid("Hood footing massive piers "+str((side,course)),
                 (side*.865,-.405,.94+course*.133),
                 (.178,.290,.126),stone if course>2 else hearth,.006)
@@ -659,7 +659,7 @@ def mount_forge():
     glow_obj=bpy.data.objects.new("STUDIO_FIREGLOW_NOT_IN_ASSET",glow_data)
     bpy.context.collection.objects.link(glow_obj)
     glow_obj.location=(0,-.05,.88)
-    glow_data.energy=108;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52
+    glow_data.energy=205;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52
     # Distinct bellows air-entry mouth built into back wall.
     cyl("Air intake tuyere",(0,.625,.79),.067,.21,steel,32,
         rot=(math.pi/2,0,0),edge=.006)
@@ -712,7 +712,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V016","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V017","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V010", "derived_from":"V011",
         "derived_from":"V013",
         "quarry_wall_cc0_scan_bound":quarry_photo_bound,
@@ -729,11 +729,11 @@ report={"asset":KIND,"version":"V016","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v016.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v017.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v016.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v017.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")

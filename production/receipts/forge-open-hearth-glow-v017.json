@@ -1,0 +1,21 @@
+{
+  "id": "open-hearth-glow-v017",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-handhewn-masonry-live-embers-v016",
+  "branch": "production/auto-forge-open-hearth-glow-v017",
+  "reason": "Reviewed actual V016 4-view contact sheet against V015: the coal still reads almost unlit and the dark canopy hangs too close to the hearth; keep V016 as checkpoint. Raise hood lip by 6.5 cm, extend supporting masonry piers to meet it, increase local fire illumination and emissive charcoal cracks. No score or automatic artistic approval; review V017 visually before adoption.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T04:48:45.208712+00:00"
+}

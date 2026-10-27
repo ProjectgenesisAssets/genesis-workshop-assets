@@ -87,9 +87,27 @@ def main():
     preferred_baselines={
         ("forge","ashlar-hammered-hood-v015"):Path("previews/production_auto/forge_smithy-ironhood-v014"),
         ("bellows","warm-oak-organic-hide-v014"):Path("previews/production_auto/bellows_leather-pbr-contrast-v012"),
+        ("forge","handhewn-masonry-live-embers-v016"):Path("previews/production_auto/forge_ashlar-hammered-hood-v015"),
+        ("bellows","supple-hide-warm-oak-v015"):Path("previews/production_auto/bellows_warm-oak-organic-hide-v014"),
     }
     preferred=preferred_baselines.get((asset,args.task_id))
     baseline=preferred if preferred and all((preferred/(v+".png")).is_file() for v in VIEWS[asset]) else None
+    # Automatically prefer the nearest preceding production checkpoint.
+    # Future V017/V018 candidates must not silently compare against old V010.
+    if baseline is None and asset in ("forge", "bellows"):
+        m=re.search(r"v([0-9]+)", args.task_id)
+        if m:
+            current_version=int(m.group(1))
+            checkpoints=[]
+            for folder in Path("previews/production_auto").glob(asset+"_*"):
+                found=re.search(r"v([0-9]+)$", folder.name)
+                if not found: continue
+                version=int(found.group(1))
+                if version>=current_version: continue
+                if all((folder/(view+".png")).is_file() for view in VIEWS[asset]):
+                    checkpoints.append((version,folder))
+            if checkpoints:
+                baseline=max(checkpoints,key=lambda item:item[0])[1]
     if baseline is None:
         for folder in preview_candidates(asset):
             base=folder/asset if asset in ("forge","bellows") else folder
