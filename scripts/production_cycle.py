@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
 
 REPO = os.environ["GITHUB_REPOSITORY"]
 QUEUE = Path("production/correction_queue.json")
@@ -29,6 +30,20 @@ def command(*args: str, check: bool = True) -> str:
         raise RuntimeError(f"{' '.join(args[:3])} failed: {process.stderr[-1200:]}")
     return process.stdout.strip()
 
+
+def dispatch_with_retry(workflow: str, branch: str) -> None:
+    """Retry only transient GitHub Actions dispatch 429/5xx, not identical Blender jobs."""
+    for attempt in range(1, 4):
+        try:
+            command("gh", "workflow", "run", workflow, "--repo", REPO, "--ref", branch)
+            return
+        except RuntimeError as exc:
+            transient = any(code in str(exc) for code in (
+                "HTTP 429", "HTTP 500", "HTTP 502", "HTTP 503", "HTTP 504"))
+            if not transient or attempt == 3:
+                raise
+            print(f"GENESIS_TRANSIENT_DISPATCH_RETRY {branch} attempt={attempt} {exc}", flush=True)
+            time.sleep(3 * attempt)
 
 def github_json(*args: str):
     return json.loads(command("gh", *args))
@@ -89,7 +104,7 @@ def process(task: dict, busy: set[str]) -> dict:
                     "branch":target,"run_id":previous[0]["databaseId"]}
         if asset in busy:
             return {"id":task_id,"asset":asset,"status":"waiting_active_render"}
-        command("gh","workflow","run",workflow,"--repo",REPO,"--ref",target)
+        dispatch_with_retry(workflow, target)
         busy.add(asset)
         return {"id":task_id,"asset":asset,"status":"dispatch_retried","branch":target}
     if asset in busy:
@@ -137,7 +152,7 @@ def process(task: dict, busy: set[str]) -> dict:
             "commit", "-qm", f"Production correction {asset} {task_id}")
     command("git", "push", "origin", f"HEAD:refs/heads/{target}")
     try:
-        command("gh", "workflow", "run", workflow, "--repo", REPO, "--ref", target)
+        dispatch_with_retry(workflow, target)
     except Exception as exc:
         return {"id": task_id, "asset": asset, "status": "dispatch_failed",
                 "branch": target, "error": str(exc)}
