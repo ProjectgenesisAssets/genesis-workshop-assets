@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T08:52:01.822418+00:00",
+  "generated_at": "2026-10-27T08:55:23.676861+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-raised-smoke-arch-v020",
-      "run_id": 40471553016,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40471553016",
-      "commit": "208d520173444f28036471d250b8ae8cc78ddd07",
-      "completed_at": "2026-10-27T08:16:45Z",
-      "preview_directory": "previews/production_auto/forge_raised-smoke-arch-v020",
+      "branch": "production/auto-forge-compact-hood-tall-flue-v021",
+      "run_id": 40476056629,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40476056629",
+      "commit": "27f682330996e69f160c191f42bde9a64f09fbf6",
+      "completed_at": "2026-10-27T08:55:14Z",
+      "preview_directory": "previews/production_auto/forge_compact-hood-tall-flue-v021",
       "view_paths": {
-        "front": "previews/production_auto/forge_raised-smoke-arch-v020/front.png",
-        "three_quarter": "previews/production_auto/forge_raised-smoke-arch-v020/three_quarter.png",
-        "rear": "previews/production_auto/forge_raised-smoke-arch-v020/rear.png",
-        "detail": "previews/production_auto/forge_raised-smoke-arch-v020/detail.png"
+        "front": "previews/production_auto/forge_compact-hood-tall-flue-v021/front.png",
+        "three_quarter": "previews/production_auto/forge_compact-hood-tall-flue-v021/three_quarter.png",
+        "rear": "previews/production_auto/forge_compact-hood-tall-flue-v021/rear.png",
+        "detail": "previews/production_auto/forge_compact-hood-tall-flue-v021/detail.png"
       },
       "status": "review_ready"
     },
