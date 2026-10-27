@@ -13,6 +13,7 @@ Actualizado: 2026-10-27 (hora argentina). Catálogo de evaluación; **ningún as
 | FAB-05 | [Sword / Gerardo Justel](https://www.fab.com/listings/f25cf33e-596b-4899-9e20-202f26999b68) | Gratis en ficha | Candidata para espada sobria del tutorial; comparar con Genesis V023 | Muy alta | Inspección de geometría, PBR, licencia y exportación GLB |
 | FAB-06 | [Vintage Wooden Treasure Chest / dimension Dazzle](https://www.fab.com/listings/83aff177-a1d7-4ac6-8ecb-aeec05f27b1a) | Gratis en ficha | Cofre de tutorial Q1 llave/cofre, apertura y acceso a contenido | Muy alta | Licencia, tapa interior separable, pivote de bisagra, cerradura, colisiones y animación en GitHub Actions |
 | FAB-07 | [Sword corta / Gerardo Justel](https://www.fab.com/listings/554f19f8-a5fb-4895-9cec-ab5edb7cca70) | Gratis en ficha | Nueva familia candidata de espada corta / hoja breve; distinta de la espada larga FAB-05 | Alta | Contrastar escala y silueta con FAB-05 y V023; malla, texturas, licencia y GLB |
+| FAB-08 | [Short Sword / Gerardo Justel](https://www.fab.com/listings/03994681-c1ac-445b-b616-54bd57cc6f17) | Gratis en ficha | Segunda candidata para **la misma familia de espada corta** que FAB-07; elegir por calidad y proporciones | Alta | Comparación FAB-07 vs FAB-08 a igual escala/luces; malla, materiales, licencia y GLB |
 
 ## Reglas de diseño y adopción
 
