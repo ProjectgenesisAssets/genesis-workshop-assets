@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T06:57:39.247366+00:00",
+  "generated_at": "2026-10-27T08:14:28.689048+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -19,17 +19,17 @@
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-oak-pigment-warped-fibres-v018",
-      "run_id": 40463469162,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40463469162",
-      "commit": "9e40024a509a81273df6c857102590f422ee24aa",
-      "completed_at": "2026-10-27T06:56:17Z",
-      "preview_directory": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018",
+      "branch": "production/auto-bellows-umber-oak-natural-pores-v019",
+      "run_id": 40471482266,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40471482266",
+      "commit": "414d96834c6a7337cced9112dc64000ffff8cfe6",
+      "completed_at": "2026-10-27T08:14:19Z",
+      "preview_directory": "previews/production_auto/bellows_umber-oak-natural-pores-v019",
       "view_paths": {
-        "front": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/front.png",
-        "three_quarter": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/three_quarter.png",
-        "rear": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/rear.png",
-        "detail": "previews/production_auto/bellows_oak-pigment-warped-fibres-v018/detail.png"
+        "front": "previews/production_auto/bellows_umber-oak-natural-pores-v019/front.png",
+        "three_quarter": "previews/production_auto/bellows_umber-oak-natural-pores-v019/three_quarter.png",
+        "rear": "previews/production_auto/bellows_umber-oak-natural-pores-v019/rear.png",
+        "detail": "previews/production_auto/bellows_umber-oak-natural-pores-v019/detail.png"
       },
       "status": "review_ready"
     },
