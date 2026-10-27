@@ -1,35 +1,35 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T03:41:46.320929+00:00",
+  "generated_at": "2026-10-27T04:46:30.357726+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-ashlar-hammered-hood-v015",
-      "run_id": 40444298011,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40444298011",
-      "commit": "e2eb1f3564111add28b9be599728e0903de3ab34",
-      "completed_at": "2026-10-27T03:34:56Z",
-      "preview_directory": "previews/production_auto/forge_ashlar-hammered-hood-v015",
+      "branch": "production/auto-forge-handhewn-masonry-live-embers-v016",
+      "run_id": 40445505366,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40445505366",
+      "commit": "2db80f8b4f76edc2e2f93e1c95e98947b004220a",
+      "completed_at": "2026-10-27T03:47:49Z",
+      "preview_directory": "previews/production_auto/forge_handhewn-masonry-live-embers-v016",
       "view_paths": {
-        "front": "previews/production_auto/forge_ashlar-hammered-hood-v015/front.png",
-        "three_quarter": "previews/production_auto/forge_ashlar-hammered-hood-v015/three_quarter.png",
-        "rear": "previews/production_auto/forge_ashlar-hammered-hood-v015/rear.png",
-        "detail": "previews/production_auto/forge_ashlar-hammered-hood-v015/detail.png"
+        "front": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/front.png",
+        "three_quarter": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/three_quarter.png",
+        "rear": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/rear.png",
+        "detail": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/detail.png"
       },
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-warm-oak-organic-hide-v014",
-      "run_id": 40444359557,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40444359557",
-      "commit": "6f1858bcab38c9d2195e86bd92a75078ef0c7429",
-      "completed_at": "2026-10-27T03:34:26Z",
-      "preview_directory": "previews/production_auto/bellows_warm-oak-organic-hide-v014",
+      "branch": "production/auto-bellows-supple-hide-warm-oak-v015",
+      "run_id": 40445471325,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40445471325",
+      "commit": "831c16f230c68be58fb28b168b0a1988058a7611",
+      "completed_at": "2026-10-27T03:43:51Z",
+      "preview_directory": "previews/production_auto/bellows_supple-hide-warm-oak-v015",
       "view_paths": {
-        "front": "previews/production_auto/bellows_warm-oak-organic-hide-v014/front.png",
-        "three_quarter": "previews/production_auto/bellows_warm-oak-organic-hide-v014/three_quarter.png",
-        "rear": "previews/production_auto/bellows_warm-oak-organic-hide-v014/rear.png",
-        "detail": "previews/production_auto/bellows_warm-oak-organic-hide-v014/detail.png"
+        "front": "previews/production_auto/bellows_supple-hide-warm-oak-v015/front.png",
+        "three_quarter": "previews/production_auto/bellows_supple-hide-warm-oak-v015/three_quarter.png",
+        "rear": "previews/production_auto/bellows_supple-hide-warm-oak-v015/rear.png",
+        "detail": "previews/production_auto/bellows_supple-hide-warm-oak-v015/detail.png"
       },
       "status": "review_ready"
     },
