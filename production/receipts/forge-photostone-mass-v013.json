@@ -1,0 +1,12 @@
+{
+  "id": "photostone-mass-v013",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-handlaid-masonry-v012",
+  "branch": "production/auto-forge-photostone-mass-v013",
+  "reason": "Visual audit of actual forge V012 four-view render: hood reads like regular roof tiles, square flue like stacked planks, thin metal support rods resemble a barbecue and coals glow like lava. V013 enlarges hand-hewn courses, replaces rods with masonry piers, attempts real CC0 Poly Haven quarry_wall 1K PBR maps, shares stone maps to reduce WebGL GLB size, and moderates ember emission. Preserve V012 until V013 verified.",
+  "edits": [
+    "scripts/genesis_hero_assets_v013.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T02:55:00Z"
+}
