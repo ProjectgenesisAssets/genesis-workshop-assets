@@ -1,0 +1,21 @@
+{
+  "id": "soft-radial-hide-pleats-v028",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-radial-leather-fan-pleats-v027",
+  "branch": "production/auto-bellows-soft-radial-hide-pleats-v028",
+  "reason": "Direct inspection of real V026→V027 four-view comparison after successful run 40497288562 shows physically new radial folds but a sharply black, cut-like horizontal crease that looks like a slit in the leather, not supple compression; top oak remains pale. Broaden and reduce actual gusset fold displacement and shift oak toward muted aged brown. Keep V012 provisional, V026 and V027 as checkpoints; no automatic artistic approval.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T11:43:12.645157+00:00"
+}
