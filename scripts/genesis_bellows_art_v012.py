@@ -14,7 +14,7 @@ assert ARG == ["bellows"], "V012 bellows only, without altering anvil or forge: 
 KIND=ARG[0]
 random.seed(4761+len(KIND))
 ROOT=Path(os.environ.get("GITHUB_WORKSPACE",os.getcwd()))
-OUT=ROOT/("output_hero_"+KIND+"_v021")
+OUT=ROOT/("output_hero_"+KIND+"_v022")
 TEX=OUT/"textures";TEX.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=False)
 ASSETS=[];MAPS=[];MATERIALS={}
@@ -297,7 +297,7 @@ def mount_bellows():
             # V012: bind scanned, tinted albedo as a real PNG in the exported GLB.
             # The original V011 leather JPG remained light tan and resembled timber.
             is_oak="oak" in base_material.name
-            baked_name="bellows_aged_oak_baked_albedo_V021" if is_oak else "bellows_oxblood_leather_baked_albedo_V021"
+            baked_name="bellows_aged_oak_baked_albedo_V022" if is_oak else "bellows_oxblood_leather_baked_albedo_V022"
             w,h=img.size
             src=np.empty(w*h*4,dtype=np.float32)
             img.pixels.foreach_get(src)
@@ -316,9 +316,9 @@ def mount_bellows():
                 # Let the real CC0 wood pores dominate, with subdued warped grain.
                 grain=np.clip(.53+1.07*(luminance-luminance.mean())+
                               .014*fine.reshape(-1)+.020*broad.reshape(-1),.25,.82)
-                rgba[:,:3]=np.stack((.47*grain+.032,
-                                     .265*grain+.012,
-                                     .125*grain+.006),axis=1)
+                rgba[:,:3]=np.stack((.415*grain+.026,
+                                     .218*grain+.010,
+                                     .100*grain+.005),axis=1)
             else:
                 rgba[:,:3]*=np.array((.63,.32,.25),dtype=np.float32)
             rgba[:,:3]=np.clip(rgba[:,:3],0,1)
@@ -383,10 +383,10 @@ def mount_bellows():
             # Smaller, nonuniform tension creases instead of three rigid bands.
             # Hand-cut hide: diagonally wandering tension folds, not horizontal slats.
             # The leather compresses more near the broad handles than the nozzle.
-            phase=8.2*math.pi*t+2.8*x+1.7*math.sin(2.6*x+1.7*y+3.5*t)
-            fold=.58*math.sin(phase)+.13*math.sin(1.71*phase+1.5*x)
+            phase=5.6*math.pi*t+2.6*x+1.5*math.sin(2.6*x+1.7*y+3.5*t)
+            fold=.56*math.sin(phase)+.12*math.sin(1.71*phase+1.5*x)
             tension=(.15+.85*math.sin(math.pi*t)**.7)*(.85-.40*x)
-            factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.047*fold*tension)
+            factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.060*fold*tension)
             top=.43-.125*x
             z=.126+(top-.126)*t+.018*amplitude*math.sin(2.7*x+1.8*y+8.4*t)
             verts.append((x,y*factor,z))
@@ -450,6 +450,41 @@ def mount_bellows():
                              (cx+tx*.009,cy+ty*.009,z-.001),
                              (cx+tx*.009,cy+ty*.009,z+.002),
                              (cx-tx*.009,cy-ty*.009,z+.002)])
+            sts_faces.append((idx,idx+1,idx+2,idx+3))
+    # V022 physical construction: narrow hand-cut leather join welts with individual
+    # linen cross-stitches, following actual gusset vertex positions on four seams.
+    # This is geometry exported to glTF, not a painted stripe or a 2D overlay.
+    for seam_index in (9,25,41,57):
+        seam_curve=bpy.data.curves.new("Handcut hide panel seam %d"%seam_index,"CURVE")
+        seam_curve.dimensions="3D"
+        seam_curve.bevel_depth=.0045
+        seam_curve.bevel_resolution=2
+        seam_spline=seam_curve.splines.new("POLY")
+        seam_spline.points.add(layers-5)
+        for j,level in enumerate(range(2,layers-2)):
+            px,py,pz=verts[level*n+seam_index]
+            seam_spline.points[j].co=(px*1.009,py*1.009,pz,1)
+        seam_obj=bpy.data.objects.new("Leather stitched panel welt %d"%seam_index,seam_curve)
+        bpy.context.collection.objects.link(seam_obj)
+        seam_obj.data.materials.append(leather)
+        bpy.ops.object.select_all(action="DESELECT")
+        seam_obj.select_set(True)
+        bpy.context.view_layer.objects.active=seam_obj
+        bpy.ops.object.convert(target="MESH")
+        ASSETS.append(bpy.context.object)
+        prevx,prevy=outline[(seam_index-1)%n]
+        nextx,nexty=outline[(seam_index+1)%n]
+        tx,ty=nextx-prevx,nexty-prevy
+        tl=max(.0001,math.sqrt(tx*tx+ty*ty))
+        tx/=tl;ty/=tl
+        for level in range(6,layers-5,6):
+            px,py,pz=verts[level*n+seam_index]
+            cx=px*1.014;cy=py*1.014
+            idx=len(sts_verts)
+            sts_verts.extend([(cx-.010*tx,cy-.010*ty,pz-.002),
+                              (cx+.010*tx,cy+.010*ty,pz-.002),
+                              (cx+.010*tx,cy+.010*ty,pz+.002),
+                              (cx-.010*tx,cy-.010*ty,pz+.002)])
             sts_faces.append((idx,idx+1,idx+2,idx+3))
     made_mesh("Visible stitch by stitch linen gusset seams",sts_verts,sts_faces,linen,0)
     # No unverified animation: independent boards remain animation-ready components.
@@ -606,7 +641,7 @@ for name,loc,power,size in [
 camd=bpy.data.cameras.new("QA Camera");cam=bpy.data.objects.new("QA Camera",camd)
 bpy.context.collection.objects.link(cam);sc.camera=cam
 camd.type="ORTHO";camd.ortho_scale=span*(1.25 if KIND=="bellows" else 1.65)
-report={"asset":KIND,"version":"V021","status":"VISUAL_CANDIDATE_NOT_APPROVED",
+report={"asset":KIND,"version":"V022","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "baseline_version":"V011",
         "targeted_repairs":["replace smooth leather wedge with five volumetric compression waves",
                             "taper pressure folds into top and bottom seam to avoid detached ribs",
@@ -618,11 +653,11 @@ report={"asset":KIND,"version":"V021","status":"VISUAL_CANDIDATE_NOT_APPROVED",
         "approval":"requires 4-view visual review and at least 8/10 by user",
         "photographic_cc0_sources":({"oak":"https://polyhaven.com/a/fine_grained_wood","leather":"https://polyhaven.com/a/brown_leather","credit":"Powered by Poly Haven"} if KIND=="bellows" else {})}
 (OUT/"AUDIT.json").write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf8")
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v021.blend")))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(KIND+"_hero_v022.blend")))
 bpy.ops.object.select_all(action="DESELECT")
 for ob in ASSETS:ob.select_set(True)
 bpy.context.view_layer.objects.active=ASSETS[0]
-bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v021.glb")),
+bpy.ops.export_scene.gltf(filepath=str(OUT/(KIND+"_hero_v022.glb")),
     export_format="GLB",use_selection=True,export_apply=True,export_materials="EXPORT",
     export_texcoords=True,export_normals=True)
 bpy.ops.object.select_all(action="DESELECT")

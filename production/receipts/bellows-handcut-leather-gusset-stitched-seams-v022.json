@@ -1,0 +1,21 @@
+{
+  "id": "handcut-leather-gusset-stitched-seams-v022",
+  "asset": "bellows",
+  "base_branch": "production/auto-bellows-diagonal-hide-tension-v021",
+  "branch": "production/auto-bellows-handcut-leather-gusset-stitched-seams-v022",
+  "reason": "Visual inspection of the real V021 four-view contact sheet: the gusset still resembles rigid stacked bands, the oak is pale, and no distinct sewn leather panels are legible. V022 tests four physically modeled vertical hide panel welts with linen cross-stitches, fewer nonuniform compression folds and deeper oak brown. V012 remains best provisional; V022 is only a test pending four-view visual review and GLB QA.",
+  "edits": [
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    "scripts/genesis_bellows_art_v012.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T09:59:58.586043+00:00"
+}
