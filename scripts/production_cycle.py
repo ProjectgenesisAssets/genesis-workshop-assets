@@ -73,7 +73,7 @@ def process(task: dict, busy: set[str]) -> dict:
         raise ValueError("Invalid asset or task id")
     if not BRANCH_RE.fullmatch(base):
         raise ValueError("Invalid source branch")
-    if not re.fullmatch(r"[a-zA-Z0-9_.-]+\\.yml", workflow):
+    if not re.fullmatch(r"[a-zA-Z0-9_.-]+\.yml", workflow):
         raise ValueError("Workflow must be a single .yml filename")
     changes = task["edits"]
     if not changes or len(changes) > 8:
@@ -107,7 +107,7 @@ def process(task: dict, busy: set[str]) -> dict:
     }
     out = Path("production/receipts") / f"{asset}-{task_id}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(receipt, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+    out.write_text(json.dumps(receipt, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     command("git", "add", *edited, str(out))
     if not command("git", "diff", "--cached", "--name-only"):
         raise ValueError("No source changes")
@@ -151,7 +151,7 @@ def main() -> None:
                         check=False)
     REPORT.parent.mkdir(exist_ok=True)
     REPORT.write_text(json.dumps({"checked_utc": now.isoformat(), "results": results},
-                                 indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+                                 indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(REPORT.read_text(encoding="utf-8"))
 
 
