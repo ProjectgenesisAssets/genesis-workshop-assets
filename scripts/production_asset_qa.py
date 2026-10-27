@@ -87,6 +87,8 @@ def main():
     preferred_baselines={
         ("forge","ashlar-hammered-hood-v015"):Path("previews/production_auto/forge_smithy-ironhood-v014"),
         ("bellows","warm-oak-organic-hide-v014"):Path("previews/production_auto/bellows_leather-pbr-contrast-v012"),
+        ("forge","handhewn-masonry-live-embers-v016"):Path("previews/production_auto/forge_ashlar-hammered-hood-v015"),
+        ("bellows","supple-hide-warm-oak-v015"):Path("previews/production_auto/bellows_warm-oak-organic-hide-v014"),
     }
     preferred=preferred_baselines.get((asset,args.task_id))
     baseline=preferred if preferred and all((preferred/(v+".png")).is_file() for v in VIEWS[asset]) else None
