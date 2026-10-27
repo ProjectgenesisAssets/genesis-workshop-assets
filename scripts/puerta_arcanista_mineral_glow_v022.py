@@ -526,9 +526,9 @@ try:
     glow_node=comp.nodes.new("CompositorNodeGlare")
     glow_node.glare_type="FOG_GLOW"
     glow_node.quality="HIGH"
-    glow_node.threshold=1.0
+    glow_node.threshold=1.6
     glow_node.size=7
-    glow_node.mix=-.10
+    glow_node.mix=-.62
     final_node=comp.nodes.new("CompositorNodeComposite")
     comp.links.new(src_node.outputs["Image"],glow_node.inputs["Image"])
     comp.links.new(glow_node.outputs["Image"],final_node.inputs["Image"])
