@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - production/yunque-v021-playcanvas
+      - production/yunque-v021-photo-pbr
     paths:
       - '.github/workflows/yunque-medieval-realista-v021.yml'
       - 'scripts/generar_yunque_realista_v021.py'
@@ -112,5 +112,5 @@ jobs:
           git add previews/yunque_v021
           if ! git diff --cached --quiet; then
             git commit -m 'Record yunque V021 visual candidate, NOT approved [skip ci]'
-            git push origin HEAD:production/yunque-v021-playcanvas
+            git push origin HEAD:production/yunque-v021-photo-pbr
           fi
