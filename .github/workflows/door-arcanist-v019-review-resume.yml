@@ -1,0 +1,68 @@
+name: Genesis Arcanist V019 - publish already completed scanned PBR render
+on:
+  push:
+    branches: [production/door-v019-scanned-iron-arcanist]
+    paths:
+      - .github/workflows/door-arcanist-v019-review-resume.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  gallery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: arcanist-v019-scanned-real-pbr
+          path: evidence
+          run-id: 40563300967
+          github-token: ${{ github.token }}
+      - name: Export exact actual render review against V018
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          out=Path("previews/door_v019_scan");out.mkdir(parents=True,exist_ok=True)
+          views=("front_orthographic","three_quarter","side_orthographic","rear_orthographic")
+          sheet=Image.new("RGB",(900*2,1150*2),(31,33,38))
+          for i,view in enumerate(views):
+              with Image.open(Path("evidence")/"output_workshop_door_v019_arcanista"/(view+".png")) as im:
+                  art=im.convert("RGBA")
+                  art.thumbnail((825,1020),Image.Resampling.LANCZOS)
+                  bg=Image.new("RGBA",(900,1150),(39,42,47,255))
+                  bg.alpha_composite(art,((900-art.width)//2,50+(1020-art.height)//2))
+                  cell=bg.convert("RGB")
+              ImageDraw.Draw(cell).text((20,1100),"ARcanista V019 scanned CC0 steel - "+view,fill=(228,239,247))
+              sheet.paste(cell,((i%2)*900,(i//2)*1150))
+              if i==1:
+                  cell.save(out/"arcanista_hero_v019.jpg",quality=90,optimize=True)
+                  with Image.open("previews/door_v018_pbr/arcanista_hero_v018.jpg") as older:
+                      old=older.convert("RGB")
+                  before=Image.new("RGB",(1800,1150),(36,38,43))
+                  old.thumbnail((900,1130),Image.Resampling.LANCZOS)
+                  before.paste(old,((900-old.width)//2,0))
+                  before.paste(cell,(900,0))
+                  ImageDraw.Draw(before).text((240,1110),"V018 flat procedural",fill=(242,238,216))
+                  ImageDraw.Draw(before).text((1100,1110),"V019 real scanned PBR",fill=(230,240,252))
+                  before.save(out/"v018_vs_v019.jpg",quality=88,optimize=True)
+          sheet.save(out/"four_real_views_v019.jpg",quality=87,optimize=True)
+          print("PBR_SCANNED_REVIEW_READY",[(p.name,p.stat().st_size) for p in out.glob("*.jpg")])
+          PY
+      - name: Publish scanned art preview independently of approved door master
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v019_scan
+          if ! git diff --cached --quiet; then
+            git commit -m 'V019 Arcanist real photographed steel Cycles review [skip ci]'
+            git fetch origin production/door-v019-scanned-iron-arcanist
+            git rebase origin/production/door-v019-scanned-iron-arcanist
+            git push origin HEAD:production/door-v019-scanned-iron-arcanist
+          fi
