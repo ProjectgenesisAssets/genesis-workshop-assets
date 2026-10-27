@@ -151,7 +151,7 @@ def main() -> None:
     if len(tasks) > 50:
         raise ValueError("Queue too large")
     results = []
-    if now > WINDOW_END:
+    if now >= WINDOW_END:
         results.append({"status": "window_closed"})
     else:
         busy = running_assets()
