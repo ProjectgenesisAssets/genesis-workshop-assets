@@ -1,0 +1,46 @@
+{
+  "asset": "bellows",
+  "task_id": "oak-grain-folds-v013",
+  "source_sha": "853a247cd7cf66e414f595e948868913a0151e32",
+  "baseline": "previews/heroes_v011/bellows",
+  "candidate": "output_hero_bellows_v013",
+  "glb": "bellows_hero_v013.glb",
+  "blend": "bellows_hero_v013.blend",
+  "glb_stats": {
+    "triangles": 22576,
+    "meshes": 37,
+    "materials": 5,
+    "base_color_textured_materials": 4,
+    "embedded_images": 12
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.00621,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.00574,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.00821,
+      "silhouette_iou": 1.0
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.00904,
+      "silhouette_iou": 1.0
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Real Blender renders, objective technical checks only; final artistic approval is human."
+}
