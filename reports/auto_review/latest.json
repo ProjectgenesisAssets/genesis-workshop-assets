@@ -1,35 +1,35 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T04:46:30.357726+00:00",
+  "generated_at": "2026-10-27T05:54:39.437891+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-handhewn-masonry-live-embers-v016",
-      "run_id": 40445505366,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40445505366",
-      "commit": "2db80f8b4f76edc2e2f93e1c95e98947b004220a",
-      "completed_at": "2026-10-27T03:47:49Z",
-      "preview_directory": "previews/production_auto/forge_handhewn-masonry-live-embers-v016",
+      "branch": "production/auto-forge-open-throat-hood-bonded-rear-v018",
+      "run_id": 40457244321,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40457244321",
+      "commit": "cda9de9fbaa10656ac5268fd2f6cfb7bba80d763",
+      "completed_at": "2026-10-27T05:52:37Z",
+      "preview_directory": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018",
       "view_paths": {
-        "front": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/front.png",
-        "three_quarter": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/three_quarter.png",
-        "rear": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/rear.png",
-        "detail": "previews/production_auto/forge_handhewn-masonry-live-embers-v016/detail.png"
+        "front": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/front.png",
+        "three_quarter": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/three_quarter.png",
+        "rear": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/rear.png",
+        "detail": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/detail.png"
       },
       "status": "review_ready"
     },
     "bellows": {
-      "branch": "production/auto-bellows-supple-hide-warm-oak-v015",
-      "run_id": 40445471325,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40445471325",
-      "commit": "831c16f230c68be58fb28b168b0a1988058a7611",
-      "completed_at": "2026-10-27T03:43:51Z",
-      "preview_directory": "previews/production_auto/bellows_supple-hide-warm-oak-v015",
+      "branch": "production/auto-bellows-oak-grain-gusset-array-fix-v017",
+      "run_id": 40457420163,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40457420163",
+      "commit": "a4a698d6938ab24845fd7a3402c0b347be28bcba",
+      "completed_at": "2026-10-27T05:54:30Z",
+      "preview_directory": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017",
       "view_paths": {
-        "front": "previews/production_auto/bellows_supple-hide-warm-oak-v015/front.png",
-        "three_quarter": "previews/production_auto/bellows_supple-hide-warm-oak-v015/three_quarter.png",
-        "rear": "previews/production_auto/bellows_supple-hide-warm-oak-v015/rear.png",
-        "detail": "previews/production_auto/bellows_supple-hide-warm-oak-v015/detail.png"
+        "front": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/front.png",
+        "three_quarter": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/three_quarter.png",
+        "rear": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/rear.png",
+        "detail": "previews/production_auto/bellows_oak-grain-gusset-array-fix-v017/detail.png"
       },
       "status": "review_ready"
     },
