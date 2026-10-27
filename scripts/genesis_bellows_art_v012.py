@@ -310,7 +310,7 @@ def mount_bellows():
                 u=xx/max(1,w-1);v=yy/max(1,h-1)
                 warp=.045*np.sin(2*math.pi*(v*2.3+u*.9))
                 fibres=np.sin(2*math.pi*(u*17+warp+.012*np.sin(2*math.pi*v*3)))
-                grain=np.clip(.39+1.55*(luminance-.46)+.055*fibres,.18,.78)
+                grain=np.clip(.39+1.55*(luminance-.46)+.055*fibres.reshape(-1),.18,.78)
                 rgba[:,:3]=grain[:,None]*np.array((.88,.48,.24),dtype=np.float32)
             else:
                 rgba[:,:3]*=np.array((.63,.32,.25),dtype=np.float32)
