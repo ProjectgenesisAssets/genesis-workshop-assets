@@ -79,6 +79,114 @@
         }
       ],
       "reason": "Actual V012/V013 four-view comparison: oak board still resembles grey stone, and five leather compression rings are unnaturally uniform; V013 darkened all folds and worsened leather readability. Bake warm photographic oak albedo with preserved scanned luminance detail and phase-vary hide folds, keeping V012 as best provisional."
+    },
+    {
+      "id": "handhewn-masonry-live-embers-v016",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-ashlar-hammered-hood-v015",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Actual V015 four-view render inspection: masonry still reads as uniform Lego courses and coal bed looks inactive; increase chipped hand-hewn edge relief moderately, introduce physically curved hammered hood panels and visible ember microfractures without cartoon glow. Preserve V015 checkpoint; no artistic approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v015\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v016\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "size=tuple(max(.035,d*(1+rng.uniform(-.105,.105))) for d in dims)",
+          "replace": "size=tuple(max(.035,d*(1+rng.uniform(-.14,.14))) for d in dims)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "offset=(rng.uniform(-.009,.009),rng.uniform(-.008,.008),rng.uniform(-.006,.006))",
+          "replace": "offset=(rng.uniform(-.012,.012),rng.uniform(-.011,.011),rng.uniform(-.008,.008))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "obj=box(name,pos,size,mat,edge=edge*rng.uniform(.65,1.40),",
+          "replace": "obj=box(name,pos,size,mat,edge=edge*rng.uniform(1.15,1.85),"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "dome=.018*math.sin(math.pi*u)*math.sin(math.pi*v)",
+          "replace": "dome=.055*math.sin(math.pi*u)*math.sin(math.pi*v)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "thin=np.clip((.092-np.abs(f))/.070,0,1)*np.clip((.40+c)/.75,0,1)",
+          "replace": "thin=np.clip((.115-np.abs(f))/.085,0,1)*np.clip((.40+c)/.75,0,1)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "bs.inputs[\"Emission Strength\"].default_value=3.9",
+          "replace": "bs.inputs[\"Emission Strength\"].default_value=5.1"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V015\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V016\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v015.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v016.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v015.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v016.glb\"))"
+        }
+      ]
+    },
+    {
+      "id": "supple-hide-warm-oak-v015",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-warm-oak-organic-hide-v014",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Actual V014 four-view render inspection: five repeated leather pleats still look like stacked wooden slats; oak face remains cool grey. Reduce compression wave count and drift phase organically; warm scanned oak albedo moderately without changing approved functional silhouette. Preserve V014; no artistic approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v014\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v015\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V014\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V014\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V015\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V015\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "rgba[:,:3]=grain[:,None]*np.array((.70,.385,.175),dtype=np.float32)",
+          "replace": "rgba[:,:3]=grain[:,None]*np.array((.82,.43,.20),dtype=np.float32)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "phase=10*math.pi*t+.20*x+.25*math.sin(3.4*x+2.1*y)+.06*math.sin(8.3*y)",
+          "replace": "phase=6.6*math.pi*t+.18*x+.56*math.sin(3.4*x+2.1*y)+.09*math.sin(8.3*y)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "factor=1+amplitude*(.075+.023*math.sin(1.7*x)+(.075+.013*math.cos(3.1*x))*fold)",
+          "replace": "factor=1+amplitude*(.068+.020*math.sin(1.7*x)+(.062+.014*math.cos(3.1*x))*fold)"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V014\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V015\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v014.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v015.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v014.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v015.glb\"))"
+        }
+      ]
     }
   ]
 }
