@@ -1,0 +1,19 @@
+{
+  "id": "open-throat-hood-bonded-rear-v018",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-open-hearth-glow-v017",
+  "branch": "production/auto-forge-open-throat-hood-bonded-rear-v018",
+  "reason": "Four-view V017/V016 comparison examined at 02:45 ART: full black sloped front canopy still looks like a roof or barbecue and repetitive rear courses read as machined brick. Physically replace opaque front face with two forged side cheeks plus upper baffle, leaving the central smoke throat visibly open, and mix broad and narrow staggered refractory rear courses. Do not autoapprove; preserve V017.",
+  "edits": [
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    "scripts/genesis_hero_assets_v014.py",
+    ".github/workflows/production-asset-iteration.yml",
+    "scripts/production_asset_qa.py"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-27T05:46:41.310530+00:00"
+}
