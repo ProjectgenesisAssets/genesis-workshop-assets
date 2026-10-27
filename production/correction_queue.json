@@ -626,6 +626,79 @@
           "replace": "filepath=str(OUT/(KIND+\"_hero_v020.glb\"))"
         }
       ]
+    },
+    {
+      "id": "irregular-refractory-bond-v022",
+      "asset": "forge",
+      "base_branch": "production/auto-forge-compact-hood-tall-flue-v021",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Inspected V020→V021 four-view comparison: compact hood and taller chimney make a substantial silhouette difference (QA RGB 0.042–0.094), but the rear wall remains a uniform dark brick grid like a miniature barbecue. Replace repetitive equal-width courses with deterministic varied-width refractory stones and authentic offset joints, keeping sealed mortar and the V021 hood intact. No artistic approval; preserve V020/V021.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v021\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v022\")"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "    # Mixed-length bonded rear courses interrupt the repeated toy-brick grid.\n    for course in range(7):\n        z=.785+course*.145\n        broad=course in (1,4,6)\n        count=5 if broad else 8\n        spacing=.325 if broad else .225\n        start=-.66 if broad else -.78\n        for i in range(count):\n            x=start+i*spacing+(.045 if course%2 else 0)\n            if abs(x)>.89:continue\n            block_dims=(.308,.18,.139) if broad else (.213,.18,.139)\n            block_mat=sooted if course<4 else (hearth if (i+course)%4 else weathered)\n            handlaid(\"Rear masonry mixed bonded block %d %d\"%(course,i),\n                     (x,.54,z),block_dims,block_mat,.006)\n",
+          "replace": "    # Variable-width refractory blocks rather than a repeated toy-brick grid.\n    # Deterministic masonry joints and individual hewn arrises are real geometry.\n    for course in range(7):\n        z=.785+course*.145\n        masonry_rng=random.Random(20261027+course*113)\n        count=6+(course%3)\n        weights=[masonry_rng.uniform(.75,1.35) for _ in range(count)]\n        widths=[1.66*w/sum(weights) for w in weights]\n        left=-.83\n        for i,width in enumerate(widths):\n            x=left+width/2\n            left+=width\n            block_mat=stone if course==5 and i==2 else hearth\n            handlaid(\"Rear irregular refractory bond %d %d\"%(course,i),\n                     (x,.54,z),(width-.014,.18,.134),block_mat,.005,\n                     rz=masonry_rng.uniform(-.006,.006))\n"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V021\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V022\""
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v021.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v022.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v014.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v021.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v022.glb\"))"
+        }
+      ]
+    },
+    {
+      "id": "diagonal-hide-tension-v021",
+      "asset": "bellows",
+      "base_branch": "production/auto-bellows-soft-gusset-warm-oak-v020",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Actual V019→V020 four-view comparison: the new narrow folds create even more repeated horizontal stripes (five rigid bands), despite warmer oak and technically valid GLB. Test stronger diagonal phase drift, lengthwise taper of leather tension and vertical undulation to remove stacked-wood appearance. Preserve V012 as user provisional and V019/V020 as comparisons; no automatic art approval.",
+      "edits": [
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v020\")",
+          "replace": "OUT=ROOT/(\"output_hero_\"+KIND+\"_v021\")"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "baked_name=\"bellows_aged_oak_baked_albedo_V020\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V020\"",
+          "replace": "baked_name=\"bellows_aged_oak_baked_albedo_V021\" if is_oak else \"bellows_oxblood_leather_baked_albedo_V021\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "            # More frequent narrow creases drift diagonally across the hide;\n            # vertical deformation breaks the previous rigid parallel bands.\n            phase=10.3*math.pi*t+.85*x+1.20*math.sin(2.3*x+3.1*y+2.1*t)\n            fold=.57*math.sin(phase)+.18*math.sin(1.93*phase+.7*x)\n            tension=.35+.65*math.sin(math.pi*t)**.9\n            factor=1+amplitude*(.040+.015*math.sin(2.2*x)+\n                                (.055+.010*math.cos(2.8*x))*fold*tension)\n            top=.43-.125*x\n            z=.126+(top-.126)*t+.009*amplitude*math.sin(2.2*x+3.5*y+9.3*t)\n",
+          "replace": "            # Hand-cut hide: diagonally wandering tension folds, not horizontal slats.\n            # The leather compresses more near the broad handles than the nozzle.\n            phase=8.2*math.pi*t+2.8*x+1.7*math.sin(2.6*x+1.7*y+3.5*t)\n            fold=.58*math.sin(phase)+.13*math.sin(1.71*phase+1.5*x)\n            tension=(.15+.85*math.sin(math.pi*t)**.7)*(.85-.40*x)\n            factor=1+amplitude*(.030+.018*math.sin(1.5*x)+.047*fold*tension)\n            top=.43-.125*x\n            z=.126+(top-.126)*t+.018*amplitude*math.sin(2.7*x+1.8*y+8.4*t)\n"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "report={\"asset\":KIND,\"version\":\"V020\"",
+          "replace": "report={\"asset\":KIND,\"version\":\"V021\""
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v020.blend\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v021.blend\"))"
+        },
+        {
+          "path": "scripts/genesis_bellows_art_v012.py",
+          "find": "filepath=str(OUT/(KIND+\"_hero_v020.glb\"))",
+          "replace": "filepath=str(OUT/(KIND+\"_hero_v021.glb\"))"
+        }
+      ]
     }
   ]
 }
