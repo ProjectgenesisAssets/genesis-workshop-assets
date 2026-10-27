@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:00:33.924448+00:00",
+  "generated_at": "2026-10-27T10:03:08.448205+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-irregular-refractory-bond-v022",
-      "run_id": 40477102753,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40477102753",
-      "commit": "0fece735c2eac140c1cd10db6ab0abb90c7761cf",
-      "completed_at": "2026-10-27T09:01:18Z",
-      "preview_directory": "previews/production_auto/forge_irregular-refractory-bond-v022",
+      "branch": "production/door-v013-dark-forged-iron-local-rust",
+      "run_id": 40484812251,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40484812251",
+      "commit": "c07a0cb705ec42b61ee95b7ff81d41805e9019ac",
+      "completed_at": "2026-10-27T10:02:56Z",
+      "preview_directory": "previews/heroes_v008/forge",
       "view_paths": {
-        "front": "previews/production_auto/forge_irregular-refractory-bond-v022/front.png",
-        "three_quarter": "previews/production_auto/forge_irregular-refractory-bond-v022/three_quarter.png",
-        "rear": "previews/production_auto/forge_irregular-refractory-bond-v022/rear.png",
-        "detail": "previews/production_auto/forge_irregular-refractory-bond-v022/detail.png"
+        "front": "previews/heroes_v008/forge/front.png",
+        "three_quarter": "previews/heroes_v008/forge/three_quarter.png",
+        "rear": "previews/heroes_v008/forge/rear.png",
+        "detail": "previews/heroes_v008/forge/detail.png"
       },
       "status": "review_ready"
     },
@@ -34,17 +34,17 @@
       "status": "review_ready"
     },
     "door": {
-      "branch": "production/door-v012-oxidized-iron-material-test",
-      "run_id": 40483978276,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40483978276",
-      "commit": "5453b64122fbbe5fb771051f587d165c42473105",
-      "completed_at": "2026-10-27T09:51:49Z",
-      "preview_directory": "previews/door_v012",
+      "branch": "production/door-v013-dark-forged-iron-local-rust",
+      "run_id": 40484812251,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40484812251",
+      "commit": "c07a0cb705ec42b61ee95b7ff81d41805e9019ac",
+      "completed_at": "2026-10-27T10:02:56Z",
+      "preview_directory": "previews/door_v013",
       "view_paths": {
-        "front": "previews/door_v012/front.png",
-        "three_quarter": "previews/door_v012/three_quarter.png",
-        "rear": "previews/door_v012/rear.png",
-        "detail": "previews/door_v012/side.png"
+        "front": "previews/door_v013/front.png",
+        "three_quarter": "previews/door_v013/three_quarter.png",
+        "rear": "previews/door_v013/rear.png",
+        "detail": "previews/door_v013/side.png"
       },
       "status": "review_ready"
     },
