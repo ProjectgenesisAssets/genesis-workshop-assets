@@ -1,5 +1,6 @@
 {
   "schema": 1,
+  "generated_at": "2026-10-27T03:41:46.320929+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
@@ -8,12 +9,12 @@
       "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40444298011",
       "commit": "e2eb1f3564111add28b9be599728e0903de3ab34",
       "completed_at": "2026-10-27T03:34:56Z",
-      "preview_directory": "previews/production_auto/forge_smithy-ironhood-v014",
+      "preview_directory": "previews/production_auto/forge_ashlar-hammered-hood-v015",
       "view_paths": {
-        "front": "previews/production_auto/forge_smithy-ironhood-v014/front.png",
-        "three_quarter": "previews/production_auto/forge_smithy-ironhood-v014/three_quarter.png",
-        "rear": "previews/production_auto/forge_smithy-ironhood-v014/rear.png",
-        "detail": "previews/production_auto/forge_smithy-ironhood-v014/detail.png"
+        "front": "previews/production_auto/forge_ashlar-hammered-hood-v015/front.png",
+        "three_quarter": "previews/production_auto/forge_ashlar-hammered-hood-v015/three_quarter.png",
+        "rear": "previews/production_auto/forge_ashlar-hammered-hood-v015/rear.png",
+        "detail": "previews/production_auto/forge_ashlar-hammered-hood-v015/detail.png"
       },
       "status": "review_ready"
     },
@@ -74,6 +75,5 @@
   ],
   "images_downloaded": 16,
   "all_assets_review_ready": true,
-  "art_review_completed": false,
-  "generated_at": "2026-10-27T03:37:45.404207+00:00"
+  "art_review_completed": false
 }
