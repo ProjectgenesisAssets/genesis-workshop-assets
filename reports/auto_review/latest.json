@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T10:05:56.126421+00:00",
+  "generated_at": "2026-10-27T10:08:00.341006+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-irregular-refractory-bond-v022",
-      "run_id": 40477102753,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40477102753",
-      "commit": "0fece735c2eac140c1cd10db6ab0abb90c7761cf",
-      "completed_at": "2026-10-27T09:01:18Z",
-      "preview_directory": "previews/production_auto/forge_irregular-refractory-bond-v022",
+      "branch": "production/auto-forge-open-hearth-masonry-throat-v023",
+      "run_id": 40485165072,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40485165072",
+      "commit": "ac0c68112b336cbd2eeabb02dce745da31780f05",
+      "completed_at": "2026-10-27T10:07:52Z",
+      "preview_directory": "previews/production_auto/forge_open-hearth-masonry-throat-v023",
       "view_paths": {
-        "front": "previews/production_auto/forge_irregular-refractory-bond-v022/front.png",
-        "three_quarter": "previews/production_auto/forge_irregular-refractory-bond-v022/three_quarter.png",
-        "rear": "previews/production_auto/forge_irregular-refractory-bond-v022/rear.png",
-        "detail": "previews/production_auto/forge_irregular-refractory-bond-v022/detail.png"
+        "front": "previews/production_auto/forge_open-hearth-masonry-throat-v023/front.png",
+        "three_quarter": "previews/production_auto/forge_open-hearth-masonry-throat-v023/three_quarter.png",
+        "rear": "previews/production_auto/forge_open-hearth-masonry-throat-v023/rear.png",
+        "detail": "previews/production_auto/forge_open-hearth-masonry-throat-v023/detail.png"
       },
       "status": "review_ready"
     },
@@ -49,17 +49,17 @@
       "status": "review_ready"
     },
     "anvil": {
-      "branch": "production/yunque-v022-forged-horn",
-      "run_id": 40430776892,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40430776892",
-      "commit": "82c86ef5f2101b0c1c71976f29b6017f1697b54c",
-      "completed_at": "2026-10-27T01:17:34Z",
-      "preview_directory": "previews/yunque_v022",
+      "branch": "production/yunque-v023-burnished-steel-pbr2k-geometry-locked",
+      "run_id": 40484891682,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40484891682",
+      "commit": "50a65274a2041a556afbcb002cbc246a293d432e",
+      "completed_at": "2026-10-27T10:07:48Z",
+      "preview_directory": "previews/yunque_v023",
       "view_paths": {
-        "front": "previews/yunque_v022/front.png",
-        "three_quarter": "previews/yunque_v022/hero.png",
-        "rear": "previews/yunque_v022/rear.png",
-        "detail": "previews/yunque_v022/top.png"
+        "front": "previews/yunque_v023/front.png",
+        "three_quarter": "previews/yunque_v023/hero.png",
+        "rear": "previews/yunque_v023/rear.png",
+        "detail": "previews/yunque_v023/top.png"
       },
       "status": "review_ready"
     }
