@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-27T06:56:26.592944+00:00",
+  "generated_at": "2026-10-27T06:57:39.247366+00:00",
   "deadline_utc": "2026-10-27T12:00:00+00:00",
   "asset_candidates": {
     "forge": {
-      "branch": "production/auto-forge-open-throat-hood-bonded-rear-v018",
-      "run_id": 40457244321,
-      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40457244321",
-      "commit": "cda9de9fbaa10656ac5268fd2f6cfb7bba80d763",
-      "completed_at": "2026-10-27T05:52:37Z",
-      "preview_directory": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018",
+      "branch": "production/auto-forge-arched-smoke-capture-v019",
+      "run_id": 40463461577,
+      "run_url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/40463461577",
+      "commit": "4c24dad2d580de2cdb1c8ca96311934675fe0582",
+      "completed_at": "2026-10-27T06:57:24Z",
+      "preview_directory": "previews/production_auto/forge_arched-smoke-capture-v019",
       "view_paths": {
-        "front": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/front.png",
-        "three_quarter": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/three_quarter.png",
-        "rear": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/rear.png",
-        "detail": "previews/production_auto/forge_open-throat-hood-bonded-rear-v018/detail.png"
+        "front": "previews/production_auto/forge_arched-smoke-capture-v019/front.png",
+        "three_quarter": "previews/production_auto/forge_arched-smoke-capture-v019/three_quarter.png",
+        "rear": "previews/production_auto/forge_arched-smoke-capture-v019/rear.png",
+        "detail": "previews/production_auto/forge_arched-smoke-capture-v019/detail.png"
       },
       "status": "review_ready"
     },
