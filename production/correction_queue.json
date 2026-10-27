@@ -20,6 +20,35 @@
           "replace": "\"bake both aged-oak and oxblood leather into glTF-compatible photographic albedo PNGs\""
         }
       ]
+    },
+    {
+      "id": "ember-fracture-readability-v011",
+      "asset": "forge",
+      "base_branch": "production/forge-v011-ember-readability",
+      "workflow": "production-asset-iteration.yml",
+      "reason": "Actual V010 four-view render shows mostly unlit charcoal. Increase embedded microfracture emission coverage and gentle local bounce; no floating luminous objects and GLB retains emissive PBR.",
+      "edits": [
+        {
+          "path": "scripts/genesis_hero_assets_v011.py",
+          "find": "thin=np.clip((.080-np.abs(f))/.065,0,1)*np.clip((.40+c)/.75,0,1)",
+          "replace": "thin=np.clip((.115-np.abs(f))/.075,0,1)*np.clip((.40+c)/.75,0,1)"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v011.py",
+          "find": "bs.inputs[\"Emission Strength\"].default_value=4.4",
+          "replace": "bs.inputs[\"Emission Strength\"].default_value=5.4"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v011.py",
+          "find": "glow_data.energy=110;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52",
+          "replace": "glow_data.energy=135;glow_data.color=(1,.26,.10);glow_data.shadow_soft_size=.52"
+        },
+        {
+          "path": "scripts/genesis_hero_assets_v011.py",
+          "find": "\"increase emissive microfractures in charcoal, not detached glow balls\"",
+          "replace": "\"increase the coverage and power of embedded charcoal microfractures without detached glow balls\""
+        }
+      ]
     }
   ]
 }
