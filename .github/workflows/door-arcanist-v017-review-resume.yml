@@ -1,0 +1,123 @@
+name: Genesis Arcanist V017 - validate finished artifact and publish JPG
+on:
+  push:
+    branches:
+      - production/door-v017-arcanist-blue-energy
+    paths:
+      - .github/workflows/door-arcanist-v017-review-resume.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect_and_publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: door-v017-arcanista
+          path: evidence
+          run-id: 40546709073
+          github-token: ${{ github.token }}
+      - name: Validate geometry tolerance plus GLB emissive materials
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          p=Path("evidence")
+          report=json.loads((p/"V017_MATERIAL_TEST.json").read_text())
+          audit=json.loads((p/"DESIGN_AUDIT.json").read_text())
+          assert report["profession"]=="arcanista" and report["geometry_baseline"]=="V011_USER_APPROVED"
+          assert report["exact_V175_material_applied"] is False
+          assert 10000<audit["evaluated_triangles"]<68028
+          with (p/"Workshop_Door_V017_arcanista.glb").open("rb") as f:
+              magic,version,length=struct.unpack("<III",f.read(12))
+              chunk_length,chunk_type=struct.unpack("<II",f.read(8))
+              doc=json.loads(f.read(chunk_length).decode("utf-8"))
+          assert magic==0x46546c67 and version==2 and chunk_type==0x4E4F534A
+          emissive=[m for m in doc.get("materials",[]) if "Arcane_Energy_ColdBlue" in m.get("name","")]
+          assert len(emissive)>=2,[m.get("name") for m in doc.get("materials",[])]
+          assert any(max(m.get("emissiveFactor",[0,0,0]))>.05 for m in emissive),emissive
+          pbr=[q for ext in ("albedo","roughness","normal","metallic") for q in p.glob("*_"+ext+".png")]
+          assert len(pbr)==16
+          for q in pbr:
+              with Image.open(q) as im: assert im.size==(1536,1536),q
+          for name,render in (("front","front_orthographic"),("three_quarter","three_quarter"),
+                              ("rear","rear_orthographic"),("side","side_orthographic")):
+              with Image.open("previews/door_v014/"+name+".png") as ref,Image.open(p/(render+".png")) as new:
+                  assert ref.size==new.size
+                  a=ref.getchannel("A").point(lambda x:255 if x>127 else 0)
+                  b=new.getchannel("A").point(lambda x:255 if x>127 else 0)
+                  u=ImageChops.lighter(a,b);inter=ImageChops.darker(a,b)
+                  iou=sum(inter.histogram()[128:])/max(1,sum(u.histogram()[128:]))
+                  threshold=.99 if name=="side" else .995
+                  print("V017_ARCANE_SILHOUETTE",name,round(iou,6),"required",threshold)
+                  assert iou>=threshold
+          print("V017_BLUE_EMISSIVE_GLB_VALIDATED",len(emissive))
+          PY
+      - name: Assemble true Cycles JPGs including five-door blue-energy comparison
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          folder=Path("previews/door_v017_arcanista")
+          folder.mkdir(parents=True,exist_ok=True)
+          e=Path("evidence")
+          original=Image.open("previews/door_v015_profiles/arcanista_hero.jpg").convert("RGB")
+          assert original.size==(370,518),original.size
+          views=("front_orthographic","three_quarter","rear_orthographic","side_orthographic")
+          names=("frente","tres_cuartos","dorso","perfil")
+          sheet=Image.new("RGB",(900*2,1160*2),(28,29,32))
+          for i,(name,label) in enumerate(zip(views,names)):
+              f=e/(name+".png")
+              assert f.stat().st_size>10000,f
+              with Image.open(f) as im:
+                  im=im.convert("RGBA")
+                  im.thumbnail((820,1040),Image.Resampling.LANCZOS)
+                  tile=Image.new("RGBA",(900,1160),(42,44,49,255))
+                  tile.alpha_composite(im,((900-im.width)//2,40+(1040-im.height)//2))
+                  rendered=tile.convert("RGB")
+              x=(i%2)*900;y=(i//2)*1160
+              sheet.paste(rendered,(x,y))
+              ImageDraw.Draw(sheet).text((x+18,y+1110),"ARCANISTA V017 - "+label,fill=(235,241,254))
+              if i==1:
+                  rendered.save(folder/"hero_blue_energy.jpg",quality=89,optimize=True)
+                  compare=Image.new("RGB",(900*2,1160),(30,31,34))
+                  old=original.copy()
+                  old.thumbnail((670,1030),Image.Resampling.LANCZOS)
+                  compare.paste(old,((900-old.width)//2,40))
+                  compare.paste(rendered,(900,0))
+                  ImageDraw.Draw(compare).text((350,1125),"V015 SIN ENERGIA",fill=(242,235,212))
+                  ImageDraw.Draw(compare).text((1240,1125),"V017 ENERGIA AZUL",fill=(225,241,255))
+                  compare.save(folder/"arcanist_before_after.jpg",quality=85,optimize=True)
+              if i==0:
+                  allfive=Image.open("previews/door_v016_profiles/five_workshops_front_v016.jpg").convert("RGB")
+                  assert allfive.size==(1850,518),allfive.size
+                  im=Image.open(f).convert("RGBA")
+                  im.thumbnail((344,460),Image.Resampling.LANCZOS)
+                  frame=Image.new("RGBA",(370,518),(43,46,50,255))
+                  frame.alpha_composite(im,((370-im.width)//2,12+(460-im.height)//2))
+                  allfive.paste(frame.convert("RGB"),(1480,0))
+                  ImageDraw.Draw(allfive).text((1501,478),"Arcanista V017",fill=(244,236,213))
+                  allfive.save(folder/"five_workshops_blue_arcanist.jpg",quality=89,optimize=True)
+          sheet.save(folder/"arcanist_four_views.jpg",quality=86,optimize=True)
+          print("ARCANE_BLUE_REAL_RENDER_JPGS",[(p.name,p.stat().st_size) for p in folder.glob("*.jpg")])
+          PY
+      - name: Publish arcane candidate separately from approved door masters
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v017_arcanista
+          if ! git diff --cached --quiet; then
+            git commit -m 'V017 Arcanist real blue-energy renders and five-door contact [skip ci]'
+            git fetch origin production/door-v017-arcanist-blue-energy
+            git rebase origin/production/door-v017-arcanist-blue-energy
+            git push origin HEAD:production/door-v017-arcanist-blue-energy
+          fi
