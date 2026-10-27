@@ -1,0 +1,69 @@
+{
+  "asset": "bellows",
+  "task_id": "opened-wedge-handbellows-v023",
+  "source_sha": "61772b9656177c328eeebf1fb4d367fae64b5e0f",
+  "baseline": "previews/production_auto/bellows_handcut-leather-gusset-stitched-seams-v022",
+  "candidate": "output_hero_bellows_v023",
+  "glb": "bellows_hero_v023.glb",
+  "blend": "bellows_hero_v023.blend",
+  "glb_stats": {
+    "triangles": 22458,
+    "meshes": 41,
+    "materials": 5,
+    "base_color_textured_materials": 4,
+    "embedded_images": 12,
+    "texture_bindings": {
+      "bellows_aged_oak_long_grain": {
+        "base_color_image": "bellows_aged_oak_baked_albedo_V023",
+        "emissive_texture": false
+      },
+      "bellows_creased_dark_oxblood_leather": {
+        "base_color_image": "bellows_oxblood_leather_baked_albedo_V023",
+        "emissive_texture": false
+      },
+      "bellows_patina_riveted_brass": {
+        "base_color_image": "bellows_patina_riveted_brass_albedo",
+        "emissive_texture": false
+      },
+      "bellows_oxidized_hand_forged_iron": {
+        "base_color_image": "bellows_oxidized_hand_forged_iron_albedo",
+        "emissive_texture": false
+      },
+      "Unbleached linen saddle stitch thread": {
+        "base_color_image": null,
+        "emissive_texture": false
+      }
+    }
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.032,
+      "silhouette_iou": null
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.02568,
+      "silhouette_iou": null
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.0251,
+      "silhouette_iou": null
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.03905,
+      "silhouette_iou": null
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": false,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
