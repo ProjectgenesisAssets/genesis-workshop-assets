@@ -1,0 +1,128 @@
+name: Genesis Door V010 reinforced rear braces and metal art QA
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production/door-v010-forged-edge
+    paths:
+      - 'scripts/puerta_herreria_art_010.py'
+      - 'scripts/compare_art_candidate_v010.py'
+      - '.github/workflows/door-art-v010-qa.yml'
+permissions:
+  contents: read
+concurrency:
+  group: genesis-door-v010-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  door_v010:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify V009 baseline and source syntax
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/puerta_herreria_art_010.py scripts/compare_art_candidate_v010.py
+          for shot in front three_quarter side rear; do test -s "previews/door_v009/$shot.png"; done
+      - name: Install official Blender 4.5.13 on GitHub runner only
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/door-blender.tar.xz
+          mkdir -p /tmp/door-blender
+          tar -xJf /tmp/door-blender.tar.xz -C /tmp/door-blender --strip-components=1
+          /tmp/door-blender/blender --version | grep -F 'Blender 4.5.13'
+          /tmp/door-blender/blender -b --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Render actual corrected door model and PBR with Cycles CPU
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/door-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/puerta_herreria_art_010.py
+      - name: Check GLB, source master, audit, 12 PBR files and four views
+        run: |
+          set -euo pipefail
+          out=output_blacksmith_door_art_010
+          test -s "$out/Blacksmith_Door_Art_010.glb"
+          test -s "$out/Blacksmith_Door_Art_010.blend"
+          test -s "$out/DESIGN_AUDIT.json"
+          for shot in front_orthographic three_quarter side_orthographic rear_orthographic; do
+            test -s "$out/$shot.png"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          out=Path('output_blacksmith_door_art_010')
+          p=out/'Blacksmith_Door_Art_010.glb'
+          with p.open('rb') as f:
+              magic,version,length=struct.unpack('<III',f.read(12))
+          assert magic==0x46546c67 and version==2 and length==p.stat().st_size
+          a=json.loads((out/'DESIGN_AUDIT.json').read_text())
+          assert a['version']=='V010' and len(a['targeted_repairs'])==4
+          assert len(list(out.glob('*_albedo.png')))==4
+          assert len(list(out.glob('*_roughness.png')))==4
+          assert len(list(out.glob('*_normal.png')))==4
+          PY
+      - name: Compare actual V009 and V010 render pixels without fake aesthetic score
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          mkdir -p /tmp/door-v010-staged
+          cp output_blacksmith_door_art_010/front_orthographic.png /tmp/door-v010-staged/front.png
+          cp output_blacksmith_door_art_010/side_orthographic.png /tmp/door-v010-staged/side.png
+          cp output_blacksmith_door_art_010/rear_orthographic.png /tmp/door-v010-staged/rear.png
+          cp output_blacksmith_door_art_010/three_quarter.png /tmp/door-v010-staged/three_quarter.png
+          python3 scripts/compare_art_candidate_v010.py \
+            --asset door --baseline previews/door_v009 \
+            --candidate /tmp/door-v010-staged \
+            --baseline-version V009 --version V010 \
+            --source-sha '${{ github.sha }}' --out reports/door_v010
+          cat reports/door_v010/comparison.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve unapproved candidate and four image comparisons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: door-v010-candidate-${{ github.run_id }}
+          path: |
+            output_blacksmith_door_art_010/front_orthographic.png
+            output_blacksmith_door_art_010/three_quarter.png
+            output_blacksmith_door_art_010/side_orthographic.png
+            output_blacksmith_door_art_010/rear_orthographic.png
+            output_blacksmith_door_art_010/Blacksmith_Door_Art_010.glb
+            output_blacksmith_door_art_010/DESIGN_AUDIT.json
+            reports/door_v010/*
+          retention-days: 14
+          if-no-files-found: warn
+  publish_review:
+    needs: door_v010
+    if: ${{ needs.door_v010.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: door-v010-candidate-*
+          path: /tmp/door-v010-art
+          merge-multiple: true
+      - name: Publish previews and comparison to isolated branch only
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_v010 reports/door_v010
+          cp /tmp/door-v010-art/output_blacksmith_door_art_010/front_orthographic.png previews/door_v010/front.png
+          cp /tmp/door-v010-art/output_blacksmith_door_art_010/three_quarter.png previews/door_v010/three_quarter.png
+          cp /tmp/door-v010-art/output_blacksmith_door_art_010/side_orthographic.png previews/door_v010/side.png
+          cp /tmp/door-v010-art/output_blacksmith_door_art_010/rear_orthographic.png previews/door_v010/rear.png
+          cp /tmp/door-v010-art/reports/door_v010/* reports/door_v010/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v010 reports/door_v010
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish door V010 candidate renders for art review, not approved [skip ci]'
+            git fetch origin '${{ github.ref_name }}'
+            git rebase 'origin/${{ github.ref_name }}'
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
