@@ -1,5 +1,9 @@
 name: Genesis 10-minute overnight production watch
 on:
+  push:
+    paths:
+      - '.github/workflows/overnight-10min-watch.yml'
+      - 'scripts/overnight_watch.py'
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
@@ -20,7 +24,7 @@ jobs:
           now="$(date -u +%s)"
           from="$(date -u -d '2026-10-27 00:00:00' +%s)"
           until="$(date -u -d '2026-10-27 12:00:00' +%s)"
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || (( now >= from && now <= until )); then
+          if [[ "${{ github.event_name }}" != "schedule" ]] || (( now >= from && now <= until )); then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
