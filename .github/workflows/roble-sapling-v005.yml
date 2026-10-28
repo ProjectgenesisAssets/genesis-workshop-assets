@@ -1,0 +1,55 @@
+name: Genesis plaza V005 - botanical Sapling oak with voxel-fused trunk
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths:
+      - scripts/roble_sapling_v005.py
+      - .github/workflows/roble-sapling-v005.yml
+permissions:
+  contents: read
+jobs:
+  oak:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify script syntax
+        run: python3 -m py_compile scripts/roble_sapling_v005.py
+      - name: Download official Blender 4.5.13 and community Sapling source
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-oak-v005.tar.xz
+          mkdir -p /tmp/blender-oak-v005
+          tar -xJf /tmp/blender-oak-v005.tar.xz -C /tmp/blender-oak-v005 --strip-components=1
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/blender/blender-addons.git /tmp/blender-addons
+          git -C /tmp/blender-addons sparse-checkout set add_curve_sapling
+          test -f /tmp/blender-addons/add_curve_sapling/utils.py
+      - name: Generate and voxel-union oak V005 (skeleton first)
+        run: /tmp/blender-oak-v005/blender -b -t 2 --python-exit-code 1 --python scripts/roble_sapling_v005.py
+      - name: Validate GLB mesh and preview integrity
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,struct,os
+          d='output_plaza_v005/oak'
+          a=json.load(open(f'{d}/AUDIT.json'))
+          with open(f'{d}/oak_sapling_v005.glb','rb') as f:
+              assert f.read(4)==b'glTF'
+              f.read(8)
+              n=struct.unpack('<I',f.read(4))[0]
+              assert f.read(4)==b'JSON'
+              j=json.loads(f.read(n))
+          triangles=sum(j['accessors'][prim['indices']]['count']//3 for mesh in j['meshes'] for prim in mesh['primitives'])
+          assert triangles==a['triangles'] and triangles<60000,(triangles,a)
+          for name in ('front.png','three_quarter.png','side.png','oak_sapling_v005.blend'):
+              assert os.path.getsize(f'{d}/{name}')>15000,name
+          print(json.dumps(a,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-plaza-v005-oak-sapling
+          path: output_plaza_v005/oak/
+          retention-days: 2
+          if-no-files-found: warn
