@@ -49,7 +49,7 @@ roughmap=np.clip(.86+.028*broad+.012*mid+.007*grain,.69,.98)
 def save_map(name,rgb,is_data=False):
     im=bpy.data.images.new(name,width=N,height=N,alpha=True)
     alpha=np.ones((N,N,1),dtype=np.float32)
-    rgba=np.concatenate([np.clip(rgb,0,1),alpha],axis=2)
+    rgba=np.concatenate([np.clip(rgb,0,1),alpha],axis=2).astype(np.float32)
     im.pixels.foreach_set(rgba.ravel())
     path=TEX/(name+".png")
     im.filepath_raw=str(path)
