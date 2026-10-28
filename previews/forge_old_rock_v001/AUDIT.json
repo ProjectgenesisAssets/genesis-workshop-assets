@@ -2,7 +2,7 @@
   "asset": "Forge_Ancient_Rock",
   "version": "scanned_rock_material_v002",
   "basis": "User-approved first 2D visual concept: geometry recreated independently",
-  "copyright": "Original procedural Blender geometry and noise-derived PBR maps",
+  "copyright": "Original independent 3D geometry; Poly Haven Rock Face scanned material CC0",
   "blender": "4.5.13 LTS",
   "mesh_objects": 24,
   "total_mesh_faces": 24227,
