@@ -112,8 +112,8 @@ def pbr(name, image, rough=.86, normal_strength=.42):
     lk.new(nt.outputs["Color"],nm.inputs["Color"])
     lk.new(nm.outputs["Normal"],bs.inputs["Normal"])
     return m
-rock=pbr("Scanned_OldRock_PolyHaven_2K_CC0",rockimg,.84,.59)
-soot=pbr("Scanned_Rock_SootInterior_PolyHaven_2K_CC0",sootimg,.92,.52)
+rock=pbr("Scanned_OldRock_PolyHaven_2K_CC0",rockimg,.84,.84)
+soot=pbr("Scanned_Rock_SootInterior_PolyHaven_2K_CC0",sootimg,.92,.65)
 coal=bpy.data.materials.new("Coal_Matte_Natural")
 coal.diffuse_color=(.029,.028,.025,1)
 coal.use_nodes=True
@@ -137,11 +137,42 @@ body.name="GENESIS_Forge_Rock_Mass"
 body.dimensions=(2.24,1.12,.74)
 apply_transform(body)
 
-bpy.ops.mesh.primitive_uv_sphere_add(segments=100,ring_count=50,location=(0,.015,1.03))
-hood=bpy.context.object
-hood.name="Organic_Sculpt_Arch_Dome"
-hood.scale=(1.08,.55,.81)
-apply_transform(hood)
+# V003: sculpted ring silhouette rather than a perfect sphere/oven dome.
+# Angular, uneven stone shoulders and an asymmetrical taper around the smoke flue.
+rings=[
+    (.41,1.085,.570,-.01),(.56,1.135,.615,.00),
+    (.76,1.135,.625,.015),(.95,1.105,.640,.02),
+    (1.14,1.075,.628,.020),(1.35,.975,.590,.035),
+    (1.52,.820,.535,.055),(1.69,.635,.445,.090),
+    (1.84,.370,.330,.135)
+]
+sections=64
+verts=[]
+for ring_i,(z,width,depth,cy) in enumerate(rings):
+    for i in range(sections):
+        t=2*math.pi*i/sections
+        c,ss=math.cos(t),math.sin(t)
+        # Superellipse: faceted wall-like shoulders instead of a rounded oven.
+        exp=.66
+        xx=math.copysign(abs(c)**exp,c)*width
+        yy=math.copysign(abs(ss)**exp,ss)*depth+cy
+        # Coherent, low-amplitude physical erosion: never regular courses of bricks.
+        j=.025*math.sin(3*t+ring_i*.28)+.014*math.sin(7*t-ring_i*.38)
+        xx+=math.cos(t)*j
+        yy+=math.sin(t)*j
+        zz=z+.017*math.sin(t*5+ring_i*.43)
+        verts.append((xx,yy,zz))
+faces=[tuple(reversed(tuple(range(sections))))]
+for k in range(len(rings)-1):
+    for i in range(sections):
+        j=(i+1)%sections
+        faces.append((k*sections+i,k*sections+j,(k+1)*sections+j,(k+1)*sections+i))
+faces.append(tuple(range((len(rings)-1)*sections,len(rings)*sections)))
+hood_mesh=bpy.data.meshes.new("Sculpted_Lithic_Hood_Mesh")
+hood_mesh.from_pydata(verts,[],faces)
+hood_mesh.update()
+hood=bpy.data.objects.new("Sculpted_Lithic_Hood",hood_mesh)
+bpy.context.collection.objects.link(hood)
 
 bpy.ops.mesh.primitive_cone_add(vertices=80,radius1=.325,radius2=.205,depth=.65,location=(0,.16,1.87))
 chimney=bpy.context.object
@@ -157,13 +188,16 @@ active(body)
 body.data.remesh_voxel_size=.026
 bpy.ops.object.voxel_remesh()
 
-# Multi-scale natural erosion. This is actual mesh relief, not painted bricks.
+# V003 sculpt: actual decimetric rock relief, fractures and weathering.
+# Large irregular forms carry the silhouette; scanned PBR handles pore detail.
 for v in body.data.vertices:
     p=v.co.copy()
-    macro=noise.noise(p*2.35+Vector((6.1,8.7,2.4)))
-    meso=noise.noise(p*7.5+Vector((1.9,4.6,5.1)))
-    micro=noise.noise(p*23+Vector((9.2,1.1,3.7)))
-    d=.023*macro+.009*meso+.0025*micro
+    macro=noise.noise(p*2.12+Vector((6.1,8.7,2.4)))
+    meso=noise.noise(p*6.4+Vector((1.9,4.6,5.1)))
+    micro=noise.noise(p*16.0+Vector((9.2,1.1,3.7)))
+    fracture_field=abs(noise.noise(p*5.25+Vector((4.17,9.4,2.8))))
+    fracture=-.024*max(0.0,1.0-fracture_field/.12)**2
+    d=.054*macro+.022*meso+.004*micro+fracture
     v.co += v.normal*d
 body.data.update()
 body.data.materials.append(rock)
@@ -172,7 +206,12 @@ body.data.materials.append(soot)
 # Firebox arch: true hollow, arched and deep; never a solid decorative black patch.
 radius=.745
 cross=[(-radius,.735),(radius,.735)]
-cross.extend((radius*(1-2*j/48),.952+.552*math.sqrt(max(0,1-(1-2*j/48)**2))) for j in range(49))
+# Hand-hewn stone arch; preserve clearance and depth, avoid mathematically perfect curve.
+cross.extend((
+    radius*(1-2*j/48),
+    .952+.552*math.sqrt(max(0,1-(1-2*j/48)**2))
+    +.013*math.sin(j*.73)*math.sin(math.pi*j/48)
+) for j in range(49))
 num=len(cross)
 verts=[(x,y,z) for y in (-.79,.29) for (x,z) in cross]
 faces=[]
@@ -210,7 +249,7 @@ bpy.data.objects.remove(flue,do_unlink=True)
 # Softened edge geometry without cartoon-like chiselled stone block outlines.
 active(body)
 sm=body.modifiers.new("Eroded_Stone_Smooth","SMOOTH")
-sm.factor=.85;sm.iterations=2
+sm.factor=.42;sm.iterations=1
 bpy.ops.object.modifier_apply(modifier=sm.name)
 for poly in body.data.polygons: poly.use_smooth=True
 active(body)
@@ -318,7 +357,7 @@ for name,pos in shots.items():
 
 mesh_faces=sum(len(o.data.polygons) for o in assets if o.type=="MESH")
 audit={
-  "asset":"Forge_Ancient_Rock", "version":"scanned_rock_material_v002",
+  "asset":"Forge_Ancient_Rock", "version":"lithic_sculpt_v003",
   "basis":"User-approved first 2D visual concept: geometry recreated independently",
   "copyright":"Original independent 3D geometry; Poly Haven Rock Face scanned material CC0",
   "blender":bpy.app.version_string,
@@ -328,7 +367,7 @@ audit={
   "material_provenance": maps_meta,
   "render_views":list(shots),
   "actual_arch_opening_ray_test": QA_ARCH_OPEN,
-  "notes":"Only forge, no bellows, tool rack, barrels, or other workshop props. NOT yet artistically approved."
+  "notes":"Only forge, no bellows or props. V003 angular lithic silhouette, macro fractures and 2K scanned rock. NOT yet artistically approved."
 }
 (OUT/"AUDIT.json").write_text(json.dumps(audit,indent=2),encoding="utf-8")
 print("GENESIS_FORGE_CONCEPT_3D_DONE",json.dumps(audit))
