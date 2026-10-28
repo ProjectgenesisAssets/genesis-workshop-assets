@@ -1,0 +1,69 @@
+name: Arcanist V024 - organic arcane pulse animation
+on:
+  push:
+    branches: [production/door-v024-arcane-lithic-material]
+    paths:
+      - .github/workflows/door-arcanist-v024-glow-animation.yml
+permissions:
+  contents: write
+jobs:
+  pulse:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PG_DOOR_TRADE: arcanista
+      PG_ANIM_REVIEW: '1'
+      PG_PBR_RES: '1536'
+      PG_CYCLES_SAMPLES: '16'
+      PG_RENDER_WIDTH: '680'
+      PG_RENDER_HEIGHT: '900'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-pulse.tar.xz
+          mkdir -p /tmp/blender-pulse
+          tar -xJf /tmp/blender-pulse.tar.xz -C /tmp/blender-pulse --strip-components=1
+      - name: Render energy breathing cycle
+        run: /tmp/blender-pulse/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_arcanista_mineral_glow_v022.py
+      - name: Encode GIF and save contact sheet
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          src=Path('output_workshop_door_v022_arcanista')
+          frames=sorted(src.glob('arcane_pulse_*.png'))
+          assert len(frames)==8, [p.name for p in frames]
+          target=Path('previews/door_v024_animation')
+          target.mkdir(parents=True,exist_ok=True)
+          images=[]
+          for p in frames:
+              fg=Image.open(p).convert('RGBA')
+              bg=Image.new('RGBA',fg.size,(24,28,35,255))
+              bg.alpha_composite(fg)
+              images.append(bg.convert('RGB'))
+          images[0].save(target/'arcane_pulse_v024.gif',save_all=True,append_images=images[1:],duration=230,loop=0,optimize=True)
+          contact=Image.new('RGB',(images[0].width*3,images[0].height),(24,28,35))
+          for slot,frame in enumerate((images[0],images[4],images[7])):
+              contact.paste(frame,(slot*frame.width,0))
+          contact.save(target/'arcane_pulse_states_v024.jpg',quality=92)
+          print('GIF_READY', (target/'arcane_pulse_v024.gif').stat().st_size)
+          PY
+      - name: Publish animation only to isolated branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v024_animation
+          if ! git diff --cached --quiet; then
+            git commit -m 'Arcane V024 glow animation preview [skip ci]'
+            git push origin HEAD:production/door-v024-arcane-lithic-material
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcane-v024-pulse-frames
+          path: output_workshop_door_v022_arcanista/arcane_pulse_*.png
+          retention-days: 14
