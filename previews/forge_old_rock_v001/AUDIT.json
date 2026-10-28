@@ -1,17 +1,24 @@
 {
   "asset": "Forge_Ancient_Rock",
-  "version": "concept_reconstruction_v001",
+  "version": "scanned_rock_material_v002",
   "basis": "User-approved first 2D visual concept: geometry recreated independently",
   "copyright": "Original procedural Blender geometry and noise-derived PBR maps",
   "blender": "4.5.13 LTS",
   "mesh_objects": 24,
   "total_mesh_faces": 24227,
   "texture_files": [
-    "rock_roughness.png",
-    "rock_normal.png",
-    "natural_aged_rock_albedo.png",
-    "coal_soot_rock_albedo.png"
+    "rock_face_diff_2k.jpg",
+    "rock_face_rough_2k.jpg",
+    "rock_face_nor_gl_2k.png",
+    "PolyHaven_RockFace_CC0_WeatheredNeutralRock.png",
+    "PolyHaven_RockFace_CC0_FurnaceSoot.png"
   ],
+  "material_provenance": {
+    "source": "https://polyhaven.com/a/rock_face",
+    "license": "CC0",
+    "resolution": "2k",
+    "map_type": "photogrammetry_scanned"
+  },
   "render_views": [
     "front",
     "three_quarter",
