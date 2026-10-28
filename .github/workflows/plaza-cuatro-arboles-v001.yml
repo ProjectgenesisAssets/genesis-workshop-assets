@@ -50,7 +50,16 @@ jobs:
           p=f'{folder}/{tree}_plaza_v001.glb'
           with open(p,'rb') as f: header=f.read(12)
           assert header[:4]==b'glTF' and struct.unpack('<I',header[4:8])[0]==2
-          print(json.dumps(audit,indent=2))
+          with open(p,'rb') as f:
+              f.seek(12)
+              json_bytes=struct.unpack('<I',f.read(4))[0]
+              assert f.read(4)==b'JSON'
+              gltf=json.loads(f.read(json_bytes).decode('utf-8'))
+          gpu_tris=sum(gltf['accessors'][primitive['indices']]['count']//3
+                       for mesh in gltf['meshes'] for primitive in mesh['primitives'])
+          assert 0<gpu_tris<=60000,('EXPORTED_GLTF_OVER_BUDGET',gpu_tris)
+          assert gpu_tris==audit['triangles'],('COUNT_MISMATCH',gpu_tris,audit['triangles'])
+          print(json.dumps({**audit,'glb_verified_triangles':gpu_tris},indent=2))
           PY
         env:
           TREE: ${{ matrix.tree }}
