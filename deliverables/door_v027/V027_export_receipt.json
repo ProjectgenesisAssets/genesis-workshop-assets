@@ -1,0 +1,59 @@
+{
+  "version": "V027_APPROVED_ART",
+  "geometry": "V011_LOCKED",
+  "source_model": "deliverables/door_v027/Arcanist_Door_V027_master.glb",
+  "model_bytes": 26915880,
+  "model_megabytes": 26.92,
+  "sha256": "c2c02494917e7b5171003ce66f7505510aba013ad335aa0dae2a3a00b8ce1ab0",
+  "pbr_images": [
+    {
+      "name": "v022_arcanista_edge_albedo.png",
+      "bytes": 918191
+    },
+    {
+      "name": "v022_arcanista_edge_emission.png",
+      "bytes": 420342
+    },
+    {
+      "name": "v022_arcanista_edge_metallic.png",
+      "bytes": 20653
+    },
+    {
+      "name": "v022_arcanista_edge_normal.png",
+      "bytes": 2536447
+    },
+    {
+      "name": "v022_arcanista_edge_roughness.png",
+      "bytes": 1179716
+    },
+    {
+      "name": "v022_arcanista_hardware_albedo.png",
+      "bytes": 3815205
+    },
+    {
+      "name": "v022_arcanista_hardware_emission.png",
+      "bytes": 2459601
+    },
+    {
+      "name": "v022_arcanista_hardware_metallic.png",
+      "bytes": 78229
+    },
+    {
+      "name": "v022_arcanista_hardware_normal.png",
+      "bytes": 9527983
+    },
+    {
+      "name": "v022_arcanista_hardware_roughness.png",
+      "bytes": 4704075
+    }
+  ],
+  "pbr_bytes": 25660442,
+  "review_views": [
+    "front_orthographic.jpg",
+    "rear_orthographic.jpg",
+    "side_orthographic.jpg",
+    "three_quarter.jpg"
+  ],
+  "runtime_motion": "separate PlayCanvas emissive shader, not embedded in GLB",
+  "review": "USER_APPROVED_V027_VISUAL"
+}
