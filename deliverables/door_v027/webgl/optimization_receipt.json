@@ -1,0 +1,13 @@
+{
+  "master_bytes": 26915880,
+  "webgl_bytes": 4034004,
+  "reduction_percent": 85.01,
+  "mesh_count": 191,
+  "material_count": 2,
+  "animations": 0,
+  "extensions_used": [
+    "EXT_texture_webp",
+    "KHR_materials_emissive_strength"
+  ],
+  "visual_review": "PENDING: compression is not visually approved until comparison renders"
+}
