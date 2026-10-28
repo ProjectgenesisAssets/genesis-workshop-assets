@@ -1,0 +1,64 @@
+name: Arcanist V026 - organic ascending mineral energy MP4
+on:
+  push:
+    branches: [production/door-v024-arcane-lithic-material]
+    paths:
+      - .github/workflows/door-arcanist-v026-organic-energy.yml
+permissions:
+  contents: write
+jobs:
+  animate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      PG_DOOR_TRADE: arcanista
+      PG_ANIM_REVIEW: rise_v026
+      PG_PBR_RES: '1536'
+      PG_CYCLES_SAMPLES: '20'
+      PG_RENDER_WIDTH: '768'
+      PG_RENDER_HEIGHT: '1024'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender 4.5.13 and ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-rise.tar.xz
+          mkdir -p /tmp/blender-rise
+          tar -xJf /tmp/blender-rise.tar.xz -C /tmp/blender-rise --strip-components=1
+      - name: Render ascending arcane energy from actual material
+        run: /tmp/blender-rise/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_arcanista_mineral_glow_v022.py
+      - name: Encode MP4 from lossless PNG frames
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from shutil import copyfile
+          frames=sorted(Path('output_workshop_door_v022_arcanista').glob('arcane_v026_*.png'))
+          assert len(frames)==18,[str(p) for p in frames]
+          dest=Path('/tmp/arcane-rise-sequence')
+          dest.mkdir(exist_ok=True)
+          for i,p in enumerate(frames*2):
+              copyfile(p,dest/f'frame_{i:03}.png')
+          PY
+          mkdir -p previews/door_v026_animation
+          ffmpeg -hide_banner -loglevel warning -y -framerate 6 -i '/tmp/arcane-rise-sequence/frame_%03d.png' -vf 'minterpolate=fps=24:mi_mode=blend,format=yuv420p' -c:v libx264 -preset slow -crf 15 -movflags +faststart previews/door_v026_animation/arcane_organic_rising_v026.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,avg_frame_rate -of json previews/door_v026_animation/arcane_organic_rising_v026.mp4
+      - name: Publish animation preview only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v026_animation/arcane_organic_rising_v026.mp4
+          if ! git diff --cached --quiet; then
+            git commit -m 'Rising arcane energy MP4 preview [skip ci]'
+            git push origin HEAD:production/door-v024-arcane-lithic-material
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcanist-v026-organic-rising
+          path: |
+            previews/door_v026_animation/arcane_organic_rising_v026.mp4
+            output_workshop_door_v022_arcanista/arcane_v026_*.png
+          retention-days: 14
