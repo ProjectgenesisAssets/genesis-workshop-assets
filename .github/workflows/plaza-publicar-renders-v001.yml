@@ -1,0 +1,46 @@
+name: Plaza V001 - publish four-tree render previews
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths:
+      - .github/workflows/plaza-publicar-renders-v001.yml
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/plaza-cuatro-arboles-playcanvas
+      - name: Download 4 successful tree artifacts from validated run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 40701239770
+          github-token: ${{ github.token }}
+          pattern: genesis-plaza-*-v001
+          path: /tmp/plaza-render-artifacts
+      - name: Publish 16 PNG views only (not heavy models)
+        run: |
+          set -euo pipefail
+          for tree in oak ash maple linden; do
+            src="/tmp/plaza-render-artifacts/genesis-plaza-${tree}-v001"
+            target="previews/plaza_trees_v001/${tree}"
+            mkdir -p "$target"
+            for view in front three_quarter side rear; do
+              test -s "$src/${view}.png"
+              cp "$src/${view}.png" "$target/${view}.png"
+            done
+            test -s "$src/AUDIT.json"
+            cp "$src/AUDIT.json" "$target/AUDIT.json"
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_trees_v001
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish four-tree Blender renders for Gabriel art QA [skip ci]'
+            git push origin HEAD:feature/plaza-cuatro-arboles-playcanvas
+          fi
