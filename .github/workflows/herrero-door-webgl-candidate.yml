@@ -1,0 +1,39 @@
+name: Build Herrero V018 WebGL candidate
+on:
+  push:
+    branches: [integration/herrero-door-webgl-v018]
+    paths: [.github/workflows/herrero-door-webgl-candidate.yml]
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch original V018 Herrero render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 40560498000 --repo ProjectgenesisAssets/genesis-workshop-assets --name door-v018-herrero --dir "$RUNNER_TEMP/door"
+          test -s "$RUNNER_TEMP/door/Workshop_Door_V018_herrero.glb"
+      - name: Optimize embedded PBR maps for PlayCanvas without changing geometry
+        run: |
+          npm install --global @gltf-transform/cli@4.5.0
+          mkdir -p assets/candidates
+          gltf-transform resize "$RUNNER_TEMP/door/Workshop_Door_V018_herrero.glb" "$RUNNER_TEMP/door/resized.glb" --width 1024 --height 1024
+          gltf-transform prune "$RUNNER_TEMP/door/resized.glb" assets/candidates/herrero-door-v018-pbr1024.glb
+          gltf-transform validate assets/candidates/herrero-door-v018-pbr1024.glb
+          cp "$RUNNER_TEMP/door/three_quarter.png" assets/candidates/herrero-door-v018-original-hero.png
+          python3 -c 'import os; n=os.stat("assets/candidates/herrero-door-v018-pbr1024.glb").st_size; print("GLB_BYTES",n,flush=True); assert n<25000000,"GLB exceeds mobile candidate budget"'
+      - name: Preserve as a candidate only on the integration branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/candidates/herrero-door-v018-pbr1024.glb assets/candidates/herrero-door-v018-original-hero.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Build optimized WebGL Herrero door candidate"
+            git push origin "HEAD:${{ github.ref_name }}"
+          fi
