@@ -63,7 +63,7 @@ jobs:
           /tmp/genesis-blender/blender -b --disable-autoexec -t 2 --python-exit-code 1 \
             --python scripts/plaza_optimize_trees.py -- \
             --source "$SOURCE_PATH" --output-dir output/plaza \
-            --ratios 0.50,0.30,0.15 --samples 16
+            --ratios 0.99,0.95,0.85,0.75 --samples 16
 
       - name: Install independent image-structure audit packages
         run: |
@@ -74,6 +74,13 @@ jobs:
         run: |
           python3 scripts/plaza_candidate_gate.py \
             --output-dir output/plaza --minimum-textures 5 --minimum-materials 2
+
+      - name: Print detailed appearance gate results
+        if: always()
+        run: |
+          if test -s output/plaza/plaza_visual_qa.json; then
+            python3 -m json.tool output/plaza/plaza_visual_qa.json
+          fi
 
       - name: Preserve all candidate GLBs and comparable PNG renders for review
         if: always()
