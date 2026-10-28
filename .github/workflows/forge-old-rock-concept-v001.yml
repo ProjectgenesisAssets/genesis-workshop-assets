@@ -1,0 +1,89 @@
+name: Genesis forge - old rock concept to REAL GLB 3D V001
+on:
+  push:
+    branches:
+      - production/forge-old-rock-concept-v001
+    paths:
+      - scripts/forge_old_rock_concept_v001.py
+      - .github/workflows/forge-old-rock-concept-v001.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: forge-old-rock-v001
+  cancel-in-progress: false
+jobs:
+  build_preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static check source generator
+        run: python3 -m py_compile scripts/forge_old_rock_concept_v001.py
+      - name: Install official Blender 4.5.13 LTS only on GitHub
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/blender-4.5.13
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/blender-4.5.13 --strip-components=1
+          /tmp/blender-4.5.13/blender --version | grep -F "Blender 4.5.13"
+      - name: Make actual forge mesh, baked procedural maps, GLB and Cycles 4-view review
+        env:
+          OMP_NUM_THREADS: '2'
+          OPENBLAS_NUM_THREADS: '2'
+        run: |
+          set -euo pipefail
+          /tmp/blender-4.5.13/blender -b -t 3 --python-exit-code 1 --python scripts/forge_old_rock_concept_v001.py
+      - name: Verify actual 3D and evidence, not only an image
+        shell: bash
+        run: |
+          set -euo pipefail
+          dest=output_forge_old_rock_v001
+          test -s "$dest/forge_old_rock_v001.glb"
+          test -s "$dest/forge_old_rock_v001.blend"
+          test -s "$dest/AUDIT.json"
+          for shot in front three_quarter rear detail; do test -s "$dest/$shot.png"; done
+          test "$(find "$dest/textures" -name '*.png' | wc -l)" -ge 4
+          python3 - <<'PY'
+          import pathlib,json,struct
+          p=pathlib.Path("output_forge_old_rock_v001/forge_old_rock_v001.glb")
+          with p.open("rb") as f: magic,version,length=struct.unpack("<4sII",f.read(12))
+          assert magic==b"glTF" and version==2 and length==p.stat().st_size
+          audit=json.loads(pathlib.Path("output_forge_old_rock_v001/AUDIT.json").read_text())
+          assert audit["total_mesh_faces"]>3000, audit
+          assert len(audit["render_views"])==4
+          print("REAL_GLB_VERIFIED",p.stat().st_size,audit["total_mesh_faces"])
+          PY
+      - name: Upload source editable BLEND, exported GLB, maps, QA renders (temporary)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-forge-old-rock-v001
+          path: |
+            output_forge_old_rock_v001/*.glb
+            output_forge_old_rock_v001/*.blend
+            output_forge_old_rock_v001/*.png
+            output_forge_old_rock_v001/AUDIT.json
+            output_forge_old_rock_v001/textures/*.png
+          retention-days: 2
+          if-no-files-found: warn
+      - name: Publish only four review PNGs to THIS experimental branch
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p previews/forge_old_rock_v001
+          for shot in front three_quarter rear detail; do
+            cp "output_forge_old_rock_v001/$shot.png" "previews/forge_old_rock_v001/$shot.png"
+          done
+          cp output_forge_old_rock_v001/AUDIT.json previews/forge_old_rock_v001/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- previews/forge_old_rock_v001
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish experimental forge stone V001 four-view evidence [skip ci]"
+            git fetch origin production/forge-old-rock-concept-v001
+            git rebase origin/production/forge-old-rock-concept-v001
+            git push origin HEAD:production/forge-old-rock-concept-v001
+          fi
