@@ -44,7 +44,7 @@ jobs:
           test -s "$dest/forge_old_rock_v001.blend"
           test -s "$dest/AUDIT.json"
           for shot in front three_quarter rear detail; do test -s "$dest/$shot.png"; done
-          test "$(find "$dest/textures" -name '*.png' | wc -l)" -ge 4
+          test "$(find "$dest/textures" -type f \( -name '*.png' -o -name '*.jpg' \) | wc -l)" -ge 5
           python3 - <<'PY'
           import pathlib,json,struct
           p=pathlib.Path("output_forge_old_rock_v001/forge_old_rock_v001.glb")
@@ -66,6 +66,7 @@ jobs:
             output_forge_old_rock_v001/*.png
             output_forge_old_rock_v001/AUDIT.json
             output_forge_old_rock_v001/textures/*.png
+            output_forge_old_rock_v001/textures/*.jpg
           retention-days: 2
           if-no-files-found: warn
       - name: Publish only four review PNGs to THIS experimental branch
