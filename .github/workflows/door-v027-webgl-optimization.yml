@@ -18,7 +18,7 @@ jobs:
         run: |
           mkdir -p deliverables/door_v027/webgl
           npx gltf-transform inspect deliverables/door_v027/Arcanist_Door_V027_master.glb > deliverables/door_v027/webgl/master_inspect.txt
-          npx gltf-transform optimize deliverables/door_v027/Arcanist_Door_V027_master.glb deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb --texture-compress webp --texture-size 2048
+          npx gltf-transform webp deliverables/door_v027/Arcanist_Door_V027_master.glb deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb --quality 85
           npx gltf-transform inspect deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb > deliverables/door_v027/webgl/webgl_inspect.txt
           python3 - <<'PY'
           import os,json,struct
@@ -47,6 +47,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add deliverables/door_v027/webgl
+          git status --short
           if ! git diff --cached --quiet; then
             git commit -m 'Add V027 PlayCanvas WebGL compressed candidate and audit [skip ci]'
             git push origin HEAD:production/door-v027-arcanist-approved
