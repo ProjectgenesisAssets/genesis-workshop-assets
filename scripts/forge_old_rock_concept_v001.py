@@ -252,11 +252,22 @@ sm=body.modifiers.new("Eroded_Stone_Smooth","SMOOTH")
 sm.factor=.42;sm.iterations=1
 bpy.ops.object.modifier_apply(modifier=sm.name)
 for poly in body.data.polygons: poly.use_smooth=True
-active(body)
-bpy.ops.object.mode_set(mode="EDIT")
-bpy.ops.mesh.select_all(action="SELECT")
-bpy.ops.uv.smart_project(island_margin=.005)
-bpy.ops.object.mode_set(mode="OBJECT")
+# Stable world-scale planar UV projection directly on mesh loops.
+# Avoids fragmented automatic island pack, remains valid in background Blender.
+# Per-side projection at ~75 cm per scanned texture tile.
+uv_layer=body.data.uv_layers.get("Rock_Projected_UV") or body.data.uv_layers.new(name="Rock_Projected_UV")
+for poly in body.data.polygons:
+    n=poly.normal
+    axis=max(range(3),key=lambda k:abs(n[k]))
+    for li in poly.loop_indices:
+        p=body.data.vertices[body.data.loops[li].vertex_index].co
+        if axis==0:
+            uv=(p.y*.78,p.z*.78)
+        elif axis==1:
+            uv=(p.x*.78,p.z*.78)
+        else:
+            uv=(p.x*.78,p.y*.78)
+        uv_layer.data[li].uv=uv
 # Verify front opening with actual BVH mesh ray casts: no cosmetically painted fake arch.
 inv=body.matrix_world.inverted()
 def first_surface_y(x,z):
