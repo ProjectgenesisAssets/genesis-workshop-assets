@@ -1,0 +1,13 @@
+{
+  "species": "ash",
+  "tree_name": "Fresno",
+  "triangles": 18308,
+  "limit": 60000,
+  "bark_triangles": 3508,
+  "leaf_triangles": 14800,
+  "individual_leaves": 3700,
+  "materials": 4,
+  "source": "Original Blender procedural geometry (no third-party assets)",
+  "engine": "PlayCanvas WebGL / glTF 2.0",
+  "status": "visual candidate; NOT art-approved"
+}

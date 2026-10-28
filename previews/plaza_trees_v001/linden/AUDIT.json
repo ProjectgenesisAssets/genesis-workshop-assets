@@ -1,0 +1,13 @@
+{
+  "species": "linden",
+  "tree_name": "Tilo",
+  "triangles": 23108,
+  "limit": 60000,
+  "bark_triangles": 3508,
+  "leaf_triangles": 19600,
+  "individual_leaves": 4900,
+  "materials": 4,
+  "source": "Original Blender procedural geometry (no third-party assets)",
+  "engine": "PlayCanvas WebGL / glTF 2.0",
+  "status": "visual candidate; NOT art-approved"
+}
