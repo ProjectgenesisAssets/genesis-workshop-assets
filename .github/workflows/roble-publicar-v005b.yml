@@ -1,0 +1,36 @@
+name: Plaza V005B - publish Sapling oak skeleton previews
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths: [.github/workflows/roble-publicar-v005b.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/plaza-cuatro-arboles-playcanvas
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 40717546681
+          github-token: ${{ github.token }}
+          name: genesis-plaza-v005b-oak-sapling
+          path: /tmp/oak-sapling-v005b
+      - name: Publish art review previews (not approved)
+        run: |
+          set -euo pipefail
+          dst=previews/plaza_trees_v005b/oak
+          mkdir -p "$dst"
+          for f in front.png three_quarter.png side.png AUDIT.json; do
+            test -s "/tmp/oak-sapling-v005b/$f"
+            cp "/tmp/oak-sapling-v005b/$f" "$dst/$f"
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_trees_v005b/oak
+          git commit -m 'Publish Sapling fused oak V005B silhouette QA [skip ci]'
+          git push origin HEAD:feature/plaza-cuatro-arboles-playcanvas
