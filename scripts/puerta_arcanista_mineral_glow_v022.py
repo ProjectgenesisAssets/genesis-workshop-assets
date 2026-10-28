@@ -159,6 +159,12 @@ def material(name, base, metallic, roughness, seed, surface, res_override=None):
             rough=np.clip(rough+.13+.035*facet,.68,.99)
             bump+=.055*facet-.060*pits
             emission*=.30
+        else:
+            # V024.10: restrained color lift inside the magical mineral,
+            # not a separate neon stripe or a painted blue metallic coating.
+            color[:,:,1]=sat(color[:,:,1]*1.09+.008*inclusion)
+            color[:,:,2]=sat(color[:,:,2]*1.23+.019*inclusion)
+            emission*=1.42
         print("V024_LITHIC_GLOW",name,float(glow.mean()),float((glow>.4).mean()),flush=True)
     else:
         # Metallurgy: two oxide scales, micro-pitting, impact abrasion and patches
