@@ -137,42 +137,24 @@ body.name="GENESIS_Forge_Rock_Mass"
 body.dimensions=(2.24,1.12,.74)
 apply_transform(body)
 
-# V003: sculpted ring silhouette rather than a perfect sphere/oven dome.
-# Angular, uneven stone shoulders and an asymmetrical taper around the smoke flue.
-rings=[
-    (.41,1.085,.570,-.01),(.56,1.135,.615,.00),
-    (.76,1.135,.625,.015),(.95,1.105,.640,.02),
-    (1.14,1.075,.628,.020),(1.35,.975,.590,.035),
-    (1.52,.820,.535,.055),(1.69,.635,.445,.090),
-    (1.84,.370,.330,.135)
-]
-sections=64
-verts=[]
-for ring_i,(z,width,depth,cy) in enumerate(rings):
-    for i in range(sections):
-        t=2*math.pi*i/sections
-        c,ss=math.cos(t),math.sin(t)
-        # Superellipse: faceted wall-like shoulders instead of a rounded oven.
-        exp=.66
-        xx=math.copysign(abs(c)**exp,c)*width
-        yy=math.copysign(abs(ss)**exp,ss)*depth+cy
-        # Coherent, low-amplitude physical erosion: never regular courses of bricks.
-        j=.025*math.sin(3*t+ring_i*.28)+.014*math.sin(7*t-ring_i*.38)
-        xx+=math.cos(t)*j
-        yy+=math.sin(t)*j
-        zz=z+.017*math.sin(t*5+ring_i*.43)
-        verts.append((xx,yy,zz))
-faces=[tuple(reversed(tuple(range(sections))))]
-for k in range(len(rings)-1):
-    for i in range(sections):
-        j=(i+1)%sections
-        faces.append((k*sections+i,k*sections+j,(k+1)*sections+j,(k+1)*sections+i))
-faces.append(tuple(range((len(rings)-1)*sections,len(rings)*sections)))
-hood_mesh=bpy.data.meshes.new("Sculpted_Lithic_Hood_Mesh")
-hood_mesh.from_pydata(verts,[],faces)
-hood_mesh.update()
-hood=bpy.data.objects.new("Sculpted_Lithic_Hood",hood_mesh)
-bpy.context.collection.objects.link(hood)
+# V003: start from proven watertight hood topology, then physically deform
+# its shoulders toward weathered, irregular rock (not a smooth oven sphere).
+bpy.ops.mesh.primitive_uv_sphere_add(segments=100,ring_count=50,location=(0,.015,1.03))
+hood=bpy.context.object
+hood.name="Sculpted_Rock_Hood"
+hood.scale=(1.08,.55,.81)
+apply_transform(hood)
+for v in hood.data.vertices:
+    p=v.co
+    xn=p.x/1.08
+    yn=p.y/.55
+    # Gradually squared rock shoulders, with genuine 3D silhouette relief.
+    p.x=1.08*math.copysign(abs(xn)**.71,xn)
+    p.y=.55*math.copysign(abs(yn)**.76,yn)
+    irregular=noise.noise(Vector((p.x*3.4,p.y*3.4,p.z*3.4))+Vector((4.8,1.2,3.9)))
+    p.x+=.028*irregular*xn
+    p.y+=.024*irregular*yn
+hood.data.update()
 
 bpy.ops.mesh.primitive_cone_add(vertices=80,radius1=.325,radius2=.205,depth=.65,location=(0,.16,1.87))
 chimney=bpy.context.object
