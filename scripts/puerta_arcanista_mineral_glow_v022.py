@@ -618,6 +618,47 @@ view_specs=[
     ("side_orthographic",(6,0,1.15)),
     ("rear_orthographic",(0,6,1.15)),
 ]
+if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="rise":
+    # Render-only travelling energy: a soft vertical wave multiplies the
+    # existing irregular emissive vein map. The geometry/PBR maps remain V024.10.
+    bpy.ops.object.camera_add(location=(2.3,-5,1.7))
+    cam=bpy.context.object
+    cam.rotation_euler=(Vector((0,0,1.15))-cam.location).to_track_quat("-Z","Y").to_euler()
+    cam.data.type="ORTHO";cam.data.ortho_scale=2.53
+    sc.camera=cam
+    nt=iron.node_tree
+    nodes=nt.nodes;links=nt.links
+    shader=nodes.get("Principled BSDF")
+    previous=next(link for link in links if link.to_socket==shader.inputs["Emission Color"])
+    emission_texture=previous.from_socket
+    links.remove(previous)
+    geom=nodes.new("ShaderNodeNewGeometry")
+    separate=nodes.new("ShaderNodeSeparateXYZ")
+    links.new(geom.outputs["Position"],separate.inputs["Vector"])
+    delta=nodes.new("ShaderNodeMath");delta.operation="SUBTRACT"
+    links.new(separate.outputs["Z"],delta.inputs[0])
+    squared=nodes.new("ShaderNodeMath");squared.operation="MULTIPLY"
+    links.new(delta.outputs[0],squared.inputs[0]);links.new(delta.outputs[0],squared.inputs[1])
+    falloff=nodes.new("ShaderNodeMath");falloff.operation="MULTIPLY"
+    links.new(squared.outputs[0],falloff.inputs[0]);falloff.inputs[1].default_value=-8.0
+    gaussian=nodes.new("ShaderNodeMath");gaussian.operation="EXPONENT"
+    links.new(falloff.outputs[0],gaussian.inputs[0])
+    gain=nodes.new("ShaderNodeMath");gain.operation="MULTIPLY_ADD"
+    links.new(gaussian.outputs[0],gain.inputs[0])
+    gain.inputs[1].default_value=4.0;gain.inputs[2].default_value=.30
+    mix=nodes.new("ShaderNodeMixRGB");mix.blend_type="MULTIPLY";mix.use_clamp=False
+    mix.inputs[0].default_value=1.0
+    links.new(emission_texture,mix.inputs[1]);links.new(gain.outputs[0],mix.inputs[2])
+    links.new(mix.outputs["Color"],shader.inputs["Emission Color"])
+    centers=(-.20,.08,.36,.64,.92,1.20,1.48,1.76,2.04,2.32,2.60,2.88)
+    for i,center in enumerate(centers):
+        delta.inputs[1].default_value=center
+        sc.frame_set(i+1)
+        sc.render.filepath=str(OUT/("arcane_rise_%02d.png"%i))
+        bpy.ops.render.render(write_still=True)
+        print("ARCANE_RISING_WAVE",i,center,flush=True)
+    print("ARCANE_RISE_DONE",len(centers),flush=True)
+    raise SystemExit(0)
 if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="1":
     # Blender-only visual proof of the authored emissive map breathing. No
     # geometry changes; runtime shader uniform animation belongs to PlayCanvas.
