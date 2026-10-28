@@ -1,0 +1,86 @@
+name: Arcanist V027 - approved four views and measured GLB
+on:
+  push:
+    branches: [production/door-v027-arcanist-approved]
+    paths:
+      - .github/workflows/door-arcanist-v027-final-export.yml
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      PG_DOOR_TRADE: arcanista
+      PG_ANIM_REVIEW: rise_v027
+      PG_EXPORT_APPROVED: '1'
+      PG_PBR_RES: '2048'
+      PG_ARCANE_EMISSIVE_STRENGTH: '5.2'
+      PG_CYCLES_SAMPLES: '32'
+      PG_RENDER_WIDTH: '1000'
+      PG_RENDER_HEIGHT: '1350'
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install exact Blender and video tooling
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-v027.tar.xz
+          mkdir -p /tmp/blender-v027
+          tar -xJf /tmp/blender-v027.tar.xz -C /tmp/blender-v027 --strip-components=1
+      - name: Render all four approved geometry views and export PBR GLB
+        run: /tmp/blender-v027/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_arcanista_mineral_glow_v022.py
+      - name: Measure, validate and prepare review deliverables
+        run: |
+          mkdir -p previews/door_v027_final deliverables/door_v027
+          for view in front_orthographic three_quarter side_orthographic rear_orthographic; do
+            ffmpeg -hide_banner -loglevel error -y -i "output_workshop_door_v022_arcanista/${view}.png" -q:v 2 "previews/door_v027_final/${view}.jpg"
+          done
+          cp output_workshop_door_v022_arcanista/Workshop_Door_V022_arcanista.glb deliverables/door_v027/Arcanist_Door_V027_master.glb
+          python3 - <<'PY'
+          import os,json,hashlib,pathlib
+          folder=pathlib.Path("output_workshop_door_v022_arcanista")
+          model=pathlib.Path("deliverables/door_v027/Arcanist_Door_V027_master.glb")
+          assert model.exists() and model.read_bytes()[:4]==b"glTF"
+          pngs=sorted(folder.glob("v022_arcanista_*_*.png"))
+          assert len(pngs)>=10,len(pngs)
+          data={"version":"V027_APPROVED_ART","geometry":"V011_LOCKED",
+            "source_model":str(model),"model_bytes":model.stat().st_size,
+            "model_megabytes":round(model.stat().st_size/1000000,2),
+            "sha256":hashlib.sha256(model.read_bytes()).hexdigest(),
+            "pbr_images":[{"name":p.name,"bytes":p.stat().st_size} for p in pngs],
+            "pbr_bytes":sum(p.stat().st_size for p in pngs),
+            "review_views":sorted(p.name for p in pathlib.Path("previews/door_v027_final").glob("*.jpg")),
+            "runtime_motion":"separate PlayCanvas emissive shader, not embedded in GLB",
+            "review":"USER_APPROVED_V027_VISUAL"}
+          pathlib.Path("deliverables/door_v027/V027_export_receipt.json").write_text(json.dumps(data,indent=2))
+          print("APPROVED_ARCANIST_GLB_BYTES",data["model_bytes"])
+          print("APPROVED_ARCANIST_GLB_MB",data["model_megabytes"])
+          print("APPROVED_ARCANIST_PBR_BYTES",data["pbr_bytes"])
+          PY
+      - name: Publish four views and receipt; model only if within GitHub safe limit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v027_final deliverables/door_v027/V027_export_receipt.json
+          bytes=$(stat -c%s deliverables/door_v027/Arcanist_Door_V027_master.glb)
+          if [ "$bytes" -lt 80000000 ]; then
+            git add deliverables/door_v027/Arcanist_Door_V027_master.glb
+          else
+            echo "GLB_TOO_BIG_TO_COMMIT: artifact only; still measured."
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Approved V027 four-view QA and measured GLB [skip ci]'
+            git push origin HEAD:production/door-v027-arcanist-approved
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved-arcanist-v027-pbr-glb
+          path: |
+            previews/door_v027_final/*.jpg
+            deliverables/door_v027/*
+            output_workshop_door_v022_arcanista/v022_arcanista_*_*.png
+          retention-days: 30
