@@ -5,7 +5,7 @@
   "copyright": "Original procedural Blender geometry and noise-derived PBR maps",
   "blender": "4.5.13 LTS",
   "mesh_objects": 24,
-  "total_mesh_faces": 26372,
+  "total_mesh_faces": 24227,
   "texture_files": [
     "rock_roughness.png",
     "rock_normal.png",
@@ -18,5 +18,10 @@
     "rear",
     "detail"
   ],
+  "actual_arch_opening_ray_test": {
+    "center_back_y": 0.1218,
+    "outer_shoulder_front_y": -0.3405,
+    "confirmed_depth_m": 0.4623
+  },
   "notes": "Only forge, no bellows, tool rack, barrels, or other workshop props. NOT yet artistically approved."
 }
