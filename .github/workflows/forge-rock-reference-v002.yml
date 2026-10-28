@@ -2,7 +2,7 @@ name: Genesis Rock Forge Reference V002 - Blender 4.5.13
 on:
   push:
     branches:
-      - 'production/forge-rock-reference-rebuild-v002'
+      - 'production/forge-rock-reference-rebuild-v001'
     paths:
       - '.github/workflows/forge-rock-reference-v002.yml'
       - 'scripts/genesis_forge_rock_reference_v002.py'
