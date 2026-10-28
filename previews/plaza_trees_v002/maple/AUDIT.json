@@ -1,0 +1,17 @@
+{
+  "species": "maple",
+  "triangle_count": 10238,
+  "ceiling": 60000,
+  "bark_triangles": 7138,
+  "card_triangles": 3100,
+  "foliage_cards": 1550,
+  "glTF_expected_alpha_mode": "MASK",
+  "techniques": [
+    "curved tapered trunks",
+    "spiral phyllotaxis",
+    "branchlets along primary branches",
+    "foliage alpha-cutout atlas",
+    "bark albedo and normal textures"
+  ],
+  "status": "V002 visual candidate (not quality approved)"
+}
