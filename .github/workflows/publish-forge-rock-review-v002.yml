@@ -31,4 +31,4 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add previews/forge_rock_reference_v002
           git commit -m 'Publish real V002 rock forge four-view review [skip ci]'
-          git push origin HEAD:production/forge-rock-reference-rebuild-v002
+          git push origin HEAD:production/forge-rock-reference-rebuild-v001
