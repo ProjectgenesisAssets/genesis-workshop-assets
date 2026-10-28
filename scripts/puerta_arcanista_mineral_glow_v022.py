@@ -120,6 +120,12 @@ def material(name, base, metallic, roughness, seed, surface):
         cleavage2=np.sin((x*17.1-y*9.4+strata*1.3)*2*np.pi)
         sheets=sat(.50+.34*cleavage+.20*cleavage2+.42*strata)
         pores=sat(.48+.29*pore+.18*fine)
+        # Micro-geometry interpreted through tangent normals: tiny chipped
+        # crystalline facets, pinholes, and deposits at three physical scales.
+        micrograin=sn(397)
+        facet=sat(.49+.31*micrograin+.20*pore)
+        pits=sat((.26*micrograin+.35*pore+.15*fine-.30)*2.0)
+        deposits=sat((.35*fine+.30*pore+.18*micro-.30)*1.6)
         inclusion=sat((.58*macro+.34*broad+.15*fine+.08))
         # Sparse seams from large-scale mineral pressure, NOT repeating wave
         # fields or decorative neon loops. A few deep luminous inclusions only.
@@ -131,13 +137,19 @@ def material(name, base, metallic, roughness, seed, surface):
         modulation=np.clip(.44+.38*sheets+.24*strata+.13*pores,.24,1.10)
         # V024.7: retain the approved V024.6 palette/emission, but break up
         # polished smoothness with real high-frequency mineral wear.
-        rough=np.clip(roughness+.16*pores+.13*fine+.035*micro-.06*inclusion-.06*glow,.56,.97)
+        rough=np.clip(roughness+.13*pores+.10*fine+.11*facet+
+                      .10*pits+.045*deposits+.025*micro-.06*inclusion-.06*glow,.56,.98)
         metallicmap=np.full((n,n),metallic,dtype=np.float32)
-        bump=.47+.11*sheets+.04*cleavage2+.11*pores+.14*fine+.028*micro-.07*core
+        bump=(.47+.105*sheets+.035*cleavage2+.085*pores+.11*fine+
+              .095*facet-.115*pits+.045*deposits+.022*micro-.07*core)
         colored=[.55,.81,1.42]
         # Material body is dark blue-violet mineral, cyan from internal fractures.
         color=np.stack([sat(base[k]*modulation*colored[k]) for k in range(3)],axis=-1)
         color += np.stack((.003*inclusion+.008*glow,.013*inclusion+.058*glow,.060*inclusion+.16*glow),axis=-1)
+        # The albedo is not a flat recolor: mineral inclusions darken pits and
+        # leave subtle blue-gray polished tips on the raised facets.
+        albedo_erosion=np.clip(1-.19*pits-.09*deposits+.08*facet,.65,1.10)
+        color*=albedo_erosion[:,:,None]
         color=np.clip(color,0,1)
         emission=np.stack((.013*glow,.52*glow,.83*glow),axis=-1)
         print("V024_LITHIC_GLOW",name,float(glow.mean()),float((glow>.4).mean()),flush=True)
