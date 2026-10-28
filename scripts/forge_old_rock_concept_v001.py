@@ -30,54 +30,70 @@ def field(n, grid, rng):
             a[ix,iy+1]*(1-fx)*fy +
             a[ix+1,iy+1]*fx*fy)
 
-N=1536
-rng=np.random.default_rng(7712)
-broad=field(N,9,rng)
-mid=field(N,36,rng)
-fine=field(N,137,rng)
-grain=rng.normal(0,1,(N,N)).astype(np.float32)
-tint=field(N,7,rng)
-h=.50 + .055*broad + .028*mid + .012*fine + .005*grain
-gy,gx=np.gradient(h)
-nx=-gx*2.8
-ny=-gy*2.8
-nz=np.ones_like(nx)
-norm=np.sqrt(nx*nx+ny*ny+nz*nz)
-normal=np.stack([.5+.5*nx/norm,.5+.5*ny/norm,.5+.5*nz/norm],axis=2)
-roughmap=np.clip(.86+.028*broad+.012*mid+.007*grain,.69,.98)
+# Poly Haven "Rock Face" — real-world scanned PBR, CC0.
+# https://polyhaven.com/a/rock_face
+# Maps downloaded by the GitHub runner; source binaries never committed.
+import urllib.request
+import time
+asset_id="rock_face"
+maps_meta={"source":"https://polyhaven.com/a/rock_face","license":"CC0",
+           "resolution":"2k","map_type":"photogrammetry_scanned"}
+def fetch_scan(suffix,ext):
+    name=f"{asset_id}_{suffix}_2k.{ext}"
+    url=f"https://dl.polyhaven.org/file/ph-assets/Textures/{ext}/2k/{asset_id}/{name}"
+    dst=TEX/name
+    last_exc=None
+    for attempt in range(3):
+        try:
+            req=urllib.request.Request(url,headers={"User-Agent":"ProjectGenesisAssetLookdev/1.0"})
+            with urllib.request.urlopen(req,timeout=60) as stream:
+                with dst.open("wb") as target:
+                    import shutil
+                    shutil.copyfileobj(stream,target)
+            assert dst.stat().st_size>100000,(name,dst.stat().st_size)
+            head=dst.open("rb").read(8)
+            assert (head[:2]==b"\xff\xd8" if ext=="jpg" else head.startswith(b"\x89PNG")),name
+            im=bpy.data.images.load(str(dst),check_existing=False)
+            if suffix!="diff":im.colorspace_settings.name="Non-Color"
+            im.pack();maps.append(name)
+            print("PBR_SCAN_DOWNLOADED",name,dst.stat().st_size)
+            return im
+        except Exception as exc:
+            last_exc=exc
+            print("PBR_SCAN_RETRY",name,attempt,str(exc))
+            time.sleep(2)
+    raise RuntimeError(f"Cannot obtain validated Poly Haven CC0 map: {name}: {last_exc}")
 
-def save_map(name,rgb,is_data=False):
-    im=bpy.data.images.new(name,width=N,height=N,alpha=True)
-    alpha=np.ones((N,N,1),dtype=np.float32)
-    rgba=np.concatenate([np.clip(rgb,0,1),alpha],axis=2).astype(np.float32)
+source_diff=fetch_scan("diff","jpg")
+roughimg=fetch_scan("rough","jpg")
+normimg=fetch_scan("nor_gl","png")
+W,H=source_diff.size
+assert W>=2048 and H>=2048,(W,H)
+raw=np.empty((W*H*4,),dtype=np.float32)
+source_diff.pixels.foreach_get(raw)
+scan=raw.reshape(H,W,4)[...,:3]
+# Preserve real mineral pores/crevices; reduce warm rust hue into aged neutral stone.
+luma=.24*scan[...,0]+.65*scan[...,1]+.11*scan[...,2]
+muted=.62*scan+.38*luma[...,None]
+stone=np.clip(muted*np.array([.86,.91,.99],dtype=np.float32),.004,1.0)
+# Actual soot-stained stone retains the same scanned mineral detail.
+charcoal=np.clip(stone*np.array([.19,.17,.145],dtype=np.float32)+.007,.004,1.0)
+del raw,scan,muted,luma
+
+def save_toned_scan(name,rgb):
+    im=bpy.data.images.new(name,width=W,height=H,alpha=True)
+    rgba=np.concatenate((rgb.astype(np.float32),np.ones((H,W,1),dtype=np.float32)),axis=2)
     im.pixels.foreach_set(rgba.ravel())
     path=TEX/(name+".png")
     im.filepath_raw=str(path)
     im.file_format="PNG"
     im.save()
-    if is_data: im.colorspace_settings.name="Non-Color"
     im.pack()
     maps.append(path.name)
     return im
-
-stone_variation=.94+.075*broad+.04*mid+.012*fine+.006*grain
-sand=np.clip(.5+.22*tint,0,1)
-rockrgb=np.stack([
-    (.345+.030*sand)*stone_variation,
-    (.327+.010*sand)*stone_variation,
-    (.295-.007*sand)*stone_variation
-],axis=2)
-soot_variation=np.clip(.92+.055*broad+.035*mid+.020*grain,.5,1.1)
-sootrgb=np.stack([
-    (.074+.008*sand)*soot_variation,
-    (.069+.006*sand)*soot_variation,
-    (.061+.004*sand)*soot_variation
-],axis=2)
-roughimg=save_map("rock_roughness",np.repeat(roughmap[...,None],3,axis=2),True)
-normimg=save_map("rock_normal",normal.astype(np.float32),True)
-rockimg=save_map("natural_aged_rock_albedo",rockrgb)
-sootimg=save_map("coal_soot_rock_albedo",sootrgb)
-
+rockimg=save_toned_scan("PolyHaven_RockFace_CC0_WeatheredNeutralRock",stone)
+sootimg=save_toned_scan("PolyHaven_RockFace_CC0_FurnaceSoot",charcoal)
+del stone,charcoal
 def pbr(name, image, rough=.86, normal_strength=.42):
     m=bpy.data.materials.new(name)
     m.use_nodes=True
@@ -96,8 +112,8 @@ def pbr(name, image, rough=.86, normal_strength=.42):
     lk.new(nt.outputs["Color"],nm.inputs["Color"])
     lk.new(nm.outputs["Normal"],bs.inputs["Normal"])
     return m
-rock=pbr("NaturalRock_Worn_CoarsePBR_1536",rockimg,.84,.38)
-soot=pbr("Firebox_Soot_Stone_PBR_1536",sootimg,.91,.24)
+rock=pbr("Scanned_OldRock_PolyHaven_2K_CC0",rockimg,.84,.59)
+soot=pbr("Scanned_Rock_SootInterior_PolyHaven_2K_CC0",sootimg,.92,.52)
 coal=bpy.data.materials.new("Coal_Matte_Natural")
 coal.diffuse_color=(.029,.028,.025,1)
 coal.use_nodes=True
@@ -302,13 +318,14 @@ for name,pos in shots.items():
 
 mesh_faces=sum(len(o.data.polygons) for o in assets if o.type=="MESH")
 audit={
-  "asset":"Forge_Ancient_Rock", "version":"concept_reconstruction_v001",
+  "asset":"Forge_Ancient_Rock", "version":"scanned_rock_material_v002",
   "basis":"User-approved first 2D visual concept: geometry recreated independently",
   "copyright":"Original procedural Blender geometry and noise-derived PBR maps",
   "blender":bpy.app.version_string,
   "mesh_objects":len([o for o in assets if o.type=="MESH"]),
   "total_mesh_faces":mesh_faces,
   "texture_files":maps,
+  "material_provenance": maps_meta,
   "render_views":list(shots),
   "actual_arch_opening_ray_test": QA_ARCH_OPEN,
   "notes":"Only forge, no bellows, tool rack, barrels, or other workshop props. NOT yet artistically approved."
