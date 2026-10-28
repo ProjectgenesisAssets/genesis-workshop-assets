@@ -1,0 +1,14 @@
+{
+  "species": "oak",
+  "version": "V011",
+  "technique": "Blender Sapling Tree Gen official addon + watertight closed root collar + voxel union + alpha-cutout foliage",
+  "triangles": 53000,
+  "sapling_mesh_faces": 15984,
+  "pre_decimate_voxel_triangles": 314528,
+  "limit": 60000,
+  "selected_seed": 27941,
+  "silhouette_score": 2.657,
+  "leaf_atlas": "ambientCG LeafSet016 1K-JPG color+opacity CC0",
+  "approved": false,
+  "review": "Broadest balanced Sapling crown among eight seeds, watertight bark and CC0 photographed oak leaves; visual approval pending"
+}
