@@ -1,0 +1,49 @@
+name: Blacksmith charcoal geometry clay V002
+on:
+  push:
+    branches:
+      - experiment/charcoal-gypsum-geometry-v002
+    paths:
+      - .github/workflows/charcoal-gypsum-geometry-v002.yml
+      - scripts/charcoal_gypsum_geometry_v002.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  charcoal-clay-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate generator syntax
+        run: python3 -m py_compile scripts/charcoal_gypsum_geometry_v002.py
+      - name: Install official Blender 4.5.13 LTS
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-charcoal.tar.xz
+          mkdir -p /tmp/blender-charcoal
+          tar -xJf /tmp/blender-charcoal.tar.xz -C /tmp/blender-charcoal --strip-components=1
+          /tmp/blender-charcoal/blender --version | grep -F 'Blender 4.5.13'
+      - name: Generate grey-clay geometry and render three angles
+        env:
+          OMP_NUM_THREADS: '2'
+          OPENBLAS_NUM_THREADS: '2'
+        run: |
+          set -euo pipefail
+          /tmp/blender-charcoal/blender -b -t 3 --python-exit-code 1 --python scripts/charcoal_gypsum_geometry_v002.py
+      - name: Verify outputs are actual geometry candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s output_charcoal_gypsum_v002/audit.json
+          test -s output_charcoal_gypsum_v002/charcoal_gypsum_fragment_v002.glb
+          test -s output_charcoal_gypsum_v002/charcoal_gypsum_fragment_v002.blend
+          for view in clay_three_quarter clay_side clay_end; do test -s "output_charcoal_gypsum_v002/$view.png"; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: charcoal-gypsum-geometry-v002-${{ github.run_id }}
+          path: output_charcoal_gypsum_v002/
+          retention-days: 3
+          if-no-files-found: warn
