@@ -67,7 +67,7 @@ for end_i,flip in [(0,True),(rings-1,False)]:
     for j in range(segments):
         x,y,z=vertices[end_i*segments+j]
         vertices.append((x+(.007 if flip else -.007),y*.52,z*.52))
-        for j in range(segments):
+    for j in range(segments):
         k=(j+1)%segments
         outer0=end_i*segments+j;outer1=end_i*segments+k
         inner0=start+j;inner1=start+k
