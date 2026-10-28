@@ -1,0 +1,11 @@
+{
+  "species": "oak",
+  "version": "V009",
+  "technique": "Blender Sapling Tree Gen official addon + watertight closed root collar + voxel union + alpha-cutout foliage",
+  "triangles": 53000,
+  "sapling_mesh_faces": 10720,
+  "pre_decimate_voxel_triangles": 90044,
+  "limit": 60000,
+  "approved": false,
+  "review": "Watertight root-collar union + 9000 smaller botanical leaf cards; visual approval pending"
+}
