@@ -1,0 +1,52 @@
+name: Plaza V007 - audit artifact and publish oak visual review
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths: [.github/workflows/roble-publicar-v007.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  audit_publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/plaza-cuatro-arboles-playcanvas
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 40724365665
+          github-token: ${{ github.token }}
+          name: genesis-plaza-v007-oak-sapling
+          path: /tmp/oak-v007
+      - name: Verify GLB and stage four art views
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,struct,os
+          p='/tmp/oak-v007'
+          a=json.load(open(f'{p}/AUDIT.json'))
+          with open(f'{p}/oak_sapling_v007.glb','rb') as f:
+              assert f.read(4)==b'glTF';f.read(8)
+              n=struct.unpack('<I',f.read(4))[0]
+              assert f.read(4)==b'JSON'
+              j=json.loads(f.read(n))
+          tri=sum(j['accessors'][q['indices']]['count']//3 for mesh in j['meshes'] for q in mesh['primitives'])
+          assert tri==a['triangles'] and tri<60000,(tri,a)
+          assert 'MASK' in [m.get('alphaMode','OPAQUE') for m in j.get('materials',[])], 'LEAF_ALPHA_MASK'
+          for name in ['front.png','three_quarter.png','side.png','skeleton_three_quarter.png','oak_leaf_atlas.png','oak_bark_albedo.png']:
+              assert os.path.getsize(f'{p}/{name}')>12000,name
+          print('VERIFIED',json.dumps(a))
+          PY
+          mkdir -p previews/plaza_trees_v007/oak
+          for f in front.png three_quarter.png side.png skeleton_three_quarter.png AUDIT.json; do
+            cp "/tmp/oak-v007/$f" "previews/plaza_trees_v007/oak/$f"
+          done
+      - name: Preserve image review in organization repo
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_trees_v007/oak
+          git commit -m 'Publish verified Sapling oak V007 foliage and skeleton review [skip ci]'
+          git push origin HEAD:feature/plaza-cuatro-arboles-playcanvas
