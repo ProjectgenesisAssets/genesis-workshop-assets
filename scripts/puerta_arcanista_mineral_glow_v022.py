@@ -58,15 +58,15 @@ PROFILES={
         "inset":((.010,.022,.072),.0,.65,"arcane_lithic"),
     },
 }
-def material(name, base, metallic, roughness, seed, surface):
+def material(name, base, metallic, roughness, seed, surface, res_override=None):
     """Distinct spatially non-uniform basecolor/metallic/roughness/normal (+ arcane emission).
     All PBR maps baked into glTF-compatible image nodes. No simple color recoloring."""
     m=bpy.data.materials.new(name)
     m.use_nodes=True
     m.diffuse_color=(*base,1)
     bs=m.node_tree.nodes.get("Principled BSDF")
-    n=int(os.environ.get("PG_PBR_RES","2048"))
-    assert n in (1536,2048,4096)
+    n=int(res_override or os.environ.get("PG_PBR_RES","2048"))
+    assert n in (1024,1536,2048,4096)
     rng=np.random.default_rng(seed)
     def sn(grid):
         ax=np.linspace(0,grid-1,n,dtype=np.float32)
@@ -152,6 +152,13 @@ def material(name, base, metallic, roughness, seed, surface):
         color*=albedo_erosion[:,:,None]
         color=np.clip(color,0,1)
         emission=np.stack((.013*glow,.52*glow,.83*glow),axis=-1)
+        if name.endswith("_edge"):
+            # Distinct hand-worked arcane reinforcement: deeper matte facets,
+            # less internal light than the broad mineral panels.
+            color*=np.array([.81,.88,.91],dtype=np.float32)[None,None,:]
+            rough=np.clip(rough+.13+.035*facet,.68,.99)
+            bump+=.055*facet-.060*pits
+            emission*=.30
         print("V024_LITHIC_GLOW",name,float(glow.mean()),float((glow>.4).mean()),flush=True)
     else:
         # Metallurgy: two oxide scales, micro-pitting, impact abrasion and patches
@@ -260,15 +267,17 @@ def material(name, base, metallic, roughness, seed, surface):
     assert metrics["normal_x_std"]>.006,(name,metrics)
     return m
 
-def themed(role,seed):
+def themed(role,seed,res_override=None):
     base,metallic,roughness,surface=PROFILES[TRADE][role]
-    return material("v022_"+TRADE+"_"+role,base,metallic,roughness,seed,surface)
+    return material("v022_"+TRADE+"_"+role,base,metallic,roughness,seed,surface,res_override)
 
 if TRADE=="arcanista":
-    # V024.6 art experiment: apply the EXACT handle PBR material to every
-    # surface of the approved door; no silhouette or mesh adjustments.
-    copper=themed("hardware",19)
-    iron=edge=shade=copper
+    # V024.9: broad mineral body retains V024.8 appearance; forged detailing
+    # receives an independently baked, smaller high-frequency PBR set.
+    body=themed("hardware",19)
+    detailing=themed("edge",18,1024)
+    iron=shade=body
+    edge=copper=detailing
 else:
     iron=themed("leaf",17)
     edge=themed("edge",18)
