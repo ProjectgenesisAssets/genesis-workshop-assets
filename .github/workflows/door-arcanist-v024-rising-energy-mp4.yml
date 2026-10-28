@@ -1,9 +1,9 @@
-name: Arcanist V024 - rising magic energy MP4
+name: Arcanist V025 - organic ascending mineral energy MP4
 on:
   push:
     branches: [production/door-v024-arcane-lithic-material]
     paths:
-      - .github/workflows/door-arcanist-v024-rising-energy-mp4.yml
+      - .github/workflows/door-arcanist-v025-organic-rising-mp4.yml
 permissions:
   contents: write
 jobs:
@@ -12,11 +12,11 @@ jobs:
     timeout-minutes: 50
     env:
       PG_DOOR_TRADE: arcanista
-      PG_ANIM_REVIEW: rise
+      PG_ANIM_REVIEW: rise_v025
       PG_PBR_RES: '1536'
-      PG_CYCLES_SAMPLES: '12'
-      PG_RENDER_WIDTH: '680'
-      PG_RENDER_HEIGHT: '900'
+      PG_CYCLES_SAMPLES: '16'
+      PG_RENDER_WIDTH: '720'
+      PG_RENDER_HEIGHT: '960'
       OPENBLAS_NUM_THREADS: '2'
       OMP_NUM_THREADS: '2'
     steps:
@@ -35,21 +35,21 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           from shutil import copyfile
-          frames=sorted(Path('output_workshop_door_v022_arcanista').glob('arcane_rise_*.png'))
-          assert len(frames)==12,[str(p) for p in frames]
+          frames=sorted(Path('output_workshop_door_v022_arcanista').glob('arcane_v025_*.png'))
+          assert len(frames)==14,[str(p) for p in frames]
           dest=Path('/tmp/arcane-rise-sequence')
           dest.mkdir(exist_ok=True)
           for i,p in enumerate(frames*3):
               copyfile(p,dest/f'frame_{i:03}.png')
           PY
           mkdir -p previews/door_v024_animation
-          ffmpeg -hide_banner -loglevel warning -y -framerate 6 -i '/tmp/arcane-rise-sequence/frame_%03d.png' -vf 'minterpolate=fps=24:mi_mode=blend,format=yuv420p' -c:v libx264 -preset slow -crf 15 -movflags +faststart previews/door_v024_animation/arcane_rising_energy_v024.mp4
-          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,avg_frame_rate -of json previews/door_v024_animation/arcane_rising_energy_v024.mp4
+          ffmpeg -hide_banner -loglevel warning -y -framerate 6 -i '/tmp/arcane-rise-sequence/frame_%03d.png' -vf 'minterpolate=fps=24:mi_mode=blend,format=yuv420p' -c:v libx264 -preset slow -crf 15 -movflags +faststart previews/door_v024_animation/arcane_organic_rising_v025.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,avg_frame_rate -of json previews/door_v024_animation/arcane_organic_rising_v025.mp4
       - name: Publish animation preview only
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add previews/door_v024_animation/arcane_rising_energy_v024.mp4
+          git add previews/door_v024_animation/arcane_organic_rising_v025.mp4
           if ! git diff --cached --quiet; then
             git commit -m 'Rising arcane energy MP4 preview [skip ci]'
             git push origin HEAD:production/door-v024-arcane-lithic-material
@@ -57,8 +57,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: arcanist-v024-rising-energy
+          name: arcanist-v025-organic-rising
           path: |
-            previews/door_v024_animation/arcane_rising_energy_v024.mp4
-            output_workshop_door_v022_arcanista/arcane_rise_*.png
+            previews/door_v024_animation/arcane_organic_rising_v025.mp4
+            output_workshop_door_v022_arcanista/arcane_v025_*.png
           retention-days: 14
