@@ -63,7 +63,7 @@ jobs:
           /tmp/genesis-blender/blender -b --disable-autoexec -t 2 --python-exit-code 1 \
             --python scripts/plaza_optimize_trees.py -- \
             --source "$SOURCE_PATH" --output-dir output/plaza \
-            --ratios 0.99,0.95,0.85,0.75 --samples 16
+            --ratios 0.70,0.65,0.60,0.55 --samples 16
 
       - name: Install independent image-structure audit packages
         run: |
