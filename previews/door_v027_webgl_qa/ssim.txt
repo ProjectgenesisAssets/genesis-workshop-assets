@@ -1,0 +1,20 @@
+Input #0, png_pipe, from 'output_compare_v027/master.png':
+  Duration: N/A, bitrate: N/A
+  Stream #0:0: Video: png, rgba(pc, gbr/unknown/unknown), 1000x1333 [SAR 2834:2834 DAR 1000:1333], 25 fps, 25 tbr, 25 tbn
+Input #1, png_pipe, from 'output_compare_v027/webgl_4mb.png':
+  Duration: N/A, bitrate: N/A
+  Stream #1:0: Video: png, rgba(pc, gbr/unknown/unknown), 1000x1333 [SAR 2834:2834 DAR 1000:1333], 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 (png) -> ssim
+  Stream #1:0 (png) -> ssim
+  ssim:default -> Stream #0:0 (wrapped_avframe)
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    encoder         : Lavf60.16.100
+  Stream #0:0: Video: wrapped_avframe, gbrp(pc, gbr/unknown/unknown, progressive), 1000x1333 [SAR 1:1 DAR 1000:1333], q=2-31, 200 kb/s, 25 fps, 25 tbn
+    Metadata:
+      encoder         : Lavc60.31.102 wrapped_avframe
+frame=    0 fps=0.0 q=-0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    [out#0/null @ 0x561158a55a80] video:0kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
+frame=    1 fps=0.0 q=-0.0 Lsize=N/A time=00:00:00.00 bitrate=N/A speed=   0x    
+[Parsed_ssim_0 @ 0x561158a58a00] SSIM R:0.980364 (17.069500) G:0.983285 (17.768858) B:0.981931 (17.430714) All:0.981860 (17.413632)
