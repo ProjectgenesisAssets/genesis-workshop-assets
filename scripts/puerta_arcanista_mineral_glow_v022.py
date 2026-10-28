@@ -152,6 +152,15 @@ def material(name, base, metallic, roughness, seed, surface, res_override=None):
         color*=albedo_erosion[:,:,None]
         color=np.clip(color,0,1)
         emission=np.stack((.013*glow,.52*glow,.83*glow),axis=-1)
+        # V027-only embedded radiance: irregular cloudy mineral inclusions carry
+        # diffuse blue energy UNDER the surface, beyond bright fracture edges.
+        if os.environ.get("PG_ANIM_REVIEW")=="rise_v027" and not name.endswith("_edge"):
+            subsurface=sat(.32+.30*macro+.19*broad+.10*fine)**2
+            emission+=np.stack((.004*subsurface,.055*subsurface,.13*subsurface),axis=-1)
+            color[:,:,1]=sat(color[:,:,1]+.008*subsurface)
+            color[:,:,2]=sat(color[:,:,2]+.031*subsurface)
+            rough=np.clip(rough+.025*facet,.57,.98)
+
         if name.endswith("_edge"):
             # Distinct hand-worked arcane reinforcement: deeper matte facets,
             # less internal light than the broad mineral panels.
@@ -618,6 +627,87 @@ view_specs=[
     ("side_orthographic",(6,0,1.15)),
     ("rear_orthographic",(0,6,1.15)),
 ]
+if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="rise_v027":
+    # V027: focused upward current and dim residual veins, with a short fading tail.
+    # Mineral veins remain luminous; organic wave fronts ascend
+    # through distorted stone height, while a soft nearby light follows.
+    bpy.ops.object.camera_add(location=(2.3,-5,1.7))
+    cam=bpy.context.object
+    cam.rotation_euler=(Vector((0,0,1.15))-cam.location).to_track_quat("-Z","Y").to_euler()
+    cam.data.type="ORTHO";cam.data.ortho_scale=2.53
+    sc.camera=cam
+    nodes=iron.node_tree.nodes;links=iron.node_tree.links
+    shader=nodes.get("Principled BSDF")
+    shader.inputs["Emission Strength"].default_value=5.2
+    old=next(link for link in links if link.to_socket==shader.inputs["Emission Color"])
+    vein_color=old.from_socket;links.remove(old)
+    position=nodes.new("ShaderNodeNewGeometry")
+    axes=nodes.new("ShaderNodeSeparateXYZ")
+    links.new(position.outputs["Position"],axes.inputs["Vector"])
+    turbulence=nodes.new("ShaderNodeTexNoise")
+    links.new(position.outputs["Position"],turbulence.inputs["Vector"])
+    turbulence.inputs["Scale"].default_value=3.4
+    turbulence.inputs["Detail"].default_value=4.0
+    turbulence.inputs["Roughness"].default_value=.72
+    turbulence.inputs["Distortion"].default_value=.42
+    shifted=nodes.new("ShaderNodeMapRange")
+    links.new(turbulence.outputs["Fac"],shifted.inputs["Value"])
+    shifted.inputs["From Min"].default_value=0
+    shifted.inputs["From Max"].default_value=1
+    shifted.inputs["To Min"].default_value=-.25
+    shifted.inputs["To Max"].default_value=.25
+    localheight=nodes.new("ShaderNodeMath");localheight.operation="ADD"
+    links.new(axes.outputs["Z"],localheight.inputs[0])
+    links.new(shifted.outputs["Result"],localheight.inputs[1])
+    def crest(offset,width):
+        distance=nodes.new("ShaderNodeMath");distance.operation="SUBTRACT"
+        links.new(localheight.outputs[0],distance.inputs[0])
+        square=nodes.new("ShaderNodeMath");square.operation="MULTIPLY"
+        links.new(distance.outputs[0],square.inputs[0])
+        links.new(distance.outputs[0],square.inputs[1])
+        decay=nodes.new("ShaderNodeMath");decay.operation="MULTIPLY"
+        links.new(square.outputs[0],decay.inputs[0])
+        decay.inputs[1].default_value=-width
+        gaussian=nodes.new("ShaderNodeMath");gaussian.operation="EXPONENT"
+        links.new(decay.outputs[0],gaussian.inputs[0])
+        return distance,gaussian
+    primary_position,primary=crest(0,13.5)
+    secondary_position,secondary=crest(-.30,17.0)
+    secondary_gain=nodes.new("ShaderNodeMath");secondary_gain.operation="MULTIPLY"
+    links.new(secondary.outputs[0],secondary_gain.inputs[0])
+    secondary_gain.inputs[1].default_value=.55
+    fronts=nodes.new("ShaderNodeMath");fronts.operation="ADD"
+    links.new(primary.outputs[0],fronts.inputs[0])
+    links.new(secondary_gain.outputs[0],fronts.inputs[1])
+    intensity=nodes.new("ShaderNodeMath");intensity.operation="MULTIPLY_ADD"
+    links.new(fronts.outputs[0],intensity.inputs[0])
+    intensity.inputs[1].default_value=2.65
+    intensity.inputs[2].default_value=.28
+    multiply=nodes.new("ShaderNodeMixRGB")
+    multiply.blend_type="MULTIPLY";multiply.use_clamp=False
+    multiply.inputs[0].default_value=1.0
+    links.new(vein_color,multiply.inputs[1])
+    links.new(intensity.outputs[0],multiply.inputs[2])
+    links.new(multiply.outputs["Color"],shader.inputs["Emission Color"])
+    # The environment receives a restrained physical reflection from the moving front.
+    light_data=bpy.data.lights.new("Arcane internal radiance","POINT")
+    light_ob=bpy.data.objects.new("Arcane internal radiance",light_data)
+    bpy.context.collection.objects.link(light_ob)
+    light_data.color=(.18,.62,1.0)
+    light_data.energy=20
+    light_data.shadow_soft_size=.48
+    centers=(-.35,-.18,.0,.18,.36,.54,.72,.90,1.08,1.26,1.44,1.62,1.80,1.98,2.16,2.34,2.52,2.73)
+    for i,center in enumerate(centers):
+        primary_position.inputs[1].default_value=center
+        secondary_position.inputs[1].default_value=center-.30
+        light_ob.location=(.06,-.42,max(.18,min(center,2.25)))
+        light_data.energy=15+6*math.sin(math.pi*(i+.5)/len(centers))
+        sc.frame_set(i+1)
+        sc.render.filepath=str(OUT/("arcane_v027_%02d.png"%i))
+        bpy.ops.render.render(write_still=True)
+        print("ARCANE_V027_UPWARD",i,center,flush=True)
+    print("ARCANE_V027_DONE",len(centers),flush=True)
+    raise SystemExit(0)
 if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="rise_v026":
     # V026: focused upward current and dim residual veins, with a short fading tail.
     # Mineral veins remain luminous; organic wave fronts ascend
