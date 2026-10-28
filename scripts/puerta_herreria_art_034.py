@@ -182,7 +182,7 @@ def material(name, base, metallic, roughness, seed):
     normal=np.stack([.5+.5*nx/lng,.5+.5*ny/lng,.5+.5*nz/lng],axis=-1)
     if "hand_hammered_charcoal" in name:
         # Combine physically recorded pits (normal GL) with authored hammering.
-        scanned=np.clip(SCAN_RUST_NORMAL,0,1)
+        scanned=np.clip(np.repeat(np.repeat(SCAN_RUST_NORMAL,2,axis=0),2,axis=1),0,1)
         tex_vec=normal*2-1
         scan_vec=scanned*2-1
         mixed=tex_vec*.57+scan_vec*.70
