@@ -347,7 +347,7 @@ audit={
   "material_provenance": maps_meta,
   "render_views":list(shots),
   "actual_arch_opening_ray_test": QA_ARCH_OPEN,
-  "notes":"Only forge, no bellows or props. V003 angular lithic silhouette, macro fractures and 2K scanned rock. NOT yet artistically approved."
+  "notes":"Only forge, no bellows or props. V003 stronger physical rock erosion on proven curved hood topology, plus 2K scanned stone. NOT yet artistically approved."
 }
 (OUT/"AUDIT.json").write_text(json.dumps(audit,indent=2),encoding="utf-8")
 print("GENESIS_FORGE_CONCEPT_3D_DONE",json.dumps(audit))
