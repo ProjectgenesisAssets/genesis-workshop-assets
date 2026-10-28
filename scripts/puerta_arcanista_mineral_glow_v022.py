@@ -250,10 +250,16 @@ def themed(role,seed):
     base,metallic,roughness,surface=PROFILES[TRADE][role]
     return material("v022_"+TRADE+"_"+role,base,metallic,roughness,seed,surface)
 
-iron=themed("leaf",17)
-edge=themed("edge",18)
-copper=themed("hardware",19)
-shade=themed("inset",20)
+if TRADE=="arcanista":
+    # V024.6 art experiment: apply the EXACT handle PBR material to every
+    # surface of the approved door; no silhouette or mesh adjustments.
+    copper=themed("hardware",19)
+    iron=edge=shade=copper
+else:
+    iron=themed("leaf",17)
+    edge=themed("edge",18)
+    copper=themed("hardware",19)
+    shade=themed("inset",20)
 
 objects=[]
 def keep(o):
