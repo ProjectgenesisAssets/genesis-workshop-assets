@@ -320,7 +320,7 @@ mesh_faces=sum(len(o.data.polygons) for o in assets if o.type=="MESH")
 audit={
   "asset":"Forge_Ancient_Rock", "version":"scanned_rock_material_v002",
   "basis":"User-approved first 2D visual concept: geometry recreated independently",
-  "copyright":"Original procedural Blender geometry and noise-derived PBR maps",
+  "copyright":"Original independent 3D geometry; Poly Haven Rock Face scanned material CC0",
   "blender":bpy.app.version_string,
   "mesh_objects":len([o for o in assets if o.type=="MESH"]),
   "total_mesh_faces":mesh_faces,
