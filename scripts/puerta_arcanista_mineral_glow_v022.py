@@ -618,6 +618,85 @@ view_specs=[
     ("side_orthographic",(6,0,1.15)),
     ("rear_orthographic",(0,6,1.15)),
 ]
+if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="rise_v025":
+    # V025: mineral veins remain luminous; multiple organic wave fronts ascend
+    # through distorted stone height, while a soft nearby light follows.
+    bpy.ops.object.camera_add(location=(2.3,-5,1.7))
+    cam=bpy.context.object
+    cam.rotation_euler=(Vector((0,0,1.15))-cam.location).to_track_quat("-Z","Y").to_euler()
+    cam.data.type="ORTHO";cam.data.ortho_scale=2.53
+    sc.camera=cam
+    nodes=iron.node_tree.nodes;links=iron.node_tree.links
+    shader=nodes.get("Principled BSDF")
+    old=next(link for link in links if link.to_socket==shader.inputs["Emission Color"])
+    vein_color=old.from_socket;links.remove(old)
+    position=nodes.new("ShaderNodeNewGeometry")
+    axes=nodes.new("ShaderNodeSeparateXYZ")
+    links.new(position.outputs["Position"],axes.inputs["Vector"])
+    turbulence=nodes.new("ShaderNodeTexNoise")
+    links.new(position.outputs["Position"],turbulence.inputs["Vector"])
+    turbulence.inputs["Scale"].default_value=3.4
+    turbulence.inputs["Detail"].default_value=4.0
+    turbulence.inputs["Roughness"].default_value=.72
+    turbulence.inputs["Distortion"].default_value=.42
+    shifted=nodes.new("ShaderNodeMapRange")
+    links.new(turbulence.outputs["Fac"],shifted.inputs["Value"])
+    shifted.inputs["From Min"].default_value=0
+    shifted.inputs["From Max"].default_value=1
+    shifted.inputs["To Min"].default_value=-.25
+    shifted.inputs["To Max"].default_value=.25
+    localheight=nodes.new("ShaderNodeMath");localheight.operation="ADD"
+    links.new(axes.outputs["Z"],localheight.inputs[0])
+    links.new(shifted.outputs["Result"],localheight.inputs[1])
+    def crest(offset,width):
+        distance=nodes.new("ShaderNodeMath");distance.operation="SUBTRACT"
+        links.new(localheight.outputs[0],distance.inputs[0])
+        square=nodes.new("ShaderNodeMath");square.operation="MULTIPLY"
+        links.new(distance.outputs[0],square.inputs[0])
+        links.new(distance.outputs[0],square.inputs[1])
+        decay=nodes.new("ShaderNodeMath");decay.operation="MULTIPLY"
+        links.new(square.outputs[0],decay.inputs[0])
+        decay.inputs[1].default_value=-width
+        gaussian=nodes.new("ShaderNodeMath");gaussian.operation="EXPONENT"
+        links.new(decay.outputs[0],gaussian.inputs[0])
+        return distance,gaussian
+    primary_position,primary=crest(0,12.0)
+    secondary_position,secondary=crest(-.52,17.0)
+    secondary_gain=nodes.new("ShaderNodeMath");secondary_gain.operation="MULTIPLY"
+    links.new(secondary.outputs[0],secondary_gain.inputs[0])
+    secondary_gain.inputs[1].default_value=1.18
+    fronts=nodes.new("ShaderNodeMath");fronts.operation="ADD"
+    links.new(primary.outputs[0],fronts.inputs[0])
+    links.new(secondary_gain.outputs[0],fronts.inputs[1])
+    intensity=nodes.new("ShaderNodeMath");intensity.operation="MULTIPLY_ADD"
+    links.new(fronts.outputs[0],intensity.inputs[0])
+    intensity.inputs[1].default_value=3.25
+    intensity.inputs[2].default_value=.57
+    multiply=nodes.new("ShaderNodeMixRGB")
+    multiply.blend_type="MULTIPLY";multiply.use_clamp=False
+    multiply.inputs[0].default_value=1.0
+    links.new(vein_color,multiply.inputs[1])
+    links.new(intensity.outputs[0],multiply.inputs[2])
+    links.new(multiply.outputs["Color"],shader.inputs["Emission Color"])
+    # The environment receives a restrained physical reflection from the moving front.
+    light_data=bpy.data.lights.new("Arcane internal radiance","POINT")
+    light_ob=bpy.data.objects.new("Arcane internal radiance",light_data)
+    bpy.context.collection.objects.link(light_ob)
+    light_data.color=(.18,.62,1.0)
+    light_data.energy=34
+    light_data.shadow_soft_size=.48
+    centers=(-.32,-.08,.16,.40,.64,.88,1.12,1.36,1.60,1.84,2.08,2.32,2.56,2.82)
+    for i,center in enumerate(centers):
+        primary_position.inputs[1].default_value=center
+        secondary_position.inputs[1].default_value=center-.52
+        light_ob.location=(.06,-.48,max(.18,min(center,2.25)))
+        light_data.energy=24+10*math.sin(math.pi*(i+.5)/len(centers))
+        sc.frame_set(i+1)
+        sc.render.filepath=str(OUT/("arcane_v025_%02d.png"%i))
+        bpy.ops.render.render(write_still=True)
+        print("ARCANE_V025_UPWARD",i,center,flush=True)
+    print("ARCANE_V025_DONE",len(centers),flush=True)
+    raise SystemExit(0)
 if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="rise":
     # Render-only travelling energy: a soft vertical wave multiplies the
     # existing irregular emissive vein map. The geometry/PBR maps remain V024.10.
