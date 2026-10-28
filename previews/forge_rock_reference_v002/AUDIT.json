@@ -1,0 +1,28 @@
+{
+  "asset": "forge_rock_reference",
+  "version": "V002",
+  "status": "candidate_not_artist_approved",
+  "reference": "Gabriel 2026-10-27 wireframe screenshot; manually reconstructed, not exact topology",
+  "masonry": "oversize worn natural rocks, integrated soot-black stone flue, no metal hood",
+  "bellows": "separate hand-operated wood/leather geometry; static, animation pending",
+  "meshes": 144,
+  "source_mesh_triangles_before_modifiers": 3556,
+  "pbr_texture_albedos": [
+    "rock_gray_cold",
+    "rock_gray_neutral",
+    "rock_ash_brown",
+    "rock_heat_soot",
+    "inner_fireclay_dark",
+    "weathered_oak",
+    "old_oiled_leather",
+    "worn_iron",
+    "coal_sack_burlap",
+    "charcoal_black",
+    "ember_heat",
+    "ember_darkred",
+    "neutral_studio_floor"
+  ],
+  "build": "Blender 4.5.13 on GitHub Actions",
+  "target": "PlayCanvas WebGL vertical slice / 9 November 2026",
+  "human_art_approval": false
+}
