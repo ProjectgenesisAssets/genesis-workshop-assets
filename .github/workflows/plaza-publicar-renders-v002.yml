@@ -1,0 +1,43 @@
+name: Plaza V002 - publish render previews for art review
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths: [.github/workflows/plaza-publicar-renders-v002.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/plaza-cuatro-arboles-playcanvas
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 40706002337
+          github-token: ${{ github.token }}
+          pattern: genesis-plaza-v002-*
+          path: /tmp/plaza-v002
+      - name: Publish four-view art QA and audits
+        run: |
+          set -euo pipefail
+          for tree in oak ash maple linden; do
+            src="/tmp/plaza-v002/genesis-plaza-v002-${tree}"
+            dst="previews/plaza_trees_v002/${tree}"
+            mkdir -p "$dst"
+            for shot in front three_quarter side rear; do
+              test -s "$src/${shot}.png"
+              cp "$src/${shot}.png" "$dst/${shot}.png"
+            done
+            cp "$src/AUDIT.json" "$dst/AUDIT.json"
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_trees_v002
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V002 tree visuals for art QA, not approved [skip ci]'
+            git push origin HEAD:feature/plaza-cuatro-arboles-playcanvas
+          fi
