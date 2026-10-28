@@ -1,0 +1,22 @@
+{
+  "asset": "Forge_Ancient_Rock",
+  "version": "concept_reconstruction_v001",
+  "basis": "User-approved first 2D visual concept: geometry recreated independently",
+  "copyright": "Original procedural Blender geometry and noise-derived PBR maps",
+  "blender": "4.5.13 LTS",
+  "mesh_objects": 24,
+  "total_mesh_faces": 26372,
+  "texture_files": [
+    "rock_roughness.png",
+    "rock_normal.png",
+    "natural_aged_rock_albedo.png",
+    "coal_soot_rock_albedo.png"
+  ],
+  "render_views": [
+    "front",
+    "three_quarter",
+    "rear",
+    "detail"
+  ],
+  "notes": "Only forge, no bellows, tool rack, barrels, or other workshop props. NOT yet artistically approved."
+}
