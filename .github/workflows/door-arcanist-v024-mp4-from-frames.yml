@@ -1,0 +1,53 @@
+name: Arcanist V024 - original PNG frames to high-quality MP4
+on:
+  push:
+    branches: [production/door-v024-arcane-lithic-material]
+    paths:
+      - .github/workflows/door-arcanist-v024-mp4-from-frames.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  encode:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download lossless PNG frames from successful Blender render
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/arcane-pngs
+          gh run download 40621476105 --repo "$GITHUB_REPOSITORY" --name arcane-v024-pulse-frames --dir /tmp/arcane-pngs
+      - name: Arrange lossless frames into three seamless cycles
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from shutil import copyfile
+          src=sorted(Path('/tmp/arcane-pngs').rglob('arcane_pulse_*.png'))
+          assert len(src)==8,[str(p) for p in src]
+          dest=Path('/tmp/arcane-mp4-sequence')
+          dest.mkdir(exist_ok=True)
+          for i,p in enumerate(src*3):
+              copyfile(p,dest/f'frame_{i:03}.png')
+          print('LOSSLESS_SOURCE_FRAMES',len(src),'MP4_SEQUENCE',len(src)*3)
+          PY
+      - name: Encode high-quality H264 MP4 from original PNG images
+        run: |
+          mkdir -p previews/door_v024_animation
+          ffmpeg -hide_banner -loglevel warning -y -framerate 6 -i '/tmp/arcane-mp4-sequence/frame_%03d.png' -vf 'minterpolate=fps=24:mi_mode=blend,format=yuv420p' -c:v libx264 -preset slow -crf 15 -movflags +faststart previews/door_v024_animation/arcane_pulse_v024.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,avg_frame_rate -of json previews/door_v024_animation/arcane_pulse_v024.mp4
+      - name: Publish MP4 to isolated branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v024_animation/arcane_pulse_v024.mp4
+          if ! git diff --cached --quiet; then
+            git commit -m 'Arcane pulse MP4 from original PNG frames [skip ci]'
+            git push origin HEAD:production/door-v024-arcane-lithic-material
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arcanist-v024-pulse-high-quality-mp4
+          path: previews/door_v024_animation/arcane_pulse_v024.mp4
+          retention-days: 30
