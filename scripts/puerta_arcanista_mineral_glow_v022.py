@@ -54,7 +54,7 @@ PROFILES={
     "arcanista":{
         "leaf":((.013,.030,.089),.0,.60,"arcane_lithic"),
         "edge":((.023,.051,.081),.0,.54,"arcane_lithic"),
-        "hardware":((.055,.083,.121),.04,.47,"arcane_lithic"),
+        "hardware":((.055,.083,.121),.04,.66,"arcane_lithic"),
         "inset":((.010,.022,.072),.0,.65,"arcane_lithic"),
     },
 }
@@ -129,9 +129,11 @@ def material(name, base, metallic, roughness, seed, surface):
         halo=np.exp(-((veinfield-.27)/.18)**2)*.13
         glow=sat((core+branch+halo)*sat(.38+.45*inclusion))
         modulation=np.clip(.44+.38*sheets+.24*strata+.13*pores,.24,1.10)
-        rough=np.clip(roughness+.11*pores+.10*fine-.07*inclusion-.07*glow,.49,.96)
+        # V024.7: retain the approved V024.6 palette/emission, but break up
+        # polished smoothness with real high-frequency mineral wear.
+        rough=np.clip(roughness+.16*pores+.13*fine+.035*micro-.06*inclusion-.06*glow,.56,.97)
         metallicmap=np.full((n,n),metallic,dtype=np.float32)
-        bump=.47+.11*sheets+.04*cleavage2+.06*pores+.09*fine-.07*core
+        bump=.47+.11*sheets+.04*cleavage2+.11*pores+.14*fine+.028*micro-.07*core
         colored=[.55,.81,1.42]
         # Material body is dark blue-violet mineral, cyan from internal fractures.
         color=np.stack([sat(base[k]*modulation*colored[k]) for k in range(3)],axis=-1)
