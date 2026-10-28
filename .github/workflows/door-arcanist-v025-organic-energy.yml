@@ -3,7 +3,7 @@ on:
   push:
     branches: [production/door-v024-arcane-lithic-material]
     paths:
-      - .github/workflows/door-arcanist-v025-organic-rising-mp4.yml
+      - .github/workflows/door-arcanist-v025-organic-energy.yml
 permissions:
   contents: write
 jobs:
