@@ -1,0 +1,59 @@
+name: Genesis Rock Forge Reference V002 - Blender 4.5.13
+on:
+  push:
+    branches:
+      - 'production/forge-rock-reference-rebuild-v002'
+    paths:
+      - '.github/workflows/forge-rock-reference-v002.yml'
+      - 'scripts/genesis_forge_rock_reference_v002.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  forge-reference:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate the isolated generator
+        run: python3 -m py_compile scripts/genesis_forge_rock_reference_v002.py
+      - name: Install official Blender 4.5.13 LTS on GitHub
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 --connect-timeout 25 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/genesis-blender.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/genesis-blender.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version
+          /tmp/genesis-blender/blender -b --python-expr 'import numpy; print(numpy.__version__)'
+      - name: Reconstruct forge and oversized bellows from wireframe reference
+        env:
+          OMP_NUM_THREADS: '2'
+          OPENBLAS_NUM_THREADS: '2'
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 --python scripts/genesis_forge_rock_reference_v002.py
+      - name: Verify actual files and four different real renders
+        run: |
+          set -euo pipefail
+          p=output_forge_rock_reference_v002
+          test -s "$p/forge_rock_reference_v002.glb"
+          test -s "$p/forge_rock_reference_v002.blend"
+          test -s "$p/AUDIT.json"
+          for shot in three_quarter front rear detail; do test -s "$p/$shot.png"; done
+          test "$(find "$p/textures" -type f -name '*.png' | wc -l)" -ge 8
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path("output_forge_rock_reference_v002/AUDIT.json").read_text())
+          assert j["meshes"] > 60, j
+          assert j["human_art_approval"] is False
+          print(j)
+          PY
+      - name: Upload editable asset, GLB, PBR textures, actual four views and audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-forge-rock-reference-v002
+          path: output_forge_rock_reference_v002/
+          if-no-files-found: warn
+          retention-days: 14
