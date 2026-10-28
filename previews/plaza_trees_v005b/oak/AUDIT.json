@@ -1,0 +1,11 @@
+{
+  "species": "oak",
+  "version": "V005B",
+  "technique": "Blender Sapling Tree Gen official addon + voxel union + shape-preserving decimate",
+  "triangles": 17712,
+  "sapling_mesh_faces": 6640,
+  "pre_decimate_voxel_triangles": 17712,
+  "limit": 60000,
+  "approved": false,
+  "review": "branch topology and silhouette; foliage is deliberately absent"
+}
