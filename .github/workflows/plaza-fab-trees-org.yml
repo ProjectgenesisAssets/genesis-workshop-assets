@@ -1,0 +1,96 @@
+name: Plaza - Nicholas Fab trees visual QA (Organization PlayCanvas)
+
+on:
+  push:
+    branches:
+      - feature/plaza-arboles-fab-8pct
+    paths:
+      - '.github/workflows/plaza-fab-trees-org.yml'
+      - 'scripts/plaza_optimize_trees.py'
+      - 'scripts/plaza_candidate_gate.py'
+      - 'scripts/plaza_prepare_fab_source.py'
+
+permissions:
+  contents: write # Allows this workflow to read the unpublished, org-owned draft release asset.
+
+concurrency:
+  group: plaza-fab-org-tree-test-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  blender-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout experimental branch
+        uses: actions/checkout@v4
+
+      - name: Download original from unpublished draft asset in organization repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p downloads
+          if ! gh release download plaza-nicholas-fab-source-20261028 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern more-realistic-trees-free.zip \
+            --dir downloads; then
+            # Draft releases can require the API's direct asset-ID route.
+            gh api --header 'Accept: application/octet-stream' \
+              "/repos/$GITHUB_REPOSITORY/releases/assets/684758710" \
+              > downloads/more-realistic-trees-free.zip
+          fi
+          printf '%s  %s\n' \
+            65cbde6b301abe1ffb99c47491ddf3d704d8b963e6d7e5e81900effee0544f95 \
+            downloads/more-realistic-trees-free.zip | sha256sum -c -
+          python3 scripts/plaza_prepare_fab_source.py \
+            --archive downloads/more-realistic-trees-free.zip \
+            --output-dir downloads/model >> "$GITHUB_ENV"
+
+      - name: Install official Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 25 --max-time 900 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/genesis-blender.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/genesis-blender.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F 'Blender 4.5.13'
+
+      - name: Export baseline and three independently optimized candidates
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b --disable-autoexec -t 2 --python-exit-code 1 \
+            --python scripts/plaza_optimize_trees.py -- \
+            --source "$SOURCE_PATH" --output-dir output/plaza \
+            --ratios 0.50,0.30,0.15 --samples 16
+
+      - name: Install independent image-structure audit packages
+        run: |
+          python3 -m pip install --quiet --break-system-packages \
+            'Pillow>=11,<13' 'numpy>=2,<3' 'scikit-image>=0.25,<0.27'
+
+      - name: Check geometry, all Fab textures, and visual difference from five views
+        run: |
+          python3 scripts/plaza_candidate_gate.py \
+            --output-dir output/plaza --minimum-textures 5 --minimum-materials 2
+
+      - name: Preserve all candidate GLBs and comparable PNG renders for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plaza-fab-nicholas-trees-${{ github.run_id }}
+          path: |
+            output/plaza/*.glb
+            output/plaza/*.json
+            output/plaza/views/**/*.png
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Note human art-direction gate
+        if: always()
+        run: |
+          echo 'Only geometry loss is unlimited: a candidate must preserve images, materials and five-view appearance.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The 8-percent color-change and the SSIM/silhouette tests are approximate metrics, not a definitive percent of lost detail.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Gabriel must still review the appearance at intended PlayCanvas gameplay distance before admission.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Nicholas 3D / More Realistic Trees Free! / CC BY 4.0 attribution required.' >> "$GITHUB_STEP_SUMMARY"

@@ -42,8 +42,45 @@ def load_source(source, smoke):
         bpy.ops.import_scene.gltf(filepath=str(source.resolve()))
     elif source.suffix.lower() == ".blend":
         bpy.ops.wm.open_mainfile(filepath=str(source.resolve()))
+        reconnect_fab_textures(source)
     else:
         raise ValueError("Unsupported source; use .blend or .glb")
+
+
+def reconnect_fab_textures(source):
+    """Reconnect images from the original outer Fab ZIP, without changing meshes."""
+    if not source or source.suffix.lower() != ".blend":
+        return
+    extracted_root = next((p for p in source.parents if (p / "outer").is_dir()), None)
+    if extracted_root is None:
+        print("TEXTURE_RECONNECT: no outer directory found; checking embedded image data")
+        return
+    filenames = {}
+    for file in (extracted_root / "outer").rglob("*"):
+        if file.is_file() and file.suffix.lower() in {".png", ".jpg", ".jpeg", ".tga", ".webp"}:
+            filenames.setdefault(file.name.casefold(), file)
+    rebound = 0
+    missing = []
+    for img in bpy.data.images:
+        if img.source != "FILE" or img.packed_file is not None:
+            continue
+        old_name = Path(img.filepath.replace("\\", "/")).name.casefold()
+        img_name = Path(img.name.replace("\\", "/")).name.casefold()
+        path = filenames.get(old_name) or filenames.get(img_name)
+        if path is None:
+            if old_name:
+                missing.append(img.name)
+            continue
+        img.filepath = str(path.resolve())
+        try:
+            img.reload()
+        except RuntimeError as error:
+            raise RuntimeError("Unable to load Fab texture %s: %s" % (path, error))
+        rebound += 1
+    print("TEXTURE_RECONNECT: %d images reconnected from Fab; %d unmatched: %s" % (
+        rebound, len(missing), missing[:10]))
+    if rebound == 0 and not any(image.packed_file for image in bpy.data.images):
+        raise RuntimeError("External Fab images were not reconnected; refusing textureless export")
 
 
 def scene_meshes():
