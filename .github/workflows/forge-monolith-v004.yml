@@ -1,0 +1,58 @@
+name: Forge V004 single natural rock body - official Blender
+on:
+  push:
+    branches:
+      - 'production/forge-monolith-rock-v003'
+    paths:
+      - '.github/workflows/forge-monolith-v004.yml'
+      - 'scripts/genesis_forge_monolith_v004.py'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source
+        run: python3 -m py_compile scripts/genesis_forge_monolith_v004.py
+      - name: Install official Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 --connect-timeout 25 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-lts.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender-lts.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version
+      - name: Produce independent stone-only forge and four real Cycles views
+        env:
+          OMP_NUM_THREADS: '2'
+          OPENBLAS_NUM_THREADS: '2'
+        run: |
+          set -euo pipefail
+          /tmp/blender-lts/blender -b -t 3 --python-exit-code 1 --python scripts/genesis_forge_monolith_v004.py
+      - name: Validate existence of PBR maps editable master GLB and four real shots
+        run: |
+          set -euo pipefail
+          p=output_forge_monolith_v004
+          test -s "$p/forge_monolith_v004.blend"
+          test -s "$p/forge_monolith_v004.glb"
+          test -s "$p/AUDIT.json"
+          for v in three_quarter front rear detail; do test -s "$p/$v.png"; done
+          for t in rock_basecolor_1536 rock_roughness_1536 rock_normal_1536; do test -s "$p/textures/$t.png"; done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path('output_forge_monolith_v004/AUDIT.json').read_text())
+          assert d['bellows'] is False and d['props'] is False and d['metal_flue'] is False
+          assert d['forge_mesh_triangles'] > 500
+          assert d['art_approved'] is False
+          print('GENESIS_V004_AUDIT',d)
+          PY
+      - name: Deliver tested results without replacing existing project assets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-forge-monolith-v004
+          path: output_forge_monolith_v004/
+          if-no-files-found: warn
+          retention-days: 14
