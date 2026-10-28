@@ -1,0 +1,59 @@
+name: Arcanist V027 WebGL texture optimization audit
+on:
+  push:
+    branches: [production/door-v027-arcanist-approved]
+    paths: [.github/workflows/door-v027-webgl-optimization.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install glTF-Transform CLI
+        run: npm install --no-save @gltf-transform/cli
+      - name: Produce separate WebGL candidate, preserving master
+        run: |
+          mkdir -p deliverables/door_v027/webgl
+          npx gltf-transform inspect deliverables/door_v027/Arcanist_Door_V027_master.glb > deliverables/door_v027/webgl/master_inspect.txt
+          npx gltf-transform optimize deliverables/door_v027/Arcanist_Door_V027_master.glb deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb --texture-compress webp --texture-size 2048
+          npx gltf-transform inspect deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb > deliverables/door_v027/webgl/webgl_inspect.txt
+          python3 - <<'PY'
+          import os,json,struct
+          base='deliverables/door_v027/'
+          a=base+'Arcanist_Door_V027_master.glb'
+          b=base+'webgl/Arcanist_Door_V027_WebGL.glb'
+          def glb(path):
+              with open(path,'rb') as f:
+                  h=f.read(12)
+                  assert h[:4]==b'glTF'
+                  n,t=f.read(8)
+                  assert t==b'JSON'
+                  data=json.loads(f.read(n))
+              return data
+          x,y=glb(a),glb(b)
+          assert len(x.get('meshes',[]))==len(y.get('meshes',[]))
+          assert len(x.get('nodes',[]))==len(y.get('nodes',[]))
+          assert len(x.get('animations',[]))==len(y.get('animations',[]))
+          assert len(x.get('materials',[]))==len(y.get('materials',[]))
+          report={'master_bytes':os.path.getsize(a),'webgl_bytes':os.path.getsize(b),'reduction_percent':round((1-os.path.getsize(b)/os.path.getsize(a))*100,2),'mesh_count':len(y.get('meshes',[])),'material_count':len(y.get('materials',[])),'animations':len(y.get('animations',[])),'extensions_used':y.get('extensionsUsed',[]),'visual_review':'PENDING: compression is not visually approved until comparison renders'}
+          open(base+'webgl/optimization_receipt.json','w').write(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          PY
+      - name: Commit candidate and report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add deliverables/door_v027/webgl
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add V027 PlayCanvas WebGL compressed candidate and audit [skip ci]'
+            git push origin HEAD:production/door-v027-arcanist-approved
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcanist-v027-webgl-candidate
+          path: deliverables/door_v027/webgl/
+          retention-days: 30
