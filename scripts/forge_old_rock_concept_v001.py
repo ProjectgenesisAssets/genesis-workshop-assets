@@ -160,11 +160,11 @@ cross.extend((radius*(1-2*j/48),.952+.552*math.sqrt(max(0,1-(1-2*j/48)**2))) for
 num=len(cross)
 verts=[(x,y,z) for y in (-.79,.29) for (x,z) in cross]
 faces=[]
-faces.append(tuple(reversed(tuple(range(num)))))
-faces.append(tuple(range(num,2*num)))
+faces.append(tuple(range(num)))
+faces.append(tuple(reversed(tuple(range(num,2*num)))))
 for j in range(num):
     k=(j+1)%num
-    faces.append((j,k,num+k,num+j))
+    faces.append((num+j,num+k,k,j))
 me=bpy.data.meshes.new("Real_Arch_Cavity_Cutter")
 me.from_pydata(verts,[],faces)
 me.update()
@@ -202,6 +202,23 @@ bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action="SELECT")
 bpy.ops.uv.smart_project(island_margin=.005)
 bpy.ops.object.mode_set(mode="OBJECT")
+# Verify front opening with actual BVH mesh ray casts: no cosmetically painted fake arch.
+inv=body.matrix_world.inverted()
+def first_surface_y(x,z):
+    origin=inv @ Vector((x,-3,z))
+    direction=inv.to_3x3() @ Vector((0,1,0))
+    ok,where,nrm,face=body.ray_cast(origin,direction, distance=6.0)
+    assert ok,("Forge surface absent",x,z)
+    return float((body.matrix_world @ where).y)
+cavity_back_y=first_surface_y(0,1.14)
+shoulder_front_y=first_surface_y(.82,1.14)
+assert cavity_back_y > .12, ("ARCH HOLLOW FAILED - back wall is not visible",cavity_back_y)
+assert shoulder_front_y < -.20, ("ARCH OUTER WALL FAILED",shoulder_front_y)
+assert cavity_back_y-shoulder_front_y > .42, ("ARCH OPENING TOO SHALLOW",cavity_back_y,shoulder_front_y)
+QA_ARCH_OPEN={"center_back_y":round(cavity_back_y,4),
+              "outer_shoulder_front_y":round(shoulder_front_y,4),
+              "confirmed_depth_m":round(cavity_back_y-shoulder_front_y,4)}
+print("GENESIS_TRUE_ARCH_OPENING_CONFIRMED",QA_ARCH_OPEN)
 assets.append(body)
 
 # Independent coal/ash microforms reside INSIDE the chamber, never equipment props.
@@ -293,6 +310,7 @@ audit={
   "total_mesh_faces":mesh_faces,
   "texture_files":maps,
   "render_views":list(shots),
+  "actual_arch_opening_ray_test": QA_ARCH_OPEN,
   "notes":"Only forge, no bellows, tool rack, barrels, or other workshop props. NOT yet artistically approved."
 }
 (OUT/"AUDIT.json").write_text(json.dumps(audit,indent=2),encoding="utf-8")
