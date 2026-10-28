@@ -1,11 +1,11 @@
 {
   "asset": "Forge_Ancient_Rock",
-  "version": "scanned_rock_material_v002",
+  "version": "lithic_sculpt_v003",
   "basis": "User-approved first 2D visual concept: geometry recreated independently",
   "copyright": "Original independent 3D geometry; Poly Haven Rock Face scanned material CC0",
   "blender": "4.5.13 LTS",
   "mesh_objects": 24,
-  "total_mesh_faces": 24227,
+  "total_mesh_faces": 24408,
   "texture_files": [
     "rock_face_diff_2k.jpg",
     "rock_face_rough_2k.jpg",
@@ -26,9 +26,9 @@
     "detail"
   ],
   "actual_arch_opening_ray_test": {
-    "center_back_y": 0.1218,
-    "outer_shoulder_front_y": -0.3405,
-    "confirmed_depth_m": 0.4623
+    "center_back_y": 0.2424,
+    "outer_shoulder_front_y": -0.3423,
+    "confirmed_depth_m": 0.5847
   },
-  "notes": "Only forge, no bellows, tool rack, barrels, or other workshop props. NOT yet artistically approved."
+  "notes": "Only forge, no bellows or props. V003 angular lithic silhouette, macro fractures and 2K scanned rock. NOT yet artistically approved."
 }
