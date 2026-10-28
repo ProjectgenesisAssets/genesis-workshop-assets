@@ -1,0 +1,18 @@
+{
+  "species": "ash",
+  "triangle_count": 19676,
+  "ceiling": 60000,
+  "bark_triangles": 11076,
+  "card_triangles": 8600,
+  "foliage_cards": 4300,
+  "glTF_expected_alpha_mode": "MASK",
+  "techniques": [
+    "species-specific leader height and root flare",
+    "independent scaffold branching architecture",
+    "continuous tapered limb rings",
+    "spiral secondary branches",
+    "foliage alpha-cutout atlas",
+    "bark albedo and normal textures"
+  ],
+  "status": "V004 distinct-skeleton candidate: visual approval pending"
+}

@@ -1,0 +1,18 @@
+{
+  "species": "maple",
+  "triangle_count": 19306,
+  "ceiling": 60000,
+  "bark_triangles": 9906,
+  "card_triangles": 9400,
+  "foliage_cards": 4700,
+  "glTF_expected_alpha_mode": "MASK",
+  "techniques": [
+    "species-specific leader height and root flare",
+    "independent scaffold branching architecture",
+    "continuous tapered limb rings",
+    "spiral secondary branches",
+    "foliage alpha-cutout atlas",
+    "bark albedo and normal textures"
+  ],
+  "status": "V004 distinct-skeleton candidate: visual approval pending"
+}
