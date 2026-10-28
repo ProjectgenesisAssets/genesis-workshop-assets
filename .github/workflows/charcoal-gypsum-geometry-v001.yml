@@ -2,7 +2,7 @@ name: Blacksmith charcoal geometry clay V002
 on:
   push:
     branches:
-      - experiment/charcoal-gypsum-geometry-v002
+      - experiment/charcoal-gypsum-geometry-v001
     paths:
       - .github/workflows/charcoal-gypsum-geometry-v001.yml
       - scripts/charcoal_gypsum_geometry_v002.py
