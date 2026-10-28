@@ -1,0 +1,34 @@
+name: Publish Rock Forge V002 review images
+on:
+  push:
+    branches:
+      - 'production/forge-rock-reference-rebuild-v001'
+    paths:
+      - '.github/workflows/publish-forge-rock-review-v002.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download already verified Blender V002 artifact, without rerendering
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/genesis-rock-review
+          gh run download 40661156889 --repo ProjectgenesisAssets/genesis-workshop-assets --name genesis-forge-rock-reference-v002 --dir /tmp/genesis-rock-review
+          for shot in three_quarter front rear detail; do test -s "/tmp/genesis-rock-review/$shot.png"; done
+      - name: Commit ONLY four public review PNGs and audit on isolated branch
+        run: |
+          set -euo pipefail
+          mkdir -p previews/forge_rock_reference_v002
+          for shot in three_quarter front rear detail; do cp "/tmp/genesis-rock-review/$shot.png" "previews/forge_rock_reference_v002/$shot.png"; done
+          cp /tmp/genesis-rock-review/AUDIT.json previews/forge_rock_reference_v002/AUDIT.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/forge_rock_reference_v002
+          git commit -m 'Publish real V002 rock forge four-view review [skip ci]'
+          git push origin HEAD:production/forge-rock-reference-rebuild-v002
