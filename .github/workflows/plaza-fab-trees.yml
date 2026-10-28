@@ -1,0 +1,103 @@
+name: Plaza - Fab trees visual-preserving optimization (Blender 4.5 LTS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      asset_url:
+        description: 'HTTPS download URL for original Fab .zip or converted .glb'
+        required: true
+        type: string
+      sha256:
+        description: 'Optional SHA-256 of downloaded source for integrity'
+        required: false
+        type: string
+      remaining_ratios:
+        description: 'Independent candidate triangle ratios; not a hard polygon limit'
+        required: true
+        default: '0.50,0.30,0.15'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plaza-fab-trees-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate-and-compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+
+      - name: Read Fab model source without committing large binaries
+        env:
+          SOURCE_URL: ${{ inputs.asset_url }}
+          EXPECTED_SHA256: ${{ inputs.sha256 }}
+        run: |
+          set -euo pipefail
+          case "$SOURCE_URL" in
+            https://*) ;;
+            *) echo 'Only HTTPS asset URLs are allowed' >&2; exit 1;;
+          esac
+          mkdir -p downloads
+          curl --fail --location --retry 2 --connect-timeout 25 --max-time 900 \
+            --proto '=https' --proto-redir '=https' \
+            "$SOURCE_URL" -o downloads/source_payload
+          test -s downloads/source_payload
+          if [[ -n "$EXPECTED_SHA256" ]]; then
+            actual="$(sha256sum downloads/source_payload | cut -d ' ' -f1)"
+            test "$actual" = "$EXPECTED_SHA256"
+          fi
+          python3 scripts/plaza_prepare_fab_source.py \
+            --archive downloads/source_payload --output-dir downloads/model >> "$GITHUB_ENV"
+
+      - name: Install official Blender 4.5.13 LTS on GitHub Actions
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 25 --max-time 900 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/genesis-blender.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/genesis-blender.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F 'Blender 4.5.13'
+
+      - name: Optimize original Fab asset and render five matching views
+        env:
+          RATIOS: ${{ inputs.remaining_ratios }}
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b --disable-autoexec -t 2 --python-exit-code 1 \
+            --python scripts/plaza_optimize_trees.py -- \
+            --source "$SOURCE_PATH" --output-dir output/plaza --ratios "$RATIOS" --samples 16
+
+      - name: Install independent visual and GLB audit libraries
+        run: |
+          python3 -m pip install --quiet --break-system-packages \
+            'Pillow>=11,<13' 'numpy>=2,<3' 'scikit-image>=0.25,<0.27'
+
+      - name: Reject visual deformation or missing textures and preserve evidence
+        run: |
+          python3 scripts/plaza_candidate_gate.py --output-dir output/plaza \
+            --minimum-textures 5 --minimum-materials 2
+
+      - name: Upload original comparison, candidate GLBs and all QA views
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plaza-fab-trees-${{ github.run_id }}
+          path: |
+            output/plaza/*.glb
+            output/plaza/*.json
+            output/plaza/views/**/*.png
+          retention-days: 2
+          if-no-files-found: warn
+
+      - name: Explain approval boundary
+        if: always()
+        run: |
+          echo 'Five-view metrics are only an objective filter.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Do NOT publish candidates in PlayCanvas before Gabriel reviews tree detail and foliage at gameplay distances.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Nicholas 3D / More Realistic Trees Free! / CC BY 4.0 attribution required.' >> "$GITHUB_STEP_SUMMARY"
