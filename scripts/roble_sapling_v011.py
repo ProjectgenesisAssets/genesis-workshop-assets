@@ -1,0 +1,280 @@
+# Project Genesis Oak V011: official Sapling + fused voxel trunk prototype.
+# Art QA first. Non-approved candidate, no paid assets.
+import bpy,sys,json,math,random
+import numpy as np
+from pathlib import Path
+from mathutils import Vector
+sys.path.insert(0,'/tmp/blender-addons')
+import add_curve_sapling
+add_curve_sapling.register()
+out=Path('output_plaza_v011/oak');out.mkdir(parents=True,exist_ok=True)
+bpy.ops.object.select_all(action='SELECT')
+bpy.ops.object.delete(use_global=False)
+random.seed(7025)
+# Evaluate independent Sapling skeletons without rendering them.
+# Pick a crown with a genuinely broad, balanced branching envelope;
+# stems are compared, not simply leaf cards shifted away from branches.
+def grow_sapling(seed):
+    bpy.ops.curve.tree_add(
+        seed=seed,levels=3,scale=7.8,scaleV=.20,
+        branches=(0,25,21,0),length=(1.0,.90,.68,.35),
+        curveRes=(8,5,3,1),baseSize=.20,
+        ratio=.050,ratioPower=1.10,
+        shape='2',showLeaves=False,bevel=True,rootFlare=1.80,
+        splitAngle=(0,27,24,0),
+        rotate=(0,137.5,126,0),
+        downAngle=(0,82,63,0),
+    )
+def crown_buds():
+    coords=[]
+    for tree in [o for o in bpy.context.scene.objects if o.type=='CURVE']:
+        for spline in tree.data.splines:
+            points=[(tree.matrix_world @ p.co) for p in spline.bezier_points] if spline.type=='BEZIER' else [(tree.matrix_world @ Vector((p.co.x,p.co.y,p.co.z))) for p in spline.points]
+            coords.extend([pt for pt in points[-3:] if pt.z>2.8])
+    return coords
+best_seed=None
+best_score=-1e8
+scores=[]
+for candidate in (7025,11923,19889,27941,35903,45829,53087,68917):
+    grow_sapling(candidate)
+    buds=crown_buds()
+    if len(buds)>60:
+        xyz=np.array([(p.x,p.y,p.z) for p in buds],dtype=np.float64)
+        p10=np.percentile(xyz,10,axis=0);p90=np.percentile(xyz,90,axis=0)
+        dx=p90[0]-p10[0];dy=p90[1]-p10[1]
+        dh=max(1.,p90[2]-p10[2])
+        # Real counts for the four crown quarters.
+        quadrants=[int(np.sum(((xyz[:,0]>=0)==bool(q//2))&((xyz[:,1]>=0)==bool(q%2)))) for q in range(4)]
+        balance=min(quadrants)/max(1,max(quadrants))
+        score=1.7*min(dx,dy)/dh+.7*balance-.12*abs(dx-dy)/max(dx,dy,1)
+        scores.append((candidate,round(score,3),round(dx,2),round(dy,2),round(dh,2),quadrants))
+        if score>best_score:best_score=score;best_seed=candidate
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False)
+assert best_seed is not None,('NO_VALID_SAPLING_SEED',scores)
+print('V011_SILHOUETTE_CANDIDATES',scores)
+print('V011_SELECTED_SEED',best_seed,'SCORE',best_score)
+grow_sapling(best_seed)
+curves=[o for o in bpy.context.scene.objects if o.type=='CURVE']
+assert curves,'SAPLING_CURVE_NOT_CREATED'
+# Take actual terminal branching locations from Sapling, before mesh conversion.
+budpoints=[]
+for tree_curve in curves:
+    for spline in tree_curve.data.splines:
+        points=[(tree_curve.matrix_world @ p.co) for p in spline.bezier_points] if spline.type=='BEZIER' else [(tree_curve.matrix_world @ Vector((p.co.x,p.co.y,p.co.z))) for p in spline.points]
+        for pt in points[-3:]:
+            if pt.z>3.15:budpoints.append(pt.copy())
+print('SAPLING_FOLIAGE_ANCHORS',len(budpoints))
+assert len(budpoints)>25
+for o in bpy.context.selected_objects:o.select_set(False)
+obj=max(curves,key=lambda o:len(o.data.splines))
+obj.select_set(True);bpy.context.view_layer.objects.active=obj
+bpy.ops.object.convert(target='MESH')
+obj=bpy.context.object;obj.name='Oak_Sapling_Fused_Bark_V011'
+pre=len(obj.data.polygons)
+assert pre>500,('SAPLING_TOO_SIMPLE',pre)
+# The Sapling stump was visibly fragmented in V007. Build an overlapping,
+# CLOSED continuous bark collar and exposed organic buttress roots.
+# The union below is volumetric; no open branch/roots seams are exported.
+seeded=random.Random(8051)
+ring_z=[-.10,0,.12,.28,.50,.78,1.10,1.50,2.00,2.55,3.10,3.70,4.35,4.95,5.45]
+ring_r=[.50,.57,.56,.51,.46,.41,.36,.32,.28,.24,.205,.175,.135,.095,.055]
+S=24
+trunk_v=[];trunk_f=[]
+for j,(z,r) in enumerate(zip(ring_z,ring_r)):
+    for i in range(S):
+        a=math.tau*i/S
+        fluting=1+.055*math.cos(5*a+.20*z)+.025*math.sin(9*a-.61*z)
+        leanx=.065*math.sin(.52*z);leany=.045*math.sin(.69*z)
+        trunk_v.append((leanx+r*fluting*math.cos(a),leany+r*fluting*math.sin(a),z))
+for j in range(len(ring_z)-1):
+    for i in range(S):
+        q=j*S+i;next_q=j*S+(i+1)%S
+        trunk_f.append((q,next_q,next_q+S,q+S))
+trunk_f.append(tuple(reversed(range(S))))
+trunk_f.append(tuple((len(ring_z)-1)*S+i for i in range(S)))
+def add_root(angle,reach,width):
+    direction=Vector((math.cos(angle),math.sin(angle),0))
+    side=Vector((-math.sin(angle),math.cos(angle),0))
+    tiprings=7; sides=10
+    start=len(trunk_v)
+    for k in range(tiprings):
+        t=k/(tiprings-1)
+        center=direction*(.12+t*reach)+side*(.07*math.sin(math.pi*t))
+        z=.22-(.15*t)+.13*math.sin(math.pi*t)
+        radius=width*(1-t)**1.3+.014
+        for m in range(sides):
+            theta=math.tau*m/sides
+            point=center+side*math.cos(theta)*radius+Vector((0,0,math.sin(theta)*radius*.65))
+            trunk_v.append((point.x,point.y,point.z+z))
+    for k in range(tiprings-1):
+        for m in range(sides):
+            q=start+k*sides+m;q1=start+k*sides+(m+1)%sides
+            trunk_f.append((q,q1,q1+sides,q+sides))
+    trunk_f.append(tuple(reversed([start+i for i in range(sides)])))
+    trunk_f.append(tuple(start+(tiprings-1)*sides+i for i in range(sides)))
+for i in range(6):
+    add_root(i*math.tau/6+.16+seeded.uniform(-.14,.14),
+             seeded.uniform(.43,.72),seeded.uniform(.14,.23))
+collar_mesh=bpy.data.meshes.new('Closed_oak_root_and_bark_collar')
+collar_mesh.from_pydata(trunk_v,[],trunk_f)
+collar_mesh.update()
+collar=bpy.data.objects.new('Watertight_basal_trunk_and_roots',collar_mesh)
+bpy.context.collection.objects.link(collar)
+bpy.ops.object.select_all(action='DESELECT')
+obj.select_set(True);collar.select_set(True)
+bpy.context.view_layer.objects.active=obj
+bpy.ops.object.join()
+# Voxel remesh performs spatial UNION at limb intersections.
+obj.data.remesh_voxel_size=.060
+obj.data.remesh_voxel_adaptivity=0.0
+bpy.ops.object.voxel_remesh()
+# Remove splinter components produced when tiny distal twigs are voxelized.
+import bmesh
+bm=bmesh.new();bm.from_mesh(obj.data);bm.verts.ensure_lookup_table()
+remaining=set(bm.verts);groups=[]
+while remaining:
+    seed=remaining.pop();component=[seed];queue=[seed]
+    while queue:
+        v=queue.pop()
+        for edge in v.link_edges:
+            other=edge.other_vert(v)
+            if other in remaining:
+                remaining.remove(other);component.append(other);queue.append(other)
+    groups.append(component)
+groups.sort(key=len,reverse=True)
+if len(groups)>1:
+    drop=[v for component in groups[1:] for v in component]
+    bmesh.ops.delete(bm,geom=drop,context='VERTS')
+bm.to_mesh(obj.data);bm.free();obj.data.update()
+print('FUSED_COMPONENTS',len(groups),'KEPT_VERTICES',len(groups[0]))
+raw=sum(len(p.vertices)-2 for p in obj.data.polygons)
+assert raw>1000,('VOXEL_REMESH_EMPTY',raw)
+# Reject open boundaries after volume union: trunk must be a watertight solid.
+bcheck=bmesh.new();bcheck.from_mesh(obj.data)
+open_edges=sum(1 for e in bcheck.edges if not e.is_manifold)
+bcheck.free()
+assert open_edges==0,('BARK_NOT_WATERTIGHT',open_edges)
+print('WATERTIGHT_BARK_CHECK',open_edges)
+# Verify that the external shape has no open edges before export.
+# Keep shape silhouette while capping runtime triangles.
+if raw>35000:
+    mod=obj.modifiers.new('Geometry budget decimate','DECIMATE')
+    mod.ratio=min(1,35000/raw)
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+for poly in obj.data.polygons:poly.use_smooth=True
+# UVs rebuilt after remesh using smart projection.
+bpy.ops.object.mode_set(mode='EDIT')
+bpy.ops.mesh.select_all(action='SELECT')
+bpy.ops.uv.smart_project(island_margin=.012)
+bpy.ops.object.mode_set(mode='OBJECT')
+bark=bpy.data.materials.new('Mature oak aged bark');bark.use_nodes=True
+bs=bark.node_tree.nodes.get('Principled BSDF')
+# Reproducible bark color texture baked into the game GLB.
+H=W=512
+yy,xx=np.mgrid[0:H,0:W].astype(np.float32)
+noise_rng=np.random.default_rng(7007)
+fissures=np.sin(xx*.20+2*np.sin(yy*.018)+1.4*np.sin(xx*.045+yy*.015))
+grain=np.sin(xx*.88+yy*.028)*.10
+grain+=noise_rng.normal(0,.08,(H,W))
+value=np.clip(.87+.16*fissures+grain,.38,1)
+base=np.array((.42,.30,.215),np.float32)
+rgb=np.clip(value[:,:,None]*base[None,None,:],0,1)
+pixels=np.concatenate((rgb,np.ones((H,W,1),np.float32)),axis=2)
+bi=bpy.data.images.new('Oak weathered bark V011',width=W,height=H,alpha=True)
+bi.pixels.foreach_set(pixels.reshape(-1))
+bi.filepath_raw=str((out/'oak_bark_albedo.png').resolve());bi.file_format='PNG';bi.save();bi.pack()
+btex=bark.node_tree.nodes.new('ShaderNodeTexImage');btex.image=bi
+bark.node_tree.links.new(btex.outputs['Color'],bs.inputs['Base Color'])
+bs.inputs['Roughness'].default_value=.92
+obj.data.materials.clear();obj.data.materials.append(bark)
+# Photo-scanned six oak leaves from ambientCG LeafSet016, CC0 1.0.
+# Pack source color and black/white opacity into one portable GLB RGBA atlas.
+# Attribution: https://ambientcg.com/view?id=LeafSet016 (CC0, optional credit).
+src_dir=Path('/tmp/genesis-leafset016')
+color_path=src_dir/'LeafSet016_1K-JPG_Color.jpg'
+opacity_path=src_dir/'LeafSet016_1K-JPG_Opacity.jpg'
+assert color_path.is_file() and opacity_path.is_file(), 'MISSING_CC0_PHOTO_LEAF_ATLAS'
+color_source=bpy.data.images.load(str(color_path),check_existing=False)
+opacity_source=bpy.data.images.load(str(opacity_path),check_existing=False)
+N=color_source.size[0]
+assert color_source.size[:]==opacity_source.size[:], 'PHOTO_ALPHA_SIZE_MISMATCH'
+rgba_flat=np.empty(N*N*4,dtype=np.float32)
+mask_flat=np.empty(N*N*4,dtype=np.float32)
+color_source.pixels.foreach_get(rgba_flat)
+opacity_source.pixels.foreach_get(mask_flat)
+rgba=rgba_flat.reshape(N,N,4)
+mask=mask_flat.reshape(N,N,4)
+rgba[:,:,:3]*=np.array((.74,.80,.69),dtype=np.float32)
+rgba[:,:,3]=(mask[:,:,0]>.73).astype(np.float32)
+image=bpy.data.images.new('Oak V011 ambientCG LeafSet016 CC0 photos',width=N,height=N,alpha=True)
+image.pixels.foreach_set(rgba.reshape(-1))
+image.filepath_raw=str((out/'oak_leaf_atlas.png').resolve())
+image.file_format='PNG'
+image.save()
+image.pack()
+foliage=bpy.data.materials.new('Oak V011 cutout leaves');foliage.use_nodes=True
+bs=foliage.node_tree.nodes.get('Principled BSDF')
+tex=foliage.node_tree.nodes.new('ShaderNodeTexImage');tex.image=image
+foliage.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+quant=foliage.node_tree.nodes.new('ShaderNodeMath');quant.operation='ROUND'
+foliage.node_tree.links.new(tex.outputs['Alpha'],quant.inputs[0]);foliage.node_tree.links.new(quant.outputs[0],bs.inputs['Alpha'])
+foliage.use_backface_culling=False
+v=[];f=[];uvdata=[]
+assert budpoints
+for i in range(9000):
+    pos=random.choice(budpoints)+Vector((random.gauss(0,.24),random.gauss(0,.24),random.gauss(0,.24)))
+    size=random.uniform(.12,.20)
+    normal=Vector((random.uniform(-1,1),random.uniform(-1,1),random.uniform(-.3,1))).normalized()
+    side=normal.cross(Vector((0,0,1)))
+    if side.length<.05:side=Vector((1,0,0))
+    side.normalize();up=normal.cross(side).normalized()
+    theta=random.random()*math.tau
+    x=(side*math.cos(theta)+up*math.sin(theta))*size
+    y=(-side*math.sin(theta)+up*math.cos(theta))*size
+    start=len(v)
+    for point in (pos-x-y,pos+x-y,pos+x+y,pos-x+y):v.append(tuple(point))
+    f.extend([(start,start+1,start+2),(start,start+2,start+3)])
+    tile=random.randrange(6);u0=(tile%3)/3;v0=(tile//3)*.5
+    quad=[(u0,v0),(u0+1/3,v0),(u0+1/3,v0+.5),(u0,v0+.5)]
+    uvdata.extend([(quad[0],quad[1],quad[2]),(quad[0],quad[2],quad[3])])
+mesh=bpy.data.meshes.new('Oak botanical foliage');mesh.from_pydata(v,[],f);mesh.update()
+mesh.materials.append(foliage);layer=mesh.uv_layers.new(name='UVMap')
+for poly,coords in zip(mesh.polygons,uvdata):
+    for li,uv in zip(poly.loop_indices,coords):layer.data[li].uv=uv
+leaves=bpy.data.objects.new('Oak foliage cards',mesh);bpy.context.collection.objects.link(leaves)
+tri=sum(len(p.vertices)-2 for p in obj.data.polygons)
+tri+=len(mesh.polygons)
+assert tri<=60000,('TRIANGLE_CAP',tri)
+audit={'species':'oak','version':'V011','technique':'Blender Sapling Tree Gen official addon + watertight closed root collar + voxel union + alpha-cutout foliage',
+       'triangles':tri,'sapling_mesh_faces':pre,'pre_decimate_voxel_triangles':raw,
+       'limit':60000,'selected_seed':best_seed,'silhouette_score':round(best_score,3),'leaf_atlas':'ambientCG LeafSet016 1K-JPG color+opacity CC0', 'approved':False,'review':'Broadest balanced Sapling crown among eight seeds, watertight bark and CC0 photographed oak leaves; visual approval pending'}
+(out/'AUDIT.json').write_text(json.dumps(audit,indent=2))
+bpy.ops.wm.save_as_mainfile(filepath=str((out/'oak_sapling_v011.blend').resolve()))
+bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);leaves.select_set(True);bpy.context.view_layer.objects.active=obj
+bpy.ops.export_scene.gltf(filepath=str((out/'oak_sapling_v011.glb').resolve()),
+                          export_format='GLB',use_selection=True,export_apply=True)
+# Render with neutral lighting to inspect joint topology, no foliage to hide artifacts.
+bpy.ops.object.select_all(action='DESELECT')
+ground_mat=bpy.data.materials.new('Ground');ground_mat.diffuse_color=(.35,.36,.34,1)
+bpy.ops.mesh.primitive_plane_add(size=100)
+bpy.context.object.data.materials.append(ground_mat)
+for pwr,loc in [(1700,(8,-5,12)),(1200,(-5,4,9))]:
+    bpy.ops.object.light_add(type='AREA',location=loc)
+    lamp=bpy.context.object;lamp.data.energy=pwr;lamp.data.shape='DISK';lamp.data.size=8
+bpy.ops.object.camera_add()
+cam=bpy.context.object
+scene=bpy.context.scene;scene.camera=cam
+scene.render.engine='CYCLES';scene.cycles.device='CPU';scene.cycles.samples=20
+scene.cycles.use_denoising=True;scene.view_settings.view_transform='AgX'
+scene.render.resolution_x=900;scene.render.resolution_y=900;scene.render.resolution_percentage=100
+for label,loc in [('front',(0,-24,10)),('three_quarter',(18,-24,11)),('side',(24,0,10))]:
+    cam.location=loc;cam.rotation_euler=(Vector((0,0,4.4))-cam.location).to_track_quat('-Z','Y').to_euler()
+    scene.render.filepath=str((out/(label+'.png')).resolve())
+    bpy.ops.render.render(write_still=True)
+leaves.hide_render=True
+cam.location=(18,-24,11)
+cam.rotation_euler=(Vector((0,0,4.4))-cam.location).to_track_quat('-Z','Y').to_euler()
+scene.render.filepath=str((out/'skeleton_three_quarter.png').resolve())
+bpy.ops.render.render(write_still=True)
+print('V011_OAK_AUDIT',json.dumps(audit))
