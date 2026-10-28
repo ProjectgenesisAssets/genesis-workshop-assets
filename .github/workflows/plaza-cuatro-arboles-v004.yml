@@ -1,0 +1,68 @@
+name: Genesis plaza V004 - sculpted growth and foliage atlas (4 trees)
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths:
+      - scripts/generar_arboles_plaza_v004.py
+      - .github/workflows/plaza-cuatro-arboles-v004.yml
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        tree: [oak, ash, maple, linden]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify script syntax
+        run: python3 -m py_compile scripts/generar_arboles_plaza_v004.py
+      - name: Install official Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-v004.tar.xz
+          mkdir -p /tmp/blender-v004
+          tar -xJf /tmp/blender-v004.tar.xz -C /tmp/blender-v004 --strip-components=1
+          /tmp/blender-v004/blender --version
+      - name: Create V004 GLB, Blender master, PBR atlas and four art views
+        run: /tmp/blender-v004/blender -b -t 2 --python-exit-code 1 --python scripts/generar_arboles_plaza_v004.py -- ${{ matrix.tree }}
+      - name: Inspect final GLB - enforce 60k and MASK foliage
+        env:
+          TREE: ${{ matrix.tree }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os,json,struct
+          name=os.environ['TREE']; path=f'output_plaza_v004/{name}'
+          with open(f'{path}/AUDIT.json') as f: audit=json.load(f)
+          assert audit['species']==name
+          with open(f'{path}/{name}_plaza_v004.glb','rb') as f:
+              header=f.read(12)
+              assert header[:4]==b'glTF'
+              n=struct.unpack('<I',f.read(4))[0]
+              assert f.read(4)==b'JSON'
+              gltf=json.loads(f.read(n))
+          tris=sum(gltf['accessors'][prim['indices']]['count']//3
+                   for mesh in gltf['meshes'] for prim in mesh['primitives'])
+          assert tris==audit['triangle_count'] and tris<=60000,(tris,audit)
+          modes=[m.get('alphaMode','OPAQUE') for m in gltf.get('materials',[])]
+          assert 'MASK' in modes,('FOLIAGE_ALPHA_MASK_NOT_EXPORTED',modes)
+          assert len(gltf.get('images',[]))>=3,('MISSING_TEXTURES',gltf.get('images'))
+          for ext in ('blend','glb'):
+              assert os.path.getsize(f'{path}/{name}_plaza_v004.{ext}')>10000
+          for view in ('front','three_quarter','side','rear','skeleton_front','skeleton_three_quarter'):
+              assert os.path.getsize(f'{path}/{view}.png')>12000
+          print(json.dumps({**audit,'glb_triangles_verified':tris,'alpha_modes':modes},indent=2))
+          PY
+      - name: Upload temporary review candidate V004
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-plaza-v004-${{ matrix.tree }}
+          path: output_plaza_v004/${{ matrix.tree }}/
+          retention-days: 2
+          if-no-files-found: warn
