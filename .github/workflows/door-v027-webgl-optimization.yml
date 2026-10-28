@@ -29,7 +29,7 @@ jobs:
               with open(path,'rb') as f:
                   h=f.read(12)
                   assert h[:4]==b'glTF'
-                  n,t=f.read(8)
+                  n,t=struct.unpack('<I4s',f.read(8))
                   assert t==b'JSON'
                   data=json.loads(f.read(n))
               return data
