@@ -25,14 +25,17 @@ jobs:
           mkdir -p assets/candidates
           gltf-transform resize "$RUNNER_TEMP/door/Workshop_Door_V018_herrero.glb" "$RUNNER_TEMP/door/resized.glb" --width 1024 --height 1024
           gltf-transform prune "$RUNNER_TEMP/door/resized.glb" assets/candidates/herrero-door-v018-pbr1024.glb
+          gltf-transform resize "$RUNNER_TEMP/door/Workshop_Door_V018_herrero.glb" "$RUNNER_TEMP/door/mobile-resized.glb" --width 512 --height 512
+          gltf-transform prune "$RUNNER_TEMP/door/mobile-resized.glb" assets/candidates/herrero-door-v018-pbr512-mobile.glb
           gltf-transform validate assets/candidates/herrero-door-v018-pbr1024.glb
+          gltf-transform validate assets/candidates/herrero-door-v018-pbr512-mobile.glb
           cp "$RUNNER_TEMP/door/three_quarter.png" assets/candidates/herrero-door-v018-original-hero.png
-          python3 -c 'import os; n=os.stat("assets/candidates/herrero-door-v018-pbr1024.glb").st_size; print("GLB_BYTES",n,flush=True); assert n<25000000,"GLB exceeds mobile candidate budget"'
+          python3 -c 'import os; p="assets/candidates/"; a=os.stat(p+"herrero-door-v018-pbr1024.glb").st_size; b=os.stat(p+"herrero-door-v018-pbr512-mobile.glb").st_size; print("DESKTOP_BYTES",a,"MOBILE_BYTES",b,flush=True); assert a<25000000 and b<10000000,"Candidate assets exceed budget"'
       - name: Preserve as a candidate only on the integration branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/candidates/herrero-door-v018-pbr1024.glb assets/candidates/herrero-door-v018-original-hero.png
+          git add assets/candidates/herrero-door-v018-pbr1024.glb assets/candidates/herrero-door-v018-pbr512-mobile.glb assets/candidates/herrero-door-v018-original-hero.png
           if ! git diff --cached --quiet; then
             git commit -m "Build optimized WebGL Herrero door candidate"
             git push origin "HEAD:${{ github.ref_name }}"
