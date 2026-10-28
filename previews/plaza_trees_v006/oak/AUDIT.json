@@ -1,0 +1,11 @@
+{
+  "species": "oak",
+  "version": "V006",
+  "technique": "Blender Sapling Tree Gen official addon + voxel union + shape-preserving decimate",
+  "triangles": 21912,
+  "sapling_mesh_faces": 6640,
+  "pre_decimate_voxel_triangles": 17712,
+  "limit": 60000,
+  "approved": false,
+  "review": "Sapling + fused branch topology + botanical leaf cards; visual approval pending"
+}
