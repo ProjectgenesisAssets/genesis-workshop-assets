@@ -137,24 +137,12 @@ body.name="GENESIS_Forge_Rock_Mass"
 body.dimensions=(2.24,1.12,.74)
 apply_transform(body)
 
-# V003: start from proven watertight hood topology, then physically deform
-# its shoulders toward weathered, irregular rock (not a smooth oven sphere).
+# V003: proven watertight arch mass, roughened after voxel merge.
 bpy.ops.mesh.primitive_uv_sphere_add(segments=100,ring_count=50,location=(0,.015,1.03))
 hood=bpy.context.object
-hood.name="Sculpted_Rock_Hood"
+hood.name="Rock_Hood_Proven_Topology"
 hood.scale=(1.08,.55,.81)
 apply_transform(hood)
-for v in hood.data.vertices:
-    p=v.co
-    xn=p.x/1.08
-    yn=p.y/.55
-    # Gradually squared rock shoulders, with genuine 3D silhouette relief.
-    p.x=1.08*math.copysign(abs(xn)**.71,xn)
-    p.y=.55*math.copysign(abs(yn)**.76,yn)
-    irregular=noise.noise(Vector((p.x*3.4,p.y*3.4,p.z*3.4))+Vector((4.8,1.2,3.9)))
-    p.x+=.028*irregular*xn
-    p.y+=.024*irregular*yn
-hood.data.update()
 
 bpy.ops.mesh.primitive_cone_add(vertices=80,radius1=.325,radius2=.205,depth=.65,location=(0,.16,1.87))
 chimney=bpy.context.object
@@ -179,9 +167,10 @@ for v in body.data.vertices:
     micro=noise.noise(p*16.0+Vector((9.2,1.1,3.7)))
     fracture_field=abs(noise.noise(p*5.25+Vector((4.17,9.4,2.8))))
     fracture=-.024*max(0.0,1.0-fracture_field/.12)**2
-    d=.054*macro+.022*meso+.004*micro+fracture
+    d=.038*macro+.015*meso+.003*micro+fracture
     v.co += v.normal*d
 body.data.update()
+print("FORGE_DEBUG_AFTER_VOXEL",len(body.data.vertices),len(body.data.polygons))
 body.data.materials.append(rock)
 body.data.materials.append(soot)
 
@@ -189,11 +178,7 @@ body.data.materials.append(soot)
 radius=.745
 cross=[(-radius,.735),(radius,.735)]
 # Hand-hewn stone arch; preserve clearance and depth, avoid mathematically perfect curve.
-cross.extend((
-    radius*(1-2*j/48),
-    .952+.552*math.sqrt(max(0,1-(1-2*j/48)**2))
-    +.013*math.sin(j*.73)*math.sin(math.pi*j/48)
-) for j in range(49))
+cross.extend((radius*(1-2*j/48),.952+.552*math.sqrt(max(0,1-(1-2*j/48)**2))) for j in range(49))
 num=len(cross)
 verts=[(x,y,z) for y in (-.79,.29) for (x,z) in cross]
 faces=[]
@@ -216,6 +201,7 @@ bo.solver="EXACT"
 bo.object=cut
 bpy.ops.object.modifier_apply(modifier=bo.name)
 bpy.data.objects.remove(cut,do_unlink=True)
+print("FORGE_DEBUG_AFTER_ARCH_BOOLEAN",len(body.data.vertices),len(body.data.polygons))
 
 # Open air flue descends into the combustion chamber, visible from above.
 bpy.ops.mesh.primitive_cylinder_add(vertices=64,radius=.121,depth=1.15,location=(0,.16,1.84))
@@ -227,6 +213,7 @@ bo=body.modifiers.new("True smoke exhaust through rock","BOOLEAN")
 bo.operation="DIFFERENCE"; bo.solver="EXACT";bo.object=flue
 bpy.ops.object.modifier_apply(modifier=bo.name)
 bpy.data.objects.remove(flue,do_unlink=True)
+print("FORGE_DEBUG_AFTER_FLUE_BOOLEAN",len(body.data.vertices),len(body.data.polygons))
 
 # Softened edge geometry without cartoon-like chiselled stone block outlines.
 active(body)
