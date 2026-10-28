@@ -1,0 +1,60 @@
+name: Arcanist V027 - master vs 4MB WebGL visual QA
+on:
+  push:
+    branches: [production/door-v027-arcanist-approved]
+    paths:
+      - .github/workflows/door-v027-webgl-visual-qa.yml
+permissions:
+  contents: write
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+      PG_CYCLES_SAMPLES: '36'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender 4.5.13 and ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          curl --fail --location --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-review.tar.xz
+          mkdir -p /tmp/blender-review
+          tar -xJf /tmp/blender-review.tar.xz -C /tmp/blender-review --strip-components=1
+      - name: Render original GLB with identical lighting and camera
+        env:
+          PG_COMPARE_MODEL: deliverables/door_v027/Arcanist_Door_V027_master.glb
+          PG_COMPARE_OUTPUT: output_compare_v027/master.png
+        run: /tmp/blender-review/blender -b -t 3 --python-exit-code 1 --python scripts/review_door_v027_webgl_compare.py
+      - name: Render compressed 4MB GLB with identical lighting and camera
+        env:
+          PG_COMPARE_MODEL: deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb
+          PG_COMPARE_OUTPUT: output_compare_v027/webgl_4mb.png
+        run: /tmp/blender-review/blender -b -t 3 --python-exit-code 1 --python scripts/review_door_v027_webgl_compare.py
+      - name: Create direct comparison photos and similarity evidence
+        run: |
+          mkdir -p previews/door_v027_webgl_qa
+          ffmpeg -hide_banner -loglevel error -y -i output_compare_v027/master.png -q:v 2 previews/door_v027_webgl_qa/master.jpg
+          ffmpeg -hide_banner -loglevel error -y -i output_compare_v027/webgl_4mb.png -q:v 2 previews/door_v027_webgl_qa/webgl_4mb.jpg
+          ffmpeg -hide_banner -loglevel error -y -i output_compare_v027/master.png -i output_compare_v027/webgl_4mb.png -filter_complex 'hstack=inputs=2' -q:v 2 previews/door_v027_webgl_qa/side_by_side.jpg
+          ffmpeg -hide_banner -i output_compare_v027/master.png -i output_compare_v027/webgl_4mb.png -lavfi ssim -f null - 2> previews/door_v027_webgl_qa/ssim.txt
+          tail -n 7 previews/door_v027_webgl_qa/ssim.txt
+      - name: Publish QA only, preserving both GLBs unchanged
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_v027_webgl_qa
+          if ! git diff --cached --quiet; then
+            git commit -m 'V027 WebGL 4MB vs master visual comparison [skip ci]'
+            git push origin HEAD:production/door-v027-arcanist-approved
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcanist-v027-webgl-visual-qa
+          path: |
+            output_compare_v027/*.png
+            previews/door_v027_webgl_qa/*
+          retention-days: 30
