@@ -1,0 +1,64 @@
+name: Genesis plaza - four original trees parallel (PlayCanvas GLB)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/plaza-cuatro-arboles-playcanvas
+    paths:
+      - scripts/generar_arboles_plaza_v001.py
+      - .github/workflows/plaza-cuatro-arboles-v001.yml
+permissions:
+  contents: read
+jobs:
+  four_trees:
+    name: Build ${{ matrix.tree }} (60k triangle hard cap)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        tree: [oak, ash, maple, linden]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify generator syntax
+        run: python3 -m py_compile scripts/generar_arboles_plaza_v001.py
+      - name: Install official Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 --max-time 240 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-lts.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender-lts.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version
+      - name: Generate Blender scene, PlayCanvas GLB and four review angles
+        run: /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python scripts/generar_arboles_plaza_v001.py -- ${{ matrix.tree }}
+      - name: Strict triangle and deliverable checks
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os,struct
+          tree=os.environ['TREE']
+          folder=f'output_plaza_trees/{tree}'
+          with open(f'{folder}/AUDIT.json') as f: audit=json.load(f)
+          assert audit['species']==tree
+          assert 0<audit['triangles']<=60000,audit
+          for suffix in ('glb','blend'):
+              p=f'{folder}/{tree}_plaza_v001.{suffix}'
+              assert os.path.getsize(p)>5000,(p,os.path.getsize(p))
+          for view in ('front','three_quarter','side','rear'):
+              assert os.path.getsize(f'{folder}/{view}.png')>10000,view
+          p=f'{folder}/{tree}_plaza_v001.glb'
+          with open(p,'rb') as f: header=f.read(12)
+          assert header[:4]==b'glTF' and struct.unpack('<I',header[4:8])[0]==2
+          print(json.dumps(audit,indent=2))
+          PY
+        env:
+          TREE: ${{ matrix.tree }}
+      - name: Upload candidate GLB, editable Blend, QA and previews (2 days)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-plaza-${{ matrix.tree }}-v001
+          path: output_plaza_trees/${{ matrix.tree }}/
+          retention-days: 2
+          if-no-files-found: warn
