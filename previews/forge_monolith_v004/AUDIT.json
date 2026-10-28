@@ -1,0 +1,21 @@
+{
+  "version": "V004",
+  "asset": "stone_forge_only",
+  "model": "one continuous natural rock outer shell",
+  "bellows": false,
+  "props": false,
+  "brick_courses": false,
+  "metal_flue": false,
+  "forge_mesh_triangles": 42192,
+  "separate_ember_meshes": 48,
+  "rock_pbr_resolution": 1536,
+  "pbr_maps": [
+    "basecolor",
+    "roughness"
+  ],
+  "normal_map": "generated but disabled after V003 tangent artifact",
+  "source_reference": "wireframe screenshot, approximate proportions, NOT original mesh",
+  "art_approved": false,
+  "engine": "PlayCanvas WebGL",
+  "deadline": "2026-11-09"
+}
