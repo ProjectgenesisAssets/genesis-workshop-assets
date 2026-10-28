@@ -44,7 +44,8 @@ jobs:
           assert triangles==a['triangles'] and triangles<60000,(triangles,a)
           for name in ('front.png','three_quarter.png','side.png','skeleton_three_quarter.png','oak_leaf_atlas.png','oak_sapling_v006.blend'):
               assert os.path.getsize(f'{d}/{name}')>15000,name
-          assert 'MASK' in [m.get('alphaMode','OPAQUE') for m in j.get('materials',[])], 'FOLIAGE_MASK_NOT_EXPORTED'\n          print(json.dumps(a,indent=2))
+          assert 'MASK' in [m.get('alphaMode','OPAQUE') for m in j.get('materials',[])], 'FOLIAGE_MASK_NOT_EXPORTED'
+          print(json.dumps(a,indent=2))
           PY
       - uses: actions/upload-artifact@v4
         if: always()
