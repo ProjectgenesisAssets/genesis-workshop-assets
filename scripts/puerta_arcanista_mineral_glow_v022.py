@@ -627,7 +627,7 @@ view_specs=[
     ("side_orthographic",(6,0,1.15)),
     ("rear_orthographic",(0,6,1.15)),
 ]
-if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="rise_v027":
+if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="rise_v027" and os.environ.get("PG_EXPORT_APPROVED")!="1":
     # V027: focused upward current and dim residual veins, with a short fading tail.
     # Mineral veins remain luminous; organic wave fronts ascend
     # through distorted stone height, while a soft nearby light follows.
