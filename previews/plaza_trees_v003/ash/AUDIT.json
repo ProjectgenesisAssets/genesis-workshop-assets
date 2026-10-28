@@ -1,0 +1,17 @@
+{
+  "species": "ash",
+  "triangle_count": 15738,
+  "ceiling": 60000,
+  "bark_triangles": 7138,
+  "card_triangles": 8600,
+  "foliage_cards": 4300,
+  "glTF_expected_alpha_mode": "MASK",
+  "techniques": [
+    "curved tapered trunks",
+    "spiral phyllotaxis",
+    "branchlets along primary branches",
+    "foliage alpha-cutout atlas",
+    "bark albedo and normal textures"
+  ],
+  "status": "V003 visual candidate (not quality approved)"
+}
