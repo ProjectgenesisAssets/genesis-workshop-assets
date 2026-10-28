@@ -13,10 +13,10 @@ jobs:
     timeout-minutes: 50
     env:
       PG_DOOR_TRADE: arcanista
-      PG_PBR_RES: '1536'
-      PG_CYCLES_SAMPLES: '32'
-      PG_RENDER_WIDTH: '900'
-      PG_RENDER_HEIGHT: '1200'
+      PG_PBR_RES: '2048'
+      PG_CYCLES_SAMPLES: '64'
+      PG_RENDER_WIDTH: '1200'
+      PG_RENDER_HEIGHT: '1600'
       PG_ARCANE_EMISSIVE_STRENGTH: '3.5'
       PG_REVIEW_ONLY: '1'
       OPENBLAS_NUM_THREADS: '2'
