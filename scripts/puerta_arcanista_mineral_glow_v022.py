@@ -618,6 +618,25 @@ view_specs=[
     ("side_orthographic",(6,0,1.15)),
     ("rear_orthographic",(0,6,1.15)),
 ]
+if TRADE=="arcanista" and os.environ.get("PG_ANIM_REVIEW")=="1":
+    # Blender-only visual proof of the authored emissive map breathing. No
+    # geometry changes; runtime shader uniform animation belongs to PlayCanvas.
+    bpy.ops.object.camera_add(location=(2.3,-5,1.7))
+    cam=bpy.context.object
+    cam.rotation_euler=(Vector((0,0,1.15))-cam.location).to_track_quat("-Z","Y").to_euler()
+    cam.data.type="ORTHO";cam.data.ortho_scale=2.53
+    sc.camera=cam
+    body_shader=iron.node_tree.nodes.get("Principled BSDF")
+    base_emission=body_shader.inputs["Emission Strength"].default_value
+    pulses=(.55,.75,1.03,1.50,1.95,1.50,1.03,.75)
+    for i,multiplier in enumerate(pulses):
+        body_shader.inputs["Emission Strength"].default_value=base_emission*multiplier
+        sc.frame_set(i+1)
+        sc.render.filepath=str(OUT/("arcane_pulse_%02d.png"%i))
+        bpy.ops.render.render(write_still=True)
+        print("ARCANE_PULSE_FRAME",i,round(multiplier,2),flush=True)
+    print("ARCANE_PULSE_RENDER_DONE",len(pulses),flush=True)
+    raise SystemExit(0)
 if os.environ.get("PG_REVIEW_ONLY")=="1":
     view_specs=[("three_quarter",(2.3,-5,1.7))]
 for name,pos in view_specs:
