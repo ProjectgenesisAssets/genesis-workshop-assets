@@ -1,0 +1,77 @@
+{
+  "asset": "forge",
+  "task_id": "fissure-embers-v036",
+  "source_sha": "18c41000a32848842da0b5f4f1523073d8074643",
+  "baseline": "previews/production_auto/forge_live-embers-v035",
+  "candidate": "output_hero_forge_v036",
+  "glb": "forge_hero_v036.glb",
+  "blend": "forge_hero_v036.blend",
+  "glb_stats": {
+    "triangles": 145748,
+    "meshes": 109,
+    "materials": 7,
+    "base_color_textured_materials": 7,
+    "embedded_images": 14,
+    "texture_bindings": {
+      "forge_aged_refractory_sandstone": {
+        "base_color_image": "quarry_wall_CC0_albedo_2k",
+        "emissive_texture": false
+      },
+      "forge_heat_blackened_brick": {
+        "base_color_image": "quarry_wall_CC0_soot_heat_albedo",
+        "emissive_texture": false
+      },
+      "forge_hammered_hood_black_iron": {
+        "base_color_image": "forge_hammered_hood_black_iron_albedo",
+        "emissive_texture": false
+      },
+      "forge_cracked_hot_charcoal_ember_map": {
+        "base_color_image": "forge_cracked_hot_charcoal_ember_map_albedo",
+        "emissive_texture": true
+      },
+      "forge_real_charcoal_porous": {
+        "base_color_image": "forge_real_charcoal_porous_albedo",
+        "emissive_texture": false
+      },
+      "forge_cracked_hot_charcoal_ember_map_zone_2": {
+        "base_color_image": "forge_cracked_hot_charcoal_ember_map_albedo",
+        "emissive_texture": true
+      },
+      "forge_cracked_hot_charcoal_ember_map_zone_3": {
+        "base_color_image": "forge_cracked_hot_charcoal_ember_map_albedo",
+        "emissive_texture": true
+      }
+    }
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.00233,
+      "silhouette_iou": null
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.00199,
+      "silhouette_iou": null
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.00022,
+      "silhouette_iou": null
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.00478,
+      "silhouette_iou": null
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": false,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
