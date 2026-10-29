@@ -7,7 +7,7 @@ on:
       - scripts/coal_plaster_master_v001.py
       - .github/workflows/coal-plaster-master-v001.yml
 permissions:
-  contents: read
+  contents: write
 jobs:
   render:
     runs-on: ubuntu-24.04
@@ -36,3 +36,21 @@ jobs:
           name: coal-white-plaster-v001-review
           path: output_coal_plaster_v001/
           retention-days: 7
+      - name: Publish four white-plaster views for direct visual review
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p previews/coal_plaster_v001
+          cp output_coal_plaster_v001/front.png previews/coal_plaster_v001/front.png
+          cp output_coal_plaster_v001/side.png previews/coal_plaster_v001/side.png
+          cp output_coal_plaster_v001/three_quarter.png previews/coal_plaster_v001/three_quarter.png
+          cp output_coal_plaster_v001/rear.png previews/coal_plaster_v001/rear.png
+          cp output_coal_plaster_v001/AUDIT.json previews/coal_plaster_v001/AUDIT.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/coal_plaster_v001
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish coal plaster V001 visual review [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
