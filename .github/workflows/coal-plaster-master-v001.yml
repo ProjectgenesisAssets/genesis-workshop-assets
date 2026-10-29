@@ -1,0 +1,38 @@
+name: Coal white plaster master V001
+on:
+  workflow_dispatch:
+  push:
+    branches: [production/coal-plaster-master-v001]
+    paths:
+      - scripts/coal_plaster_master_v001.py
+      - .github/workflows/coal-plaster-master-v001.yml
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script
+        run: python3 -m py_compile scripts/coal_plaster_master_v001.py
+      - name: Install Blender LTS
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version
+      - name: Produce real geometry and review
+        run: /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python scripts/coal_plaster_master_v001.py
+      - name: Validate deliverables
+        run: |
+          test -s output_coal_plaster_v001/coal_plaster_master_v001.glb
+          test -s output_coal_plaster_v001/coal_plaster_master_v001.blend
+          test -s output_coal_plaster_v001/AUDIT.json
+          for view in front side three_quarter rear; do test -s output_coal_plaster_v001/$view.png; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coal-white-plaster-v001-review
+          path: output_coal_plaster_v001/
+          retention-days: 7
