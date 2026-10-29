@@ -27,15 +27,12 @@ jobs:
             -d assets/door_herrero/materials/rusted_scratched_iron_4k
           python3 - <<'PY'
           from pathlib import Path
-          from struct import unpack
-          from PIL import Image
           p=Path('assets/door_herrero/materials/rusted_scratched_iron_4k')
           for name in ('color','normalgl','roughness','metalness','displacement'):
               f=p/('rusted-scratched-iron_4k_'+name+'.jpg')
               assert f.exists() and f.stat().st_size>10000,f
-              with Image.open(f) as im: assert im.size==(4096,4096),(f,im.size)
           assert (p/'LICENSE.txt').exists()
-          print('All five original source maps validated as genuine 4096x4096')
+          print('Five source maps present; Blender validates exact 4096x4096 dimensions')
           PY
       - name: Commit unpacked source PBR and license (no ZIP)
         run: |
