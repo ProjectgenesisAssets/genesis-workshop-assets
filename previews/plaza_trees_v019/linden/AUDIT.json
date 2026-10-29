@@ -1,0 +1,21 @@
+{
+  "species": "linden",
+  "version": "V019",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 16284,
+  "triangles": 54284,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    5.502782821655273,
+    5.954397201538086,
+    6.820559024810791
+  ],
+  "materials": [
+    "Bark",
+    "Tilo V019 cutout leaves"
+  ],
+  "leaf_atlas": "ambientCG LeafSet016 CC0 photos",
+  "approved": false,
+  "status": "Tilo first standalone organic architecture, botanical silhouette and CC0 atlas; GLB tech validation pending"
+}
