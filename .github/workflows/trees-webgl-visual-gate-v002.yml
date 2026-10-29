@@ -1,0 +1,72 @@
+name: Genesis plaza - four trees WebGL LOD visual gate V002
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths:
+      - scripts/tree_webgl_visual_gate_v002.py
+      - .github/workflows/trees-webgl-visual-gate-v002.yml
+permissions:
+  contents: write
+jobs:
+  build_compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        species: [oak, ash, linden, maple]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script syntax
+        run: python3 -m py_compile scripts/tree_webgl_visual_gate_v002.py
+      - name: Install official Blender 4.5.13
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/genesis-blender --strip-components=1
+      - name: Optimize and compare against master
+        run: |
+          /tmp/genesis-blender/blender -b -t 2 --python-exit-code 1 --python scripts/tree_webgl_visual_gate_v002.py -- ${{ matrix.species }}
+      - name: Check evidence files and GLB signatures
+        run: |
+          python3 - <<'PY'
+          import json,os,struct
+          d='output/tree_webgl_v002/${{ matrix.species }}'
+          a=json.load(open(d+'/audit.json'))
+          assert a['baseline_triangles']>10000
+          for v in ('front','three_quarter'):assert os.path.getsize(f'{d}/master_{v}.png')>10000
+          for rec in a['accepted']:
+            assert rec['passed_proxy_gate']
+            assert rec['triangles']<a['baseline_triangles']
+            assert all(m['silhouette_change_pct']<=1.5 and m['color_mae_pct']<=1.5 for m in rec['metrics'].values())
+            with open(f"{d}/{rec['lod']}.glb",'rb') as f:assert f.read(4)==b'glTF'
+          print('LOD_VISUAL_GATE_CHECKED',json.dumps(a,indent=2))
+          PY
+      - name: Preserve experimental versions and renders without scene integration
+        run: |
+          set -euo pipefail
+          mkdir -p assets/tree_webgl_v002/${{ matrix.species }}
+          mkdir -p previews/tree_webgl_v002/${{ matrix.species }}
+          if compgen -G 'output/tree_webgl_v002/${{ matrix.species }}/*.glb' > /dev/null; then
+            cp output/tree_webgl_v002/${{ matrix.species }}/*.glb assets/tree_webgl_v002/${{ matrix.species }}/
+          fi
+          cp output/tree_webgl_v002/${{ matrix.species }}/*.png output/tree_webgl_v002/${{ matrix.species }}/audit.json previews/tree_webgl_v002/${{ matrix.species }}/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/tree_webgl_v002/${{ matrix.species }} previews/tree_webgl_v002/${{ matrix.species }}
+          git diff --cached --quiet || git commit -m "Preserve ${{ matrix.species }} visual-gated experimental LODs [skip ci]"
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            if git pull --rebase origin feature/plaza-cuatro-arboles-playcanvas && git push origin HEAD:feature/plaza-cuatro-arboles-playcanvas; then ok=1;break;fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-tree-webgl-v002-${{ matrix.species }}
+          path: output/tree_webgl_v002/${{ matrix.species }}/
+          retention-days: 7
+          if-no-files-found: warn
