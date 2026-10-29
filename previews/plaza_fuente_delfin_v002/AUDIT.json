@@ -1,0 +1,40 @@
+{
+  "asset": "PG_PLAZA_FUENTE_DELFIN_MARMOL_V002",
+  "status": "UNAPPROVED_CANDIDATE_VISUAL_QA",
+  "blender_target": "4.5.13 LTS",
+  "size_m": {
+    "diameter": 4.26,
+    "height": 2.46
+  },
+  "objects": 36,
+  "mesh_objects": 36,
+  "total_triangles_including_ornament_and_water": 122656,
+  "texture_resolution": 2048,
+  "separate_pbr_maps": [
+    "albedo",
+    "roughness",
+    "normal",
+    "height"
+  ],
+  "animation": {
+    "name": "Escupitajo_8s",
+    "fps": 24,
+    "frames": 192,
+    "onset_frame": 26,
+    "active_frames": [
+      37,
+      91
+    ],
+    "offset_frame": 105,
+    "loop_seconds": 8,
+    "note": "PlayCanvas must loop exported animation clip; no fluid simulation dependency"
+  },
+  "review_views": [
+    "front",
+    "three_quarter",
+    "side",
+    "detail"
+  ],
+  "engine": "Cycles CPU",
+  "acceptance": "Gabriel approval after actual 4-view review and >=8/10"
+}
