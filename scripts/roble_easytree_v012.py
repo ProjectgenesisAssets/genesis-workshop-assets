@@ -20,7 +20,7 @@ mod=next((m for m in obj.modifiers if m.type=='NODES'),None)
 assert mod and mod.node_group,'NO_NODE_GENERATOR'
 # Keep branching moderated before realizing geometry to avoid waste.
 mod['Socket_27']=3
-mod['Socket_28']=5.5
+mod['Socket_28']=5
 mod['Socket_32']=2.0
 mod['Socket_39']=True
 obj.update_tag()
