@@ -1,0 +1,15 @@
+{
+  "id": "live-embers-v035",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-slim-high-draft-v034",
+  "branch": "production/auto-forge-live-embers-v035",
+  "reason": "User wants a strong, irregular flickering charcoal emissive effect that reads as an actively oxygenated blacksmith fire. Keep V034 approved-direction stone, taller narrower chimney, open hearth and forged hardware. Increase emissive strength from 7.1 to 19.0 with narrow warm orange/yellow crack masks, build three material phases using shared PBR maps, render twelve actual Cycles pulse frames, assemble a preview GIF, and provide a separate PlayCanvas classic script to animate intensity without mutating the game. Four-view QA and human visual approval required.",
+  "edits": [
+    "scripts/genesis_hero_assets_v035.py",
+    "scripts/forge_embers_preview_v035.py",
+    "scripts/forge_embers_runtime_v035.js",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
