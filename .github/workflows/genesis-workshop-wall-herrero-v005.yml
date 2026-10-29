@@ -1,0 +1,123 @@
+name: Genesis workshop wall Herrero V005 - scanned PBR geometry and Cycles renders
+on:
+  push:
+    branches:
+      - feature/workshop-wall-herrero-v005
+    paths:
+      - scripts/genesis_wall_herrero_v005.py
+      - .github/workflows/genesis-workshop-wall-herrero-v005.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-wall-herrero-v005
+  cancel-in-progress: false
+jobs:
+  wall-v005:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 85
+    env:
+      OPENBLAS_NUM_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate generator script
+        run: python3 -m py_compile scripts/genesis_wall_herrero_v005.py
+      - name: Install Blender 4.5.13 LTS inside GitHub Actions
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F "Blender 4.5.13"
+      - name: Download and validate two scanned CC0 PBR texture sets
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib,json,urllib.request,urllib.parse,shutil,hashlib
+          dest=pathlib.Path("inputs/wall_herrero_v005")
+          dest.mkdir(parents=True,exist_ok=True)
+          headers={"User-Agent":"ProjectGenesisWorkshopWall/1.0 (public CC0 source verification)"}
+          assets={"stone":"rock_05","wood":"weathered_planks"}
+          channels={"Diffuse":("jpg","albedo"),"Rough":("jpg","rough"),
+                    "nor_gl":("png","normal"),"Displacement":("png","height")}
+          provenance={"license":"CC0","items":[]}
+          for kind,asset_id in assets.items():
+            req=urllib.request.Request("https://api.polyhaven.com/files/"+asset_id,headers=headers)
+            with urllib.request.urlopen(req,timeout=50) as r:
+              manifest=json.load(r)
+            for channel,(extension,suffix) in channels.items():
+              if kind=="wood" and suffix=="height": continue
+              entry=manifest[channel]["2k"][extension]
+              link=entry["url"]
+              host=urllib.parse.urlparse(link).hostname
+              assert host in ("dl.polyhaven.org","cdn.polyhaven.com","polyhaven.org"),host
+              path=dest/(kind+"_"+suffix+"_2k."+extension)
+              request=urllib.request.Request(link,headers=headers)
+              with urllib.request.urlopen(request,timeout=140) as inp, path.open("wb") as out:
+                shutil.copyfileobj(inp,out,length=1024*1024)
+              assert path.stat().st_size>15000,path.name
+              md5=hashlib.md5(path.read_bytes()).hexdigest()
+              assert md5==entry["md5"],(path.name,md5,entry["md5"])
+              provenance["items"].append({"asset":asset_id,"channel":channel,
+                  "filename":path.name,"md5":md5,"source":link,"bytes":path.stat().st_size})
+              print("VERIFIED_CC0",path.name,path.stat().st_size)
+          (dest/"PROVENANCE.json").write_text(json.dumps(provenance,indent=2))
+          PY
+      - name: Sculpt geometry, create PBR, export model and render four views
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/genesis_wall_herrero_v005.py
+      - name: Validate deliverables and mesh audit
+        run: |
+          set -euo pipefail
+          out=output_workshop_wall_herrero_v005
+          test -s "$out/genesis_wall_herrero_v005.blend"
+          test -s "$out/genesis_wall_herrero_v005.glb"
+          test -s "$out/AUDIT.json"
+          for view in front three_quarter side detail; do test -s "$out/$view.png"; done
+          python3 - <<'PY'
+          import json,pathlib,struct
+          out=pathlib.Path("output_workshop_wall_herrero_v005")
+          audit=json.loads((out/"AUDIT.json").read_text())
+          assert audit["status"]=="EXPERIMENTAL_NOT_APPROVED"
+          assert audit["mesh_count"]>=15
+          assert audit["triangles"]>1000
+          glb=(out/"genesis_wall_herrero_v005.glb").read_bytes()
+          assert glb[:4]==b"glTF"
+          assert struct.unpack_from("<I",glb,8)[0]==len(glb)
+          length=struct.unpack_from("<I",glb,12)[0]
+          model=json.loads(glb[20:20+length])
+          assert model.get("materials") and model.get("images")
+          print("VALIDATED_REAL_WALL",audit["triangles"],len(glb),"materials",len(model["materials"]))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-wall-herrero-v005-blend-glb-pbr-review
+          path: |
+            output_workshop_wall_herrero_v005/
+            inputs/wall_herrero_v005/PROVENANCE.json
+          retention-days: 2
+      - name: Publish only review PNGs and audit to this experimental branch
+        if: success()
+        run: |
+          set -euo pipefail
+          dest=previews/workshop_walls/herrero/v005
+          mkdir -p "$dest"
+          cp output_workshop_wall_herrero_v005/front.png "$dest/front.png"
+          cp output_workshop_wall_herrero_v005/three_quarter.png "$dest/three_quarter.png"
+          cp output_workshop_wall_herrero_v005/side.png "$dest/side.png"
+          cp output_workshop_wall_herrero_v005/detail.png "$dest/detail.png"
+          cp output_workshop_wall_herrero_v005/AUDIT.json "$dest/AUDIT.json"
+          cp inputs/wall_herrero_v005/PROVENANCE.json "$dest/PROVENANCE.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest"
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Herrero wall V005 candidate views [skip ci]"
+            git push origin HEAD:feature/workshop-wall-herrero-v005
+          fi
