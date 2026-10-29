@@ -1,0 +1,136 @@
+name: Genesis plaza - V011 high-quality true-color water still review (Blender 4.5.13)
+on:
+  push:
+    branches:
+      - feature/plaza-fuente-delfin-marmol-aaa
+    paths:
+      - scripts/plaza_fuente_delfin_marmol_v011_still.py
+      - .github/workflows/plaza-fuente-delfin-v011-quality.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-plaza-dolphin-fountain-v011-quality-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-and-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      GENESIS_TEX_SIZE: "4096"
+      OPENBLAS_NUM_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Blender generator syntax
+        run: python3 -m py_compile scripts/plaza_fuente_delfin_marmol_v011_still.py
+      - name: Install official Blender 4.5.13 LTS (GitHub Actions only)
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F "Blender 4.5.13"
+      - name: Download verified public-domain anatomical dolphin (CC0)
+        run: |
+          set -euo pipefail
+          mkdir -p inputs
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            'https://www.innerscene.com/api/library/common-bottlenose-dolphin-a7f74d0e/download' \
+            -o inputs/common-bottlenose-dolphin.glb
+          python3 - <<'PY'
+          import pathlib,struct,hashlib
+          path=pathlib.Path("inputs/common-bottlenose-dolphin.glb")
+          b=path.read_bytes()
+          assert len(b)>100000 and b[:4]==b"glTF"
+          assert struct.unpack_from("<I",b,4)[0]==2
+          assert struct.unpack_from("<I",b,8)[0]==len(b)
+          print("CC0_SOURCE_SHA256",hashlib.sha256(b).hexdigest())
+          PY
+      - name: Download real 4K scanned marble PBR (Poly Haven CC0 / Amal Kumar)
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request, pathlib, json, hashlib, urllib.parse, shutil
+          agent={"User-Agent":"ProjectGenesisAssets-FountainPBR/0.4 (public open source production)"}
+          request=urllib.request.Request("https://api.polyhaven.com/files/marble_rock_01",headers=agent)
+          with urllib.request.urlopen(request,timeout=45) as response:
+              files=json.load(response)
+          target=pathlib.Path("inputs/marble_rock_01")
+          target.mkdir(parents=True,exist_ok=True)
+          wanted={"Diffuse":("jpg","marble_albedo_4k.jpg"),
+                  "Rough":("jpg","marble_roughness_4k.jpg"),
+                  "nor_gl":("png","marble_normal_4k.png"),
+                  "Displacement":("png","marble_height_4k.png")}
+          manifest={"source":"https://polyhaven.com/a/marble_rock_01",
+                    "author":"Amal Kumar","license":"CC0","resolution":"4k","files":{}}
+          for channel,(fmt,filename) in wanted.items():
+              info=files[channel]["4k"][fmt]
+              link=info["url"]
+              assert link.startswith("https://"),"Unsafe texture URL"
+              assert urllib.parse.urlparse(link).hostname in ("dl.polyhaven.org","polyhaven.org","cdn.polyhaven.com"),"Unexpected texture host"
+              dest=target/filename
+              req=urllib.request.Request(link,headers=agent)
+              with urllib.request.urlopen(req,timeout=120) as r, dest.open("wb") as out:
+                  shutil.copyfileobj(r,out,length=1024*1024)
+              assert dest.stat().st_size>100000,filename
+              actual=hashlib.md5(dest.read_bytes()).hexdigest()
+              assert actual==info["md5"],f"Texture checksum mismatch: {filename}"
+              manifest["files"][channel]={"file":filename,"md5":actual,"size":dest.stat().st_size,"source":link}
+              print("VERIFIED_POLYHAVEN_CC0_4K",channel,filename,dest.stat().st_size)
+          (target/"SOURCE_MANIFEST.json").write_text(json.dumps(manifest,indent=2))
+          PY
+      - name: Generate water quality review in lossless true-color Cycles PNG
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/plaza_fuente_delfin_marmol_v011_still.py
+      - name: Audit actual lossless 16-bit PNG and untouched marble textures
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, struct, hashlib
+          p=pathlib.Path("output_fountain_dolphin_v011")
+          qa=json.loads((p/"RENDER_QA.json").read_text())
+          a=json.loads((p/"AUDIT.json").read_text())
+          assert qa["preview_format"]=="LOSSLESS_PNG_16_BIT_PER_CHANNEL"
+          assert a["marble_change"].startswith("NONE")
+          assert len(a["stone_source_sha256"])==4
+          assert a["water_normal_resolution"]==2048
+          assert qa["water_normal_strength"]==.20
+          for f in qa["render_files"]:
+              b=(p/f).read_bytes()
+              assert b[:8]==b"\x89PNG\r\n\x1a\n", f
+              width,height,depth,color=struct.unpack_from(">IIBB",b,16)
+              assert (width,height,depth,color)==(1600,1200,16,2),(f,width,height,depth,color)
+              print("LOSSLESS_RGB16_VERIFIED",f,len(b),hashlib.sha256(b).hexdigest())
+          PY
+      - name: Upload lossless PNG previews and QC evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-fountain-v011-truecolor-${{ github.run_id }}
+          path: |
+            output_fountain_dolphin_v011/*water*.png
+            output_fountain_dolphin_v011/RENDER_QA.json
+            output_fountain_dolphin_v011/AUDIT.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Publish lossless 16-bit PNG previews in isolated review branch
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/plaza_fuente_delfin_v011
+          cp output_fountain_dolphin_v011/*water*.png previews/plaza_fuente_delfin_v011/
+          cp output_fountain_dolphin_v011/RENDER_QA.json previews/plaza_fuente_delfin_v011/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_fuente_delfin_v011
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V011 lossless true-color water review [skip ci]'
+            git fetch origin feature/plaza-fuente-delfin-marmol-aaa
+            git rebase origin/feature/plaza-fuente-delfin-marmol-aaa
+            git push origin HEAD:feature/plaza-fuente-delfin-marmol-aaa
+          fi
