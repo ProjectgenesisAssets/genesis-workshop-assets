@@ -28,7 +28,7 @@ jobs:
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "New Oct29 user-requested V030 monolithic fractured rock trial; stop at 00:00 ART Oct30." >> "$GITHUB_STEP_SUMMARY"
+            echo "New Oct29 V031 rear firebox daylight closure, preserve monolithic rock; stop at 00:00 ART Oct30." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Validate queued correction and source generator
         if: steps.deadline.outputs.run == 'true'
