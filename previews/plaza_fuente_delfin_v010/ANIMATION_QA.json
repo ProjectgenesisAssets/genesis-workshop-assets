@@ -1,0 +1,17 @@
+{
+  "asset": "PG_PLAZA_FUENTE_DELFIN_MARMOL_V010",
+  "animation": "V010 dolphin spits water once per 8-second loop",
+  "source_fps": 24,
+  "source_frame_count": 192,
+  "review_render_fps": 12,
+  "review_frame_step": 2,
+  "review_frame_count_expected": 96,
+  "preview_size": [
+    960,
+    720
+  ],
+  "cycles_samples": 24,
+  "material": "V010 neutral mineral teal pool, 91% transmission, 2K amplified moving ripple normals",
+  "marble": "unchanged V007-approved 4K PBR stone",
+  "status": "REVIEW_ONLY_NOT_YET_PLAYCANVAS_TESTED"
+}
