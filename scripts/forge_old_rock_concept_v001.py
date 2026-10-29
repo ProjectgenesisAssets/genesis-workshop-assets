@@ -130,29 +130,14 @@ def apply_transform(o):
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     return o
 
-# V004: weathered quarry-rock foundation, never a clay brick slab.
-# A continuous structural core is physically sculpted before integrating
-# asymmetrical natural stone outcrops. Every outcrop is merged into the forge.
+# V005: proven watertight structural foundation (no external boulders).
+# Large-scale relief is sculpted AFTER voxel union, without subdivided clay faces.
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,.37))
 body=bpy.context.object
 body.name="GENESIS_Forge_Rock_Foundation"
 body.dimensions=(2.24,1.12,.74)
 apply_transform(body)
-active(body)
-bpy.ops.object.mode_set(mode="EDIT")
-bpy.ops.mesh.select_all(action="SELECT")
-bpy.ops.mesh.subdivide(number_cuts=12)
-bpy.ops.object.mode_set(mode="OBJECT")
-for v in body.data.vertices:
-    p=v.co.copy()
-    large=noise.noise(p*3.1+Vector((2.31,6.47,1.73)))
-    medium=noise.noise(p*8.6+Vector((7.13,1.9,5.81)))
-    little=noise.noise(p*18.2+Vector((4.3,9.21,2.18)))
-    fracture_field=abs(noise.noise(p*5.1+Vector((5.47,3.11,8.14))))
-    split=-.030*max(0.0,1.0-fracture_field/.14)**2
-    d=.073*large+.029*medium+.008*little+split
-    v.co += v.normal*d
-body.data.update()
+
 # V005: removed fused rounded outcrops that looked like boils; all relief stays in the primary rock surface.
 
 # V003: proven watertight arch mass, roughened after voxel merge.
