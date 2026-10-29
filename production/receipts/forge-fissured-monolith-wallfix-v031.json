@@ -1,0 +1,13 @@
+{
+  "id": "fissured-monolith-wallfix-v031",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-fissured-monolith-v030",
+  "branch": "production/auto-forge-fissured-monolith-wallfix-v031",
+  "reason": "V030 four real preview views revealed a large accidental bright see-through void behind the firebox. Preserve the accepted conceptual pivot to full continuous geological rock surface, scanned 2K PBR soot and heat stain. Add a recessed physically textured rock backing at y=.822 to close white daylight gap without blocking front basin, chimney top bore, charcoal or tools. Retain technical GLB QA and four-view human visual check; no game integration.",
+  "edits": [
+    "scripts/genesis_hero_assets_v031.py",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
