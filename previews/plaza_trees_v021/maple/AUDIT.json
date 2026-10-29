@@ -1,0 +1,21 @@
+{
+  "species": "maple",
+  "version": "V021",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 16284,
+  "triangles": 54284,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    5.971627235412598,
+    5.725059509277344,
+    6.663107872009277
+  ],
+  "materials": [
+    "Bark",
+    "Arce V021 cutout leaves"
+  ],
+  "leaf_atlas": "ambientCG LeafSet016 CC0 photos",
+  "approved": false,
+  "status": "Arce first standalone organic architecture, botanical silhouette and CC0 atlas; GLB tech validation pending"
+}
