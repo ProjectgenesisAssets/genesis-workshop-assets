@@ -1,0 +1,56 @@
+name: Coal white plaster master V002
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, production/coal-plaster-master-v002]
+    paths:
+      - scripts/coal_plaster_master_v002.py
+      - .github/workflows/coal-plaster-master-v002.yml
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script
+        run: python3 -m py_compile scripts/coal_plaster_master_v002.py
+      - name: Install Blender LTS
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version
+      - name: Produce real geometry and review
+        run: /tmp/blender-lts/blender -b -t 2 --python-exit-code 1 --python scripts/coal_plaster_master_v002.py
+      - name: Validate deliverables
+        run: |
+          test -s output_coal_plaster_v002/coal_plaster_master_v002.glb
+          test -s output_coal_plaster_v002/coal_plaster_master_v002.blend
+          test -s output_coal_plaster_v002/AUDIT.json
+          for view in front side three_quarter rear; do test -s output_coal_plaster_v002/$view.png; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coal-white-plaster-v002-review
+          path: output_coal_plaster_v002/
+          retention-days: 7
+      - name: Publish four white-plaster views for direct visual review
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p previews/coal_plaster_v002
+          cp output_coal_plaster_v002/front.png previews/coal_plaster_v002/front.png
+          cp output_coal_plaster_v002/side.png previews/coal_plaster_v002/side.png
+          cp output_coal_plaster_v002/three_quarter.png previews/coal_plaster_v002/three_quarter.png
+          cp output_coal_plaster_v002/rear.png previews/coal_plaster_v002/rear.png
+          cp output_coal_plaster_v002/AUDIT.json previews/coal_plaster_v002/AUDIT.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/coal_plaster_v002
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish coal plaster V002 visual review [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
