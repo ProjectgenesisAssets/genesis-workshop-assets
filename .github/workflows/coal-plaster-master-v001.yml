@@ -2,7 +2,7 @@ name: Coal white plaster master V001
 on:
   workflow_dispatch:
   push:
-    branches: [production/coal-plaster-master-v001]
+    branches: [main, production/coal-plaster-master-v001]
     paths:
       - scripts/coal_plaster_master_v001.py
       - .github/workflows/coal-plaster-master-v001.yml
