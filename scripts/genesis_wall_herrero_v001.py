@@ -112,7 +112,7 @@ def box(label, center, dims, material, bevel=0.0):
     if bevel:
         mod=ob.modifiers.new("Natural eased work-worn edges","BEVEL")
         mod.width=bevel;mod.segments=2
-        mod.affect="EDGES" if hasattr(mod,"affect") else None
+        if hasattr(mod,"affect"): mod.affect="EDGES"
         mod2=ob.modifiers.new("Preserve face normals","WEIGHTED_NORMAL")
     return ob
 
@@ -230,7 +230,7 @@ bpy.context.scene.camera=cam
 sc=bpy.context.scene
 sc.render.engine='CYCLES'
 sc.cycles.samples=40
-sc.cycles.use_denoising=True
+bpy.context.view_layer.cycles.use_denoising=True
 sc.render.image_settings.file_format='PNG'
 sc.render.resolution_x=1400;sc.render.resolution_y=900
 sc.render.resolution_percentage=100
