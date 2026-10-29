@@ -1,0 +1,15 @@
+{
+  "id": "fissured-monolith-v030",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-weathered-quarry-rock-v029",
+  "branch": "production/auto-forge-fissured-monolith-v030",
+  "reason": "User explicitly rejects V029 stylized masonry. Remove repeated individual stones, replace with continuous eroded quarry rock masses physically displaced with deep organic fissures. Overlay photographic 2K CC0 quarry PBR, smoke soot streaks and fire heat-browning in physically exported texture maps. Preserve functional open forge basin, chimney flue, tool rack, charcoal and bellows intake; no game edit. Compare four real Blender views with V029 and objectively validate GLB; do not auto approve.",
+  "edits": [
+    "scripts/genesis_hero_assets_v030.py",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29",
+  "expected_geometry": "monolithic continuous stone with physically carved fissures",
+  "pbr_source": "Poly Haven quarry_wall CC0 2K with smoke heat layers"
+}
