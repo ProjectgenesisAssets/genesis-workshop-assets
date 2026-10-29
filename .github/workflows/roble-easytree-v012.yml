@@ -1,0 +1,64 @@
+name: Genesis plaza V012 - Easy Tree geometry nodes oak probe
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths:
+      - scripts/roble_easytree_v012.py
+      - .github/workflows/roble-easytree-v012.yml
+permissions:
+  contents: write
+jobs:
+  easy_tree_probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Python script
+        run: python3 -m py_compile scripts/roble_easytree_v012.py
+      - name: Install official Blender 4.5.13
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-v012.tar.xz
+          mkdir -p /tmp/blender-v012
+          tar -xJf /tmp/blender-v012.tar.xz -C /tmp/blender-v012 --strip-components=1
+      - name: Fetch free and open-source Easy Tree geometry node generator
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/jacobcjohnston/Easy-Tree.git /tmp/easy_tree_plugin
+          test -f /tmp/easy_tree_plugin/operators.py
+          test -f /tmp/easy_tree_plugin/assets/assets.blend
+          test -f /tmp/easy_tree_plugin/LICENCE.txt
+      - name: Generate and render source oak mesh without decimation
+        run: /tmp/blender-v012/blender -b -t 2 --python-exit-code 1 --python scripts/roble_easytree_v012.py
+      - name: Check original geometry and render receipt
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os
+          d='output_plaza_easytree_v012/oak'
+          a=json.load(open(f'{d}/AUDIT.json'))
+          assert a['triangles_raw']>1000 and a['triangle_limit']==60000
+          for name in ('front.png','three_quarter.png','oak_easytree_v012.blend'):
+              assert os.path.getsize(f'{d}/{name}')>12000,name
+          print('V012 SOURCE TRIANGLES (NOT YET OPTIMIZED):',a['triangles_raw'])
+          print(json.dumps(a,indent=2))
+          PY
+      - name: Preserve source probe renders and audit, no game changes
+        run: |
+          set -euo pipefail
+          mkdir -p previews/plaza_trees_v012/oak
+          cp output_plaza_easytree_v012/oak/front.png output_plaza_easytree_v012/oak/three_quarter.png output_plaza_easytree_v012/oak/AUDIT.json previews/plaza_trees_v012/oak/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_trees_v012/oak
+          git diff --cached --quiet || git commit -m 'Preserve V012 Easy Tree original geometry renders [skip ci]'
+          git pull --rebase origin feature/plaza-cuatro-arboles-playcanvas
+          git push origin HEAD:feature/plaza-cuatro-arboles-playcanvas
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-plaza-v012-easytree-probe
+          path: output_plaza_easytree_v012/oak/
+          retention-days: 7
+          if-no-files-found: warn
