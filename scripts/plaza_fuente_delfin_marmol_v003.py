@@ -246,10 +246,8 @@ tube("Ola_Soporte_Escultorica",
      [(0,-.03,1.095),(0,.04,1.19),(0,.19,1.31),
       (0,.43,1.45),(0,.69,1.51),(0,.91,1.49)],
      [.245,.238,.190,.142,.098,.055],marble,32)
-for side in (-1,1):
-    fin("Cresta_Ola_Tallada_%s"%side,
-        (side*.15,.02,1.18),(side*.16,.31,1.24),
-        (side*.36,.41,1.60),.024)
+# The authentic dolphin mesh replaces the procedurally defined fin helper.
+# No decorative fin-like protrusions are added to the supporting stone wave.
 
 # Circular contained water has real displaced polygons and radial impact waves.
 verts=[];uv=[];faces=[]
