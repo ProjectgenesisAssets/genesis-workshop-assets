@@ -25,7 +25,7 @@ jobs:
         run: |
           curl -fsSL --retry 4 --retry-delay 3 --max-time 300 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr -o studio_small_09_1k.hdr
           test -s studio_small_09_1k.hdr
-      - name: Render V044 independent door-specific PBR: 4K normal, roughness, albedo, metallic
+      - name: Render V044 independent door-specific PBR 4K normal roughness albedo metallic
         env:
           OPENBLAS_NUM_THREADS: '2'
           OMP_NUM_THREADS: '2'
