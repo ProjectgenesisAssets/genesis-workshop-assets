@@ -1,0 +1,82 @@
+{
+  "species": "ash",
+  "source": "assets/plaza_trees_v020/ash/ash_easytree_v020.glb",
+  "baseline_triangles": 56332,
+  "screen_comparison_px": 720,
+  "visual_change_limit_pct": 1.5,
+  "accepted": [
+    {
+      "lod": "lod1",
+      "retained_leaf_fraction": 0.91,
+      "triangles": 53092,
+      "removed_triangles": 3240,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.1782,
+          "color_mae_pct": 1.3624
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.0929,
+          "color_mae_pct": 1.3639
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 14616492
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.91,
+      "triangles": 53092,
+      "removed_triangles": 3240,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.1782,
+          "color_mae_pct": 1.3624
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.0929,
+          "color_mae_pct": 1.3639
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 14616492
+    }
+  ],
+  "rejected": [
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.82,
+      "triangles": 49934,
+      "removed_triangles": 6398,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 2.2357,
+          "color_mae_pct": 2.3749
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 2.4178,
+          "color_mae_pct": 2.5366
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.87,
+      "triangles": 51640,
+      "removed_triangles": 4692,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.6456,
+          "color_mae_pct": 1.8559
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.826,
+          "color_mae_pct": 1.9456
+        }
+      },
+      "passed_proxy_gate": false
+    }
+  ],
+  "integration_approved": false
+}
