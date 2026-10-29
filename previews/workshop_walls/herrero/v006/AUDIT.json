@@ -1,0 +1,26 @@
+{
+  "asset": "genesis_wall_herrero_v006",
+  "status": "EXPERIMENTAL_NOT_APPROVED",
+  "profession": "herrero",
+  "width_m": 7.875,
+  "height_m": 3.2,
+  "door_cutout_m": [
+    1.48,
+    2.43
+  ],
+  "current_door_geometry": "V011 not modified",
+  "geometry": "Solid coursed masonry, narrow bed joints and continuous load-bearing piers",
+  "textures": "PolyHaven scanned PBR 2K CC0, base/normal/rough",
+  "visual_review": "PENDING",
+  "texture_resolution": 2048,
+  "mesh_count": 93,
+  "triangles": 3060,
+  "glb_bytes": 37655328,
+  "previews": [
+    "front",
+    "three_quarter",
+    "side",
+    "detail"
+  ],
+  "seed": 29012026
+}
