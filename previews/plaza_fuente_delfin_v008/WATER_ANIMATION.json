@@ -1,0 +1,21 @@
+{
+  "revision": "V008",
+  "marble_unchanged_from": "V007",
+  "normal_texture": "textures/water_ripples_normal_2k.png",
+  "water_normal_resolution": 2048,
+  "normal_convention": "OpenGL tangent space",
+  "animation": "Blender UV scroll + companion PlayCanvas dual normal scroll",
+  "loop_seconds": 8,
+  "pool_scroll_uv_per_second": [
+    0.125,
+    -0.125
+  ],
+  "jet_scroll_uv_per_second": [
+    0,
+    0.25
+  ],
+  "source": "Original mathematical water waves",
+  "playcanvas_script": "playcanvas/fountain_water_animated_v008.js",
+  "stone_surface": "Unchanged scanned 4K marble",
+  "status": "water candidate; requires visual QA"
+}
