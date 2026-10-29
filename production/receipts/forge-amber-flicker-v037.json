@@ -1,0 +1,14 @@
+{
+  "id": "amber-flicker-v037",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-fissure-embers-v036",
+  "branch": "production/auto-forge-amber-flicker-v037",
+  "reason": "Both V035 and V036 were visually reviewed, not artistically accepted. V035 had popcorn-like white speckles; V036 had too little visible ember emission. V037 tunes intermediate thin fissure area and warmer amber-red output with stronger base emissive (21), a pulsing 430-energy warm hearth studio light, independent material groups, GLB runtime controller; V034 geometry and all PBR stone left intact. Render 4 views and 12 pulse GIF frames for human judgment.",
+  "edits": [
+    "scripts/genesis_hero_assets_v037.py",
+    "scripts/forge_embers_runtime_v037.js",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
