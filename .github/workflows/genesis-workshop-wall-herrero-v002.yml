@@ -2,7 +2,7 @@ name: Genesis workshop wall Herrero V002 - scanned PBR geometry and Cycles rende
 on:
   push:
     branches:
-      - feature/workshop-wall-herrero-v002
+      - feature/workshop-wall-herrero-v001
     paths:
       - scripts/genesis_wall_herrero_v002.py
       - .github/workflows/genesis-workshop-wall-herrero-v002.yml
@@ -121,5 +121,5 @@ jobs:
           git add "$dest"
           if ! git diff --cached --quiet; then
             git commit -m "Publish Herrero wall V002 candidate views [skip ci]"
-            git push origin HEAD:feature/workshop-wall-herrero-v002
+            git push origin HEAD:feature/workshop-wall-herrero-v001
           fi
