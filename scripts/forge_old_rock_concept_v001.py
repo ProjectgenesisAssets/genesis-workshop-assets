@@ -130,7 +130,7 @@ def apply_transform(o):
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     return o
 
-# V005: proven watertight structural foundation (no external boulders).
+# V005: restore exact V003 tested body and displacement to keep Boolean manifold (no external boulders).
 # Large-scale relief is sculpted AFTER voxel union, without subdivided clay faces.
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,.37))
 body=bpy.context.object
@@ -170,7 +170,7 @@ for v in body.data.vertices:
     micro=noise.noise(p*16.0+Vector((9.2,1.1,3.7)))
     fracture_field=abs(noise.noise(p*5.25+Vector((4.17,9.4,2.8))))
     fracture=-.024*max(0.0,1.0-fracture_field/.12)**2
-    d=.053*macro+.022*meso+.004*micro+fracture
+    d=.038*macro+.015*meso+.003*micro+fracture
     v.co += v.normal*d
 body.data.update()
 print("FORGE_DEBUG_AFTER_VOXEL",len(body.data.vertices),len(body.data.polygons))
