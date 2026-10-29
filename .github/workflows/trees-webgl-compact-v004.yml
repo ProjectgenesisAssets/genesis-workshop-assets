@@ -1,0 +1,55 @@
+name: Trees WebGL compact v004
+on:
+  push:
+    branches: ['feature/tree-webgl-compact-v004']
+    paths: ['.github/workflows/trees-webgl-compact-v004.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare texture optimizer
+        run: npm install --global @gltf-transform/cli@4.5.0
+      - name: Produce 8 compressed tree variants without mesh decimation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/tree_webgl_v004
+          printf 'species,lod,source_bytes,web_bytes,ratio\n' > assets/tree_webgl_v004/receipt.csv
+          for species in oak ash linden maple; do
+            mkdir -p "assets/tree_webgl_v004/$species"
+            for lod in 1 2; do
+              input="assets/tree_webgl_v003/$species/lod$lod.glb"
+              resized="/tmp/$species-lod$lod-resized.glb"
+              output="assets/tree_webgl_v004/$species/lod$lod.glb"
+              if [ "$lod" = 1 ]; then edge=1536; quality=88; else edge=1024; quality=82; fi
+              gltf-transform resize "$input" "$resized" --width "$edge" --height "$edge"
+              gltf-transform webp "$resized" "$output" --quality "$quality"
+              gltf-transform inspect "$output"
+              source_size=$(stat -c '%s' "$input")
+              new_size=$(stat -c '%s' "$output")
+              percent=$(awk -v a="$source_size" -v b="$new_size" 'BEGIN {printf "%.3f",b/a}')
+              printf '%s,%s,%s,%s,%s\n' "$species" "$lod" "$source_size" "$new_size" "$percent" >> assets/tree_webgl_v004/receipt.csv
+              test "$new_size" -lt "$source_size"
+            done
+          done
+      - name: Preserve finished assets in version branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/tree_webgl_v004
+          git commit -m 'assets: compact tree WebGL LOD1/2 texture payloads [skip ci]'
+          git push origin HEAD:feature/tree-webgl-compact-v004
+      - uses: actions/upload-artifact@v4
+        with:
+          name: trees-webgl-v004
+          path: assets/tree_webgl_v004/receipt.csv
