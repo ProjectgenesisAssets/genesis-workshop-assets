@@ -28,7 +28,7 @@ jobs:
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "V034 taller narrow smoke draft, V033 stone retained; stop at 00:00 ART Oct30." >> "$GITHUB_STEP_SUMMARY"
+            echo "V035 stronger three-zone ember PBR and flicker evidence; stop at 00:00 ART Oct30." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Validate queued correction and source generator
         if: steps.deadline.outputs.run == 'true'
@@ -93,6 +93,9 @@ jobs:
           set -euo pipefail
           python3 -m pip install --quiet Pillow
           python3 scripts/production_asset_qa.py --asset "$ASSET" --task-id "$TASK_ID" --output "$ASSET_OUTPUT" --source '${{ github.sha }}'
+          if [[ "$ASSET" == "forge" && -f scripts/forge_embers_preview_v035.py ]]; then
+            python3 scripts/forge_embers_preview_v035.py "$ASSET_OUTPUT"
+          fi
       - name: Upload candidate and evidence even when objective QA fails
         if: always() && steps.deadline.outputs.run == 'true'
         uses: actions/upload-artifact@v4
@@ -101,6 +104,7 @@ jobs:
           path: |
             output*/*.png
             output*/*.glb
+            output*/*.gif
             output*/*.blend
             output*/textures/*.png
             output*/*AUDIT*.json
@@ -127,6 +131,9 @@ jobs:
                 cp "$ASSET_OUTPUT/$view.png" "$dest/$view.png"
               fi
             done
+            if [[ -f "$ASSET_OUTPUT/flicker_preview.gif" ]]; then
+              cp "$ASSET_OUTPUT/flicker_preview.gif" "$dest/flicker_preview.gif"
+            fi
             for qa in reports/production_auto/*.json; do
               if [[ -f "$qa" ]]; then cp "$qa" "$dest/"; fi
             done
