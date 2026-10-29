@@ -130,12 +130,56 @@ def apply_transform(o):
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     return o
 
-# Large unified stone mass: rectangular, softened base and arched bulging hood.
+# V004: weathered quarry-rock foundation, never a clay brick slab.
+# A continuous structural core is physically sculpted before integrating
+# asymmetrical natural stone outcrops. Every outcrop is merged into the forge.
 bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,.37))
 body=bpy.context.object
-body.name="GENESIS_Forge_Rock_Mass"
+body.name="GENESIS_Forge_Rock_Foundation"
 body.dimensions=(2.24,1.12,.74)
 apply_transform(body)
+active(body)
+bpy.ops.object.mode_set(mode="EDIT")
+bpy.ops.mesh.select_all(action="SELECT")
+bpy.ops.mesh.subdivide(number_cuts=12)
+bpy.ops.object.mode_set(mode="OBJECT")
+for v in body.data.vertices:
+    p=v.co.copy()
+    large=noise.noise(p*3.1+Vector((2.31,6.47,1.73)))
+    medium=noise.noise(p*8.6+Vector((7.13,1.9,5.81)))
+    little=noise.noise(p*18.2+Vector((4.3,9.21,2.18)))
+    fracture_field=abs(noise.noise(p*5.1+Vector((5.47,3.11,8.14))))
+    split=-.030*max(0.0,1.0-fracture_field/.14)**2
+    d=.073*large+.029*medium+.008*little+split
+    v.co += v.normal*d
+body.data.update()
+# Embedded geological growths: unequal and staggered, not stacked stone blocks.
+outcrops=[
+  (-.99,-.48,.21,.32,.24,.27),(-.72,-.57,.42,.30,.19,.25),
+  (-.37,-.60,.17,.36,.23,.21),(.07,-.59,.36,.33,.20,.28),
+  (.47,-.58,.14,.30,.24,.24),(.80,-.53,.43,.35,.22,.27),
+  (1.05,-.29,.16,.22,.32,.27),(-1.07,.24,.40,.23,.31,.31),
+  (1.09,.27,.48,.24,.29,.23),(-.86,.57,.18,.34,.24,.20),
+  (-.28,.58,.45,.26,.19,.26),(.47,.56,.23,.36,.23,.23),
+  (.91,.48,.16,.30,.23,.23),(-.98,-.43,.85,.28,.22,.28),
+  (1.01,-.39,1.04,.26,.23,.31),(-.73,-.40,1.37,.27,.20,.20),
+  (.76,-.38,1.30,.29,.21,.24)
+]
+rock_growths=[]
+for i,(x,y,z,sx,sy,sz) in enumerate(outcrops):
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,z))
+    rg=bpy.context.object
+    rg.name="Integrated_Weathered_Stone_%02d"%i
+    rg.scale=(sx,sy,sz)
+    rg.rotation_euler=(.17*i,.29*i,.41*i)
+    apply_transform(rg)
+    for v in rg.data.vertices:
+        p=v.co
+        fine=noise.noise(p*7.1+Vector((i*2.31,i*.91,4.16)))
+        crag=noise.noise(p*3.0+Vector((i*.11,1.3,2.1)))
+        v.co+=v.normal*(.024*fine+.042*crag)
+    rg.data.update()
+    rock_growths.append(rg)
 
 # V003: proven watertight arch mass, roughened after voxel merge.
 bpy.ops.mesh.primitive_uv_sphere_add(segments=100,ring_count=50,location=(0,.015,1.03))
@@ -150,7 +194,7 @@ chimney.name="Organic_Rock_Chimney"
 apply_transform(chimney)
 
 bpy.ops.object.select_all(action="DESELECT")
-for o in (body,hood,chimney): o.select_set(True)
+for o in [body,hood,chimney]+rock_growths: o.select_set(True)
 bpy.context.view_layer.objects.active=body
 bpy.ops.object.join()
 body.name="GENESIS_Forge_MonolithicRock"
@@ -167,7 +211,7 @@ for v in body.data.vertices:
     micro=noise.noise(p*16.0+Vector((9.2,1.1,3.7)))
     fracture_field=abs(noise.noise(p*5.25+Vector((4.17,9.4,2.8))))
     fracture=-.024*max(0.0,1.0-fracture_field/.12)**2
-    d=.038*macro+.015*meso+.003*micro+fracture
+    d=.053*macro+.022*meso+.004*micro+fracture
     v.co += v.normal*d
 body.data.update()
 print("FORGE_DEBUG_AFTER_VOXEL",len(body.data.vertices),len(body.data.polygons))
@@ -231,11 +275,11 @@ for poly in body.data.polygons:
     for li in poly.loop_indices:
         p=body.data.vertices[body.data.loops[li].vertex_index].co
         if axis==0:
-            uv=(p.y*.78,p.z*.78)
+            uv=(p.y*1.19,p.z*1.19)
         elif axis==1:
-            uv=(p.x*.78,p.z*.78)
+            uv=(p.x*1.19,p.z*1.19)
         else:
-            uv=(p.x*.78,p.y*.78)
+            uv=(p.x*1.19,p.y*1.19)
         uv_layer.data[li].uv=uv
 # Verify front opening with actual BVH mesh ray casts: no cosmetically painted fake arch.
 inv=body.matrix_world.inverted()
@@ -337,7 +381,7 @@ for name,pos in shots.items():
 
 mesh_faces=sum(len(o.data.polygons) for o in assets if o.type=="MESH")
 audit={
-  "asset":"Forge_Ancient_Rock", "version":"lithic_sculpt_v003",
+  "asset":"Forge_Ancient_Rock", "version":"asymmetric_weathered_stone_v004",
   "basis":"User-approved first 2D visual concept: geometry recreated independently",
   "copyright":"Original independent 3D geometry; Poly Haven Rock Face scanned material CC0",
   "blender":bpy.app.version_string,
@@ -347,7 +391,7 @@ audit={
   "material_provenance": maps_meta,
   "render_views":list(shots),
   "actual_arch_opening_ray_test": QA_ARCH_OPEN,
-  "notes":"Only forge, no bellows or props. V003 stronger physical rock erosion on proven curved hood topology, plus 2K scanned stone. NOT yet artistically approved."
+  "notes":"Only forge, no bellows or props. V004 asymmetric embedded rock outcrops, sculpted and fissured foundation, 2K scanned CC0 rock. Still under artistic review. NOT yet artistically approved."
 }
 (OUT/"AUDIT.json").write_text(json.dumps(audit,indent=2),encoding="utf-8")
 print("GENESIS_FORGE_CONCEPT_3D_DONE",json.dumps(audit))
