@@ -1,0 +1,27 @@
+{
+  "asset": "PG_PLAZA_FUENTE_DELFIN_MARMOL_V011",
+  "status": "STILL_VISUAL_REVIEW_ONLY",
+  "preview_format": "LOSSLESS_PNG_16_BIT_PER_CHANNEL",
+  "preview_color_palette": "RGB_TRUE_COLOR_NOT_INDEXED",
+  "preview_resolution": [
+    1600,
+    1200
+  ],
+  "cycles_samples": 96,
+  "render_frames": [
+    65,
+    115
+  ],
+  "render_files": [
+    "three_quarter_water_active.png",
+    "detail_water_active.png",
+    "three_quarter_water_paused.png"
+  ],
+  "water_normal_strength": 0.2,
+  "water_normal_tiling": 3.1,
+  "water_gradient_multiplier": 3.5,
+  "water_issue": "V010 excessively amplified normals and repeated tiles created blocky white reflections",
+  "marble": "UNCHANGED V007 scanned PBR 4K",
+  "animation_export": "GLB retains 192 frames at 24 FPS; MP4 not yet rendered",
+  "acceptance": "Check still visual before full 24 FPS full-color video"
+}
