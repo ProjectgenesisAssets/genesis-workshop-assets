@@ -1,0 +1,82 @@
+name: Genesis plaza V014 - Easy Tree oak with photo CC0 leaf cards and PlayCanvas GLB
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/plaza-cuatro-arboles-playcanvas]
+    paths:
+      - scripts/roble_easytree_v014.py
+      - .github/workflows/roble-easytree-v014.yml
+permissions:
+  contents: write
+jobs:
+  easy_tree_probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Python script
+        run: python3 -m py_compile scripts/roble_easytree_v014.py
+      - name: Install official Blender 4.5.13
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-v014.tar.xz
+          mkdir -p /tmp/blender-v014
+          tar -xJf /tmp/blender-v014.tar.xz -C /tmp/blender-v014 --strip-components=1
+      - name: Fetch free and open-source Easy Tree geometry node generator
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/jacobcjohnston/Easy-Tree.git /tmp/easy_tree_plugin
+          test -f /tmp/easy_tree_plugin/operators.py
+          test -f /tmp/easy_tree_plugin/assets/assets.blend
+          test -f /tmp/easy_tree_plugin/LICENCE.txt
+      - name: Acquire free CC0 oak photographs with opacity
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/genesis-leafset016
+          curl -fSL --retry 3 --max-time 180 'https://ambientcg.com/get?file=LeafSet016_1K-JPG.zip' -o /tmp/LeafSet016_1K-JPG.zip
+          unzip -q -o /tmp/LeafSet016_1K-JPG.zip LeafSet016_1K-JPG_Color.jpg LeafSet016_1K-JPG_Opacity.jpg -d /tmp/genesis-leafset016
+          test -s /tmp/genesis-leafset016/LeafSet016_1K-JPG_Color.jpg
+          test -s /tmp/genesis-leafset016/LeafSet016_1K-JPG_Opacity.jpg
+      - name: Generate and render leaf-covered Easy Tree GLB
+        run: /tmp/blender-v014/blender -b -t 2 --python-exit-code 1 --python scripts/roble_easytree_v014.py
+      - name: Audit PlayCanvas GLB triangles and cutout alpha
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,struct,os
+          d='output_plaza_easytree_v014/oak'
+          a=json.load(open(f'{d}/AUDIT.json'))
+          assert a['triangles_raw']>1000 and a['triangles']<=60000
+          with open(f'{d}/oak_easytree_v014.glb','rb') as f:
+              assert f.read(4)==b'glTF'
+              f.read(8)
+              n=struct.unpack('<I',f.read(4))[0]
+              assert f.read(4)==b'JSON'
+              g=json.loads(f.read(n))
+          tri=sum(g['accessors'][p['indices']]['count']//3 for m in g['meshes'] for p in m['primitives'])
+          assert tri==a['triangles'],(tri,a['triangles'])
+          assert 'MASK' in [m.get('alphaMode','OPAQUE') for m in g.get('materials',[])], 'ALPHA_MISSING'
+          for name in ('front.png','three_quarter.png','oak_easytree_v014.blend','oak_leaf_atlas.png'):
+              assert os.path.getsize(f'{d}/{name}')>12000,name
+          print('V014 VALIDATED',json.dumps(a,indent=2))
+          PY
+      - name: Preserve source probe renders and audit, no game changes
+        run: |
+          set -euo pipefail
+          mkdir -p previews/plaza_trees_v014/oak
+          mkdir -p assets/plaza_trees_v014/oak
+          cp output_plaza_easytree_v014/oak/front.png output_plaza_easytree_v014/oak/three_quarter.png output_plaza_easytree_v014/oak/AUDIT.json previews/plaza_trees_v014/oak/
+          cp output_plaza_easytree_v014/oak/oak_easytree_v014.glb assets/plaza_trees_v014/oak/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_trees_v014/oak assets/plaza_trees_v014/oak
+          git diff --cached --quiet || git commit -m 'Preserve V014 photo oak renders, validated GLB [skip ci]'
+          git pull --rebase origin feature/plaza-cuatro-arboles-playcanvas
+          git push origin HEAD:feature/plaza-cuatro-arboles-playcanvas
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-plaza-v014-easytree-probe
+          path: output_plaza_easytree_v014/oak/
+          retention-days: 7
+          if-no-files-found: warn
