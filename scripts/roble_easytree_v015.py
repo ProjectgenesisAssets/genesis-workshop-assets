@@ -20,7 +20,7 @@ obj.name='Oak_EasyTree_V015_Proof'
 mod=next((m for m in obj.modifiers if m.type=='NODES'),None)
 assert mod and mod.node_group,'NO_NODE_GENERATOR'
 # Natural oak architecture: shorter bare trunk, wider asymmetric primary boughs.
-mod['Socket_27']=4
+mod['Socket_27']=3  # budget-aware simplification: 3-way branching at three levels
 mod['Socket_40']=1
 mod['Socket_25']=1  # three primary branches per level, instead of two
 mod['Socket_28']=7
@@ -100,7 +100,10 @@ foliage.node_tree.links.new(tex.outputs['Alpha'],quant.inputs[0]);foliage.node_t
 foliage.use_backface_culling=False
 v=[];f=[];uvdata=[]
 assert anchors,('NO_TIP_ANCHORS',len(obj.data.vertices))
-for i in range(17000):
+leaf_card_count=min(17000,max(0,(59500-raw_tri)//2))
+assert leaf_card_count>=9000,('WOOD_UNSUITABLE_FOR_MOBILE_FOLIAGE',raw_tri)
+print('V015_LEAF_CARD_COUNT',leaf_card_count)
+for i in range(leaf_card_count):
     pos=random.choice(anchors)+Vector((random.gauss(0,.31),random.gauss(0,.31),random.gauss(0,.23)))
     size=random.uniform(.062,.104)
     normal=Vector((random.uniform(-1,1),random.uniform(-1,1),random.uniform(-.3,1))).normalized()
