@@ -1,0 +1,21 @@
+{
+  "species": "linden",
+  "version": "V022",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 13404,
+  "triangles": 53644,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    4.653966426849365,
+    4.818522930145264,
+    5.46227502822876
+  ],
+  "materials": [
+    "Bark",
+    "Tilo V022 cutout leaves"
+  ],
+  "leaf_atlas": "ambientCG LeafSet016 CC0 photos",
+  "approved": false,
+  "status": "Tilo lower-crown tapered twiglets and visible branch-to-leaf transition; GLB tech validation pending"
+}
