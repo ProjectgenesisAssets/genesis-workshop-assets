@@ -27,6 +27,8 @@ jobs:
             mkdir -p "assets/tree_webgl_v004/$species"
             for lod in 1 2; do
               input="assets/tree_webgl_v003/$species/lod$lod.glb"
+              mkdir -p "assets/tree_webgl_v003/$species"
+              curl --fail --location --retry 3 --silent --show-error --output "$input" "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/$input"
               resized="/tmp/$species-lod$lod-resized.glb"
               output="assets/tree_webgl_v004/$species/lod$lod.glb"
               if [ "$lod" = 1 ]; then edge=1536; quality=88; else edge=1024; quality=82; fi
