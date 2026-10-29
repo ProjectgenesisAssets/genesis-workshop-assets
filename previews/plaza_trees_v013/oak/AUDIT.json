@@ -1,0 +1,18 @@
+{
+  "species": "oak",
+  "version": "V013",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 10680,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    5.654858589172363,
+    5.760714530944824,
+    7.252503395080566
+  ],
+  "materials": [
+    "Bark"
+  ],
+  "approved": false,
+  "status": "Easy Tree photographed leaf preview with reachable foliage height; no game export before art QA"
+}
