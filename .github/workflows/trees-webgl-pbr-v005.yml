@@ -1,0 +1,68 @@
+name: Approved leafy trees WebGL PNG-JPEG v005
+on:
+  push:
+    branches: ['feature/tree-webgl-pbr-v005']
+    paths: ['.github/workflows/trees-webgl-pbr-v005.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pbr:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install GLB texture resizer
+        run: npm install --global @gltf-transform/cli@4.5.0
+      - name: Compress approved MASTER textures, preserve foliage and alpha
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/tree_webgl_v005
+          printf 'species,triangles,original_bytes,near_bytes,far_bytes\n' > assets/tree_webgl_v005/receipt.csv
+          for species in oak ash linden maple; do
+            case "$species" in
+              oak) version=v017; master=oak_easytree_v017.glb;;
+              ash) version=v020; master=ash_easytree_v020.glb;;
+              linden) version=v022; master=linden_easytree_v022.glb;;
+              maple) version=v021; master=maple_easytree_v021.glb;;
+            esac
+            input="/tmp/$species-master.glb"
+            dir="assets/tree_webgl_v005/$species"
+            mkdir -p "$dir"
+            curl -fL --retry 4 --output "$input" "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/plaza_trees_$version/$species/$master"
+            # Keep native PNG/JPEG with transparency; DO NOT convert to EXT_texture_webp.
+            gltf-transform resize "$input" "$dir/lod1.glb" --width 1536 --height 1536
+            gltf-transform resize "$input" "$dir/lod2.glb" --width 1024 --height 1024
+            node - "$input" "$dir/lod1.glb" "$dir/lod2.glb" <<'NODE'
+          const fs=require('fs');
+          function doc(p){const b=fs.readFileSync(p);if(b.toString('ascii',0,4)!=='glTF')throw Error('Invalid GLB '+p);const n=b.readUInt32LE(12);return {j:JSON.parse(b.toString('utf8',20,20+n)),bytes:b.length}}
+          const [a,b,c]=process.argv.slice(2).map(doc);
+          function tris(x){return x.j.meshes.reduce((v,m)=>v+m.primitives.reduce((s,p)=>s+(x.j.accessors[p.indices]?.count||0)/3,0),0)}
+          for(const file of [b,c]){
+            if(JSON.stringify(file.j.extensionsRequired||[]).includes('EXT_texture_webp'))throw Error('WebP-only asset not portable');
+            if(tris(file)!==tris(a))throw Error('Geometry / foliage changed');
+            if(!file.j.materials?.length||!file.j.images?.length)throw Error('PBR materials missing');
+          }
+          console.log('WEBGL_PBR_APPROVED_MASTER', JSON.stringify({triangles:tris(a),materials:a.j.materials.length,alpha:a.j.materials.map(m=>m.alphaMode||'OPAQUE'),original:a.bytes,near:b.bytes,far:c.bytes,nearMime:b.j.images.map(i=>i.mimeType),farMime:c.j.images.map(i=>i.mimeType)}));
+          NODE
+            tris=$(node -e "const b=require('fs').readFileSync('$dir/lod2.glb');const j=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)));console.log(j.meshes.reduce((v,m)=>v+m.primitives.reduce((s,p)=>s+(j.accessors[p.indices]?.count||0)/3,0),0))")
+            printf '%s,%s,%s,%s,%s\n' "$species" "$tris" "$(stat -c '%s' "$input")" "$(stat -c '%s' "$dir/lod1.glb")" "$(stat -c '%s' "$dir/lod2.glb")" >> assets/tree_webgl_v005/receipt.csv
+          done
+      - name: Publish approved-master derivatives in feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/tree_webgl_v005
+          git commit -m 'assets: preserve complete approved foliage in PNG-JPEG PBR WebGL LODs [skip ci]'
+          git push origin HEAD:feature/tree-webgl-pbr-v005
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trees-leafy-v005-receipt
+          path: assets/tree_webgl_v005/receipt.csv
