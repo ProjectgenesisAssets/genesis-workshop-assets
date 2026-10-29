@@ -1,0 +1,14 @@
+{
+  "id": "breathing-coals-v038",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-amber-flicker-v037",
+  "branch": "production/auto-forge-breathing-coals-v038",
+  "reason": "Artist rejected V037 Christmas-light flicker. V038: one smooth 4-second symmetric coal glow with unified hearth light, stronger emissive, 24 real Cycles frames, truecolor APNG soft glow preview plus runtime controller. Preserve rocky flue/structure and PlayCanvas functional model.",
+  "edits": [
+    "scripts/genesis_hero_assets_v038.py",
+    "scripts/forge_embers_runtime_v038.js",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
