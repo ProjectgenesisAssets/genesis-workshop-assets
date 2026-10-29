@@ -1,0 +1,30 @@
+{
+  "asset": "ProjectGenesis_Herrero_ExteriorWall_V003",
+  "status": "EXPERIMENTAL_NOT_APPROVED",
+  "actual_workshop_front_reference_m": 7.875,
+  "wall_height_m": 3.2,
+  "door_cutout_m": [
+    1.48,
+    2.43
+  ],
+  "stone_height_displacement": "clipped Voronoi individual stone relief + scanned PBR height",
+  "scanned_materials": [
+    "polyhaven/rock_05",
+    "polyhaven/weathered_planks"
+  ],
+  "license": "CC0",
+  "render_views": [
+    "front",
+    "three_quarter",
+    "side",
+    "detail"
+  ],
+  "mesh_count": 18,
+  "triangles": 6010,
+  "glb_bytes": 14058168,
+  "generator_seed": 10292026,
+  "texture_resolution": 2048,
+  "geometry_approval": "NO",
+  "visual_score": "pending human review",
+  "notes": "Modular wall with hundreds of real irregular stones. V011 original door untouched."
+}
