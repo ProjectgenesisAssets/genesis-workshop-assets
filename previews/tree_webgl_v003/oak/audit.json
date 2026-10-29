@@ -1,0 +1,102 @@
+{
+  "species": "oak",
+  "source": "assets/plaza_trees_v017/oak/oak_easytree_v017.glb",
+  "baseline_triangles": 58164,
+  "screen_comparison_px": 720,
+  "visual_change_limit_pct": {
+    "lod1": 8.0,
+    "lod2": 15.0
+  },
+  "accepted": [
+    {
+      "lod": "lod1",
+      "retained_leaf_fraction": 0.48,
+      "triangles": 37702,
+      "removed_triangles": 20462,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 6.6394,
+          "color_mae_pct": 6.1353
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 6.8421,
+          "color_mae_pct": 6.5857
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 13315732
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.24,
+      "triangles": 28364,
+      "removed_triangles": 29800,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 11.9662,
+          "color_mae_pct": 8.1016
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 12.2965,
+          "color_mae_pct": 8.6577
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 12651700
+    }
+  ],
+  "rejected": [
+    {
+      "lod": "lod1",
+      "retained_leaf_fraction": 0.38,
+      "triangles": 33808,
+      "removed_triangles": 24356,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 9.3017,
+          "color_mae_pct": 7.3919
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 9.4594,
+          "color_mae_pct": 7.8525
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.12,
+      "triangles": 23744,
+      "removed_triangles": 34420,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 20.1611,
+          "color_mae_pct": 10.8455
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 19.7082,
+          "color_mae_pct": 11.2898
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.18,
+      "triangles": 26004,
+      "removed_triangles": 32160,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 15.1496,
+          "color_mae_pct": 9.3577
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 15.1231,
+          "color_mae_pct": 9.7538
+        }
+      },
+      "passed_proxy_gate": false
+    }
+  ],
+  "integration_approved": false
+}
