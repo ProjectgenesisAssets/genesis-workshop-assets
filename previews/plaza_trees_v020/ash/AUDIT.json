@@ -1,0 +1,21 @@
+{
+  "species": "ash",
+  "version": "V020",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 19332,
+  "triangles": 56332,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    6.57220458984375,
+    6.199608325958252,
+    9.181585311889648
+  ],
+  "materials": [
+    "Bark",
+    "Fresno V020 cutout leaves"
+  ],
+  "leaf_atlas": "ambientCG LeafSet016 CC0 photos",
+  "approved": false,
+  "status": "Fresno first standalone organic architecture, botanical silhouette and CC0 atlas; GLB tech validation pending"
+}
