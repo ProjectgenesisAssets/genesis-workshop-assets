@@ -1,0 +1,13 @@
+{
+  "id": "slim-high-draft-v034",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-corrected-iron-saddles-v033",
+  "branch": "production/auto-forge-slim-high-draft-v034",
+  "reason": "Gabriel requested a visually narrower forge chimney and taller smoke draft. Preserve V033 realistic monolithic quarry stone, soot/heat weathering, intact open hearth, limited forged iron hardware and tool rack. Narrow smoke shaft 1.22m to 0.96m (-21%); raise vertical shaft 0.52m to 0.88m (+69%), extend chimney outlet to z3.126 while keeping open bore; add natural taper shoulders. Render four Cycles views; human visual approval required; do not modify PlayCanvas.",
+  "edits": [
+    "scripts/genesis_hero_assets_v034.py",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
