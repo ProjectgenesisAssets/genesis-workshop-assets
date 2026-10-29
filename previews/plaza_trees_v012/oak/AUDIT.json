@@ -1,0 +1,18 @@
+{
+  "species": "oak",
+  "version": "V012",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 5208,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    3.4443211555480957,
+    3.367253303527832,
+    6.526085376739502
+  ],
+  "materials": [
+    "Bark"
+  ],
+  "approved": false,
+  "status": "Visual/source probe only; no decimation and no game export before quality check"
+}
