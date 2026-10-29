@@ -1,0 +1,82 @@
+{
+  "species": "maple",
+  "source": "assets/plaza_trees_v021/maple/maple_easytree_v021.glb",
+  "baseline_triangles": 54284,
+  "screen_comparison_px": 720,
+  "visual_change_limit_pct": 1.5,
+  "accepted": [
+    {
+      "lod": "lod1",
+      "retained_leaf_fraction": 0.91,
+      "triangles": 50860,
+      "removed_triangles": 3424,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 0.769,
+          "color_mae_pct": 1.3157
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 0.825,
+          "color_mae_pct": 1.3601
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 14327136
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.91,
+      "triangles": 50860,
+      "removed_triangles": 3424,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 0.769,
+          "color_mae_pct": 1.3157
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 0.825,
+          "color_mae_pct": 1.3601
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 14327136
+    }
+  ],
+  "rejected": [
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.82,
+      "triangles": 47412,
+      "removed_triangles": 6872,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.7526,
+          "color_mae_pct": 2.377
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.8206,
+          "color_mae_pct": 2.4886
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.87,
+      "triangles": 49372,
+      "removed_triangles": 4912,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.1971,
+          "color_mae_pct": 1.7274
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.1408,
+          "color_mae_pct": 1.8126
+        }
+      },
+      "passed_proxy_gate": false
+    }
+  ],
+  "integration_approved": false
+}
