@@ -119,5 +119,5 @@ jobs:
           git add "$dest"
           if ! git diff --cached --quiet; then
             git commit -m "Publish Herrero wall V004 candidate views [skip ci]"
-            git push origin HEAD:feature/workshop-wall-herrero-v001
+            git push origin HEAD:feature/workshop-wall-herrero-v004
           fi
