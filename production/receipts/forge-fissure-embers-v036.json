@@ -1,0 +1,14 @@
+{
+  "id": "fissure-embers-v036",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-live-embers-v035",
+  "branch": "production/auto-forge-fissure-embers-v036",
+  "reason": "V035 passed GLB/animation checks, but direct inspection of high-resolution art and GIF showed too many bright white speckles resembling popcorn/salt rather than ember fractures. V036 narrows the emission mask to deep dark noise valleys on charcoals, shifts overexposed yellow-white flecks toward saturated red-orange with tiny amber cores, preserves high base emission 19 and V034 rock/shaft. Increase irregular 3-group phase amplitude; regenerate actual Cycles frames and GIF plus PlayCanvas runtime script. Human visual approval pending.",
+  "edits": [
+    "scripts/genesis_hero_assets_v036.py",
+    "scripts/forge_embers_runtime_v036.js",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
