@@ -1,0 +1,21 @@
+{
+  "species": "oak",
+  "version": "V014",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 10680,
+  "triangles": 32680,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    5.654858589172363,
+    5.760714530944824,
+    7.252503395080566
+  ],
+  "materials": [
+    "Bark",
+    "Oak V014 cutout leaves"
+  ],
+  "leaf_atlas": "ambientCG LeafSet016 CC0 photos",
+  "approved": false,
+  "status": "Easy Tree natural bark + CC0 photographed leaf cards; GLB technical validation and visual review pending"
+}
