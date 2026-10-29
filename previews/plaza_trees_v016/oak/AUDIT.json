@@ -1,0 +1,21 @@
+{
+  "species": "oak",
+  "version": "V016",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 19164,
+  "triangles": 53164,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    6.230182647705078,
+    6.628794193267822,
+    7.605449199676514
+  ],
+  "materials": [
+    "Bark",
+    "Oak V016 cutout leaves"
+  ],
+  "leaf_atlas": "ambientCG LeafSet016 CC0 photos",
+  "approved": false,
+  "status": "Bent/lobed trunk, intermittent branch-aligned leaf clusters and CC0 leaf cards; GLB technical validation and visual review pending"
+}
