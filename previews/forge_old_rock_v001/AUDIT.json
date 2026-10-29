@@ -1,17 +1,18 @@
 {
   "asset": "Forge_Ancient_Rock",
-  "version": "asymmetric_weathered_stone_v004",
+  "version": "hearth_flames_v005",
   "basis": "User-approved first 2D visual concept: geometry recreated independently",
   "copyright": "Original independent 3D geometry; Poly Haven Rock Face scanned material CC0",
   "blender": "4.5.13 LTS",
-  "mesh_objects": 24,
-  "total_mesh_faces": 37842,
+  "mesh_objects": 30,
+  "total_mesh_faces": 24414,
   "texture_files": [
     "rock_face_diff_2k.jpg",
     "rock_face_rough_2k.jpg",
     "rock_face_nor_gl_2k.png",
     "PolyHaven_RockFace_CC0_WeatheredNeutralRock.png",
-    "PolyHaven_RockFace_CC0_FurnaceSoot.png"
+    "PolyHaven_RockFace_CC0_FurnaceSoot.png",
+    "genesis_fire_alpha_emissive_v005.png"
   ],
   "material_provenance": {
     "source": "https://polyhaven.com/a/rock_face",
@@ -26,9 +27,9 @@
     "detail"
   ],
   "actual_arch_opening_ray_test": {
-    "center_back_y": 0.2354,
-    "outer_shoulder_front_y": -0.5342,
-    "confirmed_depth_m": 0.7696
+    "center_back_y": 0.2424,
+    "outer_shoulder_front_y": -0.3423,
+    "confirmed_depth_m": 0.5847
   },
-  "notes": "Only forge, no bellows or props. V004 asymmetric embedded rock outcrops, sculpted and fissured foundation, 2K scanned CC0 rock. Still under artistic review. NOT yet artistically approved."
+  "notes": "Only forge, no bellows or props. V005 physically sculpted rocky foundation without boulder boils; six emissive alpha fire cards, hot embers, 2K scanned CC0 rock. Artistic approval pending. NOT yet artistically approved."
 }
