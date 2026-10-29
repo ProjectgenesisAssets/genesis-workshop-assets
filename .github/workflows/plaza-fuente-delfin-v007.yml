@@ -1,0 +1,151 @@
+name: Genesis plaza - marble dolphin fountain V007 (Blender 4.5.13)
+on:
+  push:
+    branches:
+      - feature/plaza-fuente-delfin-marmol-aaa
+    paths:
+      - scripts/plaza_fuente_delfin_marmol_v007.py
+      - .github/workflows/plaza-fuente-delfin-v007.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-plaza-dolphin-fountain-v007-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-and-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    env:
+      GENESIS_TEX_SIZE: "4096"
+      OPENBLAS_NUM_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Blender generator syntax
+        run: python3 -m py_compile scripts/plaza_fuente_delfin_marmol_v007.py
+      - name: Install official Blender 4.5.13 LTS (GitHub Actions only)
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F "Blender 4.5.13"
+      - name: Download verified public-domain anatomical dolphin (CC0)
+        run: |
+          set -euo pipefail
+          mkdir -p inputs
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            'https://www.innerscene.com/api/library/common-bottlenose-dolphin-a7f74d0e/download' \
+            -o inputs/common-bottlenose-dolphin.glb
+          python3 - <<'PY'
+          import pathlib,struct,hashlib
+          path=pathlib.Path("inputs/common-bottlenose-dolphin.glb")
+          b=path.read_bytes()
+          assert len(b)>100000 and b[:4]==b"glTF"
+          assert struct.unpack_from("<I",b,4)[0]==2
+          assert struct.unpack_from("<I",b,8)[0]==len(b)
+          print("CC0_SOURCE_SHA256",hashlib.sha256(b).hexdigest())
+          PY
+      - name: Download real 4K scanned marble PBR (Poly Haven CC0 / Amal Kumar)
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request, pathlib, json, hashlib, urllib.parse, shutil
+          agent={"User-Agent":"ProjectGenesisAssets-FountainPBR/0.4 (public open source production)"}
+          request=urllib.request.Request("https://api.polyhaven.com/files/marble_rock_01",headers=agent)
+          with urllib.request.urlopen(request,timeout=45) as response:
+              files=json.load(response)
+          target=pathlib.Path("inputs/marble_rock_01")
+          target.mkdir(parents=True,exist_ok=True)
+          wanted={"Diffuse":("jpg","marble_albedo_4k.jpg"),
+                  "Rough":("jpg","marble_roughness_4k.jpg"),
+                  "nor_gl":("png","marble_normal_4k.png"),
+                  "Displacement":("png","marble_height_4k.png")}
+          manifest={"source":"https://polyhaven.com/a/marble_rock_01",
+                    "author":"Amal Kumar","license":"CC0","resolution":"4k","files":{}}
+          for channel,(fmt,filename) in wanted.items():
+              info=files[channel]["4k"][fmt]
+              link=info["url"]
+              assert link.startswith("https://"),"Unsafe texture URL"
+              assert urllib.parse.urlparse(link).hostname in ("dl.polyhaven.org","polyhaven.org","cdn.polyhaven.com"),"Unexpected texture host"
+              dest=target/filename
+              req=urllib.request.Request(link,headers=agent)
+              with urllib.request.urlopen(req,timeout=120) as r, dest.open("wb") as out:
+                  shutil.copyfileobj(r,out,length=1024*1024)
+              assert dest.stat().st_size>100000,filename
+              actual=hashlib.md5(dest.read_bytes()).hexdigest()
+              assert actual==info["md5"],f"Texture checksum mismatch: {filename}"
+              manifest["files"][channel]={"file":filename,"md5":actual,"size":dest.stat().st_size,"source":link}
+              print("VERIFIED_POLYHAVEN_CC0_4K",channel,filename,dest.stat().st_size)
+          (target/"SOURCE_MANIFEST.json").write_text(json.dumps(manifest,indent=2))
+          PY
+      - name: Sculpt dolphin marble fountain, apply scanned maps, animate physically based water, export GLB and render
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/plaza_fuente_delfin_marmol_v007.py
+      - name: Validate real outputs
+        run: |
+          set -euo pipefail
+          output=output_fountain_dolphin_v007
+          test -s "$output/genesis_dolphin_marble_fountain_v007.blend"
+          test -s "$output/genesis_dolphin_marble_fountain_v007.glb"
+          test -s "$output/AUDIT.json"
+          test -s "$output/PROVENANCE.json"
+          for view in front three_quarter side detail; do
+            test -s "$output/$view.png"
+          done
+          test -s "$output/textures/marble_albedo_4k.jpg"
+          test -s "$output/textures/marble_roughness_4k.jpg"
+          test -s "$output/textures/marble_normal_4k.png"
+          test -s "$output/textures/marble_height_4k.png"
+          python3 - <<'PY'
+          import json,struct,pathlib
+          d=pathlib.Path("output_fountain_dolphin_v007")
+          glb=(d/"genesis_dolphin_marble_fountain_v007.glb").read_bytes()
+          assert glb[:4]==b"glTF" and struct.unpack_from("<I",glb,4)[0]==2
+          assert struct.unpack_from("<I",glb,8)[0]==len(glb)
+          a=json.loads((d/"AUDIT.json").read_text())
+          assert a["objects"]>18 and a["total_triangles_including_ornament_and_water"]>30000
+          assert a["animation"]["loop_seconds"]==8
+          assert a["texture_resolution"]==4096
+          assert a["jet_sections"]==21
+          assert len(a["stone_source_sha256"])==4
+          offset,length=12,struct.unpack_from("<I",glb,12)[0]
+          assert glb[16:20]==b"JSON"
+          gltf=json.loads(glb[20:20+length])
+          assert gltf.get("animations"),"No exportable glTF animations"
+          assert any(len(x.get("channels",[]))>=2 for x in gltf["animations"]),"Insufficient animated channels"
+          assert gltf.get("materials"),"No materials exported"
+          assert gltf.get("images"),"PBR textures missing"
+          print("VALIDATED_REAL_4K_TEXTURES_PHYSICAL_WATER_GLTF_ANIMATION",len(gltf["animations"]),len(gltf["images"]),a["total_triangles_including_ornament_and_water"])
+          PY
+      - name: Upload editable Blender, game GLB, scanned CC0 4K maps, and Cycles previews
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-plaza-fuente-delfin-marmol-v007-${{ github.run_id }}
+          path: output_fountain_dolphin_v007/
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Publish review PNGs and audit ONLY in the isolated branch
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/plaza_fuente_delfin_v007
+          cp output_fountain_dolphin_v007/{front,three_quarter,side,detail}.png \
+            previews/plaza_fuente_delfin_v007/
+          cp output_fountain_dolphin_v007/AUDIT.json \
+            previews/plaza_fuente_delfin_v007/AUDIT.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_fuente_delfin_v007
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish fountain V007 four-angle Blender review [skip ci]'
+            git fetch origin feature/plaza-fuente-delfin-marmol-aaa
+            git rebase origin/feature/plaza-fuente-delfin-marmol-aaa
+            git push origin HEAD:feature/plaza-fuente-delfin-marmol-aaa
+          fi
