@@ -1,0 +1,69 @@
+{
+  "asset": "forge",
+  "task_id": "eroded-stone-arrises-v028",
+  "source_sha": "d0867b47e7425c7f6a174e892a11154ebdebc5ed",
+  "baseline": "previews/production_auto/forge_irregular-dark-smoke-stack-v027",
+  "candidate": "output_hero_forge_v028",
+  "glb": "forge_hero_v028.glb",
+  "blend": "forge_hero_v028.blend",
+  "glb_stats": {
+    "triangles": 119340,
+    "meshes": 405,
+    "materials": 5,
+    "base_color_textured_materials": 5,
+    "embedded_images": 16,
+    "texture_bindings": {
+      "forge_heat_blackened_brick": {
+        "base_color_image": "forge_heat_blackened_brick_albedo",
+        "emissive_texture": false
+      },
+      "forge_aged_refractory_sandstone": {
+        "base_color_image": "quarry_wall_CC0_albedo_1k",
+        "emissive_texture": false
+      },
+      "forge_hammered_hood_black_iron": {
+        "base_color_image": "forge_hammered_hood_black_iron_albedo",
+        "emissive_texture": false
+      },
+      "forge_cracked_hot_charcoal_ember_map": {
+        "base_color_image": "forge_cracked_hot_charcoal_ember_map_albedo",
+        "emissive_texture": true
+      },
+      "forge_real_charcoal_porous": {
+        "base_color_image": "forge_real_charcoal_porous_albedo",
+        "emissive_texture": false
+      }
+    }
+  },
+  "audit_files": [
+    "AUDIT.json"
+  ],
+  "comparison": [
+    {
+      "view": "front",
+      "rgb_delta": 0.00959,
+      "silhouette_iou": null
+    },
+    {
+      "view": "three_quarter",
+      "rgb_delta": 0.00901,
+      "silhouette_iou": null
+    },
+    {
+      "view": "rear",
+      "rgb_delta": 0.0091,
+      "silhouette_iou": null
+    },
+    {
+      "view": "detail",
+      "rgb_delta": 0.02263,
+      "silhouette_iou": null
+    }
+  ],
+  "visual_changed": true,
+  "technical_pass": true,
+  "silhouette_verifiable": false,
+  "artistic_score": null,
+  "artist_approved": false,
+  "note": "Objective GLB and pixel checks only; opaque-background silhouette is NOT verified. Human artistic approval required."
+}
