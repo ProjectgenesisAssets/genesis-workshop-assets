@@ -1,0 +1,13 @@
+{
+  "id": "realistic-iron-straps-v032",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-fissured-monolith-wallfix-v031",
+  "branch": "production/auto-forge-realistic-iron-straps-v032",
+  "reason": "User likes V031 continuous realistic quarry stone and requests practical metallic blacksmithing details. Preserve V031 stone sculpt, 2K scanned PBR and functional open firebed chimney. Add only small iron-forged clamps on the exposed ends of two stone wings, narrow lateral returns, clinched peened fasteners and upper smoke shaft keeper plates using existing hammered black iron PBR. No heroic fantasy ornament, decorative broad plating or geometry changes to rock. Require real 4-view Blender QA and human visual review; no game replacement.",
+  "edits": [
+    "scripts/genesis_hero_assets_v032.py",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
