@@ -1,4 +1,4 @@
-name: Genesis workshop wall herrero V006 - Pared reforzada: cimientos y pilares continuos, juntas más cerradas
+name: "Genesis workshop wall Herrero V006 - mamposteria solida con juntas cerradas"
 on:
   push:
     branches:
