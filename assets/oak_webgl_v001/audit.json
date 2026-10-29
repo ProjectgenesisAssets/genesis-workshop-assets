@@ -1,0 +1,15 @@
+{
+  "baseline_triangles": 58164,
+  "lods": [
+    {
+      "lod": "lod1",
+      "triangles": 41484,
+      "bytes": 13585272
+    },
+    {
+      "lod": "lod2",
+      "triangles": 27568,
+      "bytes": 12594892
+    }
+  ]
+}
