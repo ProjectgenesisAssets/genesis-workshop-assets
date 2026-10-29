@@ -1,0 +1,50 @@
+{
+  "asset": "PG_PLAZA_FUENTE_DELFIN_MARMOL_V007",
+  "status": "UNAPPROVED_CANDIDATE_4K_SCANNED_MARBLE_PHYSICAL_WATER",
+  "blender_target": "4.5.13 LTS",
+  "size_m": {
+    "diameter": 4.26,
+    "height": 2.65
+  },
+  "objects": 75,
+  "mesh_objects": 75,
+  "provenance_file": "PROVENANCE.json",
+  "total_triangles_including_ornament_and_water": 182172,
+  "texture_resolution": 4096,
+  "separate_pbr_maps": [
+    "albedo",
+    "roughness",
+    "normal",
+    "height"
+  ],
+  "stone_material": "Poly Haven Marble Rock 01 / Amal Kumar / CC0",
+  "stone_source_sha256": {
+    "Diffuse": "2cea2484161d90f1b30443065fe56f6ab3488f14a5ffdacf5c857721b2428792",
+    "Rough": "1e31d45eaeb06b4b2db18d47689a07b868fe019356961e308d027d5d483b975d",
+    "nor_gl": "5c5d4def83bc92f1ccb491094fb9e8c2cc85e0d6194fcc600d33474a51f62d1c",
+    "Displacement": "e1ceedb5aa406ca49dd141f7b599d23666636d81931acdf201ee65adc512b455"
+  },
+  "water_ior": 1.333,
+  "jet_sections": 21,
+  "animation": {
+    "name": "Escupitajo_8s",
+    "fps": 24,
+    "frames": 192,
+    "onset_frame": 27,
+    "active_frames": [
+      55,
+      88
+    ],
+    "offset_frame": 112,
+    "loop_seconds": 8,
+    "note": "Independent water stream sections, droplets, splashes and waves keyed into glTF; PlayCanvas loops 8 s animation"
+  },
+  "review_views": [
+    "front",
+    "three_quarter",
+    "side",
+    "detail"
+  ],
+  "engine": "Cycles CPU",
+  "acceptance": "Gabriel approval after actual 4-view review and >=8/10"
+}
