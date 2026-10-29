@@ -1,0 +1,164 @@
+name: Genesis plaza - V010 dolphin water animation MP4 and GIF (Blender 4.5.13)
+on:
+  push:
+    branches:
+      - feature/plaza-fuente-delfin-marmol-aaa
+    paths:
+      - scripts/plaza_fuente_delfin_marmol_v010_anim.py
+      - .github/workflows/plaza-fuente-delfin-v010-animation.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-plaza-dolphin-fountain-v010-animation-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-and-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    env:
+      GENESIS_TEX_SIZE: "4096"
+      OPENBLAS_NUM_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Blender generator syntax
+        run: python3 -m py_compile scripts/plaza_fuente_delfin_marmol_v010_anim.py
+      - name: Install official Blender 4.5.13 LTS (GitHub Actions only)
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F "Blender 4.5.13"
+      - name: Download verified public-domain anatomical dolphin (CC0)
+        run: |
+          set -euo pipefail
+          mkdir -p inputs
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            'https://www.innerscene.com/api/library/common-bottlenose-dolphin-a7f74d0e/download' \
+            -o inputs/common-bottlenose-dolphin.glb
+          python3 - <<'PY'
+          import pathlib,struct,hashlib
+          path=pathlib.Path("inputs/common-bottlenose-dolphin.glb")
+          b=path.read_bytes()
+          assert len(b)>100000 and b[:4]==b"glTF"
+          assert struct.unpack_from("<I",b,4)[0]==2
+          assert struct.unpack_from("<I",b,8)[0]==len(b)
+          print("CC0_SOURCE_SHA256",hashlib.sha256(b).hexdigest())
+          PY
+      - name: Download real 4K scanned marble PBR (Poly Haven CC0 / Amal Kumar)
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request, pathlib, json, hashlib, urllib.parse, shutil
+          agent={"User-Agent":"ProjectGenesisAssets-FountainPBR/0.4 (public open source production)"}
+          request=urllib.request.Request("https://api.polyhaven.com/files/marble_rock_01",headers=agent)
+          with urllib.request.urlopen(request,timeout=45) as response:
+              files=json.load(response)
+          target=pathlib.Path("inputs/marble_rock_01")
+          target.mkdir(parents=True,exist_ok=True)
+          wanted={"Diffuse":("jpg","marble_albedo_4k.jpg"),
+                  "Rough":("jpg","marble_roughness_4k.jpg"),
+                  "nor_gl":("png","marble_normal_4k.png"),
+                  "Displacement":("png","marble_height_4k.png")}
+          manifest={"source":"https://polyhaven.com/a/marble_rock_01",
+                    "author":"Amal Kumar","license":"CC0","resolution":"4k","files":{}}
+          for channel,(fmt,filename) in wanted.items():
+              info=files[channel]["4k"][fmt]
+              link=info["url"]
+              assert link.startswith("https://"),"Unsafe texture URL"
+              assert urllib.parse.urlparse(link).hostname in ("dl.polyhaven.org","polyhaven.org","cdn.polyhaven.com"),"Unexpected texture host"
+              dest=target/filename
+              req=urllib.request.Request(link,headers=agent)
+              with urllib.request.urlopen(req,timeout=120) as r, dest.open("wb") as out:
+                  shutil.copyfileobj(r,out,length=1024*1024)
+              assert dest.stat().st_size>100000,filename
+              actual=hashlib.md5(dest.read_bytes()).hexdigest()
+              assert actual==info["md5"],f"Texture checksum mismatch: {filename}"
+              manifest["files"][channel]={"file":filename,"md5":actual,"size":dest.stat().st_size,"source":link}
+              print("VERIFIED_POLYHAVEN_CC0_4K",channel,filename,dest.stat().st_size)
+          (target/"SOURCE_MANIFEST.json").write_text(json.dumps(manifest,indent=2))
+          PY
+      - name: Generate complete 8-second physical water animation in Blender Cycles
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/plaza_fuente_delfin_marmol_v010_anim.py
+      - name: Encode full-loop water MP4 and inline GIF from real rendered frames
+        run: |
+          set -euo pipefail
+          output=output_fountain_dolphin_v010
+          count=$(find "$output/animated_frames" -name 'dolphin_*.png' -type f | wc -l)
+          test "$count" -eq 96
+          command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+          ffmpeg -hide_banner -loglevel error -y \
+            -framerate 12 -pattern_type glob \
+            -i "$output/animated_frames/dolphin_*.png" \
+            -c:v libx264 -pix_fmt yuv420p -crf 17 -preset medium \
+            -movflags +faststart \
+            "$output/genesis_dolphin_fountain_water_v010_8s.mp4"
+          ffmpeg -hide_banner -loglevel error -y \
+            -framerate 12 -pattern_type glob \
+            -i "$output/animated_frames/dolphin_*.png" \
+            -filter_complex '[0:v]fps=12,scale=600:-2:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4' \
+            -loop 0 \
+            "$output/genesis_dolphin_fountain_water_v010_8s.gif"
+          test -s "$output/genesis_dolphin_fountain_water_v010_8s.mp4"
+          test -s "$output/genesis_dolphin_fountain_water_v010_8s.gif"
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate,nb_frames \
+            -of json "$output/genesis_dolphin_fountain_water_v010_8s.mp4"
+      - name: Audit generated water animation and immutable stone maps
+        run: |
+          set -euo pipefail
+          output=output_fountain_dolphin_v010
+          test -s "$output/ANIMATION_QA.json"
+          test -s "$output/AUDIT.json"
+          python3 - <<'PY'
+          import json,pathlib
+          d=pathlib.Path("output_fountain_dolphin_v010")
+          a=json.loads((d/"AUDIT.json").read_text())
+          b=json.loads((d/"ANIMATION_QA.json").read_text())
+          assert a["animation"]["loop_seconds"]==8
+          assert a["water_normal_resolution"]==2048
+          assert a["water_pool_base_color_linear"]==[.065,.14,.15]
+          assert b["review_frame_count_expected"]==96
+          assert b["source_frame_count"]==192
+          assert len(a["stone_source_sha256"])==4
+          assert len(list((d/"animated_frames").glob("dolphin_*.png")))==96
+          print("VERIFIED_V010_8S_ANIMATION_12FPS_96_REAL_CYCLES_FRAMES",a["total_triangles_including_ornament_and_water"])
+          PY
+      - name: Upload 8s MP4 GIF and machine-readable QA evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-plaza-fuente-delfin-v010-video-${{ github.run_id }}
+          path: |
+            output_fountain_dolphin_v010/genesis_dolphin_fountain_water_v010_8s.mp4
+            output_fountain_dolphin_v010/genesis_dolphin_fountain_water_v010_8s.gif
+            output_fountain_dolphin_v010/ANIMATION_QA.json
+            output_fountain_dolphin_v010/AUDIT.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Publish MP4 and GIF publicly in isolated review branch
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/plaza_fuente_delfin_v010
+          cp output_fountain_dolphin_v010/genesis_dolphin_fountain_water_v010_8s.mp4 \
+            previews/plaza_fuente_delfin_v010/
+          cp output_fountain_dolphin_v010/genesis_dolphin_fountain_water_v010_8s.gif \
+            previews/plaza_fuente_delfin_v010/
+          cp output_fountain_dolphin_v010/ANIMATION_QA.json \
+            previews/plaza_fuente_delfin_v010/ANIMATION_QA.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_fuente_delfin_v010
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish fountain V010 real 8s water MP4 and GIF [skip ci]'
+            git fetch origin feature/plaza-fuente-delfin-marmol-aaa
+            git rebase origin/feature/plaza-fuente-delfin-marmol-aaa
+            git push origin HEAD:feature/plaza-fuente-delfin-marmol-aaa
+          fi
