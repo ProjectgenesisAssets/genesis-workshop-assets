@@ -65,6 +65,8 @@ jobs:
           cp output_blacksmith_door_art_052/three_quarter.png previews/door_herrero_v052/three_quarter.png
           cp output_blacksmith_door_art_052/material_closeup.png previews/door_herrero_v052/material_closeup.png
           cp output_blacksmith_door_art_052/material_no_normal.png previews/door_herrero_v052/material_no_normal.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add previews/door_herrero_v052
           if ! git diff --cached --quiet; then
             git commit -m 'Publish V052 original CC0 iron material render [skip ci]'
