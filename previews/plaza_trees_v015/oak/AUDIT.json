@@ -1,0 +1,21 @@
+{
+  "species": "oak",
+  "version": "V015",
+  "generator": "Easy-Tree GPL-3.0 geometry nodes",
+  "triangles_raw": 19164,
+  "triangles": 53164,
+  "triangle_limit": 60000,
+  "within_budget": true,
+  "dimensions_m": [
+    6.230182647705078,
+    6.628794193267822,
+    7.605449199676514
+  ],
+  "materials": [
+    "Bark",
+    "Oak V015 cutout leaves"
+  ],
+  "leaf_atlas": "ambientCG LeafSet016 CC0 photos",
+  "approved": false,
+  "status": "Asymmetric 3-branch oak + fine CC0 photographed leaves; GLB technical validation and visual review pending"
+}
