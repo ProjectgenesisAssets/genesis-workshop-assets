@@ -1,0 +1,90 @@
+name: Genesis plaza - marble dolphin fountain V001 (Blender 4.5.13)
+on:
+  push:
+    branches:
+      - feature/plaza-fuente-delfin-marmol-aaa
+    paths:
+      - scripts/plaza_fuente_delfin_marmol_v001.py
+      - .github/workflows/plaza-fuente-delfin-v001.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-plaza-dolphin-fountain-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-and-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    env:
+      GENESIS_TEX_SIZE: "2048"
+      OPENBLAS_NUM_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Blender generator syntax
+        run: python3 -m py_compile scripts/plaza_fuente_delfin_marmol_v001.py
+      - name: Install official Blender 4.5.13 LTS (GitHub Actions only)
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F "Blender 4.5.13"
+      - name: Sculpt fountain, bake separate marble maps, animate spout, export GLB, render four angles
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/plaza_fuente_delfin_marmol_v001.py
+      - name: Validate real outputs
+        run: |
+          set -euo pipefail
+          output=output_fountain_dolphin_v001
+          test -s "$output/genesis_dolphin_marble_fountain_v001.blend"
+          test -s "$output/genesis_dolphin_marble_fountain_v001.glb"
+          test -s "$output/AUDIT.json"
+          for view in front three_quarter side detail; do
+            test -s "$output/$view.png"
+          done
+          for tex in albedo roughness normal height; do
+            test -s "$output/textures/marble_${tex}_2k.png"
+          done
+          python3 - <<'PY'
+          import json,struct,pathlib
+          d=pathlib.Path("output_fountain_dolphin_v001")
+          glb=(d/"genesis_dolphin_marble_fountain_v001.glb").read_bytes()
+          assert glb[:4]==b"glTF" and struct.unpack_from("<I",glb,4)[0]==2
+          assert struct.unpack_from("<I",glb,8)[0]==len(glb)
+          a=json.loads((d/"AUDIT.json").read_text())
+          assert a["objects"]>30 and a["total_triangles_including_ornament_and_water"]>30000
+          assert a["animation"]["loop_seconds"]==8
+          print("VALIDATED_GEOMETRY_TEXTURES_GLTF_CONTAINER_ANIMATION_SPEC",a)
+          PY
+      - name: Upload editable model, PlayCanvas GLB, maps and original Cycles previews
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-plaza-fuente-delfin-marmol-v001-${{ github.run_id }}
+          path: output_fountain_dolphin_v001/
+          retention-days: 2
+          if-no-files-found: warn
+      - name: Publish review PNGs and audit ONLY in the isolated branch
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/plaza_fuente_delfin_v001
+          cp output_fountain_dolphin_v001/{front,three_quarter,side,detail}.png \
+            previews/plaza_fuente_delfin_v001/
+          cp output_fountain_dolphin_v001/AUDIT.json \
+            previews/plaza_fuente_delfin_v001/AUDIT.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/plaza_fuente_delfin_v001
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish fountain V001 four-angle Blender review [skip ci]'
+            git fetch origin feature/plaza-fuente-delfin-marmol-aaa
+            git rebase origin/feature/plaza-fuente-delfin-marmol-aaa
+            git push origin HEAD:feature/plaza-fuente-delfin-marmol-aaa
+          fi
