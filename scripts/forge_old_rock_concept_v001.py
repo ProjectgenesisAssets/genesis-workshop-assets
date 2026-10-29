@@ -153,33 +153,7 @@ for v in body.data.vertices:
     d=.073*large+.029*medium+.008*little+split
     v.co += v.normal*d
 body.data.update()
-# Embedded geological growths: unequal and staggered, not stacked stone blocks.
-outcrops=[
-  (-.99,-.48,.21,.32,.24,.27),(-.72,-.57,.42,.30,.19,.25),
-  (-.37,-.60,.17,.36,.23,.21),(.07,-.59,.36,.33,.20,.28),
-  (.47,-.58,.14,.30,.24,.24),(.80,-.53,.43,.35,.22,.27),
-  (1.05,-.29,.16,.22,.32,.27),(-1.07,.24,.40,.23,.31,.31),
-  (1.09,.27,.48,.24,.29,.23),(-.86,.57,.18,.34,.24,.20),
-  (-.28,.58,.45,.26,.19,.26),(.47,.56,.23,.36,.23,.23),
-  (.91,.48,.16,.30,.23,.23),(-.98,-.43,.85,.28,.22,.28),
-  (1.01,-.39,1.04,.26,.23,.31),(-.73,-.40,1.37,.27,.20,.20),
-  (.76,-.38,1.30,.29,.21,.24)
-]
-rock_growths=[]
-for i,(x,y,z,sx,sy,sz) in enumerate(outcrops):
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=1,location=(x,y,z))
-    rg=bpy.context.object
-    rg.name="Integrated_Weathered_Stone_%02d"%i
-    rg.scale=(sx,sy,sz)
-    rg.rotation_euler=(.17*i,.29*i,.41*i)
-    apply_transform(rg)
-    for v in rg.data.vertices:
-        p=v.co
-        fine=noise.noise(p*7.1+Vector((i*2.31,i*.91,4.16)))
-        crag=noise.noise(p*3.0+Vector((i*.11,1.3,2.1)))
-        v.co+=v.normal*(.024*fine+.042*crag)
-    rg.data.update()
-    rock_growths.append(rg)
+# V005: removed fused rounded outcrops that looked like boils; all relief stays in the primary rock surface.
 
 # V003: proven watertight arch mass, roughened after voxel merge.
 bpy.ops.mesh.primitive_uv_sphere_add(segments=100,ring_count=50,location=(0,.015,1.03))
@@ -194,7 +168,7 @@ chimney.name="Organic_Rock_Chimney"
 apply_transform(chimney)
 
 bpy.ops.object.select_all(action="DESELECT")
-for o in [body,hood,chimney]+rock_growths: o.select_set(True)
+for o in (body,hood,chimney): o.select_set(True)
 bpy.context.view_layer.objects.active=body
 bpy.ops.object.join()
 body.name="GENESIS_Forge_MonolithicRock"
@@ -300,6 +274,15 @@ QA_ARCH_OPEN={"center_back_y":round(cavity_back_y,4),
 print("GENESIS_TRUE_ARCH_OPENING_CONFIRMED",QA_ARCH_OPEN)
 assets.append(body)
 
+# Selective hot coals — actual emissive geometry, restrained and non-neon.
+ember=bpy.data.materials.new("Deep_Ember_Orange_Emission")
+ember.use_nodes=True
+eb=ember.node_tree.nodes.get("Principled BSDF")
+eb.inputs["Base Color"].default_value=(.60,.066,.008,1)
+eb.inputs["Roughness"].default_value=.94
+eb.inputs["Emission Color"].default_value=(1,.13,.012,1)
+eb.inputs["Emission Strength"].default_value=1.7
+
 # Independent coal/ash microforms reside INSIDE the chamber, never equipment props.
 for i in range(23):
     x=random.uniform(-.55,.55)
@@ -310,14 +293,72 @@ for i in range(23):
     o.name="Integrated_Charcoal_%02d"%i
     o.scale=(random.uniform(.055,.13),random.uniform(.06,.12),random.uniform(.037,.08))
     o.rotation_euler=(random.random(),random.random(),random.random())
-    o.data.materials.append(coal)
+    o.data.materials.append(ember if i in (3,7,11,15,19,22) else coal)
+    assets.append(o)
+
+# V005: actual flame sheets inside the excavated fire chamber.
+# Texture contains coherent transparent tongues, not a glowing orange sphere.
+# This is a production alpha/emissive sprite for the GLB; UV animation can follow in PlayCanvas.
+fw,fh=256,512
+u=np.linspace(-1.0,1.0,fw,dtype=np.float32)[None,:]
+v=np.linspace(0.0,1.0,fh,dtype=np.float32)[:,None]
+wav=.12*np.sin(v*9.7+1.1)+.045*np.sin(v*29.4-.8)
+blade=.67*np.power(np.clip(1-v,0,1),.74)+.035
+blade*=.89+.11*np.sin(v*23.1+1.8)
+dist=np.abs((u-wav)/np.maximum(blade,.015))
+body_alpha=np.maximum(0,1-dist*dist)**1.7
+body_alpha*=np.minimum(1,v/.085)*np.minimum(1,(1-v)/.18)
+veil=.62+.24*np.sin(17.4*v+3.1)*np.sin(8.2*u+1.7)
+body_alpha=np.clip(body_alpha*veil,0,1)
+rchan=np.ones_like(body_alpha)
+gchan=np.clip(.12+.86*np.power(1-v,.79)*(1-.37*np.minimum(1,dist))+.03*np.sin(v*18),.04,1)
+bchan=np.clip(.012+.23*np.power(1-v,2.1)*(1-.76*np.minimum(1,dist)),0,1)
+rgba=np.stack((rchan,gchan,bchan,body_alpha),axis=2)
+fire_img=bpy.data.images.new("Genesis_RealFlame_Alpha_Emission",width=fw,height=fh,alpha=True)
+fire_img.pixels.foreach_set(rgba.astype(np.float32).ravel())
+fire_path=TEX/"genesis_fire_alpha_emissive_v005.png"
+fire_img.filepath_raw=str(fire_path);fire_img.file_format="PNG";fire_img.save();fire_img.pack()
+maps.append(fire_path.name)
+flame_mat=bpy.data.materials.new("Hearth_Flame_AlphaEmission_v005")
+flame_mat.use_nodes=True
+fbs=flame_mat.node_tree.nodes.get("Principled BSDF")
+fbs.inputs["Metallic"].default_value=0
+fbs.inputs["Roughness"].default_value=1
+fbs.inputs["Emission Strength"].default_value=3.2
+firetex=flame_mat.node_tree.nodes.new("ShaderNodeTexImage")
+firetex.image=fire_img
+flame_mat.node_tree.links.new(firetex.outputs["Color"],fbs.inputs["Base Color"])
+flame_mat.node_tree.links.new(firetex.outputs["Color"],fbs.inputs["Emission Color"])
+flame_mat.node_tree.links.new(firetex.outputs["Alpha"],fbs.inputs["Alpha"])
+flame_mat.diffuse_color=(1,.3,.04,1)
+if hasattr(flame_mat,"surface_render_method"):
+    flame_mat.surface_render_method="DITHERED"
+flame_specs=[
+  (-.34,-.07,.36,.46,0.00),(-.12,.015,.30,.59,.23),
+  (.18,-.045,.38,.55,-.19),(.39,.10,.24,.42,.75),
+  (-.25,.13,.29,.51,1.31),(.02,-.12,.33,.49,-.72)
+]
+for i,(cx,cy,w,h,angle) in enumerate(flame_specs):
+    bottom=.765
+    ca,sa=math.cos(angle),math.sin(angle)
+    vtx=[]
+    for side,z in ((-.5,bottom),(.5,bottom),(.5,bottom+h),(-.5,bottom+h)):
+        vtx.append((cx+side*w*ca,cy+side*w*sa,z))
+    m=bpy.data.meshes.new("FlameSheet_%02d"%i)
+    m.from_pydata(vtx,[],[(0,1,2,3)]);m.update()
+    uv=m.uv_layers.new(name="Flame_UV")
+    for li,(uu,vv) in enumerate(((0,0),(1,0),(1,1),(0,1))):
+        uv.data[li].uv=(uu,vv)
+    o=bpy.data.objects.new("GENESIS_Fire_Tongue_%02d"%i,m)
+    bpy.context.collection.objects.link(o)
+    o.data.materials.append(flame_mat)
     assets.append(o)
 
 # Ember glow is a very restrained light, not a pile of bright glowing spheres.
 bpy.ops.object.light_add(type="POINT",location=(0,-.12,.94))
 fire_light=bpy.context.object
 fire_light.name="RENDER_ONLY_low_ember_bounce"
-fire_light.data.energy=25
+fire_light.data.energy=108
 fire_light.data.color=(1,.18,.036)
 fire_light.data.shadow_soft_size=.35
 
@@ -381,7 +422,7 @@ for name,pos in shots.items():
 
 mesh_faces=sum(len(o.data.polygons) for o in assets if o.type=="MESH")
 audit={
-  "asset":"Forge_Ancient_Rock", "version":"asymmetric_weathered_stone_v004",
+  "asset":"Forge_Ancient_Rock", "version":"hearth_flames_v005",
   "basis":"User-approved first 2D visual concept: geometry recreated independently",
   "copyright":"Original independent 3D geometry; Poly Haven Rock Face scanned material CC0",
   "blender":bpy.app.version_string,
@@ -391,7 +432,7 @@ audit={
   "material_provenance": maps_meta,
   "render_views":list(shots),
   "actual_arch_opening_ray_test": QA_ARCH_OPEN,
-  "notes":"Only forge, no bellows or props. V004 asymmetric embedded rock outcrops, sculpted and fissured foundation, 2K scanned CC0 rock. Still under artistic review. NOT yet artistically approved."
+  "notes":"Only forge, no bellows or props. V005 physically sculpted rocky foundation without boulder boils; six emissive alpha fire cards, hot embers, 2K scanned CC0 rock. Artistic approval pending. NOT yet artistically approved."
 }
 (OUT/"AUDIT.json").write_text(json.dumps(audit,indent=2),encoding="utf-8")
 print("GENESIS_FORGE_CONCEPT_3D_DONE",json.dumps(audit))
