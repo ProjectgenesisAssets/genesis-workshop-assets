@@ -1,0 +1,133 @@
+{
+  "species": "linden",
+  "source": "assets/plaza_trees_v022/linden/linden_easytree_v022.glb",
+  "baseline_triangles": 53644,
+  "screen_comparison_px": 720,
+  "visual_change_limit_pct": 1.5,
+  "accepted": [
+    {
+      "lod": "lod1",
+      "retained_leaf_fraction": 0.96,
+      "triangles": 52188,
+      "removed_triangles": 1456,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 0.4807,
+          "color_mae_pct": 0.9779
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 0.5364,
+          "color_mae_pct": 1.1124
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 14849480
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.95,
+      "triangles": 51800,
+      "removed_triangles": 1844,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 0.6207,
+          "color_mae_pct": 1.1693
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 0.5975,
+          "color_mae_pct": 1.3159
+        }
+      },
+      "passed_proxy_gate": true,
+      "bytes": 14819736
+    }
+  ],
+  "rejected": [
+    {
+      "lod": "lod1",
+      "retained_leaf_fraction": 0.91,
+      "triangles": 50242,
+      "removed_triangles": 3402,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.0217,
+          "color_mae_pct": 1.8362
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.1352,
+          "color_mae_pct": 2.0565
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod1",
+      "retained_leaf_fraction": 0.94,
+      "triangles": 51444,
+      "removed_triangles": 2200,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 0.7512,
+          "color_mae_pct": 1.3233
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 0.7967,
+          "color_mae_pct": 1.5002
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.82,
+      "triangles": 47064,
+      "removed_triangles": 6580,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 2.3791,
+          "color_mae_pct": 3.4923
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 2.1286,
+          "color_mae_pct": 3.7502
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.87,
+      "triangles": 48862,
+      "removed_triangles": 4782,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.448,
+          "color_mae_pct": 2.4388
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.4065,
+          "color_mae_pct": 2.7037
+        }
+      },
+      "passed_proxy_gate": false
+    },
+    {
+      "lod": "lod2",
+      "retained_leaf_fraction": 0.91,
+      "triangles": 50242,
+      "removed_triangles": 3402,
+      "metrics": {
+        "front": {
+          "silhouette_change_pct": 1.0217,
+          "color_mae_pct": 1.8362
+        },
+        "three_quarter": {
+          "silhouette_change_pct": 1.1352,
+          "color_mae_pct": 2.0565
+        }
+      },
+      "passed_proxy_gate": false
+    }
+  ],
+  "integration_approved": false
+}
