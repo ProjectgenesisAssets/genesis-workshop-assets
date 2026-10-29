@@ -1,0 +1,13 @@
+{
+  "id": "eroded-stone-arrises-v028",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-irregular-dark-smoke-stack-v027",
+  "branch": "production/auto-forge-eroded-stone-arrises-v028",
+  "reason": "User requested to turn visibly stylized box bricks into physically worn quarry rocks. Preserve V027 forge dimensions, open firebed, flue, coal lights, tool rack and web-game bindings; change each handlaid masonry element from an 8-vertex jittered cube into a subdivided eroded mesh with unique damaged arrises, chiseled planes, strata, and varied photographic UV offsets. Four views and real GLB inspection required; do not auto-approve or modify PlayCanvas.",
+  "edits": [
+    "scripts/genesis_hero_assets_v028.py",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
