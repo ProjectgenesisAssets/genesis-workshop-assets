@@ -23,12 +23,12 @@ jobs:
         shell: bash
         run: |
           now="$(date -u +%s)"
-          cutoff="$(date -u -d '2026-10-27 12:00:00' +%s)"
+          cutoff="$(date -u -d '2026-10-30 03:00:00' +%s)"
           if (( now < cutoff )); then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "No asset production after 09:00 ART." >> "$GITHUB_STEP_SUMMARY"
+            echo "New Oct29 user-requested V028 trial, stop at 00:00 ART Oct30." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Validate queued correction and source generator
         if: steps.deadline.outputs.run == 'true'
@@ -72,7 +72,7 @@ jobs:
           OMP_NUM_THREADS: '2'
         run: |
           set -euo pipefail
-          cutoff="$(date -u -d '2026-10-27 12:00:00' +%s)"
+          cutoff="$(date -u -d '2026-10-30 03:00:00' +%s)"
           remaining=$((cutoff-$(date -u +%s)))
           if (( remaining < 60 )); then echo "Deadline reached; skip Blender." >&2; exit 1; fi
           if [[ "$ASSET" == "bellows" || "$ASSET" == "forge" ]]; then
