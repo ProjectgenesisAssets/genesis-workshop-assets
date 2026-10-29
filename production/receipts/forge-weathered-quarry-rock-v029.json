@@ -1,0 +1,13 @@
+{
+  "id": "weathered-quarry-rock-v029",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-eroded-stone-arrises-v028",
+  "branch": "production/auto-forge-weathered-quarry-rock-v029",
+  "reason": "V028 honest visual rating 6/10: repetitive toy-brick silhouette remains. Transform masonry in real mesh: 4x4 subdivided block faces, 14-27 percent asymmetrical corner spalls, 6-17.5 percent eroded edges, concave face pitting, stronger quarry-wall scanned normal relief (0.82), independently randomized UVs. Preserve firebed, coal, flue passage, shaft, tools and collision/functional envelope. Render 4 views, compare to V028 and do not auto-approve or change PlayCanvas.",
+  "edits": [
+    "scripts/genesis_hero_assets_v029.py",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
