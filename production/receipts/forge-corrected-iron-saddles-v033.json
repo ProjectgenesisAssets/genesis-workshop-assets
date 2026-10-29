@@ -1,0 +1,13 @@
+{
+  "id": "corrected-iron-saddles-v033",
+  "asset": "forge",
+  "base_branch": "production/auto-forge-realistic-iron-straps-v032",
+  "branch": "production/auto-forge-corrected-iron-saddles-v033",
+  "reason": "Real V032 detail render showed side iron plates partially intersected irregular sculpted rock and looked like black stains. Replace those plates with short forged iron saddle strips above top edges of the two continuous rock cheeks; add peened studs. Keep effective upper smoke shaft keeper brackets and V031 core stone, PBR, heat/soot, coal and chimney. Review 4 views objectively; no automatic artist approval or game changes.",
+  "edits": [
+    "scripts/genesis_hero_assets_v033.py",
+    ".github/workflows/production-asset-iteration.yml"
+  ],
+  "approval": "NOT_ARTISTICALLY_APPROVED",
+  "created_utc": "2026-10-29"
+}
