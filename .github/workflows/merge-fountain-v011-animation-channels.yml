@@ -1,0 +1,52 @@
+name: Genesis V011 fountain - combine all 8s water tracks for PlayCanvas
+on:
+  push:
+    branches:
+      - feature/plaza-fuente-delfin-marmol-aaa
+    paths:
+      - scripts/merge_fountain_v011_animation_channels.py
+      - .github/workflows/merge-fountain-v011-animation-channels.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-fountain-v011-merge-animation
+  cancel-in-progress: false
+jobs:
+  merge-original-water-tracks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Losslessly combine the existing 62 exported water clips
+        run: |
+          set -euo pipefail
+          python3 scripts/merge_fountain_v011_animation_channels.py
+          test -s public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Merged8s.glb
+      - name: Verify merged output and immutable BIN/PBR payload
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          p=Path('public/models')
+          m=json.loads((p/'PG_Dolphin_Fountain_V011_PlayCanvas_Merged8s.json').read_text())
+          b=(p/'PG_Dolphin_Fountain_V011_PlayCanvas_Merged8s.glb').read_bytes()
+          assert b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+          assert m['merged_animation_clips']==1
+          assert m['channels']>=80
+          assert hashlib.sha256(b).hexdigest()==m['sha256']
+          PY
+      - name: Publish separate animation-fixed GLB without changing source
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Merged8s.glb public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Merged8s.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V011 all-tracks 8s animated dolphin fountain GLB [skip ci]'
+            git pull --rebase origin feature/plaza-fuente-delfin-marmol-aaa
+            git push origin HEAD:feature/plaza-fuente-delfin-marmol-aaa
+          fi
