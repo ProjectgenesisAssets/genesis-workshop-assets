@@ -1,0 +1,66 @@
+name: "Genesis V038 forge HQ - optimize mesh draw calls for PlayCanvas"
+on:
+  push:
+    branches: [feature/playcanvas-herrero-arcanista-walls-preview]
+    paths:
+      - scripts/optimize_forge_v038_playcanvas_hq.py
+      - .github/workflows/forge-v038-playcanvas-hq-optimize.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-forge-v038-hq-opt
+  cancel-in-progress: false
+jobs:
+  optimize-hq:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install tested glTF Transform
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/optimize_forge_v038_playcanvas_hq.py
+          test -s public/models/Forge_V038_HeaderFixed_Preview.glb
+          npm install -g @gltf-transform/cli@4.5.1
+          gltf-transform --version
+      - name: Join redundant static meshes, compress geometry, preserve PBR and triangles
+        run: |
+          set -euo pipefail
+          gltf-transform optimize \
+            public/models/Forge_V038_HeaderFixed_Preview.glb \
+            public/models/Forge_V038_PlayCanvas_HQ_Optimized.glb \
+            --compress draco \
+            --texture-compress auto --texture-size 2048 \
+            --flatten true --join true --instance false \
+            --palette false --simplify false --resample false \
+            --prune false --weld false --sparse true
+          python3 scripts/optimize_forge_v038_playcanvas_hq.py
+      - name: Save diagnostics and file as downloadable workflow artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-forge-v038-hq-${{ github.run_id }}
+          path: |
+            public/models/Forge_V038_PlayCanvas_HQ_Optimized.glb
+            public/models/Forge_V038_PlayCanvas_HQ_Optimized.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Publish ONLY validated art to existing public asset branch
+        if: success()
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/models/Forge_V038_PlayCanvas_HQ_Optimized.glb \
+                  public/models/Forge_V038_PlayCanvas_HQ_Optimized.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish V038 HQ GLB with fewer primitives and Draco PBR [skip ci]"
+            git pull --rebase origin feature/playcanvas-herrero-arcanista-walls-preview
+            git push origin HEAD:feature/playcanvas-herrero-arcanista-walls-preview
+          fi
