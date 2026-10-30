@@ -11,7 +11,7 @@ assert raw[16:20]==b'JSON'
 doc=json.loads(raw[20:20+n])
 off=20+n
 length,tag=struct.unpack_from('<I4s',raw,off)
-assert tag==b'BIN\\0'.replace(b'\0',b'\x00') or tag==b'BIN\\x00'
+assert tag==b'BIN\x00'
 old=raw[off+8:off+8+length]
 image_views={im['bufferView']:im for im in doc['images']}
 print('GLB_SOURCE',len(raw),'bufferViews',len(doc['bufferViews']),'images',len(doc['images']),flush=True)
