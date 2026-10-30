@@ -1,0 +1,24 @@
+{
+  "asset": "PG_PLAZA_FUENTE_DELFIN_MARMOL_V011",
+  "material_revision": "V011_APPROVED_STILL_CANDIDATE_UNMODIFIED",
+  "animation_type": "REAL_BLENDER_CYCLES_PER_FRAME_NOT_STILL_INTERPOLATION",
+  "source_fps": 24,
+  "render_fps": 24,
+  "frame_start": 1,
+  "frame_end": 192,
+  "frame_step": 1,
+  "frame_count_expected": 192,
+  "duration_seconds": 8,
+  "source_image_format": "PNG_RGB_TRUE_COLOR_NO_PALETTE",
+  "render_size": [
+    1280,
+    960
+  ],
+  "cycles_samples_per_frame": 40,
+  "cycles_denoising": true,
+  "video_target": "MP4_H264_HIGH_QUALITY_CRF12_YUV420P_24FPS",
+  "video_palette": "TRUE_COLOR_NO_256_COLOR_GIF",
+  "marble": "UNCHANGED_V007_4K_CC0_PBR",
+  "water": "UNCHANGED_FROM_V011_STILL",
+  "status": "VIDEO_REVIEW_ONLY_NOT_PLAYCANVAS_TESTED"
+}
