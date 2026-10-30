@@ -1,0 +1,48 @@
+{
+  "asset": "Project Genesis Dolphin Fountain V011",
+  "status": "BINARY_OPTIMIZED_NOT_YET_IN_GAME_VISUALLY_APPROVED",
+  "source_bytes": 39191820,
+  "source_animation_clips": 62,
+  "source_animation_channels": 91,
+  "animation": "Single merged synchronized 8-second glTF animation; PlayCanvas material ripple UV scroll requires companion JS",
+  "geometry": "No mesh decimation or topology-simplification; Draco encodes geometry",
+  "playcanvas_decoder": "DracoDecoderModule must be configured before GLB loading",
+  "variants": {
+    "hq": {
+      "file": "public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb",
+      "bytes": 16715688,
+      "megabytes": 16.72,
+      "sha256": "88108f2909b45061919c45a298597f93a3db625b9567db03bdece503b7d55c4e",
+      "texture_max": 2048,
+      "clip_count": 1,
+      "channels": 91,
+      "loop_seconds": 7.958,
+      "meshes": 60,
+      "materials": 6,
+      "extensions_required": [
+        "KHR_draco_mesh_compression",
+        "KHR_texture_transform"
+      ],
+      "saving_percent": 57.35
+    },
+    "mobile": {
+      "file": "public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Mobile_Optimized.glb",
+      "bytes": 5233084,
+      "megabytes": 5.23,
+      "sha256": "c3276d4a806cd974fe3448c21bc83093c7ce4dfe7254081f77c66b7f53aa38e7",
+      "texture_max": 1024,
+      "clip_count": 1,
+      "channels": 91,
+      "loop_seconds": 7.958,
+      "meshes": 60,
+      "materials": 6,
+      "extensions_required": [
+        "KHR_draco_mesh_compression",
+        "KHR_texture_transform"
+      ],
+      "saving_percent": 86.65
+    }
+  },
+  "artistic_approval": "PENDING",
+  "on_device_fps": "NOT_YET_TESTED"
+}
