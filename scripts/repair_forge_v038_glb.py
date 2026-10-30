@@ -15,7 +15,7 @@ assert tag==b'JSON'
 document=json.loads(glb[20:20+json_len])
 at=20+json_len
 length,chunk_tag=struct.unpack_from('<I4s',glb,at)
-assert chunk_tag in (b'BIN\\',b'BIN\\0',b'BIN\\x00',b'BIN\\\x00',b'BIN\x00'),repr(chunk_tag)
+assert chunk_tag in (b'BIN\\\\',b'BIN\\x00'),repr(chunk_tag)
 assert at+8+length==len(glb),(len(glb),at,length)
 glb[at+4:at+8]=b'BIN\x00'
 assert struct.unpack_from('<I4s',glb,at)[1]==b'BIN\x00'
