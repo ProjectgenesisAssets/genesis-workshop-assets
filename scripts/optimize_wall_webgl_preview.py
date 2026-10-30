@@ -8,7 +8,7 @@ import io, json, struct, sys
 from pathlib import Path
 from PIL import Image
 
-def pad(data, char=b"\\0"):
+def pad(data, char=b"\0"):
     return data + char*((-len(data))%4)
 
 def unpack(path):
@@ -20,7 +20,7 @@ def unpack(path):
     doc=json.loads(buf[20:20+json_size])
     at=20+json_size
     bin_size,bin_type=struct.unpack_from("<I4s",buf,at)
-    assert bin_type==b"BIN\\0"
+    assert bin_type==b"BIN\0"
     payload=buf[at+8:at+8+bin_size]
     assert len(payload)==bin_size
     return doc,payload
@@ -59,18 +59,18 @@ def convert(source,destination,edge=1024,quality=79):
                 converted+=1
             except Exception as ex:
                 raise RuntimeError(f"Cannot optimize embedded image view {idx}") from ex
-        new_bin.extend(b"\\0" * ((-len(new_bin))%4))
+        new_bin.extend(b"\0" * ((-len(new_bin))%4))
         v["byteOffset"]=len(new_bin)
         v["byteLength"]=len(blob)
         new_bin.extend(blob)
     assert converted>=2, "Expected embedded PBR textures"
     doc["buffers"][0]["byteLength"]=len(new_bin)
     js=pad(json.dumps(doc,separators=(',',':'),ensure_ascii=False).encode('utf8'),b' ')
-    binary=pad(bytes(new_bin),b"\\0")
+    binary=pad(bytes(new_bin),b"\0")
     total=12+8+len(js)+8+len(binary)
     result=(struct.pack("<4sII",b"glTF",2,total)
             +struct.pack("<I4s",len(js),b"JSON")+js
-            +struct.pack("<I4s",len(binary),b"BIN\\0")+binary)
+            +struct.pack("<I4s",len(binary),b"BIN\0")+binary)
     Path(destination).parent.mkdir(parents=True,exist_ok=True)
     Path(destination).write_bytes(result)
     document,payload=unpack(destination)
