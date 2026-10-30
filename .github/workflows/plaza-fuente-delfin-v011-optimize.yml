@@ -1,0 +1,88 @@
+name: "Genesis fountain V011 - Optimize animated PlayCanvas GLB"
+on:
+  push:
+    branches: [feature/plaza-fuente-delfin-marmol-aaa]
+    paths:
+      - scripts/optimize_fountain_v011_playcanvas.py
+      - .github/workflows/plaza-fuente-delfin-v011-optimize.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-fountain-v011-optimize
+  cancel-in-progress: false
+jobs:
+  optimize-existing-glb:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Preflight source and optimizer
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/optimize_fountain_v011_playcanvas.py
+          test -s public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.glb
+          npm install --global @gltf-transform/cli@4.5.1
+          gltf-transform --version
+      - name: Consolidate original 62 clips into one synchronized water loop
+        run: |
+          set -euo pipefail
+          python3 scripts/optimize_fountain_v011_playcanvas.py prepare
+      - name: Optimize geometry without decimating dolphin (2K premium HQ)
+        run: |
+          set -euo pipefail
+          gltf-transform optimize \
+            public/models/PG_Dolphin_Fountain_V011_Combined_Staging.glb \
+            public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb \
+            --compress draco \
+            --texture-compress auto --texture-size 2048 \
+            --flatten false --join false --instance false \
+            --palette false --simplify false --resample false \
+            --prune false --weld false --sparse true
+      - name: Optimize bandwidth for mobile (1K textures, preserved geometry)
+        run: |
+          set -euo pipefail
+          gltf-transform optimize \
+            public/models/PG_Dolphin_Fountain_V011_Combined_Staging.glb \
+            public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Mobile_Optimized.glb \
+            --compress draco \
+            --texture-compress auto --texture-size 1024 \
+            --flatten false --join false --instance false \
+            --palette false --simplify false --resample false \
+            --prune false --weld false --sparse true
+      - name: Strict test - animations, materials, visual hierarchy, size, extensions
+        run: |
+          set -euo pipefail
+          python3 scripts/optimize_fountain_v011_playcanvas.py inspect
+          cat public/models/PG_Dolphin_Fountain_V011_Optimization.json
+      - name: Upload QA payload even if publish is rejected
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-dolphin-fountain-v011-opt-${{ github.run_id }}
+          path: |
+            public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb
+            public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Mobile_Optimized.glb
+            public/models/PG_Dolphin_Fountain_V011_Optimization.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Publish only QA-passing variants in isolated branch
+        if: success()
+        run: |
+          set -euo pipefail
+          rm -f public/models/PG_Dolphin_Fountain_V011_Combined_Staging.glb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb \
+                  public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Mobile_Optimized.glb \
+                  public/models/PG_Dolphin_Fountain_V011_Optimization.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish optimized V011 fountain Draco GLBs with merged water animation [skip ci]"
+            git pull --rebase origin feature/plaza-fuente-delfin-marmol-aaa
+            git push origin HEAD:feature/plaza-fuente-delfin-marmol-aaa
+          fi
