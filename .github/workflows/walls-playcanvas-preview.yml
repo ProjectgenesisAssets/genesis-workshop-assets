@@ -4,6 +4,7 @@ on:
     branches: [feature/playcanvas-herrero-arcanista-walls-preview]
     paths:
       - scripts/optimize_wall_webgl_preview.py
+      - scripts/repair_forge_v038_glb.py
       - .github/workflows/walls-playcanvas-preview.yml
   workflow_dispatch:
 permissions:
@@ -35,17 +36,25 @@ jobs:
           python3 scripts/optimize_wall_webgl_preview.py /tmp/walls/arcanista/output_workshop_wall_arcanista_v005/genesis_wall_arcanista_v005.glb public/models/Wall_Arcanista_V005_PlayCanvas_Preview.glb 1024
           test "$(stat -c%s public/models/Wall_Herrero_V006_PlayCanvas_Preview.glb)" -lt 18000000
           test "$(stat -c%s public/models/Wall_Arcanista_V005_PlayCanvas_Preview.glb)" -lt 18000000
+      - name: Fix the broken V038 forge GLB chunk header (preserve its geometry)
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 'https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/production/auto-forge-breathing-coals-v038/public/models/forge-v038-web-hq.glb' -o /tmp/forge-original-v038.glb
+          python3 scripts/repair_forge_v038_glb.py /tmp/forge-original-v038.glb public/models/Forge_V038_HeaderFixed_Preview.glb
+          test -s public/models/Forge_V038_HeaderFixed_Preview.glb
       - uses: actions/upload-artifact@v4
         with:
           name: genesis-two-workshop-wall-webgl-playcanvas-preview
-          path: public/models/Wall_*PlayCanvas_Preview.glb*
+          path: |
+            public/models/Wall_*PlayCanvas_Preview.glb*
+            public/models/Forge_V038_HeaderFixed_Preview.glb
           retention-days: 5
       - name: Publish experimental web GLBs to this feature branch only
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/models/Wall_*PlayCanvas_Preview.glb*
+          git add public/models/Wall_*PlayCanvas_Preview.glb* public/models/Forge_V038_HeaderFixed_Preview.glb
           git diff --cached --quiet || {
             git commit -m "Publish two experimental PlayCanvas wall GLBs [skip ci]"
             git push origin HEAD:feature/playcanvas-herrero-arcanista-walls-preview
