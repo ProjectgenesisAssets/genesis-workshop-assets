@@ -1,0 +1,32 @@
+{
+  "asset": "PG_Dolphin_Fountain_V011_PlayCanvas_Animated",
+  "source_script": "scripts/plaza_fuente_delfin_marmol_v011_still.py",
+  "status": "GLB_STATIC_VALIDATED_NOT_YET_PLAYCANVAS_VISUALLY_APPROVED",
+  "glb": "public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.glb",
+  "bytes": 39191820,
+  "sha256": "6e6b22b604663cd7e7f40ec66ea35a5aa941127f780fc0dd6e6526d1fbf00afd",
+  "meshes": 75,
+  "materials": [
+    "MARMOL_VIEJO_Canteria_Escaneada_PBR4K",
+    "MARMOL_MOJADO_Albedo_Atenuado",
+    "MARMOL_ESCULPIDO_Satinado_Con_Poros",
+    "AGUA_Estanque_Transparente_Reflectiva",
+    "AGUA_Fisica_Incolora_Refraccion_1p333",
+    "AGUA_Espuma_Impacto_Burbujas"
+  ],
+  "animations": 62,
+  "animation_channels": 91,
+  "max_animation_duration_s": 7.958,
+  "target_fps": 24,
+  "loop_s": 8,
+  "source_geometry_objects": 75,
+  "runtime_pbr_texture_max": 2048,
+  "authoring_pbr_texture_resolution": 4096,
+  "diameter_m": 4.26,
+  "height_m": 2.65,
+  "water_material_animation": "PlayCanvas companion JS required for UV scrolling normals; GLB embeds stream/droplet/splash mesh animation",
+  "water_runtime_script": "playcanvas/fountain_water_animated_v011.js",
+  "source_preserved": true,
+  "playcanvas_integration": "PENDING_IN_GAME_RENDER_AND_MOBILE_PERFORMANCE",
+  "artistic_approval": "PENDING"
+}
