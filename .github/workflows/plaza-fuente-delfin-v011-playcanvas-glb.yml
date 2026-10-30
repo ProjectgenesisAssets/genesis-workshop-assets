@@ -1,0 +1,116 @@
+name: "Genesis / Fountain V011 animated GLB for PlayCanvas"
+on:
+  push:
+    branches:
+      - feature/plaza-fuente-delfin-marmol-aaa
+    paths:
+      - scripts/export_dolphin_fountain_v011_playcanvas.py
+      - playcanvas/fountain_water_animated_v011.js
+      - .github/workflows/plaza-fuente-delfin-v011-playcanvas-glb.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-fountain-v011-playcanvas-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  export-animated-glb:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      OPENBLAS_NUM_THREADS: "2"
+      OMP_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate exporter syntax
+        run: python3 -m py_compile scripts/export_dolphin_fountain_v011_playcanvas.py
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | grep -F "Blender 4.5.13"
+      - name: Fetch CC0 dolphin
+        run: |
+          set -euo pipefail
+          mkdir -p inputs
+          curl --fail --location --retry 3 --connect-timeout 20 \
+            'https://www.innerscene.com/api/library/common-bottlenose-dolphin-a7f74d0e/download' \
+            -o inputs/common-bottlenose-dolphin.glb
+          python3 - <<'PY'
+          import pathlib,struct
+          b=pathlib.Path("inputs/common-bottlenose-dolphin.glb").read_bytes()
+          assert len(b)>100000 and b[:4]==b"glTF" and struct.unpack_from("<I",b,8)[0]==len(b)
+          print("CC0 anatomical dolphin verified")
+          PY
+      - name: Fetch scanned 4K marble PBR with checksum validation
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,hashlib,urllib.request,pathlib,shutil,urllib.parse
+          headers={"User-Agent":"ProjectGenesisAssets-FountainPBR/0.4 (public open source production)"}
+          req=urllib.request.Request("https://api.polyhaven.com/files/marble_rock_01",headers=headers)
+          with urllib.request.urlopen(req,timeout=60) as response: files=json.load(response)
+          target=pathlib.Path("inputs/marble_rock_01")
+          target.mkdir(parents=True,exist_ok=True)
+          mapping={"Diffuse":("jpg","marble_albedo_4k.jpg"),
+                   "Rough":("jpg","marble_roughness_4k.jpg"),
+                   "nor_gl":("png","marble_normal_4k.png"),
+                   "Displacement":("png","marble_height_4k.png")}
+          for ch,(fmt,name) in mapping.items():
+            info=files[ch]["4k"][fmt]
+            url=info["url"]
+            assert urllib.parse.urlparse(url).hostname in ("dl.polyhaven.org","polyhaven.org","cdn.polyhaven.com")
+            dest=target/name
+            with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=120) as src, dest.open("wb") as out:
+              shutil.copyfileobj(src,out)
+            assert hashlib.md5(dest.read_bytes()).hexdigest()==info["md5"],name
+            print("Verified scanned 4K",name,dest.stat().st_size)
+          PY
+      - name: Generate and QA GLB with 8-second animated water
+        run: |
+          set -euo pipefail
+          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 \
+            --python scripts/export_dolphin_fountain_v011_playcanvas.py
+          test -s public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.glb
+          test -s public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.json
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          folder=Path("public/models")
+          p=folder/"PG_Dolphin_Fountain_V011_PlayCanvas_Animated.glb"
+          m=json.loads((folder/"PG_Dolphin_Fountain_V011_PlayCanvas_Animated.json").read_text())
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m["sha256"]
+          assert m["animation_channels"]>=10
+          assert 7.3<=m["max_animation_duration_s"]<=8.5
+          assert m["runtime_pbr_texture_max"]==2048
+          print("VERIFIED_ANIMATED_PLAYCANVAS_CANDIDATE",m["bytes"],m["animation_channels"])
+          PY
+      - name: Upload independent QA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-fountain-v011-playcanvas-${{ github.run_id }}
+          path: |
+            public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.glb
+            public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Publish optimized V011 GLB to this isolated asset branch
+        if: success()
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.glb \
+                  public/models/PG_Dolphin_Fountain_V011_PlayCanvas_Animated.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish V011 animated PlayCanvas fountain GLB with 2K PBR and 8s water [skip ci]"
+            git pull --rebase origin feature/plaza-fuente-delfin-marmol-aaa
+            git push origin HEAD:feature/plaza-fuente-delfin-marmol-aaa
+          fi
