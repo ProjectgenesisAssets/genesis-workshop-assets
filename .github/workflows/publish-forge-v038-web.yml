@@ -1,0 +1,55 @@
+name: Publish isolated V038 web GLB
+on:
+  push:
+    branches: [production/auto-forge-breathing-coals-v038]
+    paths:
+      - .github/workflows/publish-forge-v038-web.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get vetted V038 Blender asset from successful build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/genesis-v038
+          gh run download 40963386356 --repo "${{ github.repository }}" --name genesis-auto-40963386356 --dir /tmp/genesis-v038
+          test -s /tmp/genesis-v038/output_hero_forge_v038/forge_hero_v038.glb
+          ls -lh /tmp/genesis-v038/output_hero_forge_v038/forge_hero_v038.glb
+      - name: Optimize embedded textures, preserve source meshes and emissive map
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 scripts/forge_v038_web_export.py /tmp/genesis-v038/output_hero_forge_v038/forge_hero_v038.glb public/models/forge-v038-web-hq.glb
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct,hashlib
+          p=Path('public/models/forge-v038-web-hq.glb')
+          data=p.read_bytes(); assert data[:4]==b'glTF'
+          d=json.loads(data[20:20+struct.unpack_from('<I',data,12)[0]])
+          assert len(d['images'])>=10 and len(d['meshes'])>=50
+          Path('public/models/forge-v038-manifest.json').write_text(json.dumps({
+            'source_run':40963386356, 'source_version':'V038',
+            'asset':p.name, 'bytes':len(data), 'sha256':hashlib.sha256(data).hexdigest(),
+            'meshes':len(d['meshes']), 'images':len(d['images']),
+            'art_status':'CANDIDATE_NOT_APPROVED',
+            'notes':'High-quality web JPEG PBR; full geometry preserved; materials static, animate in PlayCanvas.'
+          },indent=2)+'\n')
+          PY
+      - name: Publish 3D asset only in isolated candidate branch
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -f public/models/forge-v038-web-hq.glb public/models/forge-v038-manifest.json
+          git commit -m 'Publish web V038 GLB candidate without touching playable game [skip ci]'
+          git fetch origin "${{ github.ref_name }}"
+          git rebase "origin/${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
