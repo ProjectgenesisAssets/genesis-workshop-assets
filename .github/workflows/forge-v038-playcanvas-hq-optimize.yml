@@ -37,7 +37,7 @@ jobs:
             public/models/Forge_V038_PlayCanvas_HQ_Optimized.glb \
             --compress draco \
             --texture-compress auto --texture-size 2048 \
-            --flatten true --join true --instance false \
+            --flatten true --join true --join-named true --join-meshes true --instance false \
             --palette false --simplify false --resample false \
             --prune false --weld false --sparse true
           python3 scripts/optimize_forge_v038_playcanvas_hq.py
