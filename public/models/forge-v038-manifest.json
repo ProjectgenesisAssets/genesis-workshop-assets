@@ -1,0 +1,11 @@
+{
+  "source_run": 40963386356,
+  "source_version": "V038",
+  "asset": "forge-v038-web-hq.glb",
+  "bytes": 19220220,
+  "sha256": "9c87bf8e961922e18626f08c7085f0809ac95a449f75425174fceb283cbf10f2",
+  "meshes": 109,
+  "images": 14,
+  "art_status": "CANDIDATE_NOT_APPROVED",
+  "notes": "High-quality web JPEG PBR; full geometry preserved; materials static, animate in PlayCanvas."
+}
