@@ -1,0 +1,80 @@
+name: Herrero Door V058 - Dark forged iron and subdued graphite overlay ornaments
+on:
+  push:
+    branches:
+      - production/door-herrero
+    paths:
+      - scripts/puerta_herreria_art_058.py
+      - .github/workflows/door-herrero-v058-preview.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm original unpacked 4K PBR source stays unchanged
+        run: |
+          set -euo pipefail
+          p=assets/door_herrero/materials/rusted_scratched_iron_4k
+          for layer in color normalgl roughness metalness displacement; do
+            test -s "$p/rusted-scratched-iron_4k_${layer}.jpg"
+          done
+          test -s "$p/LICENSE.txt"
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 --max-time 300 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Download neutral studio HDRI
+        run: |
+          curl -fsSL --retry 4 --max-time 300 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr -o studio_small_09_1k.hdr
+          test -s studio_small_09_1k.hdr
+      - name: Blender V058 render real dark iron PBR on untouched V011 mesh
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_058.py
+      - name: Verify rendered comparisons
+        run: |
+          set -euo pipefail
+          test -s output_blacksmith_door_art_058/front_orthographic.png
+          for variant in A_black_matte B_aged_graphite C_dark_gunmetal; do
+            test -s "output_blacksmith_door_art_058/${variant}.png"
+          done
+          test -s output_blacksmith_door_art_058/material_closeup.png
+          test -s output_blacksmith_door_art_058/material_no_normal.png
+          test -s output_blacksmith_door_art_058/DESIGN_AUDIT.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blacksmith-door-v058-real-CC0-material
+          path: |
+            output_blacksmith_door_art_058/*.png
+            output_blacksmith_door_art_058/*.json
+          retention-days: 7
+      - name: Publish preview renders
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_herrero_v058
+          cp output_blacksmith_door_art_058/front_orthographic.png previews/door_herrero_v058/front.png
+          for variant in A_black_matte B_aged_graphite C_dark_gunmetal; do
+            cp "output_blacksmith_door_art_058/${variant}.png" "previews/door_herrero_v058/${variant}.png"
+          done
+          cp output_blacksmith_door_art_058/B_aged_graphite.png previews/door_herrero_v058/three_quarter.png
+          cp output_blacksmith_door_art_058/material_closeup.png previews/door_herrero_v058/material_closeup.png
+          cp output_blacksmith_door_art_058/material_no_normal.png previews/door_herrero_v058/material_no_normal.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_herrero_v058
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V058 original CC0 iron material render [skip ci]'
+            git pull --rebase origin production/door-herrero
+            git push origin HEAD:production/door-herrero
+          fi
