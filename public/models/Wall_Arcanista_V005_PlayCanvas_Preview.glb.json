@@ -1,0 +1,10 @@
+{
+  "source": "/tmp/walls/arcanista/output_workshop_wall_arcanista_v005/genesis_wall_arcanista_v005.glb",
+  "output": "public/models/Wall_Arcanista_V005_PlayCanvas_Preview.glb",
+  "original_bytes": 12074108,
+  "preview_bytes": 690268,
+  "textures_reencoded": 3,
+  "max_texture_edge": 1024,
+  "geometry_unchanged": true,
+  "status": "PREVIEW_NOT_APPROVED"
+}

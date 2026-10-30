@@ -1,0 +1,10 @@
+{
+  "source": "/tmp/walls/herrero/output_workshop_wall_herrero_v006/genesis_wall_herrero_v006.glb",
+  "output": "public/models/Wall_Herrero_V006_PlayCanvas_Preview.glb",
+  "original_bytes": 37655328,
+  "preview_bytes": 1202032,
+  "textures_reencoded": 6,
+  "max_texture_edge": 1024,
+  "geometry_unchanged": true,
+  "status": "PREVIEW_NOT_APPROVED"
+}
