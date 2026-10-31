@@ -1,0 +1,74 @@
+name: Herrero Door V062 - Main leaf color tests without cover sheets with ornaments retained
+on:
+  push:
+    branches:
+      - production/door-herrero
+    paths:
+      - scripts/puerta_herreria_art_062.py
+      - .github/workflows/door-herrero-v062-preview.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm original unpacked 4K PBR source stays unchanged
+        run: |
+          set -euo pipefail
+          p=assets/door_herrero/materials/rusted_scratched_iron_4k
+          for layer in color normalgl roughness metalness displacement; do
+            test -s "$p/rusted-scratched-iron_4k_${layer}.jpg"
+          done
+          test -s "$p/LICENSE.txt"
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 --max-time 300 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Download neutral studio HDRI
+        run: |
+          curl -fsSL --retry 4 --max-time 300 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr -o studio_small_09_1k.hdr
+          test -s studio_small_09_1k.hdr
+      - name: Blender V062 render real dark iron PBR on untouched V011 mesh
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_062.py
+      - name: Verify rendered comparisons
+        run: |
+          set -euo pipefail
+          for variant in A_deep_petrol B_blackened_blue_steel C_charcoal_forged_iron D_leaf_material_id; do
+            test -s "output_blacksmith_door_art_062/${variant}.png"
+          done
+          test -s output_blacksmith_door_art_062/DESIGN_AUDIT.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blacksmith-door-v062-real-CC0-material
+          path: |
+            output_blacksmith_door_art_062/*.png
+            output_blacksmith_door_art_062/*.json
+          retention-days: 7
+      - name: Publish preview renders
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_herrero_v062
+          for variant in A_deep_petrol B_blackened_blue_steel C_charcoal_forged_iron D_leaf_material_id; do
+            cp "output_blacksmith_door_art_062/${variant}.png" "previews/door_herrero_v062/${variant}.png"
+          done
+          cp output_blacksmith_door_art_062/A_deep_petrol.png previews/door_herrero_v062/three_quarter.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_herrero_v062
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V062 original CC0 iron material render [skip ci]'
+            git pull --rebase origin production/door-herrero
+            git push origin HEAD:production/door-herrero
+          fi
