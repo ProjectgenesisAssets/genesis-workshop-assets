@@ -1,0 +1,14 @@
+{
+  "status": "UNAPPROVED_RENDERED_GAME_CANDIDATE",
+  "v": "007",
+  "geometry_changed_by_optimizer": false,
+  "max_texture_edge": 1024,
+  "glb_bytes": {
+    "wall_rear_preview.glb": 1166092,
+    "full_workshop_preview.glb": 2014516,
+    "wall_right_preview.glb": 1183764,
+    "wall_left_preview.glb": 1177496,
+    "wall_front_v006_preview.glb": 1203176
+  },
+  "forge_and_collision": "NOT_VALIDATED"
+}

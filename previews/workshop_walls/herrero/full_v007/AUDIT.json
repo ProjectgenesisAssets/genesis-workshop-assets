@@ -1,0 +1,43 @@
+{
+  "asset": "genesis_wall_herrero_v007",
+  "status": "EXPERIMENTAL_NOT_APPROVED",
+  "profession": "herrero",
+  "scope": "FOUR_WALLS_AND_CORNER_JOINS_NO_ROOF_NO_FORGE",
+  "depth_m": 6.890625,
+  "finished_parts": [
+    "front_v006",
+    "left",
+    "right",
+    "rear"
+  ],
+  "independent_glbs": {
+    "LEFT": 37630900,
+    "RIGHT": 37637184,
+    "REAR": 37619444
+  },
+  "roof_alignment": "PENDING_PLAYCANVAS_VISUAL_TEST",
+  "forge_v038_clearance": "PENDING_COLLISION_AND_VISUAL_TEST",
+  "width_m": 7.875,
+  "height_m": 3.2,
+  "door_cutout_m": [
+    1.48,
+    2.43
+  ],
+  "current_door_geometry": "V011 not modified",
+  "geometry": "Solid coursed masonry, narrow bed joints and continuous load-bearing piers",
+  "textures": "PolyHaven scanned PBR 2K CC0, base/normal/rough",
+  "visual_review": "PENDING",
+  "texture_resolution": 2048,
+  "mesh_count": 370,
+  "triangles": 10776,
+  "glb_bytes": 38468840,
+  "previews": [
+    "front",
+    "three_quarter",
+    "right_side",
+    "rear",
+    "cutaway",
+    "detail"
+  ],
+  "seed": 29012026
+}

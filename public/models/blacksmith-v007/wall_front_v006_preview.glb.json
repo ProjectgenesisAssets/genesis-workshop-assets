@@ -1,0 +1,10 @@
+{
+  "source": "/tmp/blacksmith-v007/output_workshop_wall_herrero_v007/genesis_blacksmith_wall_front_v006_v007.glb",
+  "output": "public/models/blacksmith-v007/wall_front_v006_preview.glb",
+  "original_bytes": 37656472,
+  "preview_bytes": 1203176,
+  "textures_reencoded": 6,
+  "max_texture_edge": 1024,
+  "geometry_unchanged": true,
+  "status": "PREVIEW_NOT_APPROVED"
+}
