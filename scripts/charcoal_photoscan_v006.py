@@ -33,19 +33,12 @@ scale=2.0/max((hi-lo)[i] for i in range(3))
 for v in obj.data.vertices: v.co=(obj.matrix_world@v.co-centre)*scale
 obj.matrix_world.identity()
 obj.name="PG_Charcoal_Photoscan_Hero_V006"
-# Download only named original CC0 maps, no auth or third-party mirrors.
-data=json.load(urllib.request.urlopen('https://api.polyhaven.com/files/dead_tree_trunk_02',timeout=40))
-def fetch(group,kind,name):
-    item=data[group]['2k'][kind]
-    url=item['url']
-    if not url.startswith('https://dl.polyhaven.org/'): raise RuntimeError('untrusted map host')
-    path=OUT/name
-    urllib.request.urlretrieve(url,str(path))
-    if path.stat().st_size<4096:raise RuntimeError('tiny map '+name)
-    return str(path)
-scan_diff=fetch('Diffuse','jpg','original_realwood_scan_color_2k.jpg')
-scan_normal=fetch('nor_gl','png','original_realwood_scan_normal_2k.png')
-scan_rough=fetch('Rough','png','original_realwood_scan_roughness_2k.png')
+# Official CC0 scan maps already downloaded by the system Python requests step.
+scan_diff=str(OUT/'original_realwood_scan_color_2k.jpg')
+scan_normal=str(OUT/'original_realwood_scan_normal_2k.png')
+scan_rough=str(OUT/'original_realwood_scan_roughness_2k.png')
+for path in [scan_diff,scan_normal,scan_rough]:
+    if Path(path).stat().st_size<4096: raise RuntimeError('missing local scan map: '+path)
 src_im=bpy.data.images.load(scan_diff,check_existing=False)
 w,h=src_im.size
 p=np.empty(w*h*4,dtype=np.float32);src_im.pixels.foreach_get(p)
