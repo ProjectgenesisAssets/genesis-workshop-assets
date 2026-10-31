@@ -49,7 +49,12 @@ assert before_triangles==after_triangles,(before_triangles,after_triangles)
 assert before_faces==after_faces
 assert len(after)<=len(materials)+1,(len(after),len(materials))
 assert all(abs(before_box[k][i]-after_box[k][i])<.001 for k in range(2) for i in range(3)),(before_box,after_box)
-assert all(o.data.uv_layers for o in after),[o.name for o in after if not o.data.uv_layers]
+# Texture-bearing materials require UVs; pure metal and mortar materials
+# legitimately have no texture coordinates in the original GLB.
+for ob in after:
+    mats=[slot.material for slot in ob.material_slots if slot.material]
+    needs_uv=any(m.use_nodes and any(n.type=='TEX_IMAGE' and n.image for n in m.node_tree.nodes) for m in mats)
+    if needs_uv: assert len(ob.data.uv_layers)>0,("Missing texture UVs",ob.name)
 bpy.ops.object.select_all(action='DESELECT')
 for o in after:o.select_set(True)
 bpy.context.view_layer.objects.active=after[0]
