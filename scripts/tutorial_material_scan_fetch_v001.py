@@ -38,7 +38,7 @@ for role,asset in config['scans'].items():
         with Image.open(io.BytesIO(raw)) as original:
             pic=original.convert('RGB' if channel!='roughness' else 'L')
             pic.thumbnail((1536,1536),Image.Resampling.LANCZOS)
-            if pic.width!=pic.height:raise RuntimeError(f'Unusual non-square scan map {asset}/{channel}')
+            if min(pic.width,pic.height)<512:raise RuntimeError(f'Scan resolution too small {asset}/{channel}')
             target=root/f'{role}_{channel}.png'
             if channel=='albedo':
                 target=target.with_suffix('.jpg')
