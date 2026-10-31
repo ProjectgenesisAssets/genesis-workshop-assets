@@ -1,0 +1,54 @@
+name: PG V006 real-scan charcoal master and five-view QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/charcoal_photoscan_v006.py
+      - .github/workflows/charcoal-photoscan-v006.yml
+permissions:
+  contents: write
+jobs:
+  sculpt:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install requests
+        run: python3 -m pip install --user requests
+      - name: Obtain CC0 photographic wood shape from Poly Haven
+        run: python3 scripts/charcoal_cc0_scan_probe_v005.py
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+      - name: Real scanned geometry, PBR carbonization and five renders
+        run: /tmp/blender-lts/blender -b -t 4 --python-exit-code 1 --python scripts/charcoal_photoscan_v006.py
+      - name: Verify master and visuals
+        run: |
+          test -s output_charcoal_v006_photoscan/PG_Charcoal_V006_Photoscan_Master.glb
+          test -s output_charcoal_v006_photoscan/PG_Charcoal_V006_Photoscan_Master.blend
+          test -s output_charcoal_v006_photoscan/AUDIT.json
+          for n in three_quarter side broken_end upper macro_wood_fibre; do test -s output_charcoal_v006_photoscan/$n.png; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pg-charcoal-v006-cc0-photogrammetry-master
+          path: output_charcoal_v006_photoscan/
+          retention-days: 7
+      - name: Publish candidate visual audit only
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p previews/charcoal_v006
+          cp output_charcoal_v006_photoscan/{three_quarter,side,broken_end,upper,macro_wood_fibre}.png previews/charcoal_v006/
+          cp output_charcoal_v006_photoscan/AUDIT.json previews/charcoal_v006/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/charcoal_v006
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish real-scan charcoal V006 QA [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
