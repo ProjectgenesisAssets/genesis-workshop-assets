@@ -1,0 +1,29 @@
+{
+  "asset_id": "cordel_canamo",
+  "version": "V001",
+  "status": "candidate_production_auto_no_game_integration",
+  "kind": "fiber",
+  "fiber": "canamo",
+  "name": "Cordel de cáñamo",
+  "scans": {
+    "fiber": "hessian_380"
+  },
+  "references": [
+    "https://polyhaven.com/a/hessian_380",
+    "https://en.wikipedia.org/wiki/Rope"
+  ],
+  "art_direction": {
+    "silhouette": "Cordel artesanal trenzado en tres cabos de fibras resistentes; pequeño rollo no perfecto con extremo suelto.",
+    "fracture_anatomy": "No grietas en cuerda: torsión helicoidal física visible de los tres cabos, huecos entre fibras y desprendimiento restringido en extremos.",
+    "surface": "Marrón paja, mechones mate; el escaneo CC0 es tejido de yute visualmente análogo, NO escaneo botánico de cáñamo ni una cuerda 3D escaneada.",
+    "reject": [
+      "cordel como tubo liso",
+      "rayas pintadas en lugar de torsión",
+      "fibras flotantes excesivas",
+      "glow",
+      "plástico brillante",
+      "malla de 2D sobre cilindro"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  }
+}
