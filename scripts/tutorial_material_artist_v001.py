@@ -47,7 +47,7 @@ def make_pbr(role,name,tint=(1,1,1),roughness_scale=1.0):
         links.new(texr.outputs['Color'],mult.inputs[0]);links.new(mult.outputs[0],p.inputs['Roughness'])
     else:links.new(texr.outputs['Color'],p.inputs['Roughness'])
     texn=nodes.new('ShaderNodeTexImage');texn.image=node_image(norm,'Non-Color');texn.location=(-540,-290)
-    nnode=nodes.new('ShaderNodeNormalMap');nnode.space='TANGENT';nnode.inputs['Strength'].default_value=.88
+    nnode=nodes.new('ShaderNodeNormalMap');nnode.space='TANGENT';nnode.inputs['Strength'].default_value=1.22 if config['kind']=='leather' else 1.05
     links.new(texn.outputs['Color'],nnode.inputs['Color']);links.new(nnode.outputs[0],p.inputs['Normal'])
     return material
 
@@ -66,9 +66,9 @@ def mesh_from_faces(name,verts,faces,uvs,mats,ids=None,smooth=True):
 def make_log(species):
     oak=species=='roble'
     wood=make_pbr('wood','Real CC0 hardwood scanned grain | '+species,
-                  tint=(.81,.68,.53) if oak else (.96,.94,.83),roughness_scale=1.1)
+                  tint=(.66,.48,.32) if oak else (.83,.80,.69),roughness_scale=1.1)
     bark=make_pbr('bark','Real CC0 bark furrows | '+species,
-                  tint=(.57,.46,.36) if oak else (.69,.70,.66))
+                  tint=(.42,.33,.25) if oak else (.51,.52,.49))
     # Section of an actual split firewood log: convex bark arc and two broken radial fibre planes.
     # Physically consistent longitudinal fractures, incomplete rings, uneven saw-cut ends.
     L=.46 if oak else .49
@@ -106,8 +106,8 @@ def make_log(species):
                 r=radius*k/17
                 # Fibres follow log axis: two deep axial checks, only tiny lateral meander.
                 t=k/17
-                check=0.0033*math.exp(-((t-(.29+.034*sin(z*19))) / .043)**2)
-                check+=0.0021*math.exp(-((t-(.71+.020*sin(z*17))) / .055)**2)
+                check=0.0051*math.exp(-((t-(.29+.034*sin(z*19))) / .043)**2)
+                check+=0.0036*math.exp(-((t-(.71+.020*sin(z*17))) / .055)**2)
                 depth=.0015*sin(z*97+r*210)+.0009*sin(z*223+r*410)-check
                 theta_j=theta+(depth/radius)*(1 if wall==0 else -1)
                 rr=max(.001,r+.00075*sin(z*37+r*55))
@@ -126,9 +126,9 @@ def make_log(species):
             r=radius*ri/rings;row=[]
             for a in range(steps+1):
                 angle=theta0+(theta1-theta0)*a/steps
-                ring=.0014*sin(2*pi*(ri/2.85)+.37*sin(angle*3.0))
-                checks=.0030*math.exp(-((angle-(-.17+.04*sin(ri*.4)))/.033)**2)
-                checks+=.0020*math.exp(-((angle-(.61+.03*sin(ri*.4)))/.027)**2)
+                ring=.0024*sin(2*pi*(ri/2.85)+.37*sin(angle*3.0))
+                checks=.0060*math.exp(-((angle-(-.17+.04*sin(ri*.4)))/.058)**2)
+                checks+=.0040*math.exp(-((angle-(.61+.03*sin(ri*.4)))/.048)**2)
                 z=sign*L*.5+sign*(ring-checks)*min(1,r/.04)
                 row.append(newv((r*cos(angle),r*sin(angle),z)))
             grid.append(row)
@@ -142,14 +142,14 @@ def make_log(species):
                             (.5+.5*(ri+1)/rings*cos(theta0+(theta1-theta0)*a/steps),.5+.5*(ri+1)/rings*sin(theta0+(theta1-theta0)*a/steps))),0)
     ob=mesh_from_faces('Split seasoned '+species+' - continuous bark / fibre / endgrain',verts,faces,uv,[wood,bark],ids)
     # Put the log in a physical resting diagonal orientation for the inventory, without distorting geometry.
-    ob.rotation_euler=(math.radians(71),math.radians(-17 if oak else 14),math.radians(-27 if oak else 22))
+    ob.rotation_euler=(math.radians(71),math.radians(-17 if oak else 14),math.radians(117 if oak else 140))
     ob.location=(0,0,.125)
     return [ob]
 
 def make_hide(animal):
     cow=animal=='bovino'
     m=make_pbr('leather','Scanned tanned hide | '+animal,
-               tint=(.66,.47,.29) if cow else (.80,.66,.47),
+               tint=(.51,.35,.22) if cow else (.65,.50,.34),
                roughness_scale=1.20 if cow else 1.05)
     # Hand-cut organically irregular cured-hide border; varied thickness and sparse tensile folds.
     nu=68;nv=42
@@ -164,13 +164,13 @@ def make_hide(animal):
             y=(v-.5)*2*half_y
             edgeu=(abs(2*u-1)**8)
             edgev=(abs(2*v-1)**8)
-            x+=half_x*.07*math.sin(v*7.1+1.1)*edgeu
-            y+=half_y*.065*math.sin(u*9.7+.2)*edgev
+            x+=half_x*(.18*math.sin(v*7.1+1.1)+.055*math.sin(v*17.3)) * edgeu
+            y+=half_y*(.16*math.sin(u*9.7+.2)+.045*math.sin(u*22.3))*edgev
             # Two coherent folds with pressure direction: broad main drape and narrower buckle.
             main=.044*math.exp(-((u-(.30+.12*math.sin(2*pi*v)))/.12)**2)
             buckle=.026*math.exp(-((v-(.70+.07*math.sin(3*pi*u)))/.066)**2)
             drape=.014*math.sin(u*2*pi+.3)*math.cos(v*2*pi)
-            curl=.051*max(0,(u-.78)/.22)**2
+            curl=.092*max(0,(u-.78)/.22)**2
             z=.028+main+buckle+drape+curl+.0011*math.sin(25*u+14*v)
             verts.append((x,y,z))
     for iy in range(nv):
@@ -219,7 +219,7 @@ def make_tube(name,coords,radius,material,segments=8,texture_repeat=1):
 def make_fibre(kind):
     hemp=kind=='canamo'
     pbr=make_pbr('fiber','Photographed spun fibre '+kind,
-                 tint=(.70,.60,.39) if hemp else (.89,.83,.68),roughness_scale=1.23)
+                 tint=(.50,.39,.24) if hemp else (.68,.63,.51),roughness_scale=1.23)
     # Hemp: loose 3-strand plied cord coil with coherent counter-twisting and a free end.
     # Linen: narrower twin-ply yarn skein (multiple elongated turns, not a rope recolor).
     strands=3 if hemp else 2
@@ -231,9 +231,9 @@ def make_fibre(kind):
         for i in range(n):
             t=i/(n-1)
             if hemp:
-                turns=3.18
+                turns=3.8
                 theta=t*turns*2*pi
-                R=.065+.026*t
+                R=.045+.044*t+.003*sin(7*theta)
                 x=R*cos(theta);y=R*sin(theta)
                 z=.032+.007*t+.004*sin(theta*2)
                 if t>.92:
@@ -249,7 +249,7 @@ def make_fibre(kind):
         total_distance=sum((coords[i]-coords[i-1]).length for i in range(1,len(coords)))
         cumulative=[0.]
         for i in range(1,len(coords)):cumulative.append(cumulative[-1]+(coords[i]-coords[i-1]).length)
-        strand_r=.0047 if hemp else .0019
+        strand_r=.0029 if hemp else .00088
         for strand in range(strands):
             path=[]
             for i,pos in enumerate(coords):
@@ -260,7 +260,7 @@ def make_fibre(kind):
                 # A true helical ply around the *moving* path, not a painted stripe.
                 phi=2*pi*(cumulative[i]/(.038 if hemp else .012)+strand/strands)
                 off=axis*cos(phi)+side*sin(phi)
-                path.append(pos+off*(.0050 if hemp else .00195))
+                path.append(pos+off*(.0032 if hemp else .00095))
             created.append(make_tube(f'{kind} | coil {copy+1} | twisted ply {strand+1}',path,
                     strand_r,pbr,segments=7 if hemp else 6,texture_repeat=5 if hemp else 8))
     # A few mechanically plausible loose fly-away fibres at the free end, without fuzzy halo.
@@ -327,13 +327,13 @@ views={
 }
 for name,off in views.items():
     cam.location=center+Vector(off);cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
-    cam_data.ortho_scale=max(.24,size*(1.57 if name!='macro' else 1.21))
+    cam_data.ortho_scale=max(.19,size*(1.36 if name!='macro' else 1.08))
     scene.render.filepath=str(out/(name+'.png'))
     bpy.ops.render.render(write_still=True)
 scene.render.resolution_x=640;scene.render.resolution_y=640
 scene.render.filepath=str(out/'inventory_poster_rgba.png')
 cam.location=center+Vector(views['hero'])
 cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
-cam_data.ortho_scale=max(.24,size*1.56)
+cam_data.ortho_scale=max(.19,size*1.36)
 bpy.ops.render.render(write_still=True)
 print('SIX_MATERIALS_BLENDER_GENERATED',slug,'objects',len(models),'GLB_bytes',path.stat().st_size)
