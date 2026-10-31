@@ -1,0 +1,70 @@
+name: "Genesis Herrero roof V011 - geometry-preserving drawcall batching"
+on:
+  push:
+    branches: [feature/blacksmith-workshop-roof-v011]
+    paths:
+      - .github/workflows/blacksmith-roof-v011-batch.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-blacksmith-roof-v011-batching
+  cancel-in-progress: false
+jobs:
+  batch-roof-and-chimney:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check source GLBs
+        run: |
+          set -euo pipefail
+          test -s public/models/blacksmith-roof-v011/blacksmith_roof_preview.glb
+          test -s public/models/blacksmith-roof-v011/blacksmith_chimney_candidate_preview.glb
+      - name: Install Blender
+        run: |
+          curl -fSL --retry 3 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/b.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/b.tar.xz -C /tmp/blender --strip-components=1
+      - name: Combine visible roof geometries by PBR material
+        run: |
+          set -euo pipefail
+          mkdir -p public/models/blacksmith-roof-v011/batched
+          for name in roof chimney_candidate; do
+             /tmp/blender/blender -b -t 2 --python-exit-code 1 \
+                --python scripts/batch_blacksmith_roof_v011_for_webgl.py -- \
+                "public/models/blacksmith-roof-v011/blacksmith_${name}_preview.glb" \
+                "public/models/blacksmith-roof-v011/batched/blacksmith_${name}_preview.glb"
+          done
+      - name: Verify UVs, materials, bounds and unchanged face count
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          base=pathlib.Path('public/models/blacksmith-roof-v011/batched')
+          reports=[json.loads(p.read_text()) for p in base.glob('*.audit.json')]
+          assert len(reports)==2
+          assert all(x['triangles_before']==x['triangles_after'] for x in reports)
+          assert all(x['batched_meshes']<x['original_meshes'] for x in reports)
+          assert all(x['batched_meshes']<=16 for x in reports)
+          assert all(x['batched_bytes']<12000000 for x in reports)
+          print([(x['original_meshes'],x['batched_meshes'],x['batched_bytes']) for x in reports])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-herrero-v011-batched-roof-webgl
+          path: public/models/blacksmith-roof-v011/batched/
+          retention-days: 5
+      - name: Publish optimized experimental preview roof, keep sources unchanged
+        if: success()
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/models/blacksmith-roof-v011/batched/
+          git commit -m "Publish V011 roof/chimney batched GLBs, same topology and materials [skip ci]"
+          git pull --rebase origin feature/blacksmith-workshop-roof-v011
+          git push origin HEAD:feature/blacksmith-workshop-roof-v011
