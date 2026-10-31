@@ -1,0 +1,97 @@
+name: PG charcoal V008 - lighting study 01 (lighter, original model)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/charcoal-v008-lightstudy-01.yml
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python dependency
+        run: python3 -m pip install --user requests
+      - name: Fetch original CC0 scan and V008 PBR maps
+        run: |
+          python3 scripts/charcoal_cc0_scan_probe_v005.py
+          python3 scripts/charcoal_photoscan_fetch_pbr_v008.py
+      - name: Make lighting-only variant without editing V008 or shaders
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          source=pathlib.Path('scripts/charcoal_photoscan_v008.py')
+          s=source.read_text()
+          changes={
+            "world.node_tree.nodes['Background'].inputs['Strength'].default_value=.21":
+              "world.node_tree.nodes['Background'].inputs['Strength'].default_value=.24",
+            "area('Key', (2,-3,3.5),275,3.4)":
+              "area('Key', (2,-3,3.5),325,3.4)",
+            "area('Rake', (-2,2.5,3),390,2.5)":
+              "area('Rake', (-2,2.5,3),455,2.5)",
+            "area('Fill',(-3,-2,-1),105,4)":
+              "area('Fill',(-3,-2,-1),135,4)",
+            "scene.view_settings.exposure=-.28":
+              "scene.view_settings.exposure=-.16",
+          }
+          for before,after in changes.items():
+              if s.count(before)!=1:
+                  raise SystemExit('V008 source mismatch, abort non-lighting edit: '+before)
+              s=s.replace(before,after)
+          pathlib.Path('scripts/charcoal_v008_lightstudy_01_runtime.py').write_text(s)
+          print('V008 light study: original geometry, original 2K PBR, same cameras; modest light/exposure lift')
+          PY
+      - name: Install Blender LTS 4.5.13
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+      - name: Render five views with increased studio lighting
+        run: /tmp/blender-lts/blender -b -t 4 --python-exit-code 1 --python scripts/charcoal_v008_lightstudy_01_runtime.py
+      - name: Verify and mark lighting comparison
+        run: |
+          test -s output_charcoal_v008_photoscan/AUDIT.json
+          for n in three_quarter side broken_end upper macro_wood_fibre; do
+            test -s output_charcoal_v008_photoscan/$n.png
+          done
+          python3 - <<'PY'
+          import pathlib,json
+          p=pathlib.Path('output_charcoal_v008_photoscan/AUDIT.json')
+          data=json.loads(p.read_text())
+          data['lighting_study']='V008_LIGHTTEST_01'
+          data['lighting_only']=True
+          data['identical_geometry_and_PBR_to']='PG_Charcoal_V008'
+          data['illumination']={'world_strength':.24,'key_w':325,'rake_w':455,'fill_w':135,'exposure_stops':-.16}
+          data['not_art_approved']=True
+          p.write_text(json.dumps(data,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pg-charcoal-v008-lightstudy01-five-views
+          path: |
+            output_charcoal_v008_photoscan/three_quarter.png
+            output_charcoal_v008_photoscan/side.png
+            output_charcoal_v008_photoscan/broken_end.png
+            output_charcoal_v008_photoscan/upper.png
+            output_charcoal_v008_photoscan/macro_wood_fibre.png
+            output_charcoal_v008_photoscan/AUDIT.json
+          retention-days: 7
+      - name: Publish review images separately from approved catalog
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p previews/charcoal_v008_lightstudy01
+          cp output_charcoal_v008_photoscan/{three_quarter,side,broken_end,upper,macro_wood_fibre}.png previews/charcoal_v008_lightstudy01/
+          cp output_charcoal_v008_photoscan/AUDIT.json previews/charcoal_v008_lightstudy01/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/charcoal_v008_lightstudy01
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish brighter charcoal V008 lighting study QA [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
