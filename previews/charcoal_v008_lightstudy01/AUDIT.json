@@ -1,0 +1,31 @@
+{
+  "version": "V008",
+  "status": "PHOTO_SCAN_CARBON_V008_CANDIDATE_NOT_APPROVED",
+  "license": "CC0 Poly Haven dead_tree_trunk_02 source + Project Genesis carbonization edit",
+  "triangles": 23175,
+  "material": "CC0 scanned fibrous geometry, deeply charred albedo, 2k scan normals, physically modified charcoal roughness/low specular",
+  "maps": {
+    "color": "/home/runner/work/genesis-workshop-assets/genesis-workshop-assets/output_charcoal_v008_photoscan/PG_Charcoal_V008_CC0_ScanCarbonized_BaseColor_2k.png",
+    "original_normal": "/home/runner/work/genesis-workshop-assets/genesis-workshop-assets/output_charcoal_v008_photoscan/original_realwood_scan_normal_2k.png",
+    "original_roughness": "/home/runner/work/genesis-workshop-assets/genesis-workshop-assets/output_charcoal_v008_photoscan/original_realwood_scan_roughness_2k.png"
+  },
+  "mesh_vertices": 11800,
+  "textures": [
+    2048,
+    2048
+  ],
+  "glb_size_bytes": 28279100,
+  "provenance": "https://polyhaven.com/a/dead_tree_trunk_02",
+  "needs_manual_art_approval": true,
+  "lighting_study": "V008_LIGHTTEST_01",
+  "lighting_only": true,
+  "identical_geometry_and_PBR_to": "PG_Charcoal_V008",
+  "illumination": {
+    "world_strength": 0.24,
+    "key_w": 325,
+    "rake_w": 455,
+    "fill_w": 135,
+    "exposure_stops": -0.16
+  },
+  "not_art_approved": true
+}
