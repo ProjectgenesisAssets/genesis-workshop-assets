@@ -1,0 +1,47 @@
+{
+  "asset": "genesis_wall_herrero_v009",
+  "status": "EXPERIMENTAL_NOT_APPROVED",
+  "profession": "herrero",
+  "scope": "FOUR_WALLS_INTERIOR_EXTERIOR_PBR_NO_ROOF_NO_FORGE",
+  "depth_m": 6.890625,
+  "finished_parts": [
+    "front_v006",
+    "left",
+    "right",
+    "rear"
+  ],
+  "independent_glbs": {
+    "LEFT": 37851476,
+    "RIGHT": 37838496,
+    "REAR": 37824580
+  },
+  "roof_alignment": "PENDING_PLAYCANVAS_VISUAL_TEST",
+  "interior_masonry": "REAL_GEOMETRY_SAME_PBR_PALLETTE",
+  "roof_seating": "DARK_PROCEDURAL_GRAIN_SOOT_IRONSTONE",
+  "door_returns": "LINED_WITH_PBR_NO_CLEARANCE_LOSS",
+  "blender_textures": "PACKED_IN_BLEND",
+  "forge_v038_clearance": "PENDING_COLLISION_AND_VISUAL_TEST",
+  "width_m": 7.875,
+  "height_m": 3.2,
+  "door_cutout_m": [
+    1.48,
+    2.43
+  ],
+  "current_door_geometry": "V011 not modified",
+  "geometry": "Exterior plus physically sculpted interior PBR masonry; narrower roof-top reveals",
+  "textures": "PolyHaven scanned PBR 2K CC0, base/normal/rough",
+  "visual_review": "PENDING",
+  "texture_resolution": 2048,
+  "mesh_count": 630,
+  "triangles": 18414,
+  "glb_bytes": 39279032,
+  "previews": [
+    "front",
+    "three_quarter",
+    "right_side",
+    "rear",
+    "cutaway",
+    "detail"
+  ],
+  "seed": 29012026
+}
