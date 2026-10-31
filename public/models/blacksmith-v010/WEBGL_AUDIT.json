@@ -1,6 +1,6 @@
 {
-  "status": "UNAPPROVED_RENDERED_GAME_CANDIDATE",
-  "v": "007",
+  "status": "EXPERIMENTAL_RENDERED_WEBGL_CANDIDATE_UNAPPROVED",
+  "v": "010",
   "geometry_changed_by_optimizer": false,
   "max_texture_edge": 1024,
   "glb_bytes": {
@@ -10,5 +10,7 @@
     "wall_left_preview.glb": 1397692,
     "wall_front_v006_preview.glb": 1382644
   },
-  "forge_and_collision": "NOT_VALIDATED"
+  "forge_and_collision": "NOT_VALIDATED",
+  "batching": "V010 grouped materials to 9 meshes, 18414 triangles unchanged, source/target bounds verified",
+  "render_visual_review": "Improved versus V009, further polish possible; human approval pending"
 }
