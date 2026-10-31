@@ -1,0 +1,28 @@
+{
+  "asset_id": "cuero_bovino",
+  "version": "V001",
+  "status": "candidate_production_auto_no_game_integration",
+  "kind": "leather",
+  "animal": "bovino",
+  "name": "Cuero bovino curtido",
+  "scans": {
+    "leather": "brown_leather"
+  },
+  "references": [
+    "https://polyhaven.com/a/brown_leather",
+    "https://gazanaleather.com/collections/vegetable-tanned-leather"
+  ],
+  "art_direction": {
+    "silhouette": "Pieza de cuero bovino curtido recortada irregularmente de 57 x 38 cm, 3.5 mm de espesor, apoyada con pliegues gravitacionales suaves y canto visible.",
+    "fracture_anatomy": "El cuero no tiene fractura mineral: marcas de fatiga y microarrugas en tensión, pliegues que atraviesan la superficie según fuerzas; cantos curvos compactos.",
+    "surface": "Grano de bovino amplio/irregular, curtido vegetal nogal oscuro, moteado sutil. No presuponer escaneo específico de especie; PBR brown_leather es scan de superficie.",
+    "reject": [
+      "tejido",
+      "aristas quebradas pétreas",
+      "bordes de metal",
+      "cosido artificial si no es parte del material",
+      "plástico espejo"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  }
+}
