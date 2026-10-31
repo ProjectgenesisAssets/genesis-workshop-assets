@@ -1,0 +1,74 @@
+name: Project Genesis - Tutorial materials CC0 PBR: isolated artist production
+on:
+  push:
+    branches:
+      - 'asset/tutorial-*'
+    paths:
+      - 'production/tutorial_materials/config/**'
+      - 'scripts/tutorial_material_scan_fetch_v001.py'
+      - 'scripts/tutorial_material_artist_v001.py'
+      - 'scripts/tutorial_material_candidate_qa_v001.py'
+      - '.github/workflows/tutorial-material-per-branch-v001.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  scan-build-render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    concurrency:
+      group: tutorial-material-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve independent material config and audit Python source
+        id: config
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_REF_NAME}"
+          slug="${branch#asset/tutorial-}"
+          test "${slug}" != "${branch}"
+          test -f "production/tutorial_materials/config/${slug}.json"
+          echo "slug=${slug}" >> "${GITHUB_OUTPUT}"
+          python3 -m py_compile scripts/tutorial_material_scan_fetch_v001.py scripts/tutorial_material_artist_v001.py scripts/tutorial_material_candidate_qa_v001.py
+          python3 -m json.tool "production/tutorial_materials/config/${slug}.json" >/dev/null
+      - name: Install photographic-source downloader and independent GLB QA
+        run: python3 -m pip install --user pillow numpy
+      - name: Fetch verified CC0 Poly Haven photographic albedo, normal and roughness scans
+        run: python3 scripts/tutorial_material_scan_fetch_v001.py "${{ steps.config.outputs.slug }}"
+      - name: Acquire pinned Blender 4.5.13 LTS on this separate runner
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --max-time 250 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/pg-blender.tar.xz
+          mkdir -p /tmp/pg-blender
+          tar -xJf /tmp/pg-blender.tar.xz -C /tmp/pg-blender --strip-components=1
+          /tmp/pg-blender/blender --version | head -1
+      - name: Sculpt physical morphology, UV, import scanned PBR, export GLB, save Blender master, render 6 studio images
+        run: |
+          /tmp/pg-blender/blender -b -t 4 --python-exit-code 1 --python scripts/tutorial_material_artist_v001.py -- "${{ steps.config.outputs.slug }}"
+      - name: Analyze generated GLB, scanned normal maps, topology, multiple shots, transparency and provenance
+        run: python3 scripts/tutorial_material_candidate_qa_v001.py "${{ steps.config.outputs.slug }}"
+      - name: Upload this branch's real generated editable and delivery candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tutorial-${{ steps.config.outputs.slug }}-v001-review
+          path: production/tutorial_materials/generated/${{ steps.config.outputs.slug }}/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Commit generated model, scans, renders, art board, Blender file and audit to THIS branch only
+        if: success()
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_REF_NAME}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "production/tutorial_materials/generated/${{ steps.config.outputs.slug }}/"
+          if ! git diff --cached --quiet; then
+            git commit -m "Candidate ${{ steps.config.outputs.slug }} V001 CC0 PBR, Blender master and multi-view QA [skip ci]"
+            git fetch origin "${branch}"
+            git rebase "origin/${branch}"
+            git push origin "HEAD:refs/heads/${branch}"
+          fi
+          echo "SUCCESS: candidate produced, NOT admitted into game, on ${branch}"
