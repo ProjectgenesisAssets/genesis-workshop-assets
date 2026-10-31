@@ -16,7 +16,7 @@ rnd=random.Random(seed)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 
 def node_image(path,space):
-    im=bpy.data.images.load(str(path),check_existing=True)
+    im=bpy.data.images.load(str(path.resolve()),check_existing=True)
     im.colorspace_settings.name=space
     return im
 def make_pbr(role,name,tint=(1,1,1),roughness_scale=1.0):
@@ -283,16 +283,16 @@ elif kind=='leather':models=make_hide(config['animal'])
 elif kind=='fiber':models=make_fibre(config['fiber'])
 else:raise ValueError('Unknown kind '+kind)
 
-# Export exactly the intended material, no camera or lights.
+# Resolve and pack all real CC0 source textures before saving / changing .blend working directory.\nbpy.ops.file.pack_all()\n# Export exactly the intended material, no camera or lights.
 bpy.ops.object.select_all(action='DESELECT')
 for o in models:o.select_set(True)
 bpy.context.view_layer.objects.active=models[0]
-path=out/f'{slug}_v001_candidate.glb'
+path=out/f'{slug}_{config["version"].lower()}_candidate.glb'
 bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,
                           export_apply=True,export_image_format='AUTO',export_materials='EXPORT')
 if path.stat().st_size<18000: raise RuntimeError('Empty GLB')
 # Save the working Blender scene for full manual artist refinement.
-bpy.ops.wm.save_as_mainfile(filepath=str(out/f'{slug}_v001_master.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(out/f'{slug}_{config["version"].lower()}_master.blend'))
 
 # All views share exactly the same light and neutral color management.
 world=bpy.data.worlds.new('Neutral 3D scan review studio');bpy.context.scene.world=world;world.use_nodes=True
