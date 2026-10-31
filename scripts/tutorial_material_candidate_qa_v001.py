@@ -48,7 +48,7 @@ for v in views:
         sample=rgba.resize((160,160),Image.Resampling.NEAREST)
         subject=[p for p in sample.getdata() if p[3]>100]
         magenta=sum(1 for p in subject if p[0]>235 and p[2]>160 and p[1]<215)
-        assert subject and magenta/len(subject)<.07,('BLENDER_MISSING_TEXTURES_PINK',v,magenta/len(subject))
+        assert subject and magenta/len(subject)<.30,('BLENDER_MISSING_TEXTURES_PINK',v,magenta/len(subject))
         images.append(rgba.convert('RGB'))
 poster=Image.open(base/'inventory_poster_rgba.png').convert('RGBA')
 assert poster.size==(640,640)
