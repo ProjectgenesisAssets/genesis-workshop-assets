@@ -1,7 +1,7 @@
 {
   "asset_id": "cuero_bovino",
-  "version": "V001",
-  "status": "candidate_production_auto_no_game_integration",
+  "version": "V002",
+  "status": "candidate_v002_repaired_texture_paths_under_review",
   "kind": "leather",
   "animal": "bovino",
   "name": "Cuero bovino curtido",
@@ -24,5 +24,6 @@
       "plástico espejo"
     ],
     "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
-  }
+  },
+  "fix": "Absolute photographic scan image paths + pack_all before .blend save; pink fallback QA gate"
 }
