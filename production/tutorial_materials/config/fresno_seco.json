@@ -1,0 +1,30 @@
+{
+  "asset_id": "fresno_seco",
+  "version": "V001",
+  "status": "candidate_production_auto_no_game_integration",
+  "kind": "wood",
+  "species": "fresno",
+  "name": "Madera seca de fresno",
+  "scans": {
+    "wood": "ash_veneer",
+    "bark": "bark_brown_02"
+  },
+  "references": [
+    "https://polyhaven.com/a/ash_veneer",
+    "https://polyhaven.com/a/bark_brown_02",
+    "https://www.ceneo.pl/164264309"
+  ],
+  "art_direction": {
+    "silhouette": "Leño seco de fresno partido, más esbelto y recto que el roble, alburno pálido, punta irregular.",
+    "fracture_anatomy": "Fibras longitudinales fibrosas, pequeñas separaciones en la veta abiertas por la cuña de rotura; cabezales con anillos de crecimiento y grietas radiales coherentes con secado.",
+    "surface": "Escaneo fotográfico real de fresno para la veta; bark_brown_02 como análogo de surcos de corteza (NO afirmar escaneo botánico de corteza de fresno). Tono pálido, poro abierto.",
+    "reject": [
+      "recoloración simple del roble",
+      "grietas transversales sin continuidad",
+      "grano cruzado con dirección de fibras",
+      "corteza completamente negra",
+      "facetas estériles"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  }
+}
