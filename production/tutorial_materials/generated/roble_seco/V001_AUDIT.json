@@ -1,0 +1,54 @@
+{
+  "asset": "roble_seco",
+  "name": "Madera seca de roble",
+  "version": "V001",
+  "status": "candidate_needs_human_visual_approval",
+  "geometry_technique": "hand-directed parametric Blender geometry, not full object photoscan",
+  "photo_texture_license": "CC0 Poly Haven",
+  "sources": [
+    "https://polyhaven.com/a/oak_veneer_03",
+    "https://polyhaven.com/a/jolcham_oak_bark_01"
+  ],
+  "source_provenance": "source/provenance.json",
+  "model": "production/tutorial_materials/generated/roble_seco/roble_seco_v001_candidate.glb",
+  "bytes": 9590316,
+  "sha256": "00e5fdc7855211adb0bd151549913b25cd8f61d23e171e525d0f908b12ab6299",
+  "triangles": 6092,
+  "mesh_count": 1,
+  "materials": 2,
+  "images_embedded": 6,
+  "master": "production/tutorial_materials/generated/roble_seco/roble_seco_v001_master.blend",
+  "poster": "production/tutorial_materials/generated/roble_seco/inventory_poster_rgba.png",
+  "views": [
+    "hero",
+    "side",
+    "top",
+    "back",
+    "macro"
+  ],
+  "reference_notes": {
+    "silhouette": "Cuña de roble seco partido longitudinalmente, 46 cm, corteza parcial curvada adherida; no bloque cilíndrico ni tabla industrial.",
+    "fracture_anatomy": "Grietas longitudinales en caras abiertas con continuidad entre vértices; marcas radiales en extremos, anillos concéntricos incompletos; corteza con surcos longitudinales discontinuos.",
+    "surface": "Madera cálida tostada pero no saturada; albura/fibras rugosas; corteza gris parda fisurada. Escaneo foto real para veta y corteza, geometría diseñada.",
+    "reject": [
+      "tablón perfectamente plano",
+      "corteza como ladrillos",
+      "rayas oscuras aleatorias pintadas",
+      "puntas planas sin grano",
+      "tinte naranja uniforme",
+      "madera estilizada"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  },
+  "technical_checks": {
+    "glb_header": true,
+    "normal_maps_embedded": true,
+    "scanned_albedo": true,
+    "multi_views": true,
+    "transparent_poster": true,
+    "blender_editable_master": true,
+    "license_verified": true
+  },
+  "visual_score": null,
+  "approved_for_game": false
+}

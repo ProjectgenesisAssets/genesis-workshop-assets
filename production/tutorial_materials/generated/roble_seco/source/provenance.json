@@ -1,0 +1,110 @@
+{
+  "slug": "roble_seco",
+  "asset_name": "Madera seca de roble",
+  "license": "CC0 (Poly Haven)",
+  "photographic_scans": [
+    {
+      "role": "wood",
+      "asset": "oak_veneer_03",
+      "channel": "albedo",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/oak_veneer_03/oak_veneer_03_diff_2k.jpg",
+      "page": "https://polyhaven.com/a/oak_veneer_03",
+      "license": "CC0",
+      "download_sha256": "51c76d73ceec37d8507e3a731f78a9dd54ba1382635f09b52c48e36f6e0b0179",
+      "converted_sha256": "de17f8827a00e0b3a13076f3c9ac9d01f2f8f6c96d4b63ef88597cdec94cb89d",
+      "path": "production/tutorial_materials/generated/roble_seco/source/wood_albedo.jpg",
+      "size": 600633,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "wood",
+      "asset": "oak_veneer_03",
+      "channel": "normal",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/oak_veneer_03/oak_veneer_03_nor_gl_2k.jpg",
+      "page": "https://polyhaven.com/a/oak_veneer_03",
+      "license": "CC0",
+      "download_sha256": "6d92c319ba9801b03a94ea38ff9c8a76f0b12692be7d9850515df9e427c03a02",
+      "converted_sha256": "b9604923f293ff8ecea670e8c8a852b6b74e7abb4c3792f4c37f644c8a4526a1",
+      "path": "production/tutorial_materials/generated/roble_seco/source/wood_normal.png",
+      "size": 2007564,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "wood",
+      "asset": "oak_veneer_03",
+      "channel": "roughness",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/oak_veneer_03/oak_veneer_03_rough_2k.jpg",
+      "page": "https://polyhaven.com/a/oak_veneer_03",
+      "license": "CC0",
+      "download_sha256": "44cac7e68e3d5c8a269c8641a5f21f3ade8d1141bb693007f467adfcfa55d914",
+      "converted_sha256": "44a16b8fb2fa132ebfdfbee98590a4313439275e33e04bea03e981f2bddbaf89",
+      "path": "production/tutorial_materials/generated/roble_seco/source/wood_roughness.png",
+      "size": 1515285,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "bark",
+      "asset": "jolcham_oak_bark_01",
+      "channel": "albedo",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/jolcham_oak_bark_01/jolcham_oak_bark_01_diff_2k.jpg",
+      "page": "https://polyhaven.com/a/jolcham_oak_bark_01",
+      "license": "CC0",
+      "download_sha256": "2eb8d1e79a64827ad70b20bc80bec2171494a442310099ac88d15970a46e6c5f",
+      "converted_sha256": "ea8ef02d56ecad11c4a4caa845d26dd94ddb717532b938da0460c6c4bd1c0954",
+      "path": "production/tutorial_materials/generated/roble_seco/source/bark_albedo.jpg",
+      "size": 597356,
+      "dimensions": [
+        768,
+        1536
+      ]
+    },
+    {
+      "role": "bark",
+      "asset": "jolcham_oak_bark_01",
+      "channel": "normal",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/jolcham_oak_bark_01/jolcham_oak_bark_01_nor_gl_2k.jpg",
+      "page": "https://polyhaven.com/a/jolcham_oak_bark_01",
+      "license": "CC0",
+      "download_sha256": "f0c17caeafb7aad681e7a376e754ed1593a6bf61acc0bc71a45d9850f29e2ae3",
+      "converted_sha256": "ffa8f362a167b7804d8afdbc800328fa7b47bf9b63100c51bf00bd1d3680ed43",
+      "path": "production/tutorial_materials/generated/roble_seco/source/bark_normal.png",
+      "size": 2768171,
+      "dimensions": [
+        768,
+        1536
+      ]
+    },
+    {
+      "role": "bark",
+      "asset": "jolcham_oak_bark_01",
+      "channel": "roughness",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/jolcham_oak_bark_01/jolcham_oak_bark_01_rough_2k.jpg",
+      "page": "https://polyhaven.com/a/jolcham_oak_bark_01",
+      "license": "CC0",
+      "download_sha256": "831efb4bfef79ee43270f99e0c0428b2723c34725341ca4357b102102b1d0eec",
+      "converted_sha256": "c5b645d040f1fb9c068b62ffdc8aeb649b95e34a5676370926be35bd7b747ab2",
+      "path": "production/tutorial_materials/generated/roble_seco/source/bark_roughness.png",
+      "size": 471895,
+      "dimensions": [
+        768,
+        1536
+      ]
+    }
+  ],
+  "product_photo_references": "anatomy-only; not downloaded or republished",
+  "scope": "2D material scans; the complete 3D shape is artist-modeled, NOT a 3D scan",
+  "reference_links": [
+    "https://polyhaven.com/a/oak_veneer_03",
+    "https://polyhaven.com/a/jolcham_oak_bark_01",
+    "https://www.gardline.nl/netzak-eikenhout"
+  ]
+}
