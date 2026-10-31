@@ -1,0 +1,47 @@
+{
+  "status": "EXPERIMENTAL_WEBGL_BATCHED_UNAPPROVED",
+  "source": "public/models/blacksmith-roof-v011/blacksmith_chimney_candidate_preview.glb",
+  "output": "public/models/blacksmith-roof-v011/batched/blacksmith_chimney_candidate_preview.glb",
+  "original_meshes": 16,
+  "batched_meshes": 4,
+  "triangles_before": 192,
+  "triangles_after": 192,
+  "faces_before": 192,
+  "faces_after": 192,
+  "material_groups": [
+    "Blacksmith chimney \u00b7 oxidized quarrystone PBR",
+    "Blacksmith chimney \u00b7 soot-blackened masonry PBR",
+    "Recessed stone mortar / dark",
+    "Oxidized forged iron"
+  ],
+  "material_count": 4,
+  "source_meshes_with_uv": 16,
+  "output_meshes_with_uv": 4,
+  "bounds_before": [
+    [
+      -2.5,
+      4.301249980926514,
+      2.8450000286102295
+    ],
+    [
+      -1.159999966621399,
+      5.621250152587891,
+      5.600000381469727
+    ]
+  ],
+  "bounds_after": [
+    [
+      -2.5,
+      4.301249980926514,
+      2.8450000286102295
+    ],
+    [
+      -1.159999966621399,
+      5.621250152587891,
+      5.600000381469727
+    ]
+  ],
+  "source_bytes": 669848,
+  "batched_bytes": 662176,
+  "note": "Pure drawcall batching, no geometry resculpt, PlayCanvas FPS not yet tested"
+}
