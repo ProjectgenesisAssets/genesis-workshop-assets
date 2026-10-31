@@ -455,8 +455,11 @@ for ob in list(bpy.data.objects):
     if ob.name.startswith(PREFIX) and old_corner_art(ob.name):
         removed_corner_objects.append(ob.name)
         bpy.data.objects.remove(ob,do_unlink=True)
+def still_alive(ob):
+    try:return ob.name in bpy.data.objects
+    except ReferenceError:return False
 for name in list(segments):
-    segments[name]=[ob for ob in segments[name] if ob.name in bpy.data.objects]
+    segments[name]=[ob for ob in segments[name] if still_alive(ob)]
 for name in list(front_objects):
     if name not in bpy.data.objects:front_objects.remove(name)
 
