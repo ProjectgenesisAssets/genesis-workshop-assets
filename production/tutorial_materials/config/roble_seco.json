@@ -1,0 +1,31 @@
+{
+  "asset_id": "roble_seco",
+  "version": "V001",
+  "status": "candidate_production_auto_no_game_integration",
+  "kind": "wood",
+  "species": "roble",
+  "name": "Madera seca de roble",
+  "scans": {
+    "wood": "oak_veneer_03",
+    "bark": "jolcham_oak_bark_01"
+  },
+  "references": [
+    "https://polyhaven.com/a/oak_veneer_03",
+    "https://polyhaven.com/a/jolcham_oak_bark_01",
+    "https://www.gardline.nl/netzak-eikenhout"
+  ],
+  "art_direction": {
+    "silhouette": "Cuña de roble seco partido longitudinalmente, 46 cm, corteza parcial curvada adherida; no bloque cilíndrico ni tabla industrial.",
+    "fracture_anatomy": "Grietas longitudinales en caras abiertas con continuidad entre vértices; marcas radiales en extremos, anillos concéntricos incompletos; corteza con surcos longitudinales discontinuos.",
+    "surface": "Madera cálida tostada pero no saturada; albura/fibras rugosas; corteza gris parda fisurada. Escaneo foto real para veta y corteza, geometría diseñada.",
+    "reject": [
+      "tablón perfectamente plano",
+      "corteza como ladrillos",
+      "rayas oscuras aleatorias pintadas",
+      "puntas planas sin grano",
+      "tinte naranja uniforme",
+      "madera estilizada"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  }
+}
