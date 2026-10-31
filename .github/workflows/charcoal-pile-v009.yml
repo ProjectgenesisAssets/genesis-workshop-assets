@@ -1,0 +1,82 @@
+name: PG charcoal V009 firewood pile - shared V008 asset and hover candidate
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/charcoal_pile_v009_batch.py
+      - scripts/charcoal_pile_v009_render.py
+      - .github/workflows/charcoal-pile-v009.yml
+permissions:
+  contents: write
+jobs:
+  build-and-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install scan and glTF tools
+        run: python3 -m pip install --user requests numpy pillow trimesh
+      - name: Recover the exact V008 original scanned surface and PBR textures
+        run: |
+          python3 scripts/charcoal_cc0_scan_probe_v005.py
+          python3 scripts/charcoal_photoscan_fetch_pbr_v008.py
+      - name: Build a V008 model-only Blender task without changing the approved script
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/charcoal_photoscan_v008.py')
+          s=p.read_text()
+          anchor='# Stage is light-only with alpha; no artificial red emissive and no stone shader.'
+          if s.count(anchor)!=1:raise SystemExit('V008 source geometry contract changed')
+          s=s.split(anchor)[0]
+          s+="""
+          bpy.ops.object.select_all(action='DESELECT')
+          obj.select_set(True)
+          bpy.context.view_layer.objects.active=obj
+          bpy.ops.export_scene.gltf(filepath=str(OUT/'PG_Charcoal_V008_Photoscan_Master.glb'), export_format='GLB',use_selection=True)
+          print('V008 mesh & original 2K PBR preserved')
+          """
+          Path('scripts/charcoal_v008_export_only_runtime.py').write_text(s)
+          PY
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+      - name: Export exact V008 source scan into a 3D model
+        run: /tmp/blender-lts/blender -b -t 4 --python-exit-code 1 --python scripts/charcoal_v008_export_only_runtime.py
+      - name: Assemble pile with four instanced pieces sharing one mesh
+        run: python3 scripts/charcoal_pile_v009_batch.py
+      - name: Render real pile in Blender from four directions
+        run: /tmp/blender-lts/blender -b -t 4 --python-exit-code 1 --python scripts/charcoal_pile_v009_render.py
+      - name: Check the complete pile and visual views
+        run: |
+          test -s output_charcoal_pile_v009/PG_Charcoal_Pile_V009_WEB.glb
+          test -s output_charcoal_pile_v009/PG_Charcoal_Pile_V009_HQ.glb
+          test -s output_charcoal_pile_v009/AUDIT.json
+          for view in three_quarter side overhead alternate; do
+            test -s output_charcoal_pile_v009/$view.png
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pg-charcoal-pile-v009-four-piece-hover-candidate
+          path: output_charcoal_pile_v009/
+          retention-days: 7
+      - name: Publish separate QA candidate; do not integrate with approved game
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p previews/charcoal_pile_v009
+          cp output_charcoal_pile_v009/PG_Charcoal_Pile_V009_WEB.glb previews/charcoal_pile_v009/model_web.glb
+          cp output_charcoal_pile_v009/{three_quarter,side,overhead,alternate}.png previews/charcoal_pile_v009/
+          cp output_charcoal_pile_v009/AUDIT.json previews/charcoal_pile_v009/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/charcoal_pile_v009
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish four-piece V008 charcoal pile V009 visual QA only [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
