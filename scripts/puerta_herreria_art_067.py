@@ -787,9 +787,9 @@ for exp in experiments:
     else:
         links.new(patina.outputs["Color"],bs.inputs["Base Color"])
     # Main leaf original 4K normal, metalness, roughness remain connected.
-    assert any(x.type=="NORMAL_MAP" and x.inputs["Strength"].default_value==.65 for x in ns)
-    assert any(x.type=="MATH" and x.operation=="MULTIPLY" and x.inputs[1].default_value==.60 for x in ns)
-    assert any(x.type=="MATH" and x.operation=="MAXIMUM" and x.inputs[1].default_value==.76 for x in ns)
+    assert any(x.type=="NORMAL_MAP" and abs(x.inputs["Strength"].default_value-.65)<1e-4 for x in ns)
+    assert any(x.type=="MATH" and x.operation=="MULTIPLY" and abs(x.inputs[1].default_value-.60)<1e-4 for x in ns)
+    assert any(x.type=="MATH" and x.operation=="MAXIMUM" and abs(x.inputs[1].default_value-.76)<1e-4 for x in ns)
     # Modifies ONLY Door_arched_iron_body. No calls modifying edge, copper,
     # shade, scrolls, hinges, handle, frame or rivet materials.
     door.data.materials.clear()
