@@ -1,0 +1,51 @@
+{
+  "status": "EXPERIMENTAL_WEBGL_BATCHED_UNAPPROVED",
+  "source": "public/models/blacksmith-v010/wall_front_v006_preview.glb",
+  "output": "public/models/blacksmith-v010/batched/wall_front_v006_preview.glb",
+  "original_meshes": 153,
+  "batched_meshes": 8,
+  "triangles_before": 4806,
+  "triangles_after": 4806,
+  "faces_before": 4806,
+  "faces_after": 4806,
+  "material_groups": [
+    "Recessed stone mortar / dark",
+    "Soot deposits - char and oxide",
+    "Quarry basalt / dark warm PBR",
+    "Basalt - mineral warm variance",
+    "Oak / fire seasoned PBR",
+    "Oxidized forged iron",
+    "Blackened ironstone coping / dark scanned PBR",
+    "Deep-set door reveals / soot scanned basalt PBR"
+  ],
+  "material_count": 8,
+  "source_meshes_with_uv": 153,
+  "output_meshes_with_uv": 8,
+  "bounds_before": [
+    [
+      -4.029274940490723,
+      -0.6470000147819519,
+      -0.021361231803894043
+    ],
+    [
+      4.041346549987793,
+      0.36047598719596863,
+      3.352343797683716
+    ]
+  ],
+  "bounds_after": [
+    [
+      -4.029274940490723,
+      -0.6470000147819519,
+      -0.021361231803894043
+    ],
+    [
+      4.041346549987793,
+      0.36047598719596863,
+      3.352343797683716
+    ]
+  ],
+  "source_bytes": 1382644,
+  "batched_bytes": 1272472,
+  "note": "Pure drawcall batching, no geometry resculpt, PlayCanvas FPS not yet tested"
+}
