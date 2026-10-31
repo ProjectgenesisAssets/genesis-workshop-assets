@@ -1,0 +1,82 @@
+name: Herrero Door V072 - satin vs matte oxidized copper real PBR glare tests
+on:
+  push:
+    branches:
+      - production/door-herrero
+    paths:
+      - scripts/puerta_herreria_art_072.py
+      - .github/workflows/door-herrero-v072-preview.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm original unpacked 4K PBR source stays unchanged
+        run: |
+          set -euo pipefail
+          p=assets/door_herrero/materials/rusted_scratched_iron_4k
+          for layer in color normalgl roughness metalness displacement; do
+            test -s "$p/rusted-scratched-iron_4k_${layer}.jpg"
+          done
+          test -s "$p/LICENSE.txt"
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 --max-time 300 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Download neutral studio HDRI
+        run: |
+          curl -fsSL --retry 4 --max-time 300 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr -o studio_small_09_1k.hdr
+          test -s studio_small_09_1k.hdr
+      - name: Validate Python scene code before expensive Blender render
+        run: |
+          python3 -m py_compile scripts/puerta_herreria_art_072.py
+      - name: Blender V072 compare satin and matte blackened copper reflection response
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_072.py
+      - name: Verify rendered comparisons
+        run: |
+          set -euo pipefail
+          for variant in A_v071C_pbr_reference B_satin_copper_less_metal C_matte_blackened_copper D_satin_copper_closeup; do
+            test -s "output_blacksmith_door_art_072/${variant}.png"
+          done
+          test -s output_blacksmith_door_art_072/DESIGN_AUDIT.json
+          test -s output_blacksmith_door_art_072/V072_PBR_QA.json
+          for map in V072_roughness V072_metalness V072_normal_opengl V072_B_forged_oxidized_copper_albedo V072_C_heat_blackened_copper_albedo; do
+            test -s "output_blacksmith_door_art_072/${map}.png"
+          done
+          sha256sum output_blacksmith_door_art_072/{A_v071C_pbr_reference,B_satin_copper_less_metal,C_matte_blackened_copper,D_satin_copper_closeup}.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blacksmith-door-v072-satin-matte-physically-based
+          path: |
+            output_blacksmith_door_art_072/*.png
+            output_blacksmith_door_art_072/*.json
+          retention-days: 7
+      - name: Publish preview renders
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_herrero_v072
+          for variant in A_v071C_pbr_reference B_satin_copper_less_metal C_matte_blackened_copper D_satin_copper_closeup; do
+            cp "output_blacksmith_door_art_072/${variant}.png" "previews/door_herrero_v072/${variant}.png"
+          done
+          cp output_blacksmith_door_art_072/B_satin_copper_less_metal.png previews/door_herrero_v072/three_quarter.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_herrero_v072
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V072 original CC0 iron material render [skip ci]'
+            git pull --rebase origin production/door-herrero
+            git push origin HEAD:production/door-herrero
+          fi
