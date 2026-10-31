@@ -1,0 +1,88 @@
+name: "Genesis Herrero V009 - publish already-rendered previews and lightweight WebGL parts"
+on:
+  push:
+    branches: [feature/blacksmith-workshop-walls-v009]
+    paths:
+      - .github/workflows/blacksmith-v009-publish-webgl.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: genesis-v009-publish-webgl
+  cancel-in-progress: false
+jobs:
+  publish-v009-after-cycles:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Wait for V009 Blender render to reach terminal state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 90); do
+            status=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41170785609 --jq '.status')
+            echo "V009 Blender render: $status"
+            if [ "$status" = completed ]; then break; fi
+            sleep 15
+          done
+          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41170785609 --jq '.status')" = completed
+      - name: Download Blender's actual rendered artifacts without rerunning Cycles
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run download 41170785609 -R ProjectgenesisAssets/genesis-workshop-assets \
+            -n genesis-blacksmith-workshop-v009-blend-glb-pbr-review -D /tmp/blacksmith-v009
+          test -s /tmp/blacksmith-v009/output_workshop_wall_herrero_v009/AUDIT.json
+          for p in left right rear front_v006; do
+            test -s "/tmp/blacksmith-v009/output_workshop_wall_herrero_v009/genesis_blacksmith_wall_${p}_v009.glb"
+          done
+      - name: Compress ONLY texture bitmaps and validate GLB structure
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user pillow==11.3.0
+          mkdir -p public/models/blacksmith-v009
+          for p in left right rear front_v006; do
+            python3 scripts/blacksmith_wall_preview_optimizer.py \
+              "/tmp/blacksmith-v009/output_workshop_wall_herrero_v009/genesis_blacksmith_wall_${p}_v009.glb" \
+              "public/models/blacksmith-v009/wall_${p}_preview.glb" 1024
+          done
+          python3 scripts/blacksmith_wall_preview_optimizer.py \
+            /tmp/blacksmith-v009/output_workshop_wall_herrero_v009/genesis_wall_herrero_v009.glb \
+            public/models/blacksmith-v009/full_workshop_preview.glb 1024
+          python3 - <<'PY'
+          import pathlib,json
+          root=pathlib.Path('public/models/blacksmith-v009')
+          sizes={p.name:p.stat().st_size for p in root.glob('*.glb')}
+          assert len(sizes)==5,sizes
+          assert all(sz<15000000 for sz in sizes.values()),sizes
+          pathlib.Path('public/models/blacksmith-v009/WEBGL_AUDIT.json').write_text(json.dumps(
+            {'status':'UNAPPROVED_RENDERED_GAME_CANDIDATE','v':'007',
+             'geometry_changed_by_optimizer':False,'max_texture_edge':1024,
+             'glb_bytes':sizes,'forge_and_collision':'NOT_VALIDATED'},indent=2))
+          print('WEBGL_V009',sizes)
+          PY
+      - name: Publish six real Blender renders and audit plus small GLBs
+        run: |
+          set -euo pipefail
+          src=/tmp/blacksmith-v009/output_workshop_wall_herrero_v009
+          dest=previews/workshop_walls/herrero/full_v009
+          mkdir -p "$dest"
+          for p in front three_quarter right_side rear cutaway detail; do
+            cp "$src/$p.png" "$dest/$p.png"
+          done
+          cp "$src/AUDIT.json" "$dest/AUDIT.json"
+          cp /tmp/blacksmith-v009/inputs/wall_herrero_v009/PROVENANCE.json "$dest/PROVENANCE.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest" public/models/blacksmith-v009
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Herrero V009 four-wall Blender renders and lightweight WebGL pieces [skip ci]"
+            git pull --rebase origin feature/blacksmith-workshop-walls-v009
+            git push origin HEAD:feature/blacksmith-workshop-walls-v009
+          fi
