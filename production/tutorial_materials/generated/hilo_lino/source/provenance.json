@@ -1,0 +1,61 @@
+{
+  "slug": "hilo_lino",
+  "asset_name": "Hilo de lino",
+  "license": "CC0 (Poly Haven)",
+  "photographic_scans": [
+    {
+      "role": "fiber",
+      "asset": "rough_linen",
+      "channel": "albedo",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rough_linen/rough_linen_diff_2k.jpg",
+      "page": "https://polyhaven.com/a/rough_linen",
+      "license": "CC0",
+      "download_sha256": "e71016e08dfebea1dd4e8a2a675e3b617a889a782af782f1abb795906f4db1b4",
+      "converted_sha256": "7e0c115a24827f065676b8a575962882b490b8fddd43bffff69c1cdfe08bdccf",
+      "path": "production/tutorial_materials/generated/hilo_lino/source/fiber_albedo.jpg",
+      "size": 984580,
+      "dimensions": [
+        1533,
+        1536
+      ]
+    },
+    {
+      "role": "fiber",
+      "asset": "rough_linen",
+      "channel": "normal",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rough_linen/rough_linen_nor_gl_2k.jpg",
+      "page": "https://polyhaven.com/a/rough_linen",
+      "license": "CC0",
+      "download_sha256": "c5733ad50cfe0f90c546f3d4076590c1c78a4fd1a83c967cc9c92dc8175b99e6",
+      "converted_sha256": "af8018255e62ff5c057216b63abed635f7cb203d6f4b11fc710f5a8d7341cbdc",
+      "path": "production/tutorial_materials/generated/hilo_lino/source/fiber_normal.png",
+      "size": 4233273,
+      "dimensions": [
+        1533,
+        1536
+      ]
+    },
+    {
+      "role": "fiber",
+      "asset": "rough_linen",
+      "channel": "roughness",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rough_linen/rough_linen_rough_2k.jpg",
+      "page": "https://polyhaven.com/a/rough_linen",
+      "license": "CC0",
+      "download_sha256": "48400d48fa203882bf5d984d5beb2f95edb1550309924601c018f2c4f3f80731",
+      "converted_sha256": "dfba7afe1a410c366546e2283f46924e9dc93ea72627ffeabba5f7b3da6d2a45",
+      "path": "production/tutorial_materials/generated/hilo_lino/source/fiber_roughness.png",
+      "size": 2037544,
+      "dimensions": [
+        1533,
+        1536
+      ]
+    }
+  ],
+  "product_photo_references": "anatomy-only; not downloaded or republished",
+  "scope": "2D material scans; the complete 3D shape is artist-modeled, NOT a 3D scan",
+  "reference_links": [
+    "https://polyhaven.com/a/rough_linen",
+    "https://en.wikipedia.org/wiki/Linen"
+  ]
+}
