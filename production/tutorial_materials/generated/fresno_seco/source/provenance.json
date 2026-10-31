@@ -1,0 +1,110 @@
+{
+  "slug": "fresno_seco",
+  "asset_name": "Madera seca de fresno",
+  "license": "CC0 (Poly Haven)",
+  "photographic_scans": [
+    {
+      "role": "wood",
+      "asset": "ash_veneer",
+      "channel": "albedo",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/ash_veneer/ash_veneer_diff_2k.jpg",
+      "page": "https://polyhaven.com/a/ash_veneer",
+      "license": "CC0",
+      "download_sha256": "00abb70f86bdfe49aa6e09f350af9e8e1605ccf13171f9be46ceb6018846c06b",
+      "converted_sha256": "a30d96861cd4800f9b37009fbc352b522981d775ca548c31fbdbac75619df053",
+      "path": "production/tutorial_materials/generated/fresno_seco/source/wood_albedo.jpg",
+      "size": 574813,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "wood",
+      "asset": "ash_veneer",
+      "channel": "normal",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/ash_veneer/ash_veneer_nor_gl_2k.jpg",
+      "page": "https://polyhaven.com/a/ash_veneer",
+      "license": "CC0",
+      "download_sha256": "64bbd775ba2978aa12108ecd58419c333eb0c194b52cbc8e1d2bea02252020af",
+      "converted_sha256": "97ca570f4bbaed81365dd156a10dc6f7feb47477a8766a407350f03aa968bd5a",
+      "path": "production/tutorial_materials/generated/fresno_seco/source/wood_normal.png",
+      "size": 2367706,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "wood",
+      "asset": "ash_veneer",
+      "channel": "roughness",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/ash_veneer/ash_veneer_rough_2k.jpg",
+      "page": "https://polyhaven.com/a/ash_veneer",
+      "license": "CC0",
+      "download_sha256": "3e6b077f6af6ba7725668b438bfc523f1342d0fb4bd497f1c9668663ad189ef0",
+      "converted_sha256": "747c844211b7b2db227c9ba6baf82a6afd491061c978c5198d1ce5d140eada97",
+      "path": "production/tutorial_materials/generated/fresno_seco/source/wood_roughness.png",
+      "size": 1561886,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "bark",
+      "asset": "bark_brown_02",
+      "channel": "albedo",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_diff_2k.jpg",
+      "page": "https://polyhaven.com/a/bark_brown_02",
+      "license": "CC0",
+      "download_sha256": "285051e34826ace29f4ab438ad35cc1201b2aae0a6157a5f3c0bf6667bbc539e",
+      "converted_sha256": "59243d30ddcc3b45eb8594192ada92e87cac82ebdbefd7aa8ac0ef25dd2ae542",
+      "path": "production/tutorial_materials/generated/fresno_seco/source/bark_albedo.jpg",
+      "size": 1180860,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "bark",
+      "asset": "bark_brown_02",
+      "channel": "normal",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_nor_gl_2k.jpg",
+      "page": "https://polyhaven.com/a/bark_brown_02",
+      "license": "CC0",
+      "download_sha256": "aaba4529c3167a7811b4dbf5b4327d054a166c2fc8ea08ebd249a2692adace41",
+      "converted_sha256": "e1b38a74a03da4ed31048495d4d7ceb522ea01822fcc35a6803770a405b6d877",
+      "path": "production/tutorial_materials/generated/fresno_seco/source/bark_normal.png",
+      "size": 4864822,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "bark",
+      "asset": "bark_brown_02",
+      "channel": "roughness",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_rough_2k.jpg",
+      "page": "https://polyhaven.com/a/bark_brown_02",
+      "license": "CC0",
+      "download_sha256": "adafcab150c1ca99150c77198329e251437dc00fa1f66019f75624366926996e",
+      "converted_sha256": "e15269e8bc9c5c4184fedbc43cf3205fab18caa7195ab56b0f8f51d39ae9a12f",
+      "path": "production/tutorial_materials/generated/fresno_seco/source/bark_roughness.png",
+      "size": 1279284,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    }
+  ],
+  "product_photo_references": "anatomy-only; not downloaded or republished",
+  "scope": "2D material scans; the complete 3D shape is artist-modeled, NOT a 3D scan",
+  "reference_links": [
+    "https://polyhaven.com/a/ash_veneer",
+    "https://polyhaven.com/a/bark_brown_02",
+    "https://www.ceneo.pl/164264309"
+  ]
+}
