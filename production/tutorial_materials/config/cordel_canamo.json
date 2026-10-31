@@ -1,7 +1,7 @@
 {
   "asset_id": "cordel_canamo",
-  "version": "V002",
-  "status": "candidate_v002_repaired_texture_paths_under_review",
+  "version": "V003",
+  "status": "candidate_v003_art_direction_refined_not_yet_approved",
   "kind": "fiber",
   "fiber": "canamo",
   "name": "Cordel de cáñamo",
@@ -26,5 +26,6 @@
     ],
     "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
   },
-  "fix": "Absolute photographic scan image paths + pack_all before .blend save; pink fallback QA gate"
+  "fix": "Absolute photographic scan image paths + pack_all before .blend save; pink fallback QA gate",
+  "iteration_note": "Visible split endgrain, organic edges, thinner physically twisted fibres, matte color and larger close camera"
 }
