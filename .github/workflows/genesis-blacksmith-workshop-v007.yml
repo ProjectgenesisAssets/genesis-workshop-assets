@@ -5,7 +5,7 @@ on:
       - feature/blacksmith-workshop-walls-v007
     paths:
       - scripts/genesis_blacksmith_workshop_v007.py
-      - .github/workflows/genesis-workshop-wall-herrero-v007.yml
+      - .github/workflows/genesis-blacksmith-workshop-v007.yml
   workflow_dispatch:
 permissions:
   contents: write
@@ -104,7 +104,7 @@ jobs:
           path: |
             output_workshop_wall_herrero_v007/
             inputs/wall_herrero_v007/PROVENANCE.json
-          retention-days: 2
+          retention-days: 5
       - name: Publish only review PNGs and audit to this experimental branch
         if: success()
         run: |
