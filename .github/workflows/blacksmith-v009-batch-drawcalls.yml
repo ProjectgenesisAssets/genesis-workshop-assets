@@ -1,0 +1,91 @@
+name: "Genesis Herrero V009 WebGL batching - preserve UVs and geometry"
+on:
+  push:
+    branches: [feature/blacksmith-workshop-walls-v009]
+    paths:
+      - .github/workflows/blacksmith-v009-batch-drawcalls.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: genesis-herrero-v009-batch
+  cancel-in-progress: false
+jobs:
+  batch-static-blacksmith-stonework:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Wait for official V009 WebGL preview export to publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 100); do
+            status=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41170817634 --jq '.status')
+            echo "V009 web preview status: $status"
+            if [ "$status" = completed ]; then break; fi
+            sleep 14
+          done
+          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41170817634 --jq '.conclusion')" = success
+          git fetch origin feature/blacksmith-workshop-walls-v009
+          git reset --hard origin/feature/blacksmith-workshop-walls-v009
+          test -s public/models/blacksmith-v009/full_workshop_preview.glb
+      - name: Install Blender 4.5.13 (static mesh optimizer only)
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/blender-install
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/blender-install --strip-components=1
+          /tmp/blender-install/blender --version | grep -F "Blender 4.5.13"
+      - name: Recombine by material while preserving every vertex and texcoord
+        run: |
+          set -euo pipefail
+          mkdir -p public/models/blacksmith-v009/batched
+          for p in left right rear front_v006; do
+            /tmp/blender-install/blender -b -t 2 --python-exit-code 1 \
+              --python scripts/batch_blacksmith_v009_for_webgl.py -- \
+              "public/models/blacksmith-v009/wall_${p}_preview.glb" \
+              "public/models/blacksmith-v009/batched/wall_${p}_preview.glb"
+          done
+          /tmp/blender-install/blender -b -t 2 --python-exit-code 1 \
+            --python scripts/batch_blacksmith_v009_for_webgl.py -- \
+            public/models/blacksmith-v009/full_workshop_preview.glb \
+            public/models/blacksmith-v009/batched/full_workshop_preview.glb
+      - name: Validate material count, triangle count and browser payload size
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('public/models/blacksmith-v009/batched')
+          audits=[json.loads(x.read_text()) for x in root.glob('*.audit.json')]
+          assert len(audits)==5,len(audits)
+          assert all(a['triangles_after']==a['triangles_before'] for a in audits)
+          assert all(a['batched_meshes']<a['original_meshes'] for a in audits)
+          assert all(a['batched_meshes']<=14 for a in audits)
+          assert all(a['batched_bytes']<16000000 for a in audits)
+          print('BATCHING_PASS',[(a['original_meshes'],a['batched_meshes'],a['batched_bytes']) for a in audits])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-herrero-v009-batched-webgl-meshes
+          path: public/models/blacksmith-v009/batched/
+          retention-days: 5
+      - name: Publish experimental batched meshes without touching production
+        if: success()
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/models/blacksmith-v009/batched/
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Herrero V009 batched WebGL PBR walls, unchanged triangle geometry [skip ci]"
+            git pull --rebase origin feature/blacksmith-workshop-walls-v009
+            git push origin HEAD:feature/blacksmith-workshop-walls-v009
+          fi
