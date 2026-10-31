@@ -698,7 +698,8 @@ for ob in bpy.data.objects:
     if ob.type=="LIGHT": ob.data.energy*=.25
 background.inputs["Strength"].default_value=.07
 render_test("C_direct_dark_dim_lights")
-\nbpy.ops.wm.save_as_mainfile(filepath=str(OUT/"Door_Diagnostic_060.blend"))
+
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/"Door_Diagnostic_060.blend"))
 # Evaluated triangles include bevels and converted ornamental curves.
 dg=bpy.context.evaluated_depsgraph_get()
 triangles=0
