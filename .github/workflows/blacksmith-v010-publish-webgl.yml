@@ -25,18 +25,18 @@ jobs:
         run: |
           set -euo pipefail
           for i in $(seq 1 90); do
-            status=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171445478 --jq '.status')
+            status=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171580014 --jq '.status')
             echo "V010 Blender render: $status"
             if [ "$status" = completed ]; then break; fi
             sleep 15
           done
-          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171445478 --jq '.status')" = completed
+          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171580014 --jq '.status')" = completed
       - name: Download Blender's actual rendered artifacts without rerunning Cycles
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh run download 41171445478 -R ProjectgenesisAssets/genesis-workshop-assets \
+          gh run download 41171580014 -R ProjectgenesisAssets/genesis-workshop-assets \
             -n genesis-blacksmith-workshop-v010-blend-glb-pbr-review -D /tmp/blacksmith-v010
           test -s /tmp/blacksmith-v010/output_workshop_wall_herrero_v010/AUDIT.json
           for p in left right rear front_v006; do
