@@ -1,0 +1,53 @@
+{
+  "asset": "PG_Charcoal_Pile_V009",
+  "source": "PG_Charcoal_Photoscan_Hero_V008",
+  "status": "candidate_not_approved",
+  "geometry": "four oriented instances of one original V008 real-scan wood geometry",
+  "original_source_intact": true,
+  "model_nodes": 4,
+  "unique_meshes": 1,
+  "triangles_per_mesh": 23312,
+  "rendered_triangles": 93248,
+  "hq_bytes": 14148928,
+  "web_bytes": 1898828,
+  "maps": "2K PBR reused; web JPEG Q96 non-subsampled",
+  "hover": "yaw -45 to 45; easing to 0 on pointer exit",
+  "pieces": [
+    {
+      "name": "01_carbon_base",
+      "az": 4.0,
+      "pitch": -22.0,
+      "roll": 20.0,
+      "scale": 0.85,
+      "radius": 0.27,
+      "h": 0.53
+    },
+    {
+      "name": "02_carbon_cross",
+      "az": 94.0,
+      "pitch": -28.0,
+      "roll": -52.0,
+      "scale": 0.77,
+      "radius": 0.31,
+      "h": 0.54
+    },
+    {
+      "name": "03_carbon_diagonal",
+      "az": 193.0,
+      "pitch": -23.0,
+      "roll": 96.0,
+      "scale": 0.72,
+      "radius": 0.27,
+      "h": 0.51
+    },
+    {
+      "name": "04_carbon_support",
+      "az": 278.0,
+      "pitch": -29.0,
+      "roll": 171.0,
+      "scale": 0.79,
+      "radius": 0.26,
+      "h": 0.53
+    }
+  ]
+}
