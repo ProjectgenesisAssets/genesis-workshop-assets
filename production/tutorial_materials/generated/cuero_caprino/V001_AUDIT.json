@@ -1,0 +1,52 @@
+{
+  "asset": "cuero_caprino",
+  "name": "Cuero caprino curtido",
+  "version": "V001",
+  "status": "candidate_needs_human_visual_approval",
+  "geometry_technique": "hand-directed parametric Blender geometry, not full object photoscan",
+  "photo_texture_license": "CC0 Poly Haven",
+  "sources": [
+    "https://polyhaven.com/a/brown_leather"
+  ],
+  "source_provenance": "source/provenance.json",
+  "model": "production/tutorial_materials/generated/cuero_caprino/cuero_caprino_v001_candidate.glb",
+  "bytes": 9455456,
+  "sha256": "a736f3ecea32010fe42394784b2b0f0a05f96d85193b87837401763a13ce00e0",
+  "triangles": 47456,
+  "mesh_count": 1,
+  "materials": 1,
+  "images_embedded": 3,
+  "master": "production/tutorial_materials/generated/cuero_caprino/cuero_caprino_v001_master.blend",
+  "poster": "production/tutorial_materials/generated/cuero_caprino/inventory_poster_rgba.png",
+  "views": [
+    "hero",
+    "side",
+    "top",
+    "back",
+    "macro"
+  ],
+  "reference_notes": {
+    "silhouette": "Pieza de cuero caprino fina y flexible de 47 x 31 cm; plegado menos rígido, canto de 2 mm visible.",
+    "fracture_anatomy": "Micropliegues de flexión y tensiones coherentes, sin roturas inventadas; grano de menor escala/pebbling relativo a bovino por mapeo UV independiente.",
+    "surface": "Tostado ocre cuero natural, acabado mate satinado. Usar escaneo CC0 de cuero como referencia de textura, NO etiquetarlo como escaneo verificado de cabra.",
+    "reject": [
+      "misma silueta exacta que bovino",
+      "borde perfectamente cuadrado",
+      "superficie lisa de goma",
+      "parches blancos falsos",
+      "fibra de tela"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  },
+  "technical_checks": {
+    "glb_header": true,
+    "normal_maps_embedded": true,
+    "scanned_albedo": true,
+    "multi_views": true,
+    "transparent_poster": true,
+    "blender_editable_master": true,
+    "license_verified": true
+  },
+  "visual_score": null,
+  "approved_for_game": false
+}

@@ -1,0 +1,61 @@
+{
+  "slug": "cuero_caprino",
+  "asset_name": "Cuero caprino curtido",
+  "license": "CC0 (Poly Haven)",
+  "photographic_scans": [
+    {
+      "role": "leather",
+      "asset": "brown_leather",
+      "channel": "albedo",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_leather/brown_leather_albedo_2k.jpg",
+      "page": "https://polyhaven.com/a/brown_leather",
+      "license": "CC0",
+      "download_sha256": "b0de2403a31efa31e501b0028c0bd8e504d5bd6318f4a5ce90c550c3067f96d8",
+      "converted_sha256": "f893dddb1259b2d58f2ec1173eb9e5de2cf03dc8f86c9aca08787bd7772ef400",
+      "path": "production/tutorial_materials/generated/cuero_caprino/source/leather_albedo.jpg",
+      "size": 881556,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "leather",
+      "asset": "brown_leather",
+      "channel": "normal",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_leather/brown_leather_nor_gl_2k.jpg",
+      "page": "https://polyhaven.com/a/brown_leather",
+      "license": "CC0",
+      "download_sha256": "3386277290af50b4d464dc9a9f195bbf8dd6f137b9ae0274552397d2f0135c98",
+      "converted_sha256": "f0533527c1c679f816cc809967cd107c082dcd88b3ef6d6d1cf96586c00d1ca0",
+      "path": "production/tutorial_materials/generated/cuero_caprino/source/leather_normal.png",
+      "size": 4355289,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "leather",
+      "asset": "brown_leather",
+      "channel": "roughness",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_leather/brown_leather_rough_2k.jpg",
+      "page": "https://polyhaven.com/a/brown_leather",
+      "license": "CC0",
+      "download_sha256": "8a47afca2630310849034fe40ca9497db0956c67c0d933e6efd49d3cd2befe83",
+      "converted_sha256": "ed1ed82bcc107f5e9063603f4780447ff9890b74ac772debe54f6d0cf29fb373",
+      "path": "production/tutorial_materials/generated/cuero_caprino/source/leather_roughness.png",
+      "size": 2027928,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    }
+  ],
+  "product_photo_references": "anatomy-only; not downloaded or republished",
+  "scope": "2D material scans; the complete 3D shape is artist-modeled, NOT a 3D scan",
+  "reference_links": [
+    "https://polyhaven.com/a/brown_leather",
+    "https://www.cuirtex.fr/cuirs-tannage-vegetal/1303-chevre-vegetal-naturel-foulonnee-1-12-mm.html"
+  ]
+}
