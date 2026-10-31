@@ -1,0 +1,24 @@
+name: PG charcoal V005 CC0 photogrammetry source probe
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/charcoal_cc0_scan_probe_v005.py
+      - .github/workflows/charcoal-cc0-scan-probe-v005.yml
+jobs:
+  scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install standard network dependencies
+        run: python3 -m pip install --user requests
+      - name: Retrieve provenance-checked scan from Poly Haven
+        run: python3 scripts/charcoal_cc0_scan_probe_v005.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pg-charcoal-v005-cc0-source-probe
+          path: output_charcoal_scan_v005/
+          retention-days: 7
