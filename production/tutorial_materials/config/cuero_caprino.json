@@ -1,0 +1,28 @@
+{
+  "asset_id": "cuero_caprino",
+  "version": "V001",
+  "status": "candidate_production_auto_no_game_integration",
+  "kind": "leather",
+  "animal": "caprino",
+  "name": "Cuero caprino curtido",
+  "scans": {
+    "leather": "brown_leather"
+  },
+  "references": [
+    "https://polyhaven.com/a/brown_leather",
+    "https://www.cuirtex.fr/cuirs-tannage-vegetal/1303-chevre-vegetal-naturel-foulonnee-1-12-mm.html"
+  ],
+  "art_direction": {
+    "silhouette": "Pieza de cuero caprino fina y flexible de 47 x 31 cm; plegado menos rígido, canto de 2 mm visible.",
+    "fracture_anatomy": "Micropliegues de flexión y tensiones coherentes, sin roturas inventadas; grano de menor escala/pebbling relativo a bovino por mapeo UV independiente.",
+    "surface": "Tostado ocre cuero natural, acabado mate satinado. Usar escaneo CC0 de cuero como referencia de textura, NO etiquetarlo como escaneo verificado de cabra.",
+    "reject": [
+      "misma silueta exacta que bovino",
+      "borde perfectamente cuadrado",
+      "superficie lisa de goma",
+      "parches blancos falsos",
+      "fibra de tela"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  }
+}
