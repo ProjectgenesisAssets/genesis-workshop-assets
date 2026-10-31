@@ -1,0 +1,52 @@
+{
+  "status": "EXPERIMENTAL_WEBGL_BATCHED_UNAPPROVED",
+  "source": "public/models/blacksmith-structural-v012/blacksmith_four_walls_texture_optimized.glb",
+  "output": "public/models/blacksmith-structural-v012/batched/blacksmith_four_walls_preview.glb",
+  "original_meshes": 632,
+  "batched_meshes": 9,
+  "triangles_before": 17134,
+  "triangles_after": 17134,
+  "faces_before": 17134,
+  "faces_after": 17134,
+  "material_groups": [
+    "Recessed stone mortar / dark",
+    "Soot deposits - char and oxide",
+    "Quarry basalt / dark warm PBR",
+    "Basalt - mineral warm variance",
+    "Oak / fire seasoned PBR",
+    "Oxidized forged iron",
+    "Blackened ironstone coping / dark scanned PBR",
+    "Deep-set door reveals / soot scanned basalt PBR",
+    "Blacksmith \u00b7 soot-stained grille background"
+  ],
+  "material_count": 9,
+  "source_meshes_with_uv": 632,
+  "output_meshes_with_uv": 9,
+  "bounds_before": [
+    [
+      -4.452500343322754,
+      -0.6470000147819519,
+      -0.04851295053958893
+    ],
+    [
+      4.452500343322754,
+      7.4356255531311035,
+      3.352343797683716
+    ]
+  ],
+  "bounds_after": [
+    [
+      -4.452500343322754,
+      -0.6470000147819519,
+      -0.04851295053958893
+    ],
+    [
+      4.452500343322754,
+      7.4356255531311035,
+      3.352343797683716
+    ]
+  ],
+  "source_bytes": 2723920,
+  "batched_bytes": 2177044,
+  "note": "Pure drawcall batching, no geometry resculpt, PlayCanvas FPS not yet tested"
+}

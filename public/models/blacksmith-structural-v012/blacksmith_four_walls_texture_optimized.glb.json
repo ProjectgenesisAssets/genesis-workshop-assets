@@ -1,0 +1,10 @@
+{
+  "source": "/tmp/structural-v012/output_workshop_wall_herrero_v012/genesis_blacksmith_four_walls_v012.glb",
+  "output": "public/models/blacksmith-structural-v012/blacksmith_four_walls_texture_optimized.glb",
+  "original_bytes": 39179288,
+  "preview_bytes": 2723920,
+  "textures_reencoded": 6,
+  "max_texture_edge": 1024,
+  "geometry_unchanged": true,
+  "status": "PREVIEW_NOT_APPROVED"
+}
