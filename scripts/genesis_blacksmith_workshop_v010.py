@@ -278,6 +278,11 @@ else:
 # relative to the approved off-center door before gameplay integration.
 from mathutils import Matrix
 DEPTH=6.890625
+capmat=pbr("Blackened ironstone coping / dark scanned PBR",
+           stone_tex,rough_tex,normal_tex,(.085,.077,.071),1.2)
+revealmat=pbr("Deep-set door reveals / soot scanned basalt PBR",
+              stone_tex,rough_tex,normal_tex,(.13,.12,.105),1.25)
+
 front_objects={o.name for o in bpy.data.objects if o.name.startswith(PREFIX)}
 # Keep every original V006 exterior stone and beam. Only ADD a genuinely
 # mineral inner surface to the existing front, keeping the door cutout.
@@ -312,10 +317,6 @@ for ob in bpy.data.objects:
 # Use the SAME Poly Haven scanned basalt as the structural masonry.
 # The previous light procedural material turned nearly white under Cycles.
 # This is one-third the main wall's albedo, not an untextured flat shader.
-capmat=pbr("Blackened ironstone coping / dark scanned PBR",
-           stone_tex,rough_tex,normal_tex,(.085,.077,.071),1.2)
-revealmat=pbr("Deep-set door reveals / soot scanned basalt PBR",
-              stone_tex,rough_tex,normal_tex,(.13,.12,.105),1.25)
 
 # Stone coping in V006 was washed out in the review light. Swap only
 # its exposed material to the soot-dark scanned basalt, no silhouette change.
