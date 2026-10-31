@@ -1,0 +1,27 @@
+{
+  "asset": "PG_Charcoal_Hero_V003",
+  "review": "candidate_not_approved",
+  "construction": "6 coherent radial sectors + axial carbon flake geometry",
+  "origin": "Original procedural anatomical sculpt; no stock photo textures copied",
+  "references": [
+    "BlendKit Burnt Log 01 (CC0 photogrammetry)",
+    "Barauna et al. 2021 BioResources carbonized wood anatomy",
+    "Cary Institute wood charcoal close-up"
+  ],
+  "source_license": "Original Project Genesis",
+  "objects": 60,
+  "mesh_polygons": 31960,
+  "pbr_texture_resolution": 1536,
+  "texture_sets": [
+    "axial basecolor/normal/roughness",
+    "endgrain basecolor/normal/roughness"
+  ],
+  "views": [
+    "three_quarter",
+    "side",
+    "front_end",
+    "rear_end",
+    "macro_fibres"
+  ],
+  "accepted_into_game": false
+}
