@@ -1,0 +1,28 @@
+{
+  "asset_id": "hilo_lino",
+  "version": "V001",
+  "status": "candidate_production_auto_no_game_integration",
+  "kind": "fiber",
+  "fiber": "lino",
+  "name": "Hilo de lino",
+  "scans": {
+    "fiber": "rough_linen"
+  },
+  "references": [
+    "https://polyhaven.com/a/rough_linen",
+    "https://en.wikipedia.org/wiki/Linen"
+  ],
+  "art_direction": {
+    "silhouette": "Pequeña madeja de hilo fino de lino, doble cabo hilado físicamente, más delgada y alargada que el cordel de cáñamo.",
+    "fracture_anatomy": "No grietas de madera: torsión fina, continuidad axial de los cabos y unas pocas pelusas naturales en puntas.",
+    "surface": "Lino natural blanco hueso cálido, fibras mate, microrelieve. La fotografía CC0 es tejido de lino azul; corregir tonalidad sin atribuir especie a un modelo 3D escaneado.",
+    "reject": [
+      "cuerda gruesa recoloreada",
+      "repetición geométrica mecánica perfecta",
+      "azul fuerte",
+      "rugosidad plástica",
+      "hilos flotantes sin anclaje"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  }
+}
