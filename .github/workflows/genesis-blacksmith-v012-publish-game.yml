@@ -1,0 +1,122 @@
+name: "Genesis V012 - publish true Blender fixed corners & chimney as batched WebGL"
+on:
+  push:
+    branches: [feature/blacksmith-workshop-structural-v012]
+    paths:
+      - .github/workflows/genesis-blacksmith-v012-publish-game.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: genesis-v012-batched-game
+  cancel-in-progress: false
+jobs:
+  publish-blender-v012-game-assets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require finished real Blender geometry and eight renders
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for n in $(seq 1 120); do
+            outcome=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41211536670 --jq '.status')
+            echo "V012 render status $outcome"
+            if [ "$outcome" = completed ]; then break; fi
+            sleep 12
+          done
+          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41211536670 --jq '.conclusion')" = success
+          gh run download 41211536670 -R ProjectgenesisAssets/genesis-workshop-assets \
+             -n genesis-blacksmith-roof-v012-blend-glb-pbr-review -D /tmp/structural-v012
+          test -s /tmp/structural-v012/output_workshop_wall_herrero_v012/AUDIT.json
+      - name: Package browser-friendly full stone walls, roof and chimney without geometry reduction
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user pillow==11.3.0
+          src=/tmp/structural-v012/output_workshop_wall_herrero_v012
+          dest=public/models/blacksmith-structural-v012
+          mkdir -p "$dest"
+          for part in four_walls roof chimney_candidate; do
+            test -s "$src/genesis_blacksmith_${part}_v012.glb"
+            python3 scripts/blacksmith_wall_preview_optimizer.py \
+              "$src/genesis_blacksmith_${part}_v012.glb" \
+              "$dest/blacksmith_${part}_texture_optimized.glb" 1024
+          done
+      - name: Install Blender 4.5.13 for topology-preserving PBR batching
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 \
+            https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz \
+            -o /tmp/blender-v012.tar.xz
+          mkdir -p /tmp/blender-v012
+          tar -xJf /tmp/blender-v012.tar.xz -C /tmp/blender-v012 --strip-components=1
+      - name: Batch each mesh by its scanned material; preserve every triangle
+        run: |
+          set -euo pipefail
+          dest=public/models/blacksmith-structural-v012
+          mkdir -p "$dest/batched"
+          for part in four_walls roof chimney_candidate; do
+            /tmp/blender-v012/blender -b -t 2 --python-exit-code 1 \
+              --python scripts/batch_blacksmith_roof_v011_for_webgl.py -- \
+              "$dest/blacksmith_${part}_texture_optimized.glb" \
+              "$dest/batched/blacksmith_${part}_preview.glb"
+          done
+      - name: Verify no geometry/UV regression, low drawcalls and capped network bytes
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('public/models/blacksmith-structural-v012/batched')
+          report={}
+          for name in ('four_walls','roof','chimney_candidate'):
+            file=root/f'blacksmith_{name}_preview.glb'
+            audit=json.loads(file.with_suffix('.audit.json').read_text())
+            assert audit['triangles_before']==audit['triangles_after'],audit
+            assert audit['faces_before']==audit['faces_after'],audit
+            assert audit['batched_meshes']<=18,audit
+            assert file.stat().st_size<16000000,audit
+            report[name]={
+              'triangles':audit['triangles_after'],
+              'draw_meshes_before':audit['original_meshes'],
+              'draw_meshes_after':audit['batched_meshes'],
+              'glb_bytes':file.stat().st_size}
+          sculpt=json.loads(pathlib.Path('/tmp/structural-v012/output_workshop_wall_herrero_v012/AUDIT.json').read_text())
+          assert sculpt['new_corner_courses']==32
+          assert sculpt['chimney_cap_gap_m']==0.0
+          report['V012_Blender']={'quoin_count':sculpt['new_corner_courses'],
+              'removed_old_corner_components':sculpt['deleted_old_corner_components'],
+              'chimney_lip_overlap_m':sculpt['chimney_lip_overlap_m']}
+          (root/'STRUCTURAL_AUDIT.json').write_text(json.dumps(report,indent=2))
+          print('VALIDATED V012 structural GLBs',report)
+          PY
+      - name: Publish actual Cycles renders and three final GLBs for isolated game testing
+        run: |
+          set -euo pipefail
+          src=/tmp/structural-v012/output_workshop_wall_herrero_v012
+          dest=previews/workshop_walls/herrero/structural_v012
+          mkdir -p "$dest"
+          for view in front three_quarter roof_above gable right_side rear inside_no_roof chimney_detail; do
+            cp "$src/$view.png" "$dest/$view.png"
+          done
+          cp "$src/AUDIT.json" "$dest/AUDIT.json"
+          cp /tmp/structural-v012/inputs/wall_herrero_v012/PROVENANCE.json "$dest/PROVENANCE.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest" public/models/blacksmith-structural-v012
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish 32 interlocked corners and connected chimney V012 [skip ci]"
+            git pull --rebase origin feature/blacksmith-workshop-structural-v012
+            git push origin HEAD:feature/blacksmith-workshop-structural-v012
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-herrero-v012-game-glbs-and-views
+          path: |
+            public/models/blacksmith-structural-v012/batched/
+            previews/workshop_walls/herrero/structural_v012/
+          retention-days: 5
