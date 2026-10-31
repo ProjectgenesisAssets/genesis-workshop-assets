@@ -331,9 +331,9 @@ def make_door_specific_4k_material():
     links.new(normalnode.outputs["Normal"],bs.inputs["Normal"])
     # Original displacement map kept intact in the 4K source pack; no geometry
     # displacement in this material-isolation test, to preserve approved V011.
-    return m
+    return m, neutral, smoke, mask
 
-iron=make_door_specific_4k_material()
+iron,neutral,smoke,mask=make_door_specific_4k_material()
 edge=material("iron_v028_steel_worn_edges",(.048,.052,.055),.82,.78,18)
 copper=material("copper_brass_v028_patinated",(.135,.097,.065),.82,.66,19)
 shade=material("iron_v028_heat_darkened_recesses",(.091,.088,.083),.80,.76,20)
