@@ -5,7 +5,7 @@ on:
       - feature/blacksmith-workshop-roof-v011
     paths:
       - scripts/genesis_blacksmith_workshop_v011.py
-      - .github/workflows/genesis-blacksmith-workshop-v011.yml
+      - .github/workflows/genesis-blacksmith-roof-v011.yml
   workflow_dispatch:
 permissions:
   contents: write
@@ -107,7 +107,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: genesis-blacksmith-workshop-v011-blend-glb-pbr-review
+          name: genesis-blacksmith-roof-v011-blend-glb-pbr-review
           path: |
             output_workshop_wall_herrero_v011/
             inputs/wall_herrero_v011/PROVENANCE.json
