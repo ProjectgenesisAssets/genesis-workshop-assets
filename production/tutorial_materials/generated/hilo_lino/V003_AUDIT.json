@@ -1,0 +1,52 @@
+{
+  "asset": "hilo_lino",
+  "name": "Hilo de lino",
+  "version": "V003",
+  "status": "candidate_needs_human_visual_approval",
+  "geometry_technique": "hand-directed parametric Blender geometry, not full object photoscan",
+  "photo_texture_license": "CC0 Poly Haven",
+  "sources": [
+    "https://polyhaven.com/a/rough_linen"
+  ],
+  "source_provenance": "source/provenance.json",
+  "model": "production/tutorial_materials/generated/hilo_lino/hilo_lino_v003_candidate.glb",
+  "bytes": 9131748,
+  "sha256": "5591330516082aa439a56815361d8cbf9aa87310b57ff37a1f9d645507e72903",
+  "triangles": 38816,
+  "mesh_count": 22,
+  "materials": 1,
+  "images_embedded": 3,
+  "master": "production/tutorial_materials/generated/hilo_lino/hilo_lino_v003_master.blend",
+  "poster": "production/tutorial_materials/generated/hilo_lino/inventory_poster_rgba.png",
+  "views": [
+    "hero",
+    "side",
+    "top",
+    "back",
+    "macro"
+  ],
+  "reference_notes": {
+    "silhouette": "Pequeña madeja de hilo fino de lino, doble cabo hilado físicamente, más delgada y alargada que el cordel de cáñamo.",
+    "fracture_anatomy": "No grietas de madera: torsión fina, continuidad axial de los cabos y unas pocas pelusas naturales en puntas.",
+    "surface": "Lino natural blanco hueso cálido, fibras mate, microrelieve. La fotografía CC0 es tejido de lino azul; corregir tonalidad sin atribuir especie a un modelo 3D escaneado.",
+    "reject": [
+      "cuerda gruesa recoloreada",
+      "repetición geométrica mecánica perfecta",
+      "azul fuerte",
+      "rugosidad plástica",
+      "hilos flotantes sin anclaje"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  },
+  "technical_checks": {
+    "glb_header": true,
+    "normal_maps_embedded": true,
+    "scanned_albedo": true,
+    "multi_views": true,
+    "transparent_poster": true,
+    "blender_editable_master": true,
+    "license_verified": true
+  },
+  "visual_score": null,
+  "approved_for_game": false
+}
