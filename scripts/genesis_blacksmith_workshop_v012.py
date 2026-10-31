@@ -739,6 +739,10 @@ export_only("blacksmith_roof",roof_group)
 export_only("blacksmith_chimney_candidate",chimney_group)
 # Also output a single renderable roof-with-chimney candidate.
 export_only("blacksmith_roof_and_chimney",roof_group+chimney_group)
+# Production: four connected walls without duplicating roof/chimney meshes.
+walls_only=[obj for obj in bpy.data.objects if obj.name.startswith(PREFIX)
+             and obj.type=="MESH" and obj not in roof_group and obj not in chimney_group]
+export_only("blacksmith_four_walls",walls_only)
 # =========== END V012 ROOF ===========
 
 # Review scene is excluded from the GLB.
@@ -808,6 +812,7 @@ audit=dict(asset=basename,status="EXPERIMENTAL_NOT_APPROVED",profession=KIND,
            corner_design="SINGLE_MESH_L_SHAPED_STAGGERED_STONE_QUOINS",
            deleted_old_corner_components=len(removed_corner_objects),
            new_corner_courses=len(corner_courses),
+           four_walls_glb_bytes=(ROOT/"genesis_blacksmith_four_walls_v012.glb").stat().st_size,
            roof_glbs={part:(ROOT/("genesis_blacksmith_"+part+"_v012.glb")).stat().st_size for part in ("roof","chimney_candidate","roof_and_chimney")},
            roof_independent_meshes=len(roof_group),chimney_independent_meshes=len(chimney_group),
            scope="FOUR_WALLS_AND_INDEPENDENT_ROOF_WITH_CHIMNEY_CANDIDATE_NOT_CONNECTED",
