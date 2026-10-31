@@ -25,12 +25,12 @@ jobs:
         run: |
           set -euo pipefail
           for i in $(seq 1 100); do
-            status=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171486435 --jq '.status')
+            status=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171597749 --jq '.status')
             echo "V010 web preview status: $status"
             if [ "$status" = completed ]; then break; fi
             sleep 14
           done
-          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171486435 --jq '.conclusion')" = success
+          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41171597749 --jq '.conclusion')" = success
           git fetch origin feature/blacksmith-workshop-walls-v010
           git reset --hard origin/feature/blacksmith-workshop-walls-v010
           test -s public/models/blacksmith-v010/full_workshop_preview.glb
