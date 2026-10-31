@@ -5,7 +5,7 @@ on:
       - feature/blacksmith-workshop-structural-v012
     paths:
       - scripts/genesis_blacksmith_workshop_v012.py
-      - .github/workflows/genesis-blacksmith-roof-v012.yml
+      - .github/workflows/genesis-blacksmith-structural-v012.yml
   workflow_dispatch:
 permissions:
   contents: write
