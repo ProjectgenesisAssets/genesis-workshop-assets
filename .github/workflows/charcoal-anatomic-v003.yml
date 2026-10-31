@@ -1,0 +1,56 @@
+name: PG Charcoal V003 anatomical master and multiview QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/charcoal_anatomic_master_v003.py
+      - .github/workflows/charcoal-anatomic-v003.yml
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python before installing Blender
+        run: python3 -m py_compile scripts/charcoal_anatomic_master_v003.py
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+          /tmp/blender-lts/blender --version
+      - name: Model and render five art-direction views
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: /tmp/blender-lts/blender -b -t 4 --python-exit-code 1 --python scripts/charcoal_anatomic_master_v003.py
+      - name: Verify concrete GLB PBR deliverables
+        run: |
+          test -s output_charcoal_v003/PG_Charcoal_Hero_V003_MASTER.glb
+          test -s output_charcoal_v003/PG_Charcoal_Hero_V003_MASTER.blend
+          test -s output_charcoal_v003/AUDIT.json
+          for name in three_quarter side front_end rear_end macro_fibres; do test -s output_charcoal_v003/$name.png; done
+          for name in axial_basecolor axial_normal axial_roughness endgrain_basecolor endgrain_normal endgrain_roughness; do test -s output_charcoal_v003/$name.png; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pg-charcoal-v003-master-and-qa
+          path: output_charcoal_v003/
+          retention-days: 7
+      - name: Publish only visual QA, NOT into game's approved catalog
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p previews/charcoal_v003
+          cp output_charcoal_v003/{three_quarter,side,front_end,rear_end,macro_fibres}.png previews/charcoal_v003/
+          cp output_charcoal_v003/AUDIT.json previews/charcoal_v003/AUDIT.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/charcoal_v003
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish charcoal V003 five-view QA [skip ci]'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
