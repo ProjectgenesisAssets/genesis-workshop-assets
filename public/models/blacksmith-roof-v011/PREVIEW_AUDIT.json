@@ -1,0 +1,13 @@
+{
+  "status": "UNAPPROVED_BUT_VERIFIED_GLB",
+  "roof_materials": "Original scanned CC0 PBR maps, resized to 1024px",
+  "roof_files": {
+    "complete_blacksmith_preview.glb": 3323640,
+    "blacksmith_roof_and_chimney_preview.glb": 1398732,
+    "blacksmith_chimney_candidate_preview.glb": 669848,
+    "blacksmith_roof_preview.glb": 1373036
+  },
+  "roof_chimney_detachable": true,
+  "roof_functional_connection": "PENDING_GAME_VALIDATION",
+  "roof_alignment": "PENDING_PLAYCANVAS_TEST"
+}

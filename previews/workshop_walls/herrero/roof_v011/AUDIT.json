@@ -1,0 +1,66 @@
+{
+  "asset": "genesis_wall_herrero_v011",
+  "status": "EXPERIMENTAL_NOT_APPROVED",
+  "profession": "herrero",
+  "roof_status": "MODELED_SEPARATE_DETACHABLE_GLBS_UNAPPROVED",
+  "roof_style": "DARK_SPLIT_SLATE_PBR_OVER_AGED_OAK_TRUSSES",
+  "roof_eave_height": 3.29,
+  "roof_ridge_height": 4.87,
+  "roof_overhang_m": 0.39,
+  "chimney_candidate_xy": [
+    -1.83,
+    4.96125
+  ],
+  "chimney_functional_connection": "PENDING_FORGE_V038_REAL_FIT",
+  "roof_glbs": {
+    "roof": 37827044,
+    "chimney_candidate": 12400324,
+    "roof_and_chimney": 37852792
+  },
+  "roof_independent_meshes": 286,
+  "chimney_independent_meshes": 16,
+  "scope": "FOUR_WALLS_AND_INDEPENDENT_ROOF_WITH_CHIMNEY_CANDIDATE_NOT_CONNECTED",
+  "depth_m": 6.890625,
+  "finished_parts": [
+    "front_v006",
+    "left",
+    "right",
+    "rear"
+  ],
+  "independent_glbs": {
+    "LEFT": 37851644,
+    "RIGHT": 37838664,
+    "REAR": 37825892
+  },
+  "roof_alignment": "PENDING_PLAYCANVAS_VISUAL_TEST",
+  "interior_masonry": "REAL_GEOMETRY_SAME_PBR_PALLETTE",
+  "roof_seating": "SCANNED_PBR_BLACKENED_CHARCOAL_IRONSTONE",
+  "door_returns": "DARK_BASALT_PBR_NO_CLEARANCE_LOSS",
+  "blender_textures": "PACKED_IN_BLEND",
+  "forge_v038_clearance": "PENDING_COLLISION_AND_VISUAL_TEST",
+  "width_m": 7.875,
+  "height_m": 3.2,
+  "door_cutout_m": [
+    1.48,
+    2.43
+  ],
+  "current_door_geometry": "V011 not modified",
+  "geometry": "Exterior plus physically sculpted interior PBR masonry; narrower roof-top reveals",
+  "textures": "PolyHaven scanned PBR 2K CC0, base/normal/rough",
+  "visual_review": "PENDING",
+  "texture_resolution": 2048,
+  "mesh_count": 932,
+  "triangles": 22030,
+  "glb_bytes": 39779932,
+  "previews": [
+    "front",
+    "three_quarter",
+    "roof_above",
+    "gable",
+    "right_side",
+    "rear",
+    "inside_no_roof",
+    "chimney_detail"
+  ],
+  "seed": 29012026
+}

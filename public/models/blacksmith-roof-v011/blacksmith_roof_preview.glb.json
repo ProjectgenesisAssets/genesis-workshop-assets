@@ -1,0 +1,10 @@
+{
+  "source": "/tmp/herrero-roof-v011/output_workshop_wall_herrero_v011/genesis_blacksmith_roof_v011.glb",
+  "output": "public/models/blacksmith-roof-v011/blacksmith_roof_preview.glb",
+  "original_bytes": 37827044,
+  "preview_bytes": 1373036,
+  "textures_reencoded": 6,
+  "max_texture_edge": 1024,
+  "geometry_unchanged": true,
+  "status": "PREVIEW_NOT_APPROVED"
+}

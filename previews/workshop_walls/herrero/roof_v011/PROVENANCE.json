@@ -1,0 +1,61 @@
+{
+  "license": "CC0",
+  "items": [
+    {
+      "asset": "rock_05",
+      "channel": "Diffuse",
+      "filename": "stone_albedo_2k.jpg",
+      "md5": "9e9398175c503701571b19d727aa3532",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rock_05/rock_05_diff_2k.jpg",
+      "bytes": 3115501
+    },
+    {
+      "asset": "rock_05",
+      "channel": "Rough",
+      "filename": "stone_rough_2k.jpg",
+      "md5": "379116c46ff044e1cea039ecbecf8fc4",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rock_05/rock_05_rough_2k.jpg",
+      "bytes": 1256189
+    },
+    {
+      "asset": "rock_05",
+      "channel": "nor_gl",
+      "filename": "stone_normal_2k.png",
+      "md5": "85eb1f16d6d601f15e9e44713ead040e",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rock_05/rock_05_nor_gl_2k.png",
+      "bytes": 7389679
+    },
+    {
+      "asset": "rock_05",
+      "channel": "Displacement",
+      "filename": "stone_height_2k.png",
+      "md5": "dfab7d803fd4aa43ad4f3036c0985ccd",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/rock_05/rock_05_disp_2k.png",
+      "bytes": 8077427
+    },
+    {
+      "asset": "weathered_planks",
+      "channel": "Diffuse",
+      "filename": "wood_albedo_2k.jpg",
+      "md5": "dd5f91445812117d216ed962c2607b7d",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/weathered_planks/weathered_planks_diff_2k.jpg",
+      "bytes": 2385451
+    },
+    {
+      "asset": "weathered_planks",
+      "channel": "Rough",
+      "filename": "wood_rough_2k.jpg",
+      "md5": "8aa6ccbfa605d3d91fae804a7a441db5",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/weathered_planks/weathered_planks_rough_2k.jpg",
+      "bytes": 989704
+    },
+    {
+      "asset": "weathered_planks",
+      "channel": "nor_gl",
+      "filename": "wood_normal_2k.png",
+      "md5": "5b4ae946415acdc63c523311a1dbe2a4",
+      "source": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/weathered_planks/weathered_planks_nor_gl_2k.png",
+      "bytes": 22124504
+    }
+  ]
+}

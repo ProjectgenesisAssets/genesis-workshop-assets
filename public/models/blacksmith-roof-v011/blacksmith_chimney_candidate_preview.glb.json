@@ -1,0 +1,10 @@
+{
+  "source": "/tmp/herrero-roof-v011/output_workshop_wall_herrero_v011/genesis_blacksmith_chimney_candidate_v011.glb",
+  "output": "public/models/blacksmith-roof-v011/blacksmith_chimney_candidate_preview.glb",
+  "original_bytes": 12400324,
+  "preview_bytes": 669848,
+  "textures_reencoded": 3,
+  "max_texture_edge": 1024,
+  "geometry_unchanged": true,
+  "status": "PREVIEW_NOT_APPROVED"
+}
