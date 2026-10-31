@@ -1,4 +1,4 @@
-name: Project Genesis - Tutorial materials CC0 PBR: isolated artist production
+name: 'Project Genesis - Tutorial materials CC0 PBR: isolated artist production'
 on:
   push:
     branches:
