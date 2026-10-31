@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - scripts/charcoal_photoscan_v006.py
+      - scripts/charcoal_photoscan_fetch_pbr_v006.py
       - .github/workflows/charcoal-photoscan-v006.yml
 permissions:
   contents: write
@@ -18,6 +19,8 @@ jobs:
         run: python3 -m pip install --user requests
       - name: Obtain CC0 photographic wood shape from Poly Haven
         run: python3 scripts/charcoal_cc0_scan_probe_v005.py
+      - name: Download real 2K wood scan PBR maps with Python requests
+        run: python3 scripts/charcoal_photoscan_fetch_pbr_v006.py
       - name: Install Blender 4.5.13 LTS
         run: |
           curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
