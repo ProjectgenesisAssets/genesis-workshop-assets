@@ -1,0 +1,25 @@
+name: Genesis asset candidate
+on:
+  push:
+    branches: ['asset/**']
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update && sudo apt-get install -y blender
+      - name: Build and render candidate
+        env:
+          ASSET_KIND: ${{ github.ref_name }}
+        run: |
+          export ASSET_KIND="${ASSET_KIND#asset/}"
+          blender -b -t 2 --python tools/asset_candidate.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-${{ github.run_id }}
+          path: output/
+          if-no-files-found: warn
