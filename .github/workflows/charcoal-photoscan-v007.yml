@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - scripts/charcoal_photoscan_v007.py
+      - scripts/charcoal_photoscan_fetch_pbr_v007.py
       - .github/workflows/charcoal-photoscan-v007.yml
 permissions:
   contents: write
