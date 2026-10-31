@@ -65,15 +65,16 @@ def mesh_from_faces(name,verts,faces,uvs,mats,ids=None,smooth=True):
 
 def make_log(species):
     oak=species=='roble'
-    wood=make_pbr('wood','Real CC0 hardwood scanned grain | '+species,
+    wood=make_pbr('split','CC0 hardwood with derived directional fibre face | '+species,
                   tint=(.66,.48,.32) if oak else (.83,.80,.69),roughness_scale=1.1)
+    endgrain=make_pbr('endgrain','CC0-derived annual rings in radial endgrain | '+species,tint=(.96,.88,.78))
     bark=make_pbr('bark','Real CC0 bark furrows | '+species,
                   tint=(.42,.33,.25) if oak else (.51,.52,.49))
     # Section of an actual split firewood log: convex bark arc and two broken radial fibre planes.
     # Physically consistent longitudinal fractures, incomplete rings, uneven saw-cut ends.
     L=.46 if oak else .49
     radius=.113 if oak else .102
-    steps=44;length_steps=21
+    steps=54;length_steps=44
     theta0=-1.08 if oak else -1.14
     theta1=1.06 if oak else 1.10
     verts=[];faces=[];uv=[];ids=[]
@@ -108,7 +109,7 @@ def make_log(species):
                 t=k/17
                 check=0.0051*math.exp(-((t-(.29+.034*sin(z*19))) / .043)**2)
                 check+=0.0036*math.exp(-((t-(.71+.020*sin(z*17))) / .055)**2)
-                depth=.0015*sin(z*97+r*210)+.0009*sin(z*223+r*410)-check
+                depth=.0021*sin(z*48+r*99)+.0025*sin(z*18+r*31)+.0010*sin(z*122+r*220)-check
                 theta_j=theta+(depth/radius)*(1 if wall==0 else -1)
                 rr=max(.001,r+.00075*sin(z*37+r*55))
                 row.append(newv((rr*cos(theta_j),rr*sin(theta_j),z+.0011*sin(z*49+r*100))))
@@ -139,8 +140,8 @@ def make_log(species):
                 addface(f,((.5+.5*ri/rings*cos(theta0+(theta1-theta0)*a/steps),.5+.5*ri/rings*sin(theta0+(theta1-theta0)*a/steps)),
                             (.5+.5*ri/rings*cos(theta0+(theta1-theta0)*(a+1)/steps),.5+.5*ri/rings*sin(theta0+(theta1-theta0)*(a+1)/steps)),
                             (.5+.5*(ri+1)/rings*cos(theta0+(theta1-theta0)*(a+1)/steps),.5+.5*(ri+1)/rings*sin(theta0+(theta1-theta0)*(a+1)/steps)),
-                            (.5+.5*(ri+1)/rings*cos(theta0+(theta1-theta0)*a/steps),.5+.5*(ri+1)/rings*sin(theta0+(theta1-theta0)*a/steps))),0)
-    ob=mesh_from_faces('Split seasoned '+species+' - continuous bark / fibre / endgrain',verts,faces,uv,[wood,bark],ids)
+                            (.5+.5*(ri+1)/rings*cos(theta0+(theta1-theta0)*a/steps),.5+.5*(ri+1)/rings*sin(theta0+(theta1-theta0)*a/steps))),2)
+    ob=mesh_from_faces('Split seasoned '+species+' - continuous bark / fibre / endgrain',verts,faces,uv,[wood,bark,endgrain],ids)
     # Put the log in a physical resting diagonal orientation for the inventory, without distorting geometry.
     ob.rotation_euler=(math.radians(71),math.radians(-17 if oak else 14),math.radians(117 if oak else 140))
     ob.location=(0,0,.125)

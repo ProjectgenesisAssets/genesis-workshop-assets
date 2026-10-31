@@ -50,9 +50,42 @@ for role,asset in config['scans'].items():
             'download_sha256':hashlib.sha256(raw).hexdigest(),
             'converted_sha256':hashlib.sha256(target.read_bytes()).hexdigest(),
             'path':str(target),'size':target.stat().st_size,'dimensions':list(pic.size)})
+
+if config['kind']=='wood':
+    # Derived endgrain maps are procedural art based on photographed CC0 wood scans.
+    import numpy as np,shutil
+    scan=np.asarray(Image.open(root/'wood_albedo.jpg').convert('RGB'),dtype=np.float32)
+    H,W=scan.shape[:2]
+    yy,xx=np.mgrid[:H,:W].astype(np.float32)
+    U=xx/max(1,W-1);V=yy/max(1,H-1)
+    wave=np.sin(U*155+1.8*np.sin(V*9)+.6*np.sin(V*22))
+    fine=np.sin(U*370+.8*np.sin(V*17))
+    fibre_dark=np.clip(.48+.37*wave+.15*fine,0,1)
+    irregular=np.sin(V*14.7+U*19)
+    split_color=np.clip(scan*(.60+.23*fibre_dark[...,None])+
+                        np.asarray([19,13,7])*np.clip(irregular[...,None],0,1),0,255).astype('uint8')
+    Image.fromarray(split_color,'RGB').save(root/'split_albedo.jpg',quality=93,subsampling=0,optimize=True)
+    x=U-.5;y=V-.5
+    radius=np.sqrt(x*x+y*y)
+    angle=np.arctan2(y,x)
+    distorted=radius+.009*np.sin(7*angle+radius*10)+.004*np.sin(11*angle-radius*22)
+    ring_phase=2*np.pi*distorted*43
+    early_late=np.clip(.61+.24*np.cos(ring_phase)+.10*np.cos(2*ring_phase),.30,.94)
+    radial_checks=np.minimum(abs(np.arctan2(np.sin(angle+.27),np.cos(angle+.27))),
+                             abs(np.arctan2(np.sin(angle-.87),np.cos(angle-.87))))
+    crack_dark=np.where((radial_checks<.020)&(radius>.075)&(radius<.45),.36,1.0)
+    base=np.asarray([165,113,69] if config['species']=='roble' else [182,157,120],dtype=np.float32)
+    end=(base[None,None,:]*(early_late*crack_dark)[...,None] + .18*scan).clip(0,255).astype('uint8')
+    Image.fromarray(end,'RGB').save(root/'endgrain_albedo.jpg',quality=93,subsampling=0,optimize=True)
+    for role in ('split','endgrain'):
+        shutil.copyfile(root/'wood_normal.png',root/(role+'_normal.png'))
+        shutil.copyfile(root/'wood_roughness.png',root/(role+'_roughness.png'))
+    manifest_note='Real CC0 wood/bark photos; longitudinal fracture/endgrain ALBEDO maps are anatomically derived, NOT independent scans'
+else:manifest_note='Actual CC0 photographed surface scan'
+
 manifest={
  'slug':slug,'asset_name':config['name'],'license':'CC0 (Poly Haven)',
- 'photographic_scans':receipts,'product_photo_references':'anatomy-only; not downloaded or republished',
+ 'derived_anatomical_maps':manifest_note,'photographic_scans':receipts,'product_photo_references':'anatomy-only; not downloaded or republished',
  'scope':'2D material scans; the complete 3D shape is artist-modeled, NOT a 3D scan',
  'reference_links':config['references']
 }
