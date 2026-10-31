@@ -1,0 +1,52 @@
+{
+  "asset": "cuero_bovino",
+  "name": "Cuero bovino curtido",
+  "version": "V002",
+  "status": "candidate_needs_human_visual_approval",
+  "geometry_technique": "hand-directed parametric Blender geometry, not full object photoscan",
+  "photo_texture_license": "CC0 Poly Haven",
+  "sources": [
+    "https://polyhaven.com/a/brown_leather"
+  ],
+  "source_provenance": "source/provenance.json",
+  "model": "production/tutorial_materials/generated/cuero_bovino/cuero_bovino_v002_candidate.glb",
+  "bytes": 9450624,
+  "sha256": "f57411c32da58841116abd004106bdcf9d03cfc4a656bc4c1915a5d79163f3dc",
+  "triangles": 47456,
+  "mesh_count": 1,
+  "materials": 1,
+  "images_embedded": 3,
+  "master": "production/tutorial_materials/generated/cuero_bovino/cuero_bovino_v002_master.blend",
+  "poster": "production/tutorial_materials/generated/cuero_bovino/inventory_poster_rgba.png",
+  "views": [
+    "hero",
+    "side",
+    "top",
+    "back",
+    "macro"
+  ],
+  "reference_notes": {
+    "silhouette": "Pieza de cuero bovino curtido recortada irregularmente de 57 x 38 cm, 3.5 mm de espesor, apoyada con pliegues gravitacionales suaves y canto visible.",
+    "fracture_anatomy": "El cuero no tiene fractura mineral: marcas de fatiga y microarrugas en tensión, pliegues que atraviesan la superficie según fuerzas; cantos curvos compactos.",
+    "surface": "Grano de bovino amplio/irregular, curtido vegetal nogal oscuro, moteado sutil. No presuponer escaneo específico de especie; PBR brown_leather es scan de superficie.",
+    "reject": [
+      "tejido",
+      "aristas quebradas pétreas",
+      "bordes de metal",
+      "cosido artificial si no es parte del material",
+      "plástico espejo"
+    ],
+    "approval_threshold": "manual human >=8/10 after side/front/top/macro assessment; technical checks do not imply visual approval"
+  },
+  "technical_checks": {
+    "glb_header": true,
+    "normal_maps_embedded": true,
+    "scanned_albedo": true,
+    "multi_views": true,
+    "transparent_poster": true,
+    "blender_editable_master": true,
+    "license_verified": true
+  },
+  "visual_score": null,
+  "approved_for_game": false
+}
