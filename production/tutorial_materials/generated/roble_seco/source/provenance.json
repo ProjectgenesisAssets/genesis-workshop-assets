@@ -2,6 +2,7 @@
   "slug": "roble_seco",
   "asset_name": "Madera seca de roble",
   "license": "CC0 (Poly Haven)",
+  "derived_anatomical_maps": "Real CC0 wood/bark photos; longitudinal fracture/endgrain ALBEDO maps are anatomically derived, NOT independent scans",
   "photographic_scans": [
     {
       "role": "wood",
