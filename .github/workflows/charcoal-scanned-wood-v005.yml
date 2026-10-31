@@ -1,0 +1,39 @@
+name: PG V005 scanned wood source visual audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/charcoal_scan_inspect_v005.py
+      - .github/workflows/charcoal-scanned-wood-v005.yml
+jobs:
+  scan-visual:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install requests
+        run: python3 -m pip install --user requests
+      - name: Fetch genuine CC0 scan from Poly Haven
+        run: python3 scripts/charcoal_cc0_scan_probe_v005.py
+      - name: Verify source exists
+        run: test -s output_charcoal_scan_v005/wood_cc0_scan.blend
+      - name: Install Blender LTS
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender-lts
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender-lts --strip-components=1
+      - name: Inspect and render CC0 scan geometry and textures
+        run: /tmp/blender-lts/blender -b -t 4 --python-exit-code 1 --python scripts/charcoal_scan_inspect_v005.py
+      - name: Verify audit results
+        run: |
+          test -s output_charcoal_v005_scan_reference/AUDIT.json
+          for n in three_quarter side top; do test -s output_charcoal_v005_scan_reference/$n.png; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pg-charcoal-v005-real-scan-reference
+          path: |
+            output_charcoal_v005_scan_reference/
+            output_charcoal_scan_v005/MANIFEST.json
+          retention-days: 7
