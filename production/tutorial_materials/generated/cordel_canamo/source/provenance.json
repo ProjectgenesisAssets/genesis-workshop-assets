@@ -1,0 +1,61 @@
+{
+  "slug": "cordel_canamo",
+  "asset_name": "Cordel de cáñamo",
+  "license": "CC0 (Poly Haven)",
+  "photographic_scans": [
+    {
+      "role": "fiber",
+      "asset": "hessian_380",
+      "channel": "albedo",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/hessian_380/hessian_380_diff_2k.jpg",
+      "page": "https://polyhaven.com/a/hessian_380",
+      "license": "CC0",
+      "download_sha256": "14a21d84cdd20cb3c64457b070d1ce220496e25652de063709ceed2ab453ee09",
+      "converted_sha256": "1fb4e730b992e679ba4c8a90f57ef1750702f67aad6caa1a152fb13b85ed60f5",
+      "path": "production/tutorial_materials/generated/cordel_canamo/source/fiber_albedo.jpg",
+      "size": 1058556,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "fiber",
+      "asset": "hessian_380",
+      "channel": "normal",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/hessian_380/hessian_380_nor_gl_2k.jpg",
+      "page": "https://polyhaven.com/a/hessian_380",
+      "license": "CC0",
+      "download_sha256": "822d1e1df6b9d9cf362db09ddc6b99eb31f56215e32dc1afe1a983979e3db982",
+      "converted_sha256": "4bebbaa28bb0b2c24dd83788410a80aaa462f32873084df08df44dcc9af8e0bc",
+      "path": "production/tutorial_materials/generated/cordel_canamo/source/fiber_normal.png",
+      "size": 4163592,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    },
+    {
+      "role": "fiber",
+      "asset": "hessian_380",
+      "channel": "roughness",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/hessian_380/hessian_380_rough_2k.jpg",
+      "page": "https://polyhaven.com/a/hessian_380",
+      "license": "CC0",
+      "download_sha256": "a881d7b583bd582dde151eab55cf4476a6103b7019fe6d82941905149e39073c",
+      "converted_sha256": "741133e6c9053d2cea867feffeb41ee15df6c5d6485a7b560f9581d00c64b7ac",
+      "path": "production/tutorial_materials/generated/cordel_canamo/source/fiber_roughness.png",
+      "size": 1810970,
+      "dimensions": [
+        1536,
+        1536
+      ]
+    }
+  ],
+  "product_photo_references": "anatomy-only; not downloaded or republished",
+  "scope": "2D material scans; the complete 3D shape is artist-modeled, NOT a 3D scan",
+  "reference_links": [
+    "https://polyhaven.com/a/hessian_380",
+    "https://en.wikipedia.org/wiki/Rope"
+  ]
+}
