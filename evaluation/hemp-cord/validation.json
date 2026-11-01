@@ -1,11 +1,11 @@
 {
   "asset": "hemp-cord",
-  "version": "V006_candidate",
+  "version": "V007_candidate",
   "objects": 25,
   "triangles_mesh": 19302,
   "triangles_goal_under": 30000,
   "master_bytes": 60425540,
-  "glb_bytes": 8008368,
+  "glb_bytes": 4040680,
   "master_texture_px": [
     4096,
     2048
@@ -23,5 +23,26 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V006 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+  "glb_images": [
+    {
+      "name": "Rope001_4K-PNG_NormalGL.png_V007_web",
+      "mime": "image/png",
+      "bytes": 2851507
+    },
+    {
+      "name": "Rope001_4K-PNG_Color.png_V007_web",
+      "mime": "image/jpeg",
+      "bytes": 340993
+    },
+    {
+      "name": "Rope001_4K-PNG_Roughness.png_V007_web",
+      "mime": "image/png",
+      "bytes": 402135
+    }
+  ],
+  "glb_meshes": 25,
+  "glb_materials": 1,
+  "normal_mapped_materials": 1,
+  "total_embedded_image_bytes": 3594635
 }

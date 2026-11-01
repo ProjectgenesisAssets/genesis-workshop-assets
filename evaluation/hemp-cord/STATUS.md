@@ -1,4 +1,4 @@
-# Experimental Blender V006 candidate
+# Experimental Blender V007 candidate
 
 GLB and full-resolution PNG are available in GitHub Actions artifacts.
 These previews are automated technical outputs, NOT visually approved assets.
