@@ -1,0 +1,56 @@
+{
+  "asset": "tanned-goatskin",
+  "version": "V019_distinct_candidate",
+  "objects": 1,
+  "triangles_mesh": 19196,
+  "triangles_goal_under": 30000,
+  "master_bytes": 63099732,
+  "glb_bytes": 5024936,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1536,
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "PolyHaven/leather_red_02",
+  "source_url": "https://polyhaven.com/a/leather_red_02",
+  "secondary_scan_used": false,
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": false,
+  "quality_approved": false,
+  "single_object": true,
+  "closed_surface": true,
+  "presentation": "single spiral leather roll with natural loose flap",
+  "visual_score": null,
+  "notes": "Owner-directed V017 candidate: one physically connected split log per wood (bark-facing oak, fiber-facing ash); one continuous rolled-and-partly-unrolled sheet per cured leather type. CC0 photographed material maps; human approval pending.",
+  "glb_images": [
+    {
+      "name": "A000_PolyHaven_leather_red_02_NormalGL.png_V019_distinct_web",
+      "mime": "image/png",
+      "bytes": 2328257
+    },
+    {
+      "name": "A000_PolyHaven_leather_red_02_Color.jpg_V019_distinct_web",
+      "mime": "image/jpeg",
+      "bytes": 983279
+    },
+    {
+      "name": "A000_PolyHaven_leather_red_02_Roughness.jpg_V019_distinct_web",
+      "mime": "image/png",
+      "bytes": 1260412
+    }
+  ],
+  "glb_meshes": 1,
+  "glb_materials": 2,
+  "normal_mapped_materials": 2,
+  "total_embedded_image_bytes": 4571948,
+  "distinctive_profile": "compact diagonal soft roll with corner curl",
+  "difference_is_geometric": true,
+  "not_botanically_or_animal_scan_verified": true,
+  "visual_review_status": "NOT_APPROVED",
+  "one_piece_validated": true
+}
