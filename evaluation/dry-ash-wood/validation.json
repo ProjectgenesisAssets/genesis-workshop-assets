@@ -1,11 +1,11 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V005_candidate",
+  "version": "V006_candidate",
   "objects": 28,
   "triangles_mesh": 8236,
   "triangles_goal_under": 30000,
-  "master_bytes": 105330332,
-  "glb_bytes": 14032060,
+  "master_bytes": 119933352,
+  "glb_bytes": 17763120,
   "master_texture_px": [
     4096,
     4096
@@ -18,9 +18,10 @@
   ],
   "source_id": "PolyHaven/ash_veneer",
   "source_url": "https://polyhaven.com/a/ash_veneer",
+  "secondary_scan_used": true,
   "license": "CC0-1.0",
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V006 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
 }

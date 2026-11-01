@@ -1,0 +1,27 @@
+{
+  "source_url": "https://polyhaven.com/a/bark_brown_01",
+  "license": "CC0-1.0",
+  "credit": "Powered by Poly Haven",
+  "role": "bark",
+  "maps": {
+    "Color": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_01/bark_brown_01_diff_2k.jpg",
+      "format": "jpg",
+      "resolution": "2k",
+      "sha256": "0cdd066f34d357fdbf7eb99159e668a6dc346bb7fd093a9e27058eb827d09b9a"
+    },
+    "Roughness": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_01/bark_brown_01_rough_2k.jpg",
+      "format": "jpg",
+      "resolution": "2k",
+      "sha256": "8ce13f1be85940fcb9a3dc78afd1529755c6aec6b52e683656bffa92820887d8"
+    },
+    "NormalGL": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/bark_brown_01/bark_brown_01_nor_gl_2k.png",
+      "format": "png",
+      "resolution": "2k",
+      "sha256": "c5d2c162ee3e30a36dfb717fde6703e0202ab9c49fbfe205da521a48d7a5a595"
+    }
+  },
+  "biological_species_claim": false
+}
