@@ -1,0 +1,51 @@
+{
+  "asset": "tanned-cowhide",
+  "version": "V017_redesign_candidate",
+  "objects": 1,
+  "triangles_mesh": 19196,
+  "triangles_goal_under": 30000,
+  "master_bytes": 53951528,
+  "glb_bytes": 4612680,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1536,
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "PolyHaven/brown_leather",
+  "source_url": "https://polyhaven.com/a/brown_leather",
+  "secondary_scan_used": false,
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": false,
+  "quality_approved": false,
+  "single_object": true,
+  "closed_surface": true,
+  "presentation": "single spiral leather roll with natural loose flap",
+  "visual_score": null,
+  "notes": "Owner-directed V017 candidate: one physically connected split log per wood (bark-facing oak, fiber-facing ash); one continuous rolled-and-partly-unrolled sheet per cured leather type. CC0 photographed material maps; human approval pending.",
+  "glb_images": [
+    {
+      "name": "A000_PolyHaven_brown_leather_NormalGL.png_V017_redesign_web",
+      "mime": "image/png",
+      "bytes": 2115192
+    },
+    {
+      "name": "A000_PolyHaven_brown_leather_Color.jpg_V017_redesign_web",
+      "mime": "image/jpeg",
+      "bytes": 619460
+    },
+    {
+      "name": "A000_PolyHaven_brown_leather_Roughness.jpg_V017_redesign_web",
+      "mime": "image/png",
+      "bytes": 1425106
+    }
+  ],
+  "glb_meshes": 1,
+  "glb_materials": 2,
+  "normal_mapped_materials": 2,
+  "total_embedded_image_bytes": 4159758
+}
