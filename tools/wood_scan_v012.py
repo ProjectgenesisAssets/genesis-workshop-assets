@@ -5,7 +5,7 @@ import bpy,math,json,os,pathlib,struct
 from mathutils import Vector
 K=os.environ["ASSET_KIND"]
 scan={"dry-oak-wood":"dead_tree_trunk","dry-ash-wood":"dead_tree_trunk_02"}[K]
-source=pathlib.Path("sources")/K/"photogrammetry_v012"
+source=pathlib.Path("sources")/K/"photogrammetry_v011"
 manifest=json.loads((source/"manifest.json").read_text())
 out=pathlib.Path("output")/K
 out.mkdir(parents=True,exist_ok=True)
