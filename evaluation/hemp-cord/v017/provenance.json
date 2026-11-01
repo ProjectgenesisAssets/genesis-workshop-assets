@@ -1,0 +1,93 @@
+{
+  "asset": "hemp-cord",
+  "id": "Rope001",
+  "title": "Rope 001",
+  "source_url": "https://ambientcg.com/a/Rope001",
+  "download_url": "https://ambientcg.com/get?file=Rope001_4K-PNG.zip",
+  "source_package": "4K-PNG",
+  "license": "CC0-1.0",
+  "sha256": "c508602e162dd2378ceb2e58c3e25b037543bdace74d5a49b200f5e86f8df4fb",
+  "scan_technique_confirmed": false,
+  "species_or_fiber_verified": false,
+  "visual_approval": false,
+  "caution": "A CC0 PBR texture is not necessarily a photogrammetric scan or proof of a biological species.",
+  "shortlist": [
+    {
+      "id": "Rope001",
+      "title": "Rope 001",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Rope001"
+    },
+    {
+      "id": "Net002A",
+      "title": "Net 002 A",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net002A"
+    },
+    {
+      "id": "Net004A",
+      "title": "Net 004 A",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net004A"
+    },
+    {
+      "id": "Net003A",
+      "title": "Net 003 A",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net003A"
+    },
+    {
+      "id": "Net001A",
+      "title": "Net 001 A",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net001A"
+    },
+    {
+      "id": "Net002B",
+      "title": "Net 002 B",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net002B"
+    },
+    {
+      "id": "Net004B",
+      "title": "Net 004 B",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net004B"
+    },
+    {
+      "id": "Net001B",
+      "title": "Net 001 B",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net001B"
+    },
+    {
+      "id": "Net003B",
+      "title": "Net 003 B",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Net003B"
+    },
+    {
+      "id": "Rope003",
+      "title": "Rope 003",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Rope003"
+    },
+    {
+      "id": "Rope002",
+      "title": "Rope 002",
+      "score": -3,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Rope002"
+    }
+  ]
+}

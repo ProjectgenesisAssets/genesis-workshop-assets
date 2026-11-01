@@ -1,0 +1,49 @@
+{
+  "asset": "hemp-cord",
+  "version": "V017_candidate",
+  "objects": 70,
+  "triangles_mesh": 19347,
+  "triangles_goal_under": 30000,
+  "master_bytes": 58902764,
+  "glb_bytes": 3908112,
+  "master_texture_px": [
+    4096,
+    2048
+  ],
+  "web_texture_px": 1536,
+  "production_focus": "natural hemp texture and surface fibers",
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "Rope001",
+  "source_url": "https://ambientcg.com/a/Rope001",
+  "secondary_scan_used": false,
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": false,
+  "quality_approved": false,
+  "visual_score": null,
+  "notes": "V017 revises only hemp or linen, preserves originals. Original CC0 image provenance remains; color/roughness derivative only for hemp. 8/10 human review and PlayCanvas perf pending.",
+  "glb_images": [
+    {
+      "name": "Rope001_4K-PNG_NormalGL.png_V017_web",
+      "mime": "image/png",
+      "bytes": 2851507
+    },
+    {
+      "name": "00_V017_hemp_Color.png_V017_web",
+      "mime": "image/jpeg",
+      "bytes": 334528
+    },
+    {
+      "name": "00_V017_hemp_Roughness.png_V017_web",
+      "mime": "image/png",
+      "bytes": 238867
+    }
+  ],
+  "glb_meshes": 70,
+  "glb_materials": 1,
+  "normal_mapped_materials": 1,
+  "total_embedded_image_bytes": 3424902
+}
