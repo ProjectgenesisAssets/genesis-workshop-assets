@@ -47,7 +47,7 @@ jobs:
           curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/b.tar.xz
           mkdir -p /tmp/blender
           tar -xJf /tmp/b.tar.xz -C /tmp/blender --strip-components=1
-      - name: Batch four walls by material, preserving all triangle geometry
+      - name: Batch four walls by material, preserving legacy dual-material cap and all triangles
         run: |
           mkdir -p public/models/arcanista-four-walls-v006/batched
           /tmp/blender/blender -b -t 2 --python-exit-code 1 \
