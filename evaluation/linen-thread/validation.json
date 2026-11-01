@@ -1,11 +1,11 @@
 {
   "asset": "linen-thread",
-  "version": "V015_candidate",
+  "version": "V016_candidate",
   "objects": 5,
   "triangles_mesh": 22440,
   "triangles_goal_under": 30000,
   "master_bytes": 133454404,
-  "glb_bytes": 7002444,
+  "glb_bytes": 7002440,
   "master_texture_px": [
     4096,
     4096
@@ -23,35 +23,35 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V015 irregular split hardwood, trimmed natural hides, slightly imperfect natural fibers. Separate CC0 surface scans. Artist approval and PlayCanvas profiling not completed.",
+  "notes": "V016 preserves V015 hand-split wood and adds distinct tension-fold cured hides and less uniform wound flax. Visual acceptance and WebGL runtime benchmark pending.",
   "glb_images": [
     {
-      "name": "zz_v006_bobbin_NormalGL.png_V015_1k",
+      "name": "zz_v006_bobbin_NormalGL.png_V016_1k",
       "mime": "image/png",
       "bytes": 1820176
     },
     {
-      "name": "zz_v006_bobbin_Color.jpg_V015_1k",
+      "name": "zz_v006_bobbin_Color.jpg_V016_1k",
       "mime": "image/jpeg",
       "bytes": 105793
     },
     {
-      "name": "zz_v006_bobbin_Roughness.jpg_V015_1k",
+      "name": "zz_v006_bobbin_Roughness.jpg_V016_1k",
       "mime": "image/png",
       "bytes": 635204
     },
     {
-      "name": "Fabric019_4K-PNG_NormalGL.png_V015_web",
+      "name": "Fabric019_4K-PNG_NormalGL.png_V016_web",
       "mime": "image/png",
       "bytes": 3237980
     },
     {
-      "name": "Fabric019_4K-PNG_Color.png_V015_web",
+      "name": "Fabric019_4K-PNG_Color.png_V016_web",
       "mime": "image/jpeg",
       "bytes": 245583
     },
     {
-      "name": "Fabric019_4K-PNG_Roughness.png_V015_web",
+      "name": "Fabric019_4K-PNG_Roughness.png_V016_web",
       "mime": "image/png",
       "bytes": 451802
     }
