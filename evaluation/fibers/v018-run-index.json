@@ -1,8 +1,14 @@
 [
   {
-    "run_id": 41333496989,
+    "run_id": 41333585038,
     "status": "in_progress",
     "conclusion": null,
+    "url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41333585038"
+  },
+  {
+    "run_id": 41333496989,
+    "status": "completed",
+    "conclusion": "failure",
     "url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41333496989"
   }
 ]
