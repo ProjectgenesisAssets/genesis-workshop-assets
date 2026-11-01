@@ -1,0 +1,90 @@
+name: Genesis V011 | real CC0 scanned firewood geometry experiments
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-wood-scan-v011.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  photographed-log:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        asset: [dry-oak-wood, dry-ash-wood]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: asset/${{ matrix.asset }}
+      - name: Blender 3D geometry support
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+          python3 -m py_compile tools/fetch_scan_mesh_v011.py tools/wood_scan_v011.py
+      - name: Download real Poly Haven photographed mesh and 2K textures
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: python3 tools/fetch_scan_mesh_v011.py
+      - name: Import real scan mesh, decimate, generate master, GLB and five views
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: blender -b -t 2 --python-exit-code 1 --python tools/wood_scan_v011.py
+      - name: Validate actual 3D scanned artifact and source license
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,os,struct
+          name=os.environ["ASSET_KIND"]
+          root=pathlib.Path("output")/name
+          report=json.loads((root/"validation.json").read_text())
+          assert report["photogrammetry"] and report["license"]=="CC0-1.0"
+          assert report["version"]=="V011_photogrammetry_candidate"
+          assert 100 < report["triangles_mesh"] < 30000
+          assert report["glb_bytes"] > 1024
+          for view in ["front","side","top","three_quarter","detail"]:
+            assert (root/(view+".png")).stat().st_size > 1024,view
+          with (root/(name+".glb")).open("rb") as f:
+            h=f.read(12)
+            assert h[:4]==b"glTF" and struct.unpack("<I",h[4:8])[0]==2
+          print(json.dumps(report,indent=2))
+          PY
+      - name: Publish alternative scan previews without replacing current V010 assets
+        if: success()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import pathlib,os,shutil
+          from PIL import Image
+          n=os.environ["ASSET_KIND"]
+          root=pathlib.Path("output")/n
+          dst=pathlib.Path("evaluation")/n/"photogrammetry_v011"
+          dst.mkdir(parents=True,exist_ok=True)
+          for view in ["front","side","top","three_quarter","detail"]:
+            im=Image.open(root/(view+".png")).convert("RGBA")
+            bg=Image.new("RGBA",im.size,(43,46,52,255))
+            bg.alpha_composite(im)
+            out=bg.convert("RGB");out.thumbnail((640,640))
+            out.save(dst/(view+".jpg"),quality=88)
+          shutil.copyfile(root/"validation.json",dst/"validation.json")
+          shutil.copyfile(pathlib.Path("sources")/n/"photogrammetry_v011"/"manifest.json",dst/"provenance.json")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/photogrammetry_v011"
+          git commit -m "review: V011 genuine CC0 wood scans, unapproved experimental alternative [skip ci]"
+          git pull --rebase origin "asset/$ASSET_KIND"
+          git push origin HEAD:"asset/$ASSET_KIND"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-real-scan-${{ matrix.asset }}-${{ github.run_id }}
+          path: |
+            output/${{ matrix.asset }}/
+            sources/${{ matrix.asset }}/photogrammetry_v011/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
