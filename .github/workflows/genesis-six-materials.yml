@@ -1,4 +1,4 @@
-name: Genesis V003 | 6 independent CC0-PBR Blender candidates
+name: Genesis V004 | 6 independent CC0-PBR Blender candidates
 on:
   push:
     branches: [main]
@@ -37,6 +37,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y blender python3-pil python3-numpy
           blender --version
+      - name: Compile-check V004 Blender scripts
+        run: python3 -m py_compile tools/asset_v004.py tools/geometry_v004.py
       - name: Download CC0 texture set and retain provenance
         env:
           ASSET_KIND: ${{ matrix.asset }}
@@ -44,7 +46,7 @@ jobs:
       - name: Render source-quality candidate and export GLB
         env:
           ASSET_KIND: ${{ matrix.asset }}
-        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v002.py
+        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v004.py
       - name: Check GLB signature, evaluation views, and report
         env:
           ASSET_KIND: ${{ matrix.asset }}
@@ -64,7 +66,7 @@ jobs:
           manifest=json.load(open("sources/"+n+"/provenance.json"))
           report=json.load(open(root+"/validation.json"))
           assert report["glb_bytes"]>1024 and report["master_bytes"]>1024 and report["triangles_mesh"]>0
-          assert report["version"]=="V003_candidate"
+          assert report["version"]=="V004_candidate"
           assert report["triangles_mesh"]<30000,"Exceeds 30k triangle web budget"
           print(json.dumps({"asset":n,"status":"candidate_binary_valid","glb_bytes":report["glb_bytes"],"tris":report["triangles_mesh"],"source":manifest["source_url"],"visual_approved":False},indent=2))
           PY
@@ -90,7 +92,7 @@ jobs:
           shutil.copyfile(src/"validation.json",dest/"validation.json")
           shutil.copyfile(pathlib.Path("sources")/n/"provenance.json",dest/"provenance.json")
           (dest/"STATUS.md").write_text(
-              "# Experimental Blender V003 candidate\n\n"
+              "# Experimental Blender V004 candidate\n\n"
               "GLB and full-resolution PNG are available in GitHub Actions artifacts.\n"
               "These previews are automated technical outputs, NOT visually approved assets.\n"
           )
@@ -110,7 +112,7 @@ jobs:
         run: |
           mkdir -p "evaluation/$ASSET_KIND"
           cat > "evaluation/$ASSET_KIND/BUILD_FAILURE.md" <<EOF
-          # V002 build unsuccessful
+          # V004 build unsuccessful
           GitHub Actions run: $RUN_ID
           Asset branch: asset/$ASSET_KIND
           No GLB or render is approved. Inspect the corresponding job logs.
