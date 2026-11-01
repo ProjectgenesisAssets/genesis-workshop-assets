@@ -2,9 +2,9 @@ name: Herrero Door V081 - forged relief & true rough iron microstructure
 on:
   push:
     branches:
-      - production/door-herrero-v081-art-direction
+      - production/door-herrero-v081-forged-relief
     paths:
-      - scripts/puerta_herreria_art_080.py
+      - scripts/puerta_herreria_art_081.py
       - .github/workflows/door-herrero-v081-preview.yml
   workflow_dispatch:
 permissions:
@@ -36,35 +36,36 @@ jobs:
           test -s studio_small_09_1k.hdr
       - name: Validate Python scene code before expensive Blender render
         run: |
-          python3 -m py_compile scripts/puerta_herreria_art_080.py
+          python3 -m py_compile scripts/puerta_herreria_art_081.py
       - name: Blender V081 art review - hammer relief maps while retaining V079 albedo
         env:
           OPENBLAS_NUM_THREADS: '2'
           OMP_NUM_THREADS: '2'
         run: |
-          /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_080.py
+          /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_081.py
       - name: Verify rendered comparisons
         run: |
           set -euo pipefail
           for variant in A_V081_irregular_hammered_iron B_V081_deeper_hammered_iron C_V081_irregular_hammering_closeup D_V081_deeper_hammering_closeup; do
-            test -s "output_blacksmith_door_art_080/${variant}.png"
+            test -s "output_blacksmith_door_art_081/${variant}.png"
           done
-          test -s output_blacksmith_door_art_080/DESIGN_AUDIT.json
-          test -s output_blacksmith_door_art_080/V081_PBR_QA.json
-          test -s output_blacksmith_door_art_080/V081_METAL_VS_LEATHER_QA.json
-          test -s output_blacksmith_door_art_080/V081_VISUAL_QA.json
-          test -s output_blacksmith_door_art_080/V081_USER_COLOR_PRESERVATION_QA.json
+          test -s output_blacksmith_door_art_081/DESIGN_AUDIT.json
+          test -s output_blacksmith_door_art_081/V081_PBR_QA.json
+          test -s output_blacksmith_door_art_081/V081_METAL_VS_LEATHER_QA.json
+          test -s output_blacksmith_door_art_081/V081_VISUAL_QA.json
+          test -s output_blacksmith_door_art_081/V081_USER_COLOR_PRESERVATION_QA.json
+          test -s output_blacksmith_door_art_081/V081_NORMAL_RELIEF_QA.json
           for map in V081_A_hammered_normal_opengl V081_B_hammered_normal_opengl V081_A_forged_irregular_albedo V081_A_forged_irregular_metalness V081_A_forged_irregular_roughness V081_B_forged_deeper_albedo V081_B_forged_deeper_metalness V081_B_forged_deeper_roughness; do
-            test -s "output_blacksmith_door_art_080/${map}.png"
+            test -s "output_blacksmith_door_art_081/${map}.png"
           done
-          sha256sum output_blacksmith_door_art_080/{A_V081_irregular_hammered_iron,B_V081_deeper_hammered_iron,C_V081_irregular_hammering_closeup,D_V081_deeper_hammering_closeup}.png
+          sha256sum output_blacksmith_door_art_081/{A_V081_irregular_hammered_iron,B_V081_deeper_hammered_iron,C_V081_irregular_hammering_closeup,D_V081_deeper_hammering_closeup}.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: blacksmith-door-v081-irregular-forge-hammer-relief
           path: |
-            output_blacksmith_door_art_080/*.png
-            output_blacksmith_door_art_080/*.json
+            output_blacksmith_door_art_081/*.png
+            output_blacksmith_door_art_081/*.json
           retention-days: 7
       - name: Publish preview renders
         if: success()
@@ -72,14 +73,14 @@ jobs:
           set -euo pipefail
           mkdir -p previews/door_herrero_v081
           for variant in A_V081_irregular_hammered_iron B_V081_deeper_hammered_iron C_V081_irregular_hammering_closeup D_V081_deeper_hammering_closeup; do
-            cp "output_blacksmith_door_art_080/${variant}.png" "previews/door_herrero_v081/${variant}.png"
+            cp "output_blacksmith_door_art_081/${variant}.png" "previews/door_herrero_v081/${variant}.png"
           done
-          cp output_blacksmith_door_art_080/A_V081_irregular_hammered_iron.png previews/door_herrero_v081/three_quarter.png
+          cp output_blacksmith_door_art_081/A_V081_irregular_hammered_iron.png previews/door_herrero_v081/three_quarter.png
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add previews/door_herrero_v081
           if ! git diff --cached --quiet; then
             git commit -m 'Publish V081 physically oxidized forged iron previews [skip ci]'
-            git pull --rebase origin production/door-herrero-v081-art-direction
-            git push origin HEAD:production/door-herrero-v081-art-direction
+            git pull --rebase origin production/door-herrero-v081-forged-relief
+            git push origin HEAD:production/door-herrero-v081-forged-relief
           fi
