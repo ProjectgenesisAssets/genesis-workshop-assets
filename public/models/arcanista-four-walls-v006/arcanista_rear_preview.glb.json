@@ -1,0 +1,10 @@
+{
+  "source": "/tmp/arcane/output_workshop_wall_arcanista_v006/genesis_arcanist_rear_v006.glb",
+  "output": "public/models/arcanista-four-walls-v006/arcanista_rear_preview.glb",
+  "original_bytes": 12063908,
+  "preview_bytes": 680144,
+  "textures_reencoded": 3,
+  "max_texture_edge": 1024,
+  "geometry_unchanged": true,
+  "status": "PREVIEW_NOT_APPROVED"
+}

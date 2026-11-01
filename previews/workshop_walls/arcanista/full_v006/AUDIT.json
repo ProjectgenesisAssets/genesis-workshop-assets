@@ -1,0 +1,44 @@
+{
+  "asset": "genesis_wall_arcanista_v006",
+  "status": "EXPERIMENTAL_NOT_APPROVED",
+  "profession": "arcanista",
+  "scope": "FOUR_REAL_GEOLOGICAL_WALLS_WITH_SEPARATE_GLBS",
+  "preserves_accepted_front": "ARCN_V005_UNMODIFIED",
+  "arcanist_door_geometry": "V011_V027_NEVER_MODIFIED",
+  "roof_state": "ORIGINAL_TALLER_PLAYCANVAS_ROOF_REUSED_TEMPORARILY",
+  "corner_quoin_count": 4,
+  "depth_m": 6.890625,
+  "windows": "NARROW_REAL_APERTURES_DARK_NO_NEON",
+  "component_bytes": {
+    "front": 12074108,
+    "left": 12078960,
+    "right": 12078916,
+    "rear": 12063908,
+    "four_walls": 12424932
+  },
+  "width_m": 7.875,
+  "height_m": 3.2,
+  "door_cutout_m": [
+    1.48,
+    2.43
+  ],
+  "current_door_geometry": "V011 not modified",
+  "geometry": "Slate portal with sparse inlaid blue runes and fine mineral fissures",
+  "textures": "PolyHaven scanned PBR 2K CC0, base/normal/rough",
+  "visual_review": "PENDING",
+  "texture_resolution": 2048,
+  "mesh_count": 117,
+  "triangles": 16162,
+  "glb_bytes": 12424932,
+  "previews": [
+    "front",
+    "three_quarter",
+    "left_side",
+    "right_side",
+    "rear",
+    "interior",
+    "roof_join",
+    "runes_detail"
+  ],
+  "seed": 29022026
+}

@@ -1,0 +1,53 @@
+{
+  "status": "EXPERIMENTAL_WEBGL_BATCHED_UNAPPROVED",
+  "source": "public/models/arcanista-four-walls-v006/arcanista_four_walls_preview.glb",
+  "output": "public/models/arcanista-four-walls-v006/batched/arcanista_four_walls_preview.glb",
+  "original_meshes": 117,
+  "batched_meshes": 8,
+  "triangles_before": 16162,
+  "triangles_after": 16162,
+  "faces_before": 16162,
+  "faces_after": 16162,
+  "material_groups": [
+    "Recessed stone mortar / dark",
+    "Metamorphic slate / charcoal-blue PBR",
+    "Slate / subtle iron blue inclusions",
+    "Recessed blue-grey mineral seams",
+    "Inlaid blue mineral / faint magical glow",
+    "Slate / deep fracture",
+    "Oxidized forged iron"
+  ],
+  "material_count": 7,
+  "preserved_multi_material_meshes": [
+    "ASSET_ContinuousJaggedRoofCoping"
+  ],
+  "source_meshes_with_uv": 117,
+  "output_meshes_with_uv": 8,
+  "bounds_before": [
+    [
+      -4.313000202178955,
+      -0.5018438100814819,
+      -0.011588573455810547
+    ],
+    [
+      4.313000202178955,
+      7.266125202178955,
+      3.3817224502563477
+    ]
+  ],
+  "bounds_after": [
+    [
+      -4.313000202178955,
+      -0.5018438100814819,
+      -0.011588573455810547
+    ],
+    [
+      4.312999248504639,
+      7.266124725341797,
+      3.3817224502563477
+    ]
+  ],
+  "source_bytes": 1040560,
+  "batched_bytes": 1026104,
+  "note": "Pure drawcall batching, no geometry resculpt, PlayCanvas FPS not yet tested"
+}

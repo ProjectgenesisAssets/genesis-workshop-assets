@@ -1,0 +1,10 @@
+{
+  "status": "EXPERIMENTAL_ARCANISTA_V006_FOUR_WALLS_VERIFIED",
+  "triangles": 16162,
+  "draw_meshes_before": 117,
+  "draw_meshes_after": 8,
+  "glb_bytes": 1026104,
+  "corner_quoin_count": 4,
+  "door_preserved": true,
+  "game_collisions": "PENDING"
+}
