@@ -44,7 +44,7 @@ jobs:
       - name: Render source-quality candidate and export GLB
         env:
           ASSET_KIND: ${{ matrix.asset }}
-        run: blender -b -t 2 --python tools/asset_candidate.py
+        run: blender -b -t 2 --python tools/asset_v002.py
       - name: Check GLB signature, evaluation views, and report
         env:
           ASSET_KIND: ${{ matrix.asset }}
@@ -59,11 +59,13 @@ jobs:
           assert len(header)==12 and header[:4]==b"glTF", "Invalid GLB signature"
           assert struct.unpack("<I",header[4:8])[0]==2, "Invalid glTF version"
           assert os.path.getsize(model)>1024, "Unexpected empty GLB"
-          for view in ["three_quarter","front","side","top"]:
+          for view in ["three_quarter","front","side","top","detail"]:
               assert os.path.getsize(root+"/"+view+".png")>1024, "Missing/empty render: "+view
           manifest=json.load(open("sources/"+n+"/provenance.json"))
           report=json.load(open(root+"/validation.json"))
-          assert report["glb_bytes"]>1024 and report["triangles_mesh"]>0
+          assert report["glb_bytes"]>1024 and report["master_bytes"]>1024 and report["triangles_mesh"]>0
+          assert report["version"]=="V002_candidate"
+          assert report["triangles_mesh"]<30000,"Exceeds 30k triangle web budget"
           print(json.dumps({"asset":n,"status":"candidate_binary_valid","glb_bytes":report["glb_bytes"],"tris":report["triangles_mesh"],"source":manifest["source_url"],"visual_approved":False},indent=2))
           PY
       - name: Publish small verified renders and report back to this public asset branch
@@ -78,7 +80,7 @@ jobs:
           src=pathlib.Path("output")/n
           dest=pathlib.Path("evaluation")/n
           dest.mkdir(parents=True,exist_ok=True)
-          for view in ["three_quarter","front","side","top"]:
+          for view in ["three_quarter","front","side","top","detail"]:
               im=Image.open(src/(view+".png")).convert("RGB")
               im.thumbnail((640,640),Image.Resampling.LANCZOS)
               im.save(dest/(view+".jpg"),"JPEG",quality=83,optimize=True)
@@ -95,6 +97,26 @@ jobs:
           git add "evaluation/$ASSET_KIND"
           if ! git diff --cached --quiet; then
             git commit -m "evaluation: publish candidate renders and PBR provenance for $ASSET_KIND"
+            git push origin "HEAD:refs/heads/asset/$ASSET_KIND"
+          fi
+      - name: Publish failure receipt to asset branch for diagnosis
+        if: failure()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p "evaluation/$ASSET_KIND"
+          cat > "evaluation/$ASSET_KIND/BUILD_FAILURE.md" <<EOF
+          # V002 build unsuccessful
+          GitHub Actions run: $RUN_ID
+          Asset branch: asset/$ASSET_KIND
+          No GLB or render is approved. Inspect the corresponding job logs.
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/BUILD_FAILURE.md"
+          if ! git diff --cached --quiet; then
+            git commit -m "diagnostics: V002 material build failure $RUN_ID"
             git push origin "HEAD:refs/heads/asset/$ASSET_KIND"
           fi
       - name: Upload artifact even if Blender or scan source failed
