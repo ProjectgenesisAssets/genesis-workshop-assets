@@ -1,4 +1,4 @@
-name: Genesis V006 | 6 independent CC0-PBR Blender candidates
+name: Genesis V007 | 6 independent CC0-PBR Blender candidates
 on:
   push:
     branches: [main]
@@ -38,7 +38,7 @@ jobs:
           sudo apt-get install -y blender python3-pil python3-numpy
           blender --version
       - name: Compile-check V004 Blender scripts
-        run: python3 -m py_compile tools/asset_v006.py tools/geometry_v004.py tools/geometry_v005.py tools/geometry_v006.py tools/fetch_polyhaven_v005.py tools/fetch_secondary_v006.py
+        run: python3 -m py_compile tools/asset_v007.py tools/geometry_v004.py tools/geometry_v005.py tools/geometry_v006.py tools/fetch_polyhaven_v005.py tools/fetch_secondary_v006.py
       - name: Prefer provenance-verified Poly Haven CC0 photographic PBR
         env:
           ASSET_KIND: ${{ matrix.asset }}
@@ -61,7 +61,7 @@ jobs:
       - name: Render source-quality candidate and export GLB
         env:
           ASSET_KIND: ${{ matrix.asset }}
-        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v006.py
+        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v007.py
       - name: Check GLB signature, evaluation views, and report
         env:
           ASSET_KIND: ${{ matrix.asset }}
@@ -81,7 +81,7 @@ jobs:
           manifest=json.load(open("sources/"+n+"/provenance.json"))
           report=json.load(open(root+"/validation.json"))
           assert report["glb_bytes"]>1024 and report["master_bytes"]>1024 and report["triangles_mesh"]>0
-          assert report["version"]=="V006_candidate"
+          assert report["version"]=="V007_candidate"
           assert report["triangles_mesh"]<30000,"Exceeds 30k triangle web budget"
           print(json.dumps({"asset":n,"status":"candidate_binary_valid","glb_bytes":report["glb_bytes"],"tris":report["triangles_mesh"],"source":manifest["source_url"],"visual_approved":False},indent=2))
           PY
@@ -109,7 +109,7 @@ jobs:
           supplemental=pathlib.Path("sources")/n/"secondary_sources.json"
           if supplemental.exists():shutil.copyfile(supplemental,dest/"secondary_sources.json")
           (dest/"STATUS.md").write_text(
-              "# Experimental Blender V006 candidate\n\n"
+              "# Experimental Blender V007 candidate\n\n"
               "GLB and full-resolution PNG are available in GitHub Actions artifacts.\n"
               "These previews are automated technical outputs, NOT visually approved assets.\n"
           )
@@ -129,7 +129,7 @@ jobs:
         run: |
           mkdir -p "evaluation/$ASSET_KIND"
           cat > "evaluation/$ASSET_KIND/BUILD_FAILURE.md" <<EOF
-          # V006 build unsuccessful
+          # V007 build unsuccessful
           GitHub Actions run: $RUN_ID
           Asset branch: asset/$ASSET_KIND
           No GLB or render is approved. Inspect the corresponding job logs.
