@@ -1,11 +1,11 @@
 {
   "asset": "dry-oak-wood",
-  "version": "V004_candidate",
+  "version": "V005_candidate",
   "objects": 36,
   "triangles_mesh": 8252,
   "triangles_goal_under": 30000,
   "master_bytes": 118320596,
-  "glb_bytes": 133544272,
+  "glb_bytes": 15435544,
   "master_texture_px": [
     4096,
     4096
@@ -22,5 +22,5 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V004 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
 }
