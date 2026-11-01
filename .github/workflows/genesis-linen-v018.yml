@@ -33,7 +33,7 @@ jobs:
           sudo apt-get install -y blender python3-pil python3-numpy
           blender --version
       - name: Compile-check V004 Blender scripts
-        run: python3 -m py_compile tools/asset_v018.py tools/geometry_v004.py tools/geometry_v005.py tools/geometry_v006.py tools/geometry_v008.py tools/geometry_v009.py tools/geometry_v010.py tools/geometry_v013.py tools/geometry_v014.py tools/geometry_v015.py tools/geometry_v016.py tools/geometry_v018.py tools/geometry_v018.py tools/texture_v018.py tools/fetch_polyhaven_v005.py tools/fetch_secondary_v006.py
+        run: python3 -m py_compile tools/asset_v018.py tools/geometry_v004.py tools/geometry_v005.py tools/geometry_v006.py tools/geometry_v008.py tools/geometry_v009.py tools/geometry_v010.py tools/geometry_v013.py tools/geometry_v014.py tools/geometry_v015.py tools/geometry_v016.py tools/geometry_v017.py tools/geometry_v018.py tools/texture_v017.py tools/fetch_polyhaven_v005.py tools/fetch_secondary_v006.py
       - name: Prefer provenance-verified Poly Haven CC0 photographic PBR
         env:
           ASSET_KIND: ${{ matrix.asset }}
@@ -57,7 +57,7 @@ jobs:
         if: matrix.asset == 'hemp-cord'
         env:
           ASSET_KIND: ${{ matrix.asset }}
-        run: python3 tools/texture_v018.py
+        run: python3 tools/texture_v017.py
       - name: Render source-quality candidate and export GLB
         env:
           ASSET_KIND: ${{ matrix.asset }}
