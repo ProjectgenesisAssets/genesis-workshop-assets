@@ -11,6 +11,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Blender
         run: sudo apt-get update && sudo apt-get install -y blender
+      - name: Acquire CC0 PBR references and provenance
+        env:
+          ASSET_KIND: ${{ github.ref_name }}
+        run: |
+          export ASSET_KIND="${ASSET_KIND#asset/}"
+          python3 tools/fetch_cc0_scans.py
       - name: Build and render candidate
         env:
           ASSET_KIND: ${{ github.ref_name }}
@@ -21,5 +27,7 @@ jobs:
         if: always()
         with:
           name: genesis-${{ github.run_id }}
-          path: output/
+          path: |
+            output/
+            sources/
           if-no-files-found: warn
