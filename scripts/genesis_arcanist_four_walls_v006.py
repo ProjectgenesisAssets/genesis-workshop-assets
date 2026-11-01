@@ -513,10 +513,12 @@ def arcanist_joint_corner(sx,back):
              ("Rear" if back else "Front"),me)
     bpy.context.collection.objects.link(ob)
     me.materials.append(rocks[0])
-    uv=me.uv_layers.new(name="SlateWorldUV")
+    # bmesh.to_mesh can rebuild UV layers and invalidate live references.
+    # Recalculate normals FIRST, then create UV layer and address its loops.
     import bmesh
     bm=bmesh.new();bm.from_mesh(me)
     bmesh.ops.recalc_face_normals(bm,faces=bm.faces);bm.to_mesh(me);bm.free();me.update()
+    uv=me.uv_layers.new(name="SlateWorldUV")
     for pol in me.polygons:
         for li in pol.loop_indices:
             p=me.vertices[me.loops[li].vertex_index].co
