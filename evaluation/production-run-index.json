@@ -2,8 +2,8 @@
   {
     "run_id": 41330547530,
     "head_sha": "f34005389c7ae13ac2d8fb06e3930a41965a19a5",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-01T17:15:34Z",
     "url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41330547530"
   },
