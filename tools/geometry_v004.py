@@ -107,7 +107,7 @@ def hide(cow):
     rim_mat.name="natural_hide_cut_edge"
     for idx in range(pieces):
         nphi=64;nr=24;verts=[];faces=[];uv=[]
-        thickness=.024 if cow else .013
+        thickness=.009 if cow else .004
         for layer in range(2):
             for j in range(nr):
                 r=.012+.988*j/(nr-1)
@@ -115,12 +115,12 @@ def hide(cow):
                     a=2*pi*i/nphi
                     # Lobe pattern and asymmetry of a trimmed natural pelt
                     outline=1+.07*sin(3*a+.3*idx)+.045*sin(7*a+1.3)+.024*cos(11*a+idx)
-                    x=width*.51*r*outline*cos(a)
-                    y=height*.53*r*outline*sin(a)
+                    x=width*(.51 if idx==0 else .43)*r*outline*cos(a)
+                    y=height*(.53 if idx==0 else .46)*r*outline*sin(a)
                     x+=.10*r*r*sin(2*a+idx)
                     # Fold runs diagonally, supported by a soft roll along one edge.
                     fold_axis=x*.91+y*.43
-                    fold=.10*math.exp(-((fold_axis-.02)/(.15 if cow else .11))**2)
+                    fold=(.069 if cow else .078)*math.exp(-((fold_axis-.02)/(.15 if cow else .12))**2)
                     waves=(.023 if cow else .032)*sin(9*x+5*y+idx)*sin(3.4*y)
                     curl=.075*(r**9)*sin(a*2.4+idx*.9)**2
                     z=.09+fold+waves+curl+.04*sin(2.0*y+idx)
@@ -136,10 +136,12 @@ def hide(cow):
                     k=(i+1)%nphi
                     a=base+j*nphi+i;b=base+j*nphi+k
                     c=base+(j+1)*nphi+k;d=base+(j+1)*nphi+i
-                    faces.append((a,b,c,d) if layer==0 else (d,c,b,a))
+                    faces.append((d,c,b,a) if layer==0 else (a,b,c,d))
         for i in range(nphi):
             j=(i+1)%nphi;a=(nr-1)*nphi+i;b=(nr-1)*nphi+j
             faces.append((a,b,top+b,top+a))
+        faces.append(tuple(range(nphi)))
+        faces.append(tuple(top+i for i in reversed(range(nphi))))
         ob=mesh(("bovine" if cow else "goat")+"_folded_hide_"+str(idx),verts,faces,uv,mats=[mat,rim_mat])
         ob.rotation_euler=(.06*idx,.10*idx,-.07*idx)
     return ob
