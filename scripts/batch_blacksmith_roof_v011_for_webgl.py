@@ -20,11 +20,18 @@ before_triangles=sum(max(0,len(p.vertices)-2) for o in meshes for p in o.data.po
 before_faces=sum(len(o.data.polygons) for o in meshes)
 before_uv=sum(len(o.data.uv_layers)>0 for o in meshes)
 materials={}
+multi_material=[]
 for ob in meshes:
-    # Every primitive in the source workshop asset has one assigned material.
-    mats=[s.material for s in ob.material_slots if s.material]
-    assert len(mats)==1,(ob.name,[m.name for m in mats])
-    materials.setdefault(mats[0].name,[]).append(ob)
+    mats=[slot.material for slot in ob.material_slots if slot.material]
+    assert len(mats)>=1,(ob.name,"missing material")
+    if len(mats)>1:
+        # V005 Arcanista's historic jagged roof coping legitimately uses
+        # separate scanned-slate and natural top-cap faces in ONE mesh.
+        # Retain this exact mesh, UV channels and face material indices.
+        # Do not split/reconstruct or throw away the approved texture.
+        multi_material.append(ob)
+    else:
+        materials.setdefault(mats[0].name,[]).append(ob)
 
 def mesh_bbox(objects):
     coords=[ob.matrix_world @ v.co for ob in objects for v in ob.data.vertices]
@@ -47,7 +54,7 @@ after_faces=sum(len(o.data.polygons) for o in after)
 after_box=mesh_bbox(after)
 assert before_triangles==after_triangles,(before_triangles,after_triangles)
 assert before_faces==after_faces
-assert len(after)<=len(materials)+1,(len(after),len(materials))
+assert len(after)<=len(materials)+len(multi_material),(len(after),len(materials),len(multi_material))
 assert all(abs(before_box[k][i]-after_box[k][i])<.001 for k in range(2) for i in range(3)),(before_box,after_box)
 # Texture-bearing materials require UVs; pure metal and mortar materials
 # legitimately have no texture coordinates in the original GLB.
@@ -68,6 +75,7 @@ report={"status":"EXPERIMENTAL_WEBGL_BATCHED_UNAPPROVED",
         "triangles_before":before_triangles,"triangles_after":after_triangles,
         "faces_before":before_faces,"faces_after":after_faces,
         "material_groups":list(materials),"material_count":len(materials),
+        "preserved_multi_material_meshes":[ob.name for ob in multi_material],
         "source_meshes_with_uv":before_uv,"output_meshes_with_uv":sum(bool(o.data.uv_layers) for o in after),
         "bounds_before":before_box,"bounds_after":after_box,
         "source_bytes":src.stat().st_size,"batched_bytes":dst.stat().st_size,
