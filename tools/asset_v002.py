@@ -17,6 +17,10 @@ bpy.ops.object.select_all(action="SELECT");bpy.ops.object.delete(use_global=Fals
 SCENE=bpy.context.scene
 SCENE.render.engine="CYCLES"
 SCENE.cycles.samples=28
+# Ubuntu apt Blender is compiled without Intel OpenImageDenoise; render unbiased samples.
+SCENE.cycles.use_denoising=False
+for view_layer in SCENE.view_layers:
+ view_layer.cycles.use_denoising=False
 SCENE.render.resolution_x=900
 SCENE.render.resolution_y=900
 SCENE.render.resolution_percentage=100
