@@ -1,0 +1,93 @@
+name: Genesis V019 | side-by-side species differentiation board
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-v019-art-board.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  contact-sheet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+      - name: Imaging
+        run: sudo apt-get update && sudo apt-get install -y python3-pil
+      - name: Collect all four verified public-branch V019 results
+        shell: bash
+        run: |
+          set -euo pipefail
+          for round in $(seq 1 46); do
+            git fetch --depth 1 origin '+refs/heads/asset/*:refs/remotes/origin/asset/*' --quiet
+            ready=0
+            for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin; do
+              if git show "origin/asset/$asset:evaluation/$asset/v019_distinct/validation.json" 2>/dev/null | grep -q '"V019_distinct_candidate"'; then
+                ready=$((ready+1))
+              fi
+            done
+            echo "V019 verified 3D outputs: $ready/4"
+            if [ "$ready" -eq 4 ]; then break; fi
+            sleep 20
+          done
+          [ "$ready" -eq 4 ] || { echo "No comparison until four V019 builds publish"; exit 1; }
+          mkdir -p evaluation/redesign/v019-board/raw
+          for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin; do
+            base="v017_redesign"
+            case "$asset" in
+              dry-*) base="v018_wood";;
+            esac
+            git show "origin/asset/$asset:evaluation/$asset/$base/three_quarter.jpg" > "evaluation/redesign/v019-board/raw/$asset-old.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v019_distinct/three_quarter.jpg" > "evaluation/redesign/v019-board/raw/$asset-new.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v019_distinct/validation.json" > "evaluation/redesign/v019-board/raw/$asset.json"
+          done
+      - name: Compare previous and distinct V019 forms without inventing images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          from PIL import Image,ImageDraw,ImageFont
+          root=Path("evaluation/redesign/v019-board")
+          specs=[("dry-oak-wood","Roble"),("dry-ash-wood","Fresno"),
+                 ("tanned-cowhide","Cuero bovino"),("tanned-goatskin","Cuero caprino")]
+          w,h=1700,1880
+          board=Image.new("RGB",(w,h),(27,29,34))
+          pen=ImageDraw.Draw(board)
+          try:
+            font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
+            small=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",17)
+          except:font=ImageFont.load_default();small=font
+          rows=[]
+          for row,(slug,title) in enumerate(specs):
+            info=json.loads((root/"raw"/(slug+".json")).read_text())
+            assert info["version"]=="V019_distinct_candidate"
+            assert info["closed_surface"] and not info["quality_approved"]
+            rows.append(info)
+            for col,state in enumerate(("old","new")):
+              im=Image.open(root/"raw"/(slug+"-"+state+".jpg")).convert("RGB")
+              im.thumbnail((812,388))
+              x=15+col*840;y=10+row*465
+              board.paste(im,(x+(812-im.width)//2,y+(388-im.height)//2))
+              label=title+(" — anterior" if state=="old" else " — V019 distinta")
+              pen.text((x+7,y+398),label,fill=(232,227,213),font=font)
+              if state=="new":
+                pen.text((x+7,y+428),f'{info["glb_bytes"]/1e6:.2f} MB | {info["triangles_mesh"]:,} tris',fill=(169,177,187),font=small)
+          board.save(root/"compare_v018_v017_to_v019.jpg",quality=93,subsampling=0)
+          (root/"technical.json").write_text(json.dumps(rows,indent=2))
+          PY
+          rm -rf evaluation/redesign/v019-board/raw
+      - name: Publish factual evidence, no game integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/redesign/v019-board/compare_v018_v017_to_v019.jpg evaluation/redesign/v019-board/technical.json
+          git commit -m "review: render real V019 differentiated woods and leathers next to previous candidates [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-V019-four-distinct-art-board
+          path: evaluation/redesign/v019-board/
+          if-no-files-found: warn
