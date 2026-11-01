@@ -1,11 +1,11 @@
 {
   "asset": "tanned-goatskin",
-  "version": "V004_candidate",
+  "version": "V005_candidate",
   "objects": 2,
   "triangles_mesh": 12032,
   "triangles_goal_under": 30000,
-  "master_bytes": 132581028,
-  "glb_bytes": 16166820,
+  "master_bytes": 62882188,
+  "glb_bytes": 9187896,
   "master_texture_px": [
     4096,
     4096
@@ -16,11 +16,11 @@
     "Roughness",
     "NormalGL"
   ],
-  "source_id": "Leather038",
-  "source_url": "https://ambientcg.com/a/Leather038",
+  "source_id": "PolyHaven/leather_red_02",
+  "source_url": "https://polyhaven.com/a/leather_red_02",
   "license": "CC0-1.0",
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V004 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
 }
