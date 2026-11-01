@@ -1,0 +1,27 @@
+{
+  "source_url": "https://polyhaven.com/a/ash_veneer",
+  "license": "CC0-1.0",
+  "credit": "Powered by Poly Haven",
+  "role": "bobbin",
+  "maps": {
+    "Color": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/ash_veneer/ash_veneer_diff_2k.jpg",
+      "format": "jpg",
+      "resolution": "2k",
+      "sha256": "00abb70f86bdfe49aa6e09f350af9e8e1605ccf13171f9be46ceb6018846c06b"
+    },
+    "Roughness": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/ash_veneer/ash_veneer_rough_2k.jpg",
+      "format": "jpg",
+      "resolution": "2k",
+      "sha256": "3e6b077f6af6ba7725668b438bfc523f1342d0fb4bd497f1c9668663ad189ef0"
+    },
+    "NormalGL": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/ash_veneer/ash_veneer_nor_gl_2k.png",
+      "format": "png",
+      "resolution": "2k",
+      "sha256": "7e99059aec68659494a4a7080963476b17ae534c702e2e73b9a4eea3cc638532"
+    }
+  },
+  "biological_species_claim": false
+}
