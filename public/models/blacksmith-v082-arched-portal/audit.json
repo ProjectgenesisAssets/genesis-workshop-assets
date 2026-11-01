@@ -1,0 +1,16 @@
+{
+  "source_geometry": "V013 four-wall batched GLB reused without deleting any mesh",
+  "original_mesh_count": 8,
+  "new_meshes": 2,
+  "arch_aperture_width_blender": 1.48,
+  "upper_arch_height_world_m": 2.36,
+  "minimum_clearance_to_V082B_world_m": 0.06000000000000005,
+  "windows_unchanged": true,
+  "roof_unchanged": true,
+  "chimney_unchanged": true,
+  "door_and_hinges_unchanged": true,
+  "arch_spandrel_integrates_into_existing_header": true,
+  "physical_collision_intent": "existing rectangular portal clearance remains valid",
+  "glb_bytes": 2253616,
+  "sha256": "f8bf44d2d54f75310b96bd0e73b9f762c82a2a842dc237bdc5c6a8fe0ed91cdf"
+}
