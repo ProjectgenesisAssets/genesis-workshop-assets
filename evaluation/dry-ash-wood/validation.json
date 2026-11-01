@@ -1,0 +1,26 @@
+{
+  "asset": "dry-ash-wood",
+  "version": "V002_candidate",
+  "objects": 20,
+  "triangles_mesh": 3284,
+  "triangles_goal_under": 30000,
+  "master_bytes": 126937772,
+  "glb_bytes": 19729164,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1536,
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "Wood096",
+  "source_url": "https://ambientcg.com/a/Wood096",
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": false,
+  "quality_approved": false,
+  "visual_score": null,
+  "notes": "Experimental sculpted/procedural geometry with reference CC0 surface PBR. Species/provenance and artistic review pending."
+}
