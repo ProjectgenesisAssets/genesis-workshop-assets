@@ -1,0 +1,80 @@
+name: Genesis | 6 independent CC0-PBR Blender candidates
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-six-materials.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: genesis-six-materials-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  candidate:
+    name: ${{ matrix.asset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        asset:
+          - dry-oak-wood
+          - dry-ash-wood
+          - tanned-cowhide
+          - tanned-goatskin
+          - hemp-cord
+          - linen-thread
+    steps:
+      - name: Checkout the independent asset branch
+        uses: actions/checkout@v4
+        with:
+          ref: asset/${{ matrix.asset }}
+          persist-credentials: false
+      - name: Blender and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+          blender --version
+      - name: Download CC0 texture set and retain provenance
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: python3 tools/fetch_cc0_scans.py
+      - name: Render source-quality candidate and export GLB
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: blender -b -t 2 --python tools/asset_candidate.py
+      - name: Check GLB signature, evaluation views, and report
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import json,os,struct
+          n=os.environ["ASSET_KIND"]
+          root="output/"+n
+          model=root+"/"+n+".glb"
+          with open(model,"rb") as f:
+              header=f.read(12)
+          assert len(header)==12 and header[:4]==b"glTF", "Invalid GLB signature"
+          assert struct.unpack("<I",header[4:8])[0]==2, "Invalid glTF version"
+          assert os.path.getsize(model)>1024, "Unexpected empty GLB"
+          for view in ["three_quarter","front","side","top"]:
+              assert os.path.getsize(root+"/"+view+".png")>1024, "Missing/empty render: "+view
+          manifest=json.load(open("sources/"+n+"/provenance.json"))
+          report=json.load(open(root+"/validation.json"))
+          assert report["glb_bytes"]>1024 and report["triangles_mesh"]>0
+          print(json.dumps({"asset":n,"status":"candidate_binary_valid","glb_bytes":report["glb_bytes"],"tris":report["triangles_mesh"],"source":manifest["source_url"],"visual_approved":False},indent=2))
+          PY
+      - name: Upload artifact even if Blender or scan source failed
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-${{ matrix.asset }}-${{ github.run_id }}
+          path: |
+            output/${{ matrix.asset }}/
+            sources/${{ matrix.asset }}/provenance.json
+            sources/${{ matrix.asset }}/candidates.json
+            sources/${{ matrix.asset }}/download_failures.json
+          if-no-files-found: warn
+          retention-days: 14
