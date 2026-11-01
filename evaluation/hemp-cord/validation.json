@@ -1,6 +1,6 @@
 {
   "asset": "hemp-cord",
-  "version": "V015_candidate",
+  "version": "V016_candidate",
   "objects": 37,
   "triangles_mesh": 19314,
   "triangles_goal_under": 30000,
@@ -23,20 +23,20 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V015 irregular split hardwood, trimmed natural hides, slightly imperfect natural fibers. Separate CC0 surface scans. Artist approval and PlayCanvas profiling not completed.",
+  "notes": "V016 preserves V015 hand-split wood and adds distinct tension-fold cured hides and less uniform wound flax. Visual acceptance and WebGL runtime benchmark pending.",
   "glb_images": [
     {
-      "name": "Rope001_4K-PNG_NormalGL.png_V015_web",
+      "name": "Rope001_4K-PNG_NormalGL.png_V016_web",
       "mime": "image/png",
       "bytes": 2851507
     },
     {
-      "name": "Rope001_4K-PNG_Color.png_V015_web",
+      "name": "Rope001_4K-PNG_Color.png_V016_web",
       "mime": "image/jpeg",
       "bytes": 340993
     },
     {
-      "name": "Rope001_4K-PNG_Roughness.png_V015_web",
+      "name": "Rope001_4K-PNG_Roughness.png_V016_web",
       "mime": "image/png",
       "bytes": 402135
     }
