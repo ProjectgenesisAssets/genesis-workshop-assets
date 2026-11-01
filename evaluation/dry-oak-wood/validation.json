@@ -1,0 +1,26 @@
+{
+  "asset": "dry-oak-wood",
+  "version": "V002_candidate",
+  "objects": 24,
+  "triangles_mesh": 3292,
+  "triangles_goal_under": 30000,
+  "master_bytes": 118228496,
+  "glb_bytes": 17814904,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1536,
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "Wood049",
+  "source_url": "https://ambientcg.com/a/Wood049",
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": true,
+  "quality_approved": false,
+  "visual_score": null,
+  "notes": "Experimental sculpted/procedural geometry with reference CC0 surface PBR. Species/provenance and artistic review pending."
+}
