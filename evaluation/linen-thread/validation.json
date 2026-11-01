@@ -1,11 +1,11 @@
 {
   "asset": "linen-thread",
-  "version": "V002_candidate",
+  "version": "V003_candidate",
   "objects": 11,
   "triangles_mesh": 17254,
   "triangles_goal_under": 30000,
   "master_bytes": 106832388,
-  "glb_bytes": 16050760,
+  "glb_bytes": 15301184,
   "master_texture_px": [
     4096,
     4096
