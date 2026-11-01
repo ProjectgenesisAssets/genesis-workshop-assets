@@ -1,4 +1,4 @@
-name: Genesis production run index (V010+V012 audit)
+name: Genesis production run index (V013 QA)
 on:
   push:
     branches: [main]
