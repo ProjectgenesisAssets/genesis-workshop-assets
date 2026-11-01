@@ -1,0 +1,33 @@
+{
+  "asset": "tanned-goatskin",
+  "id": "PolyHaven/leather_red_02",
+  "title": "Leather Red 02",
+  "source_url": "https://polyhaven.com/a/leather_red_02",
+  "license": "CC0-1.0",
+  "api_credit": "Powered by Poly Haven (https://polyhaven.com)",
+  "source_package": "4K independent PBR maps or documented lower available resolution",
+  "maps": {
+    "Color": {
+      "extension": "jpg",
+      "resolution": "4k",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/leather_red_02/leather_red_02_coll1_4k.jpg",
+      "sha256": "8d1e2e80eacd7b61d90f6cf8ee08cccf3e2bc61124ecb2ad2d9e60558d1ad690"
+    },
+    "Roughness": {
+      "extension": "jpg",
+      "resolution": "4k",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/leather_red_02/leather_red_02_rough_4k.jpg",
+      "sha256": "4b39c2c4285bd4b7a6d85127b15b4f29d21f5c4cb5184eaab1c79893de4cb09b"
+    },
+    "NormalGL": {
+      "extension": "png",
+      "resolution": "4k",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/leather_red_02/leather_red_02_nor_gl_4k.png",
+      "sha256": "03687734b7172ec59e69afce795457e4e8b45d409780c9d65b289e7580218910"
+    }
+  },
+  "species_or_fiber_verified": false,
+  "scan_technique_confirmed": false,
+  "visual_approval": false,
+  "note": "High-res CC0 PBR photographic surface data; geometry authored in Blender. Leather scan is not a verified animal species."
+}
