@@ -1,0 +1,31 @@
+{
+  "four_walls": {
+    "triangles": 17494,
+    "draw_meshes_before": 662,
+    "draw_meshes_after": 8,
+    "glb_bytes": 2199364
+  },
+  "roof": {
+    "triangles": 3340,
+    "draw_meshes_before": 279,
+    "draw_meshes_after": 6,
+    "glb_bytes": 1147056
+  },
+  "chimney_candidate": {
+    "triangles": 192,
+    "draw_meshes_before": 16,
+    "draw_meshes_after": 4,
+    "glb_bytes": 662156
+  },
+  "V013_Blender": {
+    "open_ventilated_windows": 5,
+    "forge_aligned_flue_blender": [
+      1.981875,
+      5.617500000000001
+    ],
+    "roof_height_relative_to_v012": 1.35,
+    "quoin_count": 32,
+    "removed_old_corner_components": 30,
+    "chimney_lip_overlap_m": 0.05
+  }
+}

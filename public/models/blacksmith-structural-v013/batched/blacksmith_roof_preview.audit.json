@@ -1,0 +1,49 @@
+{
+  "status": "EXPERIMENTAL_WEBGL_BATCHED_UNAPPROVED",
+  "source": "public/models/blacksmith-structural-v013/blacksmith_roof_texture_optimized.glb",
+  "output": "public/models/blacksmith-structural-v013/batched/blacksmith_roof_preview.glb",
+  "original_meshes": 279,
+  "batched_meshes": 6,
+  "triangles_before": 3340,
+  "triangles_after": 3340,
+  "faces_before": 3340,
+  "faces_after": 3340,
+  "material_groups": [
+    "Herrero roof \u00b7 blackened roof underlay PBR",
+    "Herrero roof \u00b7 old dark oak PBR",
+    "Oxidized forged iron",
+    "Herrero roof \u00b7 smoked slate PBR",
+    "Herrero roof \u00b7 oxidized hand-split slate PBR",
+    "Herrero roof \u00b7 aged slate highlight PBR"
+  ],
+  "material_count": 6,
+  "source_meshes_with_uv": 279,
+  "output_meshes_with_uv": 6,
+  "bounds_before": [
+    [
+      -4.327499866485596,
+      -0.517493724822998,
+      3.119999647140503
+    ],
+    [
+      4.327499866485596,
+      7.517061710357666,
+      4.986999988555908
+    ]
+  ],
+  "bounds_after": [
+    [
+      -4.327499866485596,
+      -0.517493724822998,
+      3.119999647140503
+    ],
+    [
+      4.327499866485596,
+      7.517062187194824,
+      4.986999988555908
+    ]
+  ],
+  "source_bytes": 1361484,
+  "batched_bytes": 1147056,
+  "note": "Pure drawcall batching, no geometry resculpt, PlayCanvas FPS not yet tested"
+}
