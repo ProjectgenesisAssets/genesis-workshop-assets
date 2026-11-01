@@ -1,11 +1,11 @@
 {
   "asset": "tanned-cowhide",
-  "version": "V003_candidate",
-  "objects": 1,
-  "triangles_mesh": 6860,
+  "version": "V004_candidate",
+  "objects": 2,
+  "triangles_mesh": 12032,
   "triangles_goal_under": 30000,
-  "master_bytes": 105184436,
-  "glb_bytes": 15096576,
+  "master_bytes": 105266968,
+  "glb_bytes": 15179104,
   "master_texture_px": [
     4096,
     4096
@@ -22,5 +22,5 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "Experimental sculpted/procedural geometry with reference CC0 surface PBR. Species/provenance and artistic review pending."
+  "notes": "V004 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
 }
