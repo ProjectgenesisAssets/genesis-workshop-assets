@@ -1,0 +1,85 @@
+name: Genesis | real V016 versus V017 wood and leather art board
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-four-review-v017.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-four-review-v017
+  cancel-in-progress: false
+jobs:
+  gallery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install imaging
+        run: sudo apt-get update && sudo apt-get install -y python3-pil
+      - name: Wait for four verified candidate reports
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 36); do
+            git fetch --depth 1 origin '+refs/heads/asset/*:refs/remotes/origin/asset/*' --quiet
+            ready=0
+            for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin; do
+              if git show "origin/asset/$asset:evaluation/$asset/v017_redesign/validation.json" 2>/dev/null | grep -q '"V017_redesign_candidate"'; then ready=$((ready+1)); fi
+            done
+            echo "Published V017 candidates: $ready/4"
+            if [ "$ready" -eq 4 ]; then break; fi
+            sleep 20
+          done
+          [ "$ready" -eq 4 ] || { echo "Missing validated Blender candidate(s)"; exit 1; }
+          mkdir -p evaluation/redesign/raw
+          for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin; do
+            git show "origin/asset/$asset:evaluation/$asset/three_quarter.jpg" > "evaluation/redesign/raw/$asset-old.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v017_redesign/three_quarter.jpg" > "evaluation/redesign/raw/$asset-new.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v017_redesign/validation.json" > "evaluation/redesign/raw/$asset.json"
+          done
+      - name: Create unaltered four-way visual comparison
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          from PIL import Image,ImageDraw,ImageFont
+          root=pathlib.Path("evaluation/redesign")
+          names=[("dry-oak-wood","Roble"),("dry-ash-wood","Fresno"),("tanned-cowhide","Cuero bovino"),("tanned-goatskin","Cuero caprino")]
+          image=Image.new("RGB",(1800,1950),(26,28,33))
+          draw=ImageDraw.Draw(image)
+          try:
+            big=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",26)
+            small=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",18)
+          except Exception:big=ImageFont.load_default();small=big
+          data=[]
+          for row,(slug,label) in enumerate(names):
+            report=json.loads((root/"raw"/(slug+".json")).read_text())
+            assert report["single_object"] and report["closed_surface"] and not report["quality_approved"]
+            data.append(report)
+            for col,name in enumerate(("old","new")):
+              f=root/"raw"/(slug+"-"+name+".jpg")
+              pic=Image.open(f).convert("RGB")
+              pic.thumbnail((850,414))
+              x=15+col*900;y=15+row*482
+              image.paste(pic,(x+(850-pic.width)//2,y+(414-pic.height)//2))
+              subtitle=("V016 composición anterior" if name=="old" else "V017 una sola pieza")
+              draw.text((x+12,y+422),label+" — "+subtitle,fill=(242,235,220),font=big)
+              if name=="new":draw.text((x+12,y+455),f'{report["glb_bytes"]/1e6:.2f} MB | {report["triangles_mesh"]:,} tris',fill=(174,178,187),font=small)
+          image.save(root/"compare_v016_v017.jpg",quality=92,subsampling=0)
+          (root/"technical_v017.json").write_text(json.dumps(data,indent=2))
+          PY
+          rm -rf evaluation/redesign/raw
+      - name: Publish review board without integrating candidates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/redesign/compare_v016_v017.jpg evaluation/redesign/technical_v017.json
+          git commit -m "review: four actual Blender V017 redesigned material comparisons, pending approval [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-V017-four-material-review
+          path: evaluation/redesign/
+          if-no-files-found: warn
