@@ -1164,14 +1164,14 @@ hash_b=hashlib.sha256(map_b.read_bytes()).hexdigest()
 assert hash_a==hash_b, "CRITICAL: approved V080 color has drifted between V080 variants"
 with (OUT/"V080_USER_COLOR_PRESERVATION_QA.json").open("w",encoding="utf-8") as f:
     json.dump({
-      "version":"V080", "approved_reference":"V080 warm-blackened color",
-      "artist_instruction":"Preserve V080 color; increase genuine fine surface roughness and a little metallic response",
-      "V080_geometry_unchanged":True, "ornaments_unchanged":True,
+      "version":"V080", "approved_reference":"V079 warm-blackened color",
+      "artist_instruction":"Preserve V079 color; increase genuine fine surface roughness and a little metallic response",
+      "V079_geometry_unchanged":True, "ornaments_unchanged":True,
       "moderate":{"roughness_gain":.017,"micro_gain":.023,"metal_gain":.12,"normal_strength":1.06},
       "stronger":{"roughness_gain":.032,"micro_gain":.045,"metal_gain":.20,"normal_strength":1.22},
       "albedo_sha256":hash_a, "variant_albedos_identical":hash_a==hash_b,
       "studio_power":.40,"HDRI_strength":.14,
-      "user_approval":"V080 near-functional; V080 artistic rendering subject to visual validation",
+      "user_approval":"V079 nearly functional with color approved; V080 surface subject to visual validation",
       "GLB_generated":False, "PlayCanvas_validated":False
     },f,indent=2)
 with (OUT/"V080_VISUAL_QA.json").open("w",encoding="utf-8") as f:
