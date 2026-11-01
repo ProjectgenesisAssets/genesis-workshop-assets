@@ -1,0 +1,33 @@
+{
+  "asset": "genesis_wall_arcanista_v006",
+  "status": "EXPERIMENTAL_NOT_APPROVED",
+  "profession": "arcanista",
+  "full_workshop": true,
+  "full_depth_m": 6.890625,
+  "complete_glb_bytes": 12311900,
+  "windows_masonry_openings": 5,
+  "front_v005_unchanged": true,
+  "roof": "PENDING_ARCANISTA_ROOF",
+  "width_m": 7.875,
+  "height_m": 3.2,
+  "door_cutout_m": [
+    1.48,
+    2.43
+  ],
+  "current_door_geometry": "V011 not modified",
+  "geometry": "Slate portal with sparse inlaid blue runes and fine mineral fissures",
+  "textures": "PolyHaven scanned PBR 2K CC0, base/normal/rough",
+  "visual_review": "PENDING",
+  "texture_resolution": 2048,
+  "mesh_count": 109,
+  "triangles": 9226,
+  "glb_bytes": 12311900,
+  "previews": [
+    "front",
+    "three_quarter",
+    "side",
+    "detail",
+    "rear"
+  ],
+  "seed": 29022026
+}
