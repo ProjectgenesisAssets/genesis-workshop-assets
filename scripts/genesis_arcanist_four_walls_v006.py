@@ -432,7 +432,8 @@ def arcanist_side_panel(name,x0,x1,z0,z1):
 def arcanist_side_build(name,length,angle,world_x,world_y,slit_centers=()):
     before=set(bpy.data.objects)
     x0=-length*.5;x1=length*.5
-    cube(name+"_QuarrystoneCore",(0,0,H*.5),(length-.025,T-.065,H-.035),mortar,.008)
+    # Construct actual segmented structural core. The slit must be a
+    # genuine cavity, not painted on a large invisible blocking cube.
     cuts=[x0,x1]
     slit_width=.29
     for c in slit_centers:cuts.extend((c-slit_width*.5,c+slit_width*.5))
@@ -441,6 +442,10 @@ def arcanist_side_build(name,length,angle,world_x,world_y,slit_centers=()):
         middle=(start+end)*.5
         is_slot=any(abs(middle-c)<slit_width*.47 for c in slit_centers)
         if is_slot:
+            cube(name+"_CORE_LOW_"+str(round(middle,2)),
+                 (middle,.015,.85),(end-start,T-.05,1.70),mortar,.008)
+            cube(name+"_CORE_HIGH_"+str(round(middle,2)),
+                 (middle,.015,(2.31+H)*.5),(end-start,T-.05,H-2.31),mortar,.008)
             arcanist_side_panel(name+"_LOW_"+str(round(middle,2)),
                                start,end,0,1.70)
             arcanist_side_panel(name+"_HIGH_"+str(round(middle,2)),
@@ -452,6 +457,8 @@ def arcanist_side_build(name,length,angle,world_x,world_y,slit_centers=()):
             cube(name+"_SLOT_VERTICAL_IRON_"+str(round(middle,2)),
                  (middle,-.355,2.005),(.013,.041,.48),iron,.004)
         else:
+            cube(name+"_CORE_FULL_"+str(round(middle,2)),
+                 (middle,.015,H*.5),(end-start,T-.05,H-.015),mortar,.008)
             arcanist_side_panel(name+"_FULL_"+str(round(middle,2)),
                                start,end,0,H)
     # Continuous heavy natural stone sill sits BELOW the first visible
