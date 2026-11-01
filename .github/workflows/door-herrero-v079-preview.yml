@@ -37,7 +37,7 @@ jobs:
       - name: Validate Python scene code before expensive Blender render
         run: |
           python3 -m py_compile scripts/puerta_herreria_art_079.py
-      - name: Blender V079 review: black forge-scale, restrained metallic glints and real PBR channels
+      - name: Blender V079 art review - black forge-scale, restrained metallic glints and real PBR channels
         env:
           OPENBLAS_NUM_THREADS: '2'
           OMP_NUM_THREADS: '2'
