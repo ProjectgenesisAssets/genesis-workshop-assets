@@ -1,0 +1,27 @@
+{
+  "source_url": "https://polyhaven.com/a/jolcham_oak_bark_01",
+  "license": "CC0-1.0",
+  "credit": "Powered by Poly Haven",
+  "role": "bark",
+  "maps": {
+    "Color": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/jolcham_oak_bark_01/jolcham_oak_bark_01_diff_2k.jpg",
+      "format": "jpg",
+      "resolution": "2k",
+      "sha256": "2eb8d1e79a64827ad70b20bc80bec2171494a442310099ac88d15970a46e6c5f"
+    },
+    "Roughness": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/jolcham_oak_bark_01/jolcham_oak_bark_01_rough_2k.jpg",
+      "format": "jpg",
+      "resolution": "2k",
+      "sha256": "831efb4bfef79ee43270f99e0c0428b2723c34725341ca4357b102102b1d0eec"
+    },
+    "NormalGL": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/2k/jolcham_oak_bark_01/jolcham_oak_bark_01_nor_gl_2k.png",
+      "format": "png",
+      "resolution": "2k",
+      "sha256": "d73f43de3901be8c49618e5d24ab10189c581c6412e16a9e5fa8daf5f0ad93fa"
+    }
+  },
+  "biological_species_claim": true
+}

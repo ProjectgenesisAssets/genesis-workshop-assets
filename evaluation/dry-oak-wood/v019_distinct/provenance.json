@@ -1,0 +1,100 @@
+{
+  "asset": "dry-oak-wood",
+  "id": "Wood049",
+  "title": "Wood 049",
+  "source_url": "https://ambientcg.com/a/Wood049",
+  "download_url": "https://ambientcg.com/get?file=Wood049_4K-PNG.zip",
+  "source_package": "4K-PNG",
+  "license": "CC0-1.0",
+  "sha256": "5dda5c3df9cd1d302e2f388bb6a8d5b7deee6d2777a2cc9626c5641a3f828374",
+  "scan_technique_confirmed": false,
+  "species_or_fiber_verified": true,
+  "visual_approval": false,
+  "caution": "A CC0 PBR texture is not necessarily a photogrammetric scan or proof of a biological species.",
+  "shortlist": [
+    {
+      "id": "Wood049",
+      "title": "Wood 049",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood049"
+    },
+    {
+      "id": "Wood060",
+      "title": "Wood 060",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood060"
+    },
+    {
+      "id": "Wood062",
+      "title": "Wood 062",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood062"
+    },
+    {
+      "id": "Bark015",
+      "title": "Bark 015",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Bark015"
+    },
+    {
+      "id": "Wood059",
+      "title": "Wood 059",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood059"
+    },
+    {
+      "id": "Wood061",
+      "title": "Wood 061",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood061"
+    },
+    {
+      "id": "Wood035",
+      "title": "Wood 035",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood035"
+    },
+    {
+      "id": "Wood076",
+      "title": "Wood 076",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood076"
+    },
+    {
+      "id": "Wood063",
+      "title": "Wood 063",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood063"
+    },
+    {
+      "id": "Bark012",
+      "title": "Bark 012",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Bark012"
+    },
+    {
+      "id": "Wood096",
+      "title": "Wood 096",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood096"
+    },
+    {
+      "id": "Wood095",
+      "title": "Wood 095",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Wood095"
+    }
+  ]
+}
