@@ -24,7 +24,7 @@ SCENE.render.film_transparent=True
 SCENE.render.image_settings.file_format="PNG"
 SCENE.render.image_settings.color_mode="RGBA"
 SCENE.view_settings.view_transform="Standard"
-SCENE.view_settings.look="Medium High Contrast"
+SCENE.view_settings.look="Medium High Contrast" if "Medium High Contrast" in [x.identifier for x in SCENE.view_settings.bl_rna.properties["look"].enum_items] else "Medium High Contrast"
 def make_mat(name):
  m=bpy.data.materials.new(name);m.use_nodes=True
  bs=m.node_tree.nodes.get("Principled BSDF")
@@ -156,7 +156,7 @@ def hide(cow):
   for i in range(nx-1):
    a=j*nx+i;faces.append((a,a+1,a+nx+1,a+nx))
  top=len(v)
- for x,y,z in v:v.append((x,y,z-thick))
+ for x,y,z in list(v):v.append((x,y,z-thick))
  uv+=list(uv)
  for f in list(faces):faces.append(tuple(top+i for i in reversed(f)))
  for i in range(nx-1):
@@ -265,7 +265,7 @@ export(out/(K+"_master.glb"))
 original=[color_node.image,rough_node.image,normal_node.image]
 for node,im in zip((color_node,rough_node,normal_node),original):
  small=im.copy()
- small.scale(1536,1536)
+ small.scale(1536,max(1,round(1536*im.size[1]/im.size[0])))
  small.filepath_raw=str((out/(im.name+"_1536.png")).resolve())
  small.file_format="PNG"
  small.save()
