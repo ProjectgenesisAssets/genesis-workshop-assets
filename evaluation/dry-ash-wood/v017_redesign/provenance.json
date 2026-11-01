@@ -1,0 +1,33 @@
+{
+  "asset": "dry-ash-wood",
+  "id": "PolyHaven/ash_veneer",
+  "title": "Ash Veneer",
+  "source_url": "https://polyhaven.com/a/ash_veneer",
+  "license": "CC0-1.0",
+  "api_credit": "Powered by Poly Haven (https://polyhaven.com)",
+  "source_package": "4K independent PBR maps or documented lower available resolution",
+  "maps": {
+    "Color": {
+      "extension": "jpg",
+      "resolution": "4k",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/ash_veneer/ash_veneer_diff_4k.jpg",
+      "sha256": "414b5295fe34a85d0b2a05acad4d7ee0f7224a5638719ac4dfa4bb61c8fc0464"
+    },
+    "Roughness": {
+      "extension": "jpg",
+      "resolution": "4k",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/ash_veneer/ash_veneer_rough_4k.jpg",
+      "sha256": "bb42aeb5fdfe1a9954277431500303bd4b9611cb0a9a13d6cb395622771c8078"
+    },
+    "NormalGL": {
+      "extension": "png",
+      "resolution": "4k",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/png/4k/ash_veneer/ash_veneer_nor_gl_4k.png",
+      "sha256": "56e41e9cd7625d310793770dfd49ef5cf5689e01899d7b59bbebf108d32c0b0a"
+    }
+  },
+  "species_or_fiber_verified": true,
+  "scan_technique_confirmed": false,
+  "visual_approval": false,
+  "note": "High-res CC0 PBR photographic surface data; geometry authored in Blender. Leather scan is not a verified animal species."
+}

@@ -1,0 +1,71 @@
+{
+  "asset": "dry-ash-wood",
+  "version": "V017_redesign_candidate",
+  "objects": 1,
+  "triangles_mesh": 7164,
+  "triangles_goal_under": 30000,
+  "master_bytes": 120780108,
+  "glb_bytes": 5868648,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1536,
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "PolyHaven/ash_veneer",
+  "source_url": "https://polyhaven.com/a/ash_veneer",
+  "secondary_scan_used": true,
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": true,
+  "quality_approved": false,
+  "single_object": true,
+  "closed_surface": true,
+  "presentation": "bark and split wood",
+  "visual_score": null,
+  "notes": "Owner-directed V017 candidate: one physically connected split log per wood (bark-facing oak, fiber-facing ash); one continuous rolled-and-partly-unrolled sheet per cured leather type. CC0 photographed material maps; human approval pending.",
+  "glb_images": [
+    {
+      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V017_redesign_web",
+      "mime": "image/png",
+      "bytes": 2646807
+    },
+    {
+      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V017_redesign_web",
+      "mime": "image/jpeg",
+      "bytes": 205762
+    },
+    {
+      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V017_redesign_web",
+      "mime": "image/png",
+      "bytes": 643345
+    },
+    {
+      "name": "zz_v006_bark_NormalGL.png_V017_redesign_1k",
+      "mime": "image/png",
+      "bytes": 615029
+    },
+    {
+      "name": "zz_v006_bark_Color.jpg_V017_redesign_1k",
+      "mime": "image/jpeg",
+      "bytes": 240053
+    },
+    {
+      "name": "zz_v006_bark_Roughness.jpg_V017_redesign_1k",
+      "mime": "image/png",
+      "bytes": 466844
+    },
+    {
+      "name": "dry-ash-wood_cut_endgrain_V014",
+      "mime": "image/png",
+      "bytes": 880742
+    }
+  ],
+  "glb_meshes": 1,
+  "glb_materials": 3,
+  "normal_mapped_materials": 3,
+  "total_embedded_image_bytes": 5698582
+}
