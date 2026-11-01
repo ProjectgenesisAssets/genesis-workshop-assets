@@ -1,0 +1,62 @@
+name: Genesis V010 vs V012 - verified 3D material art board
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-mesh-art-comparison.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install inspection imaging
+        run: sudo apt-get update && sudo apt-get install -y python3-pil
+      - name: Read actual Blender review renders from public asset branches
+        run: |
+          git fetch --depth 1 origin '+refs/heads/asset/*:refs/remotes/origin/asset/*'
+          mkdir -p evaluation/gallery/visual_sources
+          for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin hemp-cord linen-thread; do
+            git show "origin/asset/$asset:evaluation/$asset/three_quarter.jpg" > "evaluation/gallery/visual_sources/$asset.jpg"
+          done
+          for asset in dry-oak-wood dry-ash-wood; do
+            git show "origin/asset/$asset:evaluation/$asset/photogrammetry_v012/three_quarter.jpg" > "evaluation/gallery/visual_sources/$asset-v012.jpg"
+          done
+      - name: Compose verified contact sheet
+        run: |
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw,ImageFont
+          from pathlib import Path
+          names=[("dry-oak-wood","Roble · V010"),("dry-oak-wood-v012","Roble · escaneo V012"),
+                 ("dry-ash-wood","Fresno · V010"),("dry-ash-wood-v012","Fresno · escaneo V012"),
+                 ("tanned-cowhide","Cuero bovino · V010"),("tanned-goatskin","Cuero caprino · V010"),
+                 ("hemp-cord","Cordel de cáñamo · V010"),("linen-thread","Hilo de lino · V010")]
+          board=Image.new("RGB",(1880,1015),(25,27,31));d=ImageDraw.Draw(board)
+          try: font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",24)
+          except: font=ImageFont.load_default()
+          for ix,(slug,label) in enumerate(names):
+            x=24+(ix%4)*464;y=20+(ix//4)*494
+            p=Image.open("evaluation/gallery/visual_sources/"+slug+".jpg").convert("RGB")
+            p.thumbnail((442,422))
+            board.paste(p,(x+(442-p.width)//2,y))
+            d.text((x+6,y+432),label,font=font,fill=(231,228,218))
+          board.save("evaluation/gallery/compare_v010_v012.jpg","JPEG",quality=92,subsampling=0)
+          PY
+          rm -rf evaluation/gallery/visual_sources
+      - name: Publish comparison, no candidate approval or game integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/gallery/compare_v010_v012.jpg
+          git commit -m "review: actual six V010 materials versus genuine CC0 scanned wood V012 [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-visual-comparison
+          path: evaluation/gallery/compare_v010_v012.jpg
+          if-no-files-found: warn
