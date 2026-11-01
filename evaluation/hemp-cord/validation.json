@@ -1,11 +1,11 @@
 {
   "asset": "hemp-cord",
-  "version": "V008_candidate",
-  "objects": 25,
-  "triangles_mesh": 19302,
+  "version": "V009_candidate",
+  "objects": 34,
+  "triangles_mesh": 19311,
   "triangles_goal_under": 30000,
-  "master_bytes": 60425536,
-  "glb_bytes": 4040676,
+  "master_bytes": 60432732,
+  "glb_bytes": 4047848,
   "master_texture_px": [
     4096,
     2048
@@ -23,25 +23,25 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V008 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
+  "notes": "V009 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
   "glb_images": [
     {
-      "name": "Rope001_4K-PNG_NormalGL.png_V008_web",
+      "name": "Rope001_4K-PNG_NormalGL.png_V009_web",
       "mime": "image/png",
       "bytes": 2851507
     },
     {
-      "name": "Rope001_4K-PNG_Color.png_V008_web",
+      "name": "Rope001_4K-PNG_Color.png_V009_web",
       "mime": "image/jpeg",
       "bytes": 340993
     },
     {
-      "name": "Rope001_4K-PNG_Roughness.png_V008_web",
+      "name": "Rope001_4K-PNG_Roughness.png_V009_web",
       "mime": "image/png",
       "bytes": 402135
     }
   ],
-  "glb_meshes": 25,
+  "glb_meshes": 34,
   "glb_materials": 1,
   "normal_mapped_materials": 1,
   "total_embedded_image_bytes": 3594635
