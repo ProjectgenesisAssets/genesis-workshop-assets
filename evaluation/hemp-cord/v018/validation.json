@@ -1,0 +1,55 @@
+{
+  "asset": "hemp-cord",
+  "version": "V018_hemp_candidate",
+  "objects": 80,
+  "triangles_mesh": 19357,
+  "triangles_goal_under": 30000,
+  "master_bytes": 58911036,
+  "glb_bytes": 3916368,
+  "master_texture_px": [
+    4096,
+    2048
+  ],
+  "web_texture_px": 1536,
+  "production_focus": "natural hemp texture and surface fibers",
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "Rope001",
+  "source_url": "https://ambientcg.com/a/Rope001",
+  "secondary_scan_used": false,
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": false,
+  "quality_approved": false,
+  "visual_score": null,
+  "notes": "V018 hemp: V017 three-ply coil remains fixed; 10 additional short microfibers contact actual rope vertices. Original CC0 photographic PBR preserved; visual approval pending.",
+  "glb_images": [
+    {
+      "name": "Rope001_4K-PNG_NormalGL.png_V018_hemp_web",
+      "mime": "image/png",
+      "bytes": 2851507
+    },
+    {
+      "name": "00_V017_hemp_Color.png_V018_hemp_web",
+      "mime": "image/jpeg",
+      "bytes": 334528
+    },
+    {
+      "name": "00_V017_hemp_Roughness.png_V018_hemp_web",
+      "mime": "image/png",
+      "bytes": 238867
+    }
+  ],
+  "glb_meshes": 80,
+  "glb_materials": 1,
+  "normal_mapped_materials": 1,
+  "total_embedded_image_bytes": 3424902,
+  "fiber_refinement": {
+    "additional_microfibers": 10,
+    "fibers_attached_to_existing_strand_vertices": true,
+    "main_silhouette_preserved": true,
+    "original_cc0_pbr_preserved": true
+  }
+}

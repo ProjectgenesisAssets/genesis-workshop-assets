@@ -1,0 +1,18 @@
+{
+  "version": "V017",
+  "type": "CC0 photographic PBR derivative; not an additional scan",
+  "license": "CC0-1.0",
+  "original_color": "Rope001_4K-PNG_Color.png",
+  "original_roughness": "Rope001_4K-PNG_Roughness.png",
+  "derived": [
+    {
+      "file": "00_V017_hemp_Color.png",
+      "sha256": "0bf7b892c3a336d006caf25f68b067404654d952d3349429080f0613385640b1"
+    },
+    {
+      "file": "00_V017_hemp_Roughness.png",
+      "sha256": "e807626e92733f1176028f86320f457c5803d580a99737ac9433ec75df3a0c1a"
+    }
+  ],
+  "note": "Manual botanical/fiber verification and final 8/10 artistic approval remain pending."
+}
