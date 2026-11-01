@@ -1,0 +1,41 @@
+{
+  "schema": "genesis.asset-visual-approval.v1",
+  "approved_by": "project-owner",
+  "approval_context": "Explicit approval of both finished hemp and linen candidates in the conversation on 2026-11-01",
+  "approval_scope": "Visual/design approval of exact candidate versions; not an assertion of PlayCanvas integration or performance",
+  "status": "approved-for-integration-review",
+  "items": [
+    {
+      "asset": "hemp-cord",
+      "display_name": "cordel de cáñamo",
+      "approved_version": "V018_hemp_candidate",
+      "source_branch": "asset/hemp-cord",
+      "validation_json": "evaluation/hemp-cord/v018/validation.json",
+      "render": "evaluation/hemp-cord/v018/three_quarter.jpg",
+      "binary_artifact": "See source branch workflow run artifacts, not stored as raw GLB in Git",
+      "immutable": true,
+      "needs_runtime_qa": true
+    },
+    {
+      "asset": "linen-thread",
+      "display_name": "hilo de lino",
+      "approved_version": "V021_candidate",
+      "source_branch": "asset/linen-thread",
+      "validation_json": "evaluation/linen-thread/v021/validation.json",
+      "render": "evaluation/linen-thread/v021/three_quarter.jpg",
+      "binary_artifact": "See source branch workflow run artifacts, not stored as raw GLB in Git",
+      "immutable": true,
+      "needs_runtime_qa": true
+    }
+  ],
+  "do_not_overwrite": [
+    "asset/hemp-cord V018",
+    "asset/linen-thread V021"
+  ],
+  "pending_redesign": [
+    "dry-oak-wood",
+    "dry-ash-wood",
+    "tanned-cowhide",
+    "tanned-goatskin"
+  ]
+}
