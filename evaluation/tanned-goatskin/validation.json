@@ -1,11 +1,11 @@
 {
   "asset": "tanned-goatskin",
-  "version": "V002_candidate",
+  "version": "V003_candidate",
   "objects": 1,
   "triangles_mesh": 6860,
   "triangles_goal_under": 30000,
   "master_bytes": 132498500,
-  "glb_bytes": 19482844,
+  "glb_bytes": 16084296,
   "master_texture_px": [
     4096,
     4096
