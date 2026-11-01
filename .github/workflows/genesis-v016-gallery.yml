@@ -1,0 +1,87 @@
+name: Genesis | six-asset V016 art review board
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-v016-gallery.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-v016-contact-sheet
+  cancel-in-progress: true
+jobs:
+  gallery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Install image support
+        run: sudo apt-get update && sudo apt-get install -y python3-pil
+      - name: Wait for all six verified V016 material reports on public branches
+        shell: bash
+        run: |
+          set -euo pipefail
+          for round in $(seq 1 24); do
+            git fetch --depth 1 origin '+refs/heads/asset/*:refs/remotes/origin/asset/*' --quiet
+            ready=0
+            for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin hemp-cord linen-thread; do
+              if git show "origin/asset/$asset:evaluation/$asset/validation.json" 2>/dev/null | grep -q '"V016_candidate"'; then
+                ready=$((ready+1))
+              fi
+            done
+            echo "V016 reviewed branch reports: $ready/6 (round $round)"
+            if [ "$ready" = "6" ]; then break; fi
+            sleep 25
+          done
+          [ "$ready" = "6" ] || { echo "V016 incomplete: no fake contact sheet"; exit 1; }
+      - name: Extract actual Blender renders and produce six-item art board
+        run: |
+          mkdir -p evaluation/gallery/raw
+          for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin hemp-cord linen-thread; do
+            git show "origin/asset/$asset:evaluation/$asset/three_quarter.jpg" > "evaluation/gallery/raw/$asset.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/validation.json" > "evaluation/gallery/raw/$asset.json"
+          done
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw,ImageFont
+          import os,json
+          names=[("dry-oak-wood","Roble seco"),("dry-ash-wood","Fresno seco"),
+                 ("tanned-cowhide","Cuero bovino"),("tanned-goatskin","Cuero caprino"),
+                 ("hemp-cord","Cordel de canamo"),("linen-thread","Hilo de lino")]
+          W,H=1800,1050
+          board=Image.new("RGB",(W,H),(27,29,34))
+          draw=ImageDraw.Draw(board)
+          try:
+            fnt=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",23)
+            small=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",16)
+          except Exception:fnt=ImageFont.load_default();small=fnt
+          reports=[]
+          for i,(slug,label) in enumerate(names):
+            col,row=i%3,i//3
+            x,y=30+col*590,28+row*505
+            pic=Image.open("evaluation/gallery/raw/"+slug+".jpg").convert("RGB")
+            pic.thumbnail((550,423))
+            board.paste(pic,(x+(550-pic.width)//2,y))
+            dat=json.load(open("evaluation/gallery/raw/"+slug+".json"))
+            reports.append(dat)
+            draw.text((x+8,y+434),label,font=fnt,fill=(235,225,208))
+            draw.text((x+8,y+469),f"V016 | {dat['triangles_mesh']:,} tris | {dat['glb_bytes']/1e6:.1f} MB",font=small,fill=(173,176,184))
+          board.save("evaluation/gallery/materials_v016.jpg",quality=92,subsampling=0)
+          with open("evaluation/gallery/technical_v016.json","w") as f:json.dump(reports,f,indent=2)
+          PY
+          rm -rf evaluation/gallery/raw
+      - name: Publish reviewer board without integrating candidates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/gallery/materials_v016.jpg evaluation/gallery/technical_v016.json
+          git commit -m "review: V016 actual Blender contact sheet of all six candidate materials [skip ci]"
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-v016-review-board
+          path: evaluation/gallery/
+          if-no-files-found: warn
