@@ -24,7 +24,7 @@ SCENE.render.film_transparent=True
 SCENE.render.image_settings.file_format="PNG"
 SCENE.render.image_settings.color_mode="RGBA"
 SCENE.view_settings.view_transform="Standard"
-SCENE.view_settings.look="Medium High Contrast" if "Medium High Contrast" in [x.identifier for x in SCENE.view_settings.bl_rna.properties["look"].enum_items] else "Medium High Contrast"
+# Retain Blender's supported default view look for consistent compatibility.
 def make_mat(name):
  m=bpy.data.materials.new(name);m.use_nodes=True
  bs=m.node_tree.nodes.get("Principled BSDF")
