@@ -1,0 +1,71 @@
+{
+  "asset": "dry-oak-wood",
+  "version": "V017_redesign_candidate",
+  "objects": 1,
+  "triangles_mesh": 7164,
+  "triangles_goal_under": 30000,
+  "master_bytes": 180510348,
+  "glb_bytes": 9124044,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1536,
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "Wood049",
+  "source_url": "https://ambientcg.com/a/Wood049",
+  "secondary_scan_used": true,
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": true,
+  "quality_approved": false,
+  "single_object": true,
+  "closed_surface": true,
+  "presentation": "bark and split wood",
+  "visual_score": null,
+  "notes": "Owner-directed V017 candidate: one physically connected split log per wood (bark-facing oak, fiber-facing ash); one continuous rolled-and-partly-unrolled sheet per cured leather type. CC0 photographed material maps; human approval pending.",
+  "glb_images": [
+    {
+      "name": "Wood049_4K-PNG_NormalGL.png_V017_redesign_web",
+      "mime": "image/png",
+      "bytes": 3012232
+    },
+    {
+      "name": "Wood049_4K-PNG_Color.png_V017_redesign_web",
+      "mime": "image/jpeg",
+      "bytes": 221480
+    },
+    {
+      "name": "Wood049_4K-PNG_Roughness.png_V017_redesign_web",
+      "mime": "image/png",
+      "bytes": 633329
+    },
+    {
+      "name": "zz_v006_bark_NormalGL.png_V017_redesign_1k",
+      "mime": "image/png",
+      "bytes": 3008995
+    },
+    {
+      "name": "zz_v006_bark_Color.jpg_V017_redesign_1k",
+      "mime": "image/jpeg",
+      "bytes": 445502
+    },
+    {
+      "name": "zz_v006_bark_Roughness.jpg_V017_redesign_1k",
+      "mime": "image/png",
+      "bytes": 855633
+    },
+    {
+      "name": "dry-oak-wood_cut_endgrain_V014",
+      "mime": "image/png",
+      "bytes": 776847
+    }
+  ],
+  "glb_meshes": 1,
+  "glb_materials": 3,
+  "normal_mapped_materials": 3,
+  "total_embedded_image_bytes": 8954018
+}
