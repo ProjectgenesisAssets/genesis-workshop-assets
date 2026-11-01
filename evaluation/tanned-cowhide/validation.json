@@ -1,11 +1,11 @@
 {
   "asset": "tanned-cowhide",
-  "version": "V014_candidate",
+  "version": "V015_candidate",
   "objects": 2,
-  "triangles_mesh": 13064,
+  "triangles_mesh": 12664,
   "triangles_goal_under": 30000,
-  "master_bytes": 53749712,
-  "glb_bytes": 4410840,
+  "master_bytes": 53789564,
+  "glb_bytes": 4450688,
   "master_texture_px": [
     4096,
     4096
@@ -23,20 +23,20 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V014 CC0 PBR materials; authored split hardwood with baked endgrain, adjusted hide rims and attached hemp tip fibers; 8/10 visual review and PlayCanvas GPU test still required.",
+  "notes": "V015 irregular split hardwood, trimmed natural hides, slightly imperfect natural fibers. Separate CC0 surface scans. Artist approval and PlayCanvas profiling not completed.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_brown_leather_NormalGL.png_V014_web",
+      "name": "A000_PolyHaven_brown_leather_NormalGL.png_V015_web",
       "mime": "image/png",
       "bytes": 2115192
     },
     {
-      "name": "A000_PolyHaven_brown_leather_Color.jpg_V014_web",
+      "name": "A000_PolyHaven_brown_leather_Color.jpg_V015_web",
       "mime": "image/jpeg",
       "bytes": 619460
     },
     {
-      "name": "A000_PolyHaven_brown_leather_Roughness.jpg_V014_web",
+      "name": "A000_PolyHaven_brown_leather_Roughness.jpg_V015_web",
       "mime": "image/png",
       "bytes": 1425106
     }
