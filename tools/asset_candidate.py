@@ -44,11 +44,22 @@ if not albedo:
 color=bpy.data.images.load(os.path.abspath(albedo[0]),check_existing=True)
 color.name=K+"_scanned_cc0_basecolor"
 
-rough=tex(K+"_roughness", [np.clip(.75+.08*noise,0,1)]*3)
+def scan_map(tags):
+ matches=[s for s in scan_files if s.lower().endswith((".jpg",".jpeg",".png")) and any(tag in os.path.basename(s).lower() for tag in tags)]
+ return bpy.data.images.load(os.path.abspath(matches[0]),check_existing=True) if matches else None
+rough=scan_map(("roughness","rough"))
+if rough is None: raise RuntimeError("Missing scanned roughness PBR texture: "+K)
+normal=scan_map(("normalgl","normal_opengl","_nor_gl","normal"))
+if normal is None: raise RuntimeError("Missing scanned normal PBR texture: "+K)
+
 nodes=mat.node_tree.nodes; links=mat.node_tree.links
 for label,im,space in [("Base",color,"sRGB"),("Rough",rough,"Non-Color")]:
  n=nodes.new("ShaderNodeTexImage");n.label=label;n.image=im;n.image.colorspace_settings.name=space
  links.new(n.outputs["Color"],nodes.get("Principled BSDF").inputs["Base Color" if label=="Base" else "Roughness"])
+normal.colorspace_settings.name="Non-Color"
+nn=nodes.new("ShaderNodeTexImage");nn.label="CC0 Scan Normal";nn.image=normal
+nm=nodes.new("ShaderNodeNormalMap");links.new(nn.outputs["Color"],nm.inputs["Color"])
+links.new(nm.outputs["Normal"],nodes.get("Principled BSDF").inputs["Normal"])
 def uv_smart(ob):
  bpy.ops.object.select_all(action="DESELECT");ob.select_set(True);bpy.context.view_layer.objects.active=ob
  bpy.ops.object.mode_set(mode="EDIT");bpy.ops.mesh.select_all(action="SELECT");bpy.ops.uv.smart_project(island_margin=.025);bpy.ops.object.mode_set(mode="OBJECT")
@@ -116,6 +127,6 @@ for o in objs:o.select_set(True)
 bpy.context.view_layer.objects.active=objs[0]
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT,K+".glb"),export_format="GLB",use_selection=True)
 tris=sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in objs)
-report={"asset":K,"version":"V001-prototype","triangles_mesh":tris,"objects":len(objs),"texture_px":size,"glb_bytes":os.stat(os.path.join(OUT,K+".glb")).st_size,"quality_approved":False,"note":"Procedural baseline; 4K scan-informed AAA master and independent visual validation pending."}
+report={"asset":K,"version":"V001-prototype","triangles_mesh":tris,"objects":len(objs),"texture_px":color.size[0],"glb_bytes":os.stat(os.path.join(OUT,K+".glb")).st_size,"quality_approved":False,"note":"Real CC0 scanned PBR on preliminary geometry; AAA morphology and visual approval pending."}
 with open(os.path.join(OUT,"validation.json"),"w") as f:json.dump(report,f,indent=2)
 print(json.dumps(report))
