@@ -1,11 +1,11 @@
 {
   "asset": "hemp-cord",
-  "version": "V002_candidate",
+  "version": "V003_candidate",
   "objects": 23,
   "triangles_mesh": 18460,
   "triangles_goal_under": 30000,
   "master_bytes": 60404984,
-  "glb_bytes": 9256128,
+  "glb_bytes": 7987808,
   "master_texture_px": [
     4096,
     2048
