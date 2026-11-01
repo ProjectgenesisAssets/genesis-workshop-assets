@@ -57,10 +57,8 @@ normal_map.inputs["Strength"].default_value=.72
 links.new(normal_node.outputs["Color"],normal_map.inputs["Color"])
 links.new(normal_map.outputs["Normal"],bs.inputs["Normal"])
 # A split/cracked edge has its own dark wood core; hide thickness is integrated into the mesh.
-wood_edge=bpy.data.materials.new("dry_wood_exposed_inner")
-wood_edge.diffuse_color=(.24,.15,.08,1) if K=="dry-oak-wood" else (.48,.37,.24,1)
-wood_edge.use_nodes=True
-wood_edge.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value=.94
+# Exposed fracture faces must retain the same photographed PBR maps, never flat paint.
+wood_edge=mat
 objects=[]
 def mesh(name,v,f,uv=None,mats=None,side_indices=None):
  me=bpy.data.meshes.new(name)
