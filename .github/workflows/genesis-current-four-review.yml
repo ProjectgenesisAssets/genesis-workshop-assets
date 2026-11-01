@@ -1,0 +1,73 @@
+name: Genesis | current four material art review
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-current-four-review.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  gallery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install imaging
+        run: sudo apt-get update && sudo apt-get install -y python3-pil
+      - name: Read exact selected verified renders from four public branches
+        run: |
+          git fetch --depth 1 origin '+refs/heads/asset/*:refs/remotes/origin/asset/*'
+          mkdir -p evaluation/redesign/current/raw
+          for asset in dry-oak-wood dry-ash-wood; do
+            git show "origin/asset/$asset:evaluation/$asset/v018_wood/three_quarter.jpg" > "evaluation/redesign/current/raw/$asset.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v018_wood/validation.json" > "evaluation/redesign/current/raw/$asset.json"
+          done
+          for asset in tanned-cowhide tanned-goatskin; do
+            git show "origin/asset/$asset:evaluation/$asset/v017_redesign/three_quarter.jpg" > "evaluation/redesign/current/raw/$asset.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v017_redesign/validation.json" > "evaluation/redesign/current/raw/$asset.json"
+          done
+      - name: Compose review panel with technical facts and version references
+        run: |
+          python3 - <<'PY'
+          import pathlib,json
+          from PIL import Image,ImageDraw,ImageFont
+          root=pathlib.Path("evaluation/redesign/current")
+          specs=[("dry-oak-wood","Roble — V018"),("dry-ash-wood","Fresno — V018"),
+                 ("tanned-cowhide","Cuero bovino — V017"),("tanned-goatskin","Cuero caprino — V017")]
+          board=Image.new("RGB",(1700,1900),(27,29,35))
+          draw=ImageDraw.Draw(board)
+          try:
+            big=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",27)
+            small=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",19)
+          except Exception:big=ImageFont.load_default();small=big
+          summary=[]
+          for index,(slug,title) in enumerate(specs):
+            x=25+(index%2)*845;y=20+(index//2)*950
+            with Image.open(root/"raw"/(slug+".jpg")) as src:
+              img=src.convert("RGB")
+            img.thumbnail((810,816),Image.Resampling.LANCZOS)
+            board.paste(img,(x+(810-img.width)//2,y))
+            info=json.loads((root/"raw"/(slug+".json")).read_text())
+            assert info["closed_surface"] and info["single_object"] and not info["quality_approved"]
+            draw.text((x+6,y+827),title,fill=(238,229,207),font=big)
+            draw.text((x+6,y+868),f'{info["glb_bytes"]/1e6:.2f} MB  |  {info["triangles_mesh"]:,} triángulos',fill=(178,182,191),font=small)
+            summary.append(info)
+          board.save(root/"four-current-candidates.jpg",quality=92,subsampling=0)
+          (root/"technical.json").write_text(json.dumps(summary,indent=2))
+          PY
+          rm -rf evaluation/redesign/current/raw
+      - name: Publish current versions without modifying approved assets or game
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/redesign/current/four-current-candidates.jpg evaluation/redesign/current/technical.json
+          git commit -m "review: publish best current split wood V018 and leather rolls V017 without approval [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-remaining-four-visual-review
+          path: evaluation/redesign/current/
+          if-no-files-found: warn
