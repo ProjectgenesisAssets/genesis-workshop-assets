@@ -1,0 +1,79 @@
+name: Genesis V017 | hemp and linen before/after art review
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-fibers-v017-review.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image comparison support
+        run: sudo apt-get update && sudo apt-get install -y python3-pil
+      - name: Retrieve both V016 and V017 real Blender outputs
+        run: |
+          set -euo pipefail
+          for cycle in $(seq 1 36); do
+            git fetch --depth 1 origin '+refs/heads/asset/hemp-cord:refs/remotes/origin/asset/hemp-cord' '+refs/heads/asset/linen-thread:refs/remotes/origin/asset/linen-thread' --quiet
+            found=0
+            for asset in hemp-cord linen-thread; do
+              if git show "origin/asset/$asset:evaluation/$asset/v017/validation.json" 2>/dev/null | grep -q '"V017_candidate"'; then
+                found=$((found+1))
+              fi
+            done
+            echo "V017 verified renders: $found/2"
+            if [ "$found" -eq 2 ]; then break; fi
+            sleep 20
+          done
+          [ "$found" -eq 2 ] || { echo "Incomplete V017 sources; no invented preview"; exit 1; }
+          mkdir -p evaluation/fibers/raw
+          for asset in hemp-cord linen-thread; do
+            git show "origin/asset/$asset:evaluation/$asset/three_quarter.jpg" > "evaluation/fibers/raw/$asset-v016.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v017/three_quarter.jpg" > "evaluation/fibers/raw/$asset-v017.jpg"
+            git show "origin/asset/$asset:evaluation/$asset/v017/validation.json" > "evaluation/fibers/raw/$asset-v017.json"
+          done
+      - name: Compose factual two-material visual comparison
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageFont
+          d=Path("evaluation/fibers")
+          board=Image.new("RGB",(1550,1650),(29,31,37))
+          draw=ImageDraw.Draw(board)
+          try:
+            font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",27)
+          except Exception:font=ImageFont.load_default()
+          for ri,(key,title) in enumerate([("hemp-cord","Cordel de cáñamo"),("linen-thread","Hilo de lino")]):
+            data=json.loads((d/"raw"/(key+"-v017.json")).read_text())
+            for ci,version in enumerate(("v016","v017")):
+              im=Image.open(d/"raw"/(key+"-"+version+".jpg")).convert("RGB")
+              im.thumbnail((724,714))
+              x=20+ci*770
+              y=10+ri*820
+              board.paste(im,(x+(724-im.width)//2,y))
+              subtitle=f"{title} · {version.upper()}"
+              if version=="v017":subtitle+=f" · {data['glb_bytes']/1e6:.2f} MB"
+              draw.text((x+8,y+725),subtitle,fill=(230,228,218),font=font)
+          board.save(d/"comparison_v016_v017.jpg",quality=93,subsampling=0)
+          PY
+          rm -rf evaluation/fibers/raw
+      - name: Publish compare without changing asset or game versions
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/fibers/comparison_v016_v017.jpg
+          git commit -m "review: actual V016 vs V017 hemp and linen renders [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-fibers-V017-art-review
+          path: evaluation/fibers/comparison_v016_v017.jpg
+          if-no-files-found: warn
