@@ -1,11 +1,11 @@
 {
   "asset": "dry-oak-wood",
-  "version": "V005_candidate",
+  "version": "V006_candidate",
   "objects": 36,
   "triangles_mesh": 8252,
   "triangles_goal_under": 30000,
-  "master_bytes": 118320596,
-  "glb_bytes": 15435544,
+  "master_bytes": 179776336,
+  "glb_bytes": 29812012,
   "master_texture_px": [
     4096,
     4096
@@ -18,9 +18,10 @@
   ],
   "source_id": "Wood049",
   "source_url": "https://ambientcg.com/a/Wood049",
+  "secondary_scan_used": true,
   "license": "CC0-1.0",
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V006 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
 }
