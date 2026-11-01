@@ -24,6 +24,8 @@ def get(url):
    time.sleep((attempt+1)*3)
 def find_layer(payload,key):
  names=[v for v in payload.keys() if v.lower()==key.lower()]
+ if key=="Diffuse" and not names:
+  names=[v for v in payload if v.lower() in ("coll1","basecolor","color")]
  if not names:raise KeyError("Poly Haven layer not offered: "+key)
  variants=payload[names[0]]
  for res in ("4k","2k","8k"):
