@@ -1,6 +1,6 @@
 {
   "asset": "linen-thread",
-  "version": "V013_candidate",
+  "version": "V014_candidate",
   "objects": 5,
   "triangles_mesh": 22440,
   "triangles_goal_under": 30000,
@@ -23,35 +23,35 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V013 geometry authored for natural wood fracture, irregular hides and hand-laid natural cord. CC0 PBR surface scans. Artist validation and PlayCanvas device profiling pending.",
+  "notes": "V014 CC0 PBR materials; authored split hardwood with baked endgrain, adjusted hide rims and attached hemp tip fibers; 8/10 visual review and PlayCanvas GPU test still required.",
   "glb_images": [
     {
-      "name": "zz_v006_bobbin_NormalGL.png_V013_1k",
+      "name": "zz_v006_bobbin_NormalGL.png_V014_1k",
       "mime": "image/png",
       "bytes": 1820176
     },
     {
-      "name": "zz_v006_bobbin_Color.jpg_V013_1k",
+      "name": "zz_v006_bobbin_Color.jpg_V014_1k",
       "mime": "image/jpeg",
       "bytes": 105793
     },
     {
-      "name": "zz_v006_bobbin_Roughness.jpg_V013_1k",
+      "name": "zz_v006_bobbin_Roughness.jpg_V014_1k",
       "mime": "image/png",
       "bytes": 635204
     },
     {
-      "name": "Fabric019_4K-PNG_NormalGL.png_V013_web",
+      "name": "Fabric019_4K-PNG_NormalGL.png_V014_web",
       "mime": "image/png",
       "bytes": 3237980
     },
     {
-      "name": "Fabric019_4K-PNG_Color.png_V013_web",
+      "name": "Fabric019_4K-PNG_Color.png_V014_web",
       "mime": "image/jpeg",
       "bytes": 245583
     },
     {
-      "name": "Fabric019_4K-PNG_Roughness.png_V013_web",
+      "name": "Fabric019_4K-PNG_Roughness.png_V014_web",
       "mime": "image/png",
       "bytes": 451802
     }
