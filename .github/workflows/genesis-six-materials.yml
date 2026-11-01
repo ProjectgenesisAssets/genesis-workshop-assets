@@ -1,4 +1,4 @@
-name: Genesis | 6 independent CC0-PBR Blender candidates
+name: Genesis V002 | 6 independent CC0-PBR Blender candidates
 on:
   push:
     branches: [main]
