@@ -1,11 +1,11 @@
 {
   "asset": "tanned-cowhide",
-  "version": "V004_candidate",
+  "version": "V005_candidate",
   "objects": 2,
   "triangles_mesh": 12032,
   "triangles_goal_under": 30000,
-  "master_bytes": 105266968,
-  "glb_bytes": 15179104,
+  "master_bytes": 53734048,
+  "glb_bytes": 8672996,
   "master_texture_px": [
     4096,
     4096
@@ -16,11 +16,11 @@
     "Roughness",
     "NormalGL"
   ],
-  "source_id": "Leather037",
-  "source_url": "https://ambientcg.com/a/Leather037",
+  "source_id": "PolyHaven/brown_leather",
+  "source_url": "https://polyhaven.com/a/brown_leather",
   "license": "CC0-1.0",
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V004 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
 }
