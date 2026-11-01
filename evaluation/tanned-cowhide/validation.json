@@ -1,11 +1,11 @@
 {
   "asset": "tanned-cowhide",
-  "version": "V008_candidate",
+  "version": "V009_candidate",
   "objects": 2,
   "triangles_mesh": 12280,
   "triangles_goal_under": 30000,
-  "master_bytes": 53779968,
-  "glb_bytes": 4441092,
+  "master_bytes": 53780000,
+  "glb_bytes": 4441124,
   "master_texture_px": [
     4096,
     4096
@@ -23,20 +23,20 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V008 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
+  "notes": "V009 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_brown_leather_NormalGL.png_V008_web",
+      "name": "A000_PolyHaven_brown_leather_NormalGL.png_V009_web",
       "mime": "image/png",
       "bytes": 2115192
     },
     {
-      "name": "A000_PolyHaven_brown_leather_Color.jpg_V008_web",
+      "name": "A000_PolyHaven_brown_leather_Color.jpg_V009_web",
       "mime": "image/jpeg",
       "bytes": 619460
     },
     {
-      "name": "A000_PolyHaven_brown_leather_Roughness.jpg_V008_web",
+      "name": "A000_PolyHaven_brown_leather_Roughness.jpg_V009_web",
       "mime": "image/png",
       "bytes": 1425106
     }
