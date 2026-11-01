@@ -35,7 +35,7 @@ jobs:
       - name: Blender and image tooling
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender python3-pil
+          sudo apt-get install -y blender python3-pil python3-numpy
           blender --version
       - name: Download CC0 texture set and retain provenance
         env:
@@ -44,7 +44,7 @@ jobs:
       - name: Render source-quality candidate and export GLB
         env:
           ASSET_KIND: ${{ matrix.asset }}
-        run: blender -b -t 2 --python tools/asset_v002.py
+        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v002.py
       - name: Check GLB signature, evaluation views, and report
         env:
           ASSET_KIND: ${{ matrix.asset }}
