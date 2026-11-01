@@ -1,0 +1,26 @@
+{
+  "asset": "linen-thread",
+  "version": "V002_candidate",
+  "objects": 11,
+  "triangles_mesh": 17254,
+  "triangles_goal_under": 30000,
+  "master_bytes": 106832388,
+  "glb_bytes": 16050760,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1536,
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "Fabric019",
+  "source_url": "https://ambientcg.com/a/Fabric019",
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": false,
+  "quality_approved": false,
+  "visual_score": null,
+  "notes": "Experimental sculpted/procedural geometry with reference CC0 surface PBR. Species/provenance and artistic review pending."
+}
