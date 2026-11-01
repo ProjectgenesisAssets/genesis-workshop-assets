@@ -1,11 +1,11 @@
 {
   "asset": "dry-oak-wood",
-  "version": "V008_candidate",
+  "version": "V009_candidate",
   "objects": 30,
   "triangles_mesh": 7608,
   "triangles_goal_under": 30000,
-  "master_bytes": 179757296,
-  "glb_bytes": 16312720,
+  "master_bytes": 179757176,
+  "glb_bytes": 16312600,
   "master_texture_px": [
     4096,
     4096
@@ -23,35 +23,35 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V008 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
+  "notes": "V009 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
   "glb_images": [
     {
-      "name": "Wood049_4K-PNG_NormalGL.png_V008_web",
+      "name": "Wood049_4K-PNG_NormalGL.png_V009_web",
       "mime": "image/png",
       "bytes": 5390163
     },
     {
-      "name": "Wood049_4K-PNG_Color.png_V008_web",
+      "name": "Wood049_4K-PNG_Color.png_V009_web",
       "mime": "image/jpeg",
       "bytes": 472909
     },
     {
-      "name": "Wood049_4K-PNG_Roughness.png_V008_web",
+      "name": "Wood049_4K-PNG_Roughness.png_V009_web",
       "mime": "image/png",
       "bytes": 1160099
     },
     {
-      "name": "zz_v006_bark_NormalGL.png_V008_1k",
+      "name": "zz_v006_bark_NormalGL.png_V009_1k",
       "mime": "image/png",
       "bytes": 6756075
     },
     {
-      "name": "zz_v006_bark_Color.jpg_V008_1k",
+      "name": "zz_v006_bark_Color.jpg_V009_1k",
       "mime": "image/jpeg",
       "bytes": 796530
     },
     {
-      "name": "zz_v006_bark_Roughness.jpg_V008_1k",
+      "name": "zz_v006_bark_Roughness.jpg_V009_1k",
       "mime": "image/png",
       "bytes": 1543260
     }
