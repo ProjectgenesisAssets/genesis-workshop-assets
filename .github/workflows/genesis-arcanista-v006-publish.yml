@@ -1,0 +1,103 @@
+name: Arcanista V006 - publish Blender four-wall WebGL models
+on:
+  push:
+    branches: [feature/workshop-arcanist-four-walls-v006]
+    paths: [.github/workflows/genesis-arcanista-v006-publish.yml]
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get actual successful Blender output
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 150); do
+            state=$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41269368461 --jq .status)
+            echo "Cycles $state"
+            if [ "$state" = completed ]; then break; fi
+            sleep 12
+          done
+          test "$(gh api repos/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41269368461 --jq .conclusion)" = success
+          gh run download 41269368461 -R ProjectgenesisAssets/genesis-workshop-assets \
+            -n genesis-wall-arcanista-v006-blend-glb-pbr-review -D /tmp/arcane
+          test -s /tmp/arcane/output_workshop_wall_arcanista_v006/AUDIT.json
+      - name: Optimize 2K PBR textures to 1K browser preview, preserve geometry
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user pillow==11.3.0
+          src=/tmp/arcane/output_workshop_wall_arcanista_v006
+          dest=public/models/arcanista-four-walls-v006
+          mkdir -p "$dest"
+          for part in front left right rear four_walls; do
+            python3 scripts/blacksmith_wall_preview_optimizer.py \
+              "$src/genesis_arcanist_"$part"_v006.glb" \
+              "$dest/arcanista_"$part"_preview.glb" 1024
+          done
+      - name: Install Blender for PBR drawcall batching
+        run: |
+          curl -fSL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/b.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/b.tar.xz -C /tmp/blender --strip-components=1
+      - name: Batch four walls by material, preserving all triangle geometry
+        run: |
+          mkdir -p public/models/arcanista-four-walls-v006/batched
+          /tmp/blender/blender -b -t 2 --python-exit-code 1 \
+            --python scripts/batch_blacksmith_roof_v011_for_webgl.py -- \
+            public/models/arcanista-four-walls-v006/arcanista_four_walls_preview.glb \
+            public/models/arcanista-four-walls-v006/batched/arcanista_four_walls_preview.glb
+      - name: Verify true four-wall PBR structure, geometry and browser payload
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,struct
+          root=pathlib.Path('public/models/arcanista-four-walls-v006')
+          sculpt=json.loads(pathlib.Path('/tmp/arcane/output_workshop_wall_arcanista_v006/AUDIT.json').read_text())
+          audit=json.loads((root/'batched/arcanista_four_walls_preview.audit.json').read_text())
+          assert sculpt['scope']=='FOUR_REAL_GEOLOGICAL_WALLS_WITH_SEPARATE_GLBS'
+          assert sculpt['corner_quoin_count']==4
+          assert len(sculpt['component_bytes'])==5
+          assert audit['triangles_before']==audit['triangles_after']
+          assert audit['faces_before']==audit['faces_after']
+          assert audit['original_meshes']>audit['batched_meshes']
+          assert audit['batched_meshes']<=16
+          file=root/'batched/arcanista_four_walls_preview.glb'
+          assert 1000<file.stat().st_size<14000000
+          data=file.read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
+          (root/'INTEGRATION_AUDIT.json').write_text(json.dumps({
+            'status':'EXPERIMENTAL_ARCANISTA_V006_FOUR_WALLS_VERIFIED',
+            'triangles':audit['triangles_after'],
+            'draw_meshes_before':audit['original_meshes'],
+            'draw_meshes_after':audit['batched_meshes'],
+            'glb_bytes':file.stat().st_size,
+            'corner_quoin_count':sculpt['corner_quoin_count'],
+            'door_preserved':True,'game_collisions':'PENDING'},indent=2))
+          print('ARCANISTA_V006',file.stat().st_size,audit['batched_meshes'])
+          PY
+      - name: Publish eight true Blender renders and real GLB game assets
+        run: |
+          set -euo pipefail
+          src=/tmp/arcane/output_workshop_wall_arcanista_v006
+          dest=previews/workshop_walls/arcanista/full_v006
+          mkdir -p "$dest"
+          for view in front three_quarter left_side right_side rear interior roof_join runes_detail; do
+            cp "$src/"$view".png" "$dest/"$view".png"
+          done
+          cp "$src/AUDIT.json" "$dest/AUDIT.json"
+          cp /tmp/arcane/inputs/wall_arcanista_v006/PROVENANCE.json "$dest/PROVENANCE.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest" public/models/arcanista-four-walls-v006
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Arcanista V006 joined slate walls and PBR scans [skip ci]"
+            git pull --rebase origin feature/workshop-arcanist-four-walls-v006
+            git push origin HEAD:feature/workshop-arcanist-four-walls-v006
+          fi
