@@ -1,9 +1,17 @@
 [
   {
+    "run_id": 41321541630,
+    "head_sha": "303b35061459659c18730f6cdd7737383fa3c5d8",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-01T15:30:13Z",
+    "url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41321541630"
+  },
+  {
     "run_id": 41320943703,
     "head_sha": "7be1eb57caa9b14fe1f1ca74720d8c399ab4ad0b",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-01T15:23:00Z",
     "url": "https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41320943703"
   },
