@@ -34,7 +34,16 @@ def tex(name,rgb):
  rgba[:,:,3]=1
  im.pixels.foreach_set(rgba.ravel());im.filepath_raw=os.path.join(OUT,name+".png");im.file_format="PNG";im.save()
  return im
-color=tex(K+"_basecolor", [detail*base[0],detail*base[1],detail*base[2]])
+# Use a genuine downloaded CC0 surface scan, never silently substitute noise.
+from pathlib import Path
+import glob
+scan_files=glob.glob(os.path.join("sources",K,"*"))
+albedo=[s for s in scan_files if s.lower().endswith((".jpg",".jpeg",".png")) and any(tag in os.path.basename(s).lower() for tag in ("color","colour","albedo","diffuse"))]
+if not albedo:
+ raise RuntimeError("No real scanned albedo in sources/"+K+"; refusing placeholder")
+color=bpy.data.images.load(os.path.abspath(albedo[0]),check_existing=True)
+color.name=K+"_scanned_cc0_basecolor"
+
 rough=tex(K+"_roughness", [np.clip(.75+.08*noise,0,1)]*3)
 nodes=mat.node_tree.nodes; links=mat.node_tree.links
 for label,im,space in [("Base",color,"sRGB"),("Rough",rough,"Non-Color")]:
