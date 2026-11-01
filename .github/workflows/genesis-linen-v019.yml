@@ -1,0 +1,162 @@
+name: Genesis V019 | linen dense-winding correction
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-linen-v019.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-linen-v019-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  candidate:
+    name: ${{ matrix.asset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        asset:
+          - linen-thread
+    steps:
+      - name: Checkout the independent asset branch
+        uses: actions/checkout@v4
+        with:
+          ref: asset/${{ matrix.asset }}
+          persist-credentials: true
+      - name: Blender and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-pil python3-numpy
+          blender --version
+      - name: Compile-check V004 Blender scripts
+        run: python3 -m py_compile tools/asset_v019.py tools/geometry_v004.py tools/geometry_v005.py tools/geometry_v006.py tools/geometry_v008.py tools/geometry_v009.py tools/geometry_v010.py tools/geometry_v013.py tools/geometry_v014.py tools/geometry_v015.py tools/geometry_v016.py tools/geometry_v017.py tools/geometry_v019.py tools/texture_v017.py tools/fetch_polyhaven_v005.py tools/fetch_secondary_v006.py
+      - name: Prefer provenance-verified Poly Haven CC0 photographic PBR
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 tools/fetch_polyhaven_v005.py || echo "Poly Haven source unavailable; falling back to ambientCG CC0 PBR"
+      - name: Download verified ambientCG CC0 scan when needed
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          if [ ! -f "sources/$ASSET_KIND/provenance.json" ]; then
+            python3 tools/fetch_cc0_scans.py
+          else
+            echo "Selected high-resolution Poly Haven CC0 photographic PBR"
+          fi
+      - name: Download independent oak/ash bark and bobbin photographic PBR
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 tools/fetch_secondary_v006.py || echo "Optional secondary scan unavailable; preserve validated base CC0 material"
+      - name: Produce scan-based hemp fiber microtone and matte roughness derivatives
+        if: matrix.asset == 'hemp-cord'
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: python3 tools/texture_v017.py
+      - name: Render source-quality candidate and export GLB
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v019.py
+      - name: Check GLB signature, evaluation views, and report
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import json,os,struct
+          n=os.environ["ASSET_KIND"]
+          root="output/"+n
+          model=root+"/"+n+".glb"
+          with open(model,"rb") as f:
+              header=f.read(12)
+          assert len(header)==12 and header[:4]==b"glTF", "Invalid GLB signature"
+          assert struct.unpack("<I",header[4:8])[0]==2, "Invalid glTF version"
+          assert os.path.getsize(model)>1024, "Unexpected empty GLB"
+          for view in ["three_quarter","front","side","top","detail","cut_detail"]:
+              assert os.path.getsize(root+"/"+view+".png")>1024, "Missing/empty render: "+view
+          manifest=json.load(open("sources/"+n+"/provenance.json"))
+          report=json.load(open(root+"/validation.json"))
+          assert report["glb_bytes"]>1024 and report["master_bytes"]>1024 and report["triangles_mesh"]>0
+          assert report["version"]=="V019_candidate"
+          assert report["triangles_mesh"]<30000,"Exceeds 30k triangle web budget"
+          assert report["normal_mapped_materials"] >= 1, "Missing normal PBR on GLB"
+          assert report["total_embedded_image_bytes"] < 28*1024*1024,"WebGL texture payload too large"
+          print(json.dumps({"asset":n,"status":"candidate_binary_valid","glb_bytes":report["glb_bytes"],"tris":report["triangles_mesh"],"source":manifest["source_url"],"visual_approved":False},indent=2))
+          PY
+      - name: Publish small verified renders and report back to this public asset branch
+        if: success()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,shutil
+          from PIL import Image
+          n=os.environ["ASSET_KIND"]
+          src=pathlib.Path("output")/n
+          dest=pathlib.Path("evaluation")/n/"v019"
+          dest.mkdir(parents=True,exist_ok=True)
+          for view in ["three_quarter","front","side","top","detail"]:
+              rgba=Image.open(src/(view+".png")).convert("RGBA")
+              backdrop=Image.new("RGBA",rgba.size,(43,46,52,255))
+              backdrop.alpha_composite(rgba)
+              im=backdrop.convert("RGB")
+              im.thumbnail((640,640),Image.Resampling.LANCZOS)
+              im.save(dest/(view+".jpg"),"JPEG",quality=83,optimize=True)
+          shutil.copyfile(src/"validation.json",dest/"validation.json")
+          shutil.copyfile(pathlib.Path("sources")/n/"provenance.json",dest/"provenance.json")
+          supplemental=pathlib.Path("sources")/n/"secondary_sources.json"
+          if supplemental.exists():shutil.copyfile(supplemental,dest/"secondary_sources.json")
+          derivative=pathlib.Path("sources")/n/"derivation_v019.json"
+          if derivative.exists():shutil.copyfile(derivative,dest/"derivation_v019.json")
+          (dest/"STATUS.md").write_text(
+              "# Experimental Blender V019 candidate\n\n"
+              "GLB and full-resolution PNG are available in GitHub Actions artifacts.\n"
+              "These previews are automated technical outputs, NOT visually approved assets.\n"
+          )
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/v019"
+          if ! git diff --cached --quiet; then
+            git commit -m "evaluation: publish candidate renders and PBR provenance for $ASSET_KIND"
+            git pull --rebase origin "asset/$ASSET_KIND"
+            git push origin "HEAD:refs/heads/asset/$ASSET_KIND"
+          fi
+      - name: Publish failure receipt to asset branch for diagnosis
+        if: failure()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p "evaluation/$ASSET_KIND/v019"
+          cat > "evaluation/$ASSET_KIND/v019/BUILD_FAILURE.md" <<EOF
+          # V019 build unsuccessful
+          GitHub Actions run: $RUN_ID
+          Asset branch: asset/$ASSET_KIND
+          No GLB or render is approved. Inspect the corresponding job logs.
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/v019/BUILD_FAILURE.md"
+          if ! git diff --cached --quiet; then
+            git commit -m "diagnostics: V019 fiber build failed $RUN_ID"
+            git push origin "HEAD:refs/heads/asset/$ASSET_KIND"
+          fi
+      - name: Upload artifact even if Blender or scan source failed
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-${{ matrix.asset }}-${{ github.run_id }}
+          path: |
+            output/${{ matrix.asset }}/
+            sources/${{ matrix.asset }}/provenance.json
+            sources/${{ matrix.asset }}/candidates.json
+            sources/${{ matrix.asset }}/secondary_sources.json
+            sources/${{ matrix.asset }}/download_failures.json
+            sources/${{ matrix.asset }}/derivation_v019.json
+          if-no-files-found: warn
+          retention-days: 14
