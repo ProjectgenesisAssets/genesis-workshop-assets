@@ -1,11 +1,11 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V002_candidate",
+  "version": "V003_candidate",
   "objects": 20,
   "triangles_mesh": 3284,
   "triangles_goal_under": 30000,
-  "master_bytes": 126937772,
-  "glb_bytes": 19729164,
+  "master_bytes": 126918396,
+  "glb_bytes": 16399828,
   "master_texture_px": [
     4096,
     4096
