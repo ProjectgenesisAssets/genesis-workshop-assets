@@ -1,0 +1,55 @@
+name: Export approved Herrero V082-B game GLB with pivot QA
+on:
+  push:
+    branches: [production/door-herrero-v082-subtle-forging]
+    paths:
+      - scripts/export_herrero_v082_b_game.py
+      - .github/workflows/door-herrero-v082-game-export.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          curl -fsSL --retry 3 --max-time 300 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version
+      - name: Download existing studio HDRI required by source generation
+        run: |
+          curl -fsSL --retry 4 --max-time 300 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr -o studio_small_09_1k.hdr
+          test -s studio_small_09_1k.hdr
+      - name: Check source and exporter
+        run: |
+          python3 -m py_compile scripts/puerta_herreria_art_082.py scripts/export_herrero_v082_b_game.py
+      - name: Export V082-B full geometry with real PBR
+        env:
+          OPENBLAS_NUM_THREADS: "2"
+          OMP_NUM_THREADS: "2"
+        run: /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/export_herrero_v082_b_game.py
+      - name: Verify game file
+        run: |
+          test -s public/models/door-herrero-v082-b/door-herrero-v082-b.glb
+          test -s public/models/door-herrero-v082-b/audit.json
+          sha256sum public/models/door-herrero-v082-b/door-herrero-v082-b.glb
+      - name: Commit immutable versioned game asset on same branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/models/door-herrero-v082-b
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish approved V082-B GLB + provenance [skip ci]'
+            git pull --rebase origin production/door-herrero-v082-subtle-forging
+            git push origin HEAD:production/door-herrero-v082-subtle-forging
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-herrero-v082b-game-glb
+          path: public/models/door-herrero-v082-b/
+          retention-days: 7
