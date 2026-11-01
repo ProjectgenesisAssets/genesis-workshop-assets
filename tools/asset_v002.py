@@ -54,8 +54,17 @@ color_node=image_node(albedo,"sRGB")
 rough_node=image_node(rough,"Non-Color")
 normal_node=image_node(normal,"Non-Color")
 nodes=mat.node_tree.nodes;links=mat.node_tree.links
-links.new(color_node.outputs["Color"],bs.inputs["Base Color"])
-links.new(rough_node.outputs["Color"],bs.inputs["Roughness"])
+tints={"tanned-cowhide":(.76,.65,.57),"tanned-goatskin":(.62,.51,.44),"linen-thread":(.67,.62,.53)}
+if K in tints:
+ mix=nodes.new("ShaderNodeMixRGB");mix.blend_type="MULTIPLY";mix.inputs[0].default_value=1
+ mix.inputs[2].default_value=(*tints[K],1)
+ links.new(color_node.outputs["Color"],mix.inputs[1])
+ links.new(mix.outputs["Color"],bs.inputs["Base Color"])
+else:links.new(color_node.outputs["Color"],bs.inputs["Base Color"])
+rmin=nodes.new("ShaderNodeMath");rmin.operation="MAXIMUM"
+rmin.inputs[1].default_value=.78 if K.startswith("tanned-") else .72
+links.new(rough_node.outputs["Color"],rmin.inputs[0])
+links.new(rmin.outputs[0],bs.inputs["Roughness"])
 normal_map=nodes.new("ShaderNodeNormalMap")
 normal_map.inputs["Strength"].default_value=.72
 links.new(normal_node.outputs["Color"],normal_map.inputs["Color"])
@@ -94,7 +103,7 @@ def wood_piece(label,oak,offset):
  count_arc=15;count_split=9;sections=37
  length=1.48 if oak else 1.64
  radius=.25 if oak else .205
- v=[];faces=[];mats=[]
+ v=[];faces=[];mats=[]; uv_coords=[]
  for j in range(sections):
   t=j/(sections-1);z=length*(t-.5)
   taper=1-.12*t+.028*sin(t*9)
@@ -107,13 +116,14 @@ def wood_piece(label,oak,offset):
   # Rough exposed splitting plane with longitudinal splinters and uneven tears.
   for i in range(1,count_split-1):
    f=i/(count_split-1);y=radius*taper*(1-2*f)
-   crack=.025*sin(f*13+2.7*t)+.012*sin(f*29-5*t)
+   crack=.046*sin(f*13+2.7*t)+.018*sin(f*29-5*t)
    crack+=.026*(1 if oak else .42)*sin(t*13+f*24)
    section.append((crack,y))
   for i,(xx,yy) in enumerate(section):
    # Fibrils follow the grain axis, not uncorrelated vertex noise.
    end_damage=.026*(sin(i*3.71)**2) if j in (0,sections-1) else 0
    v.append((xx+offset*.017,yy,z+end_damage))
+   uv_coords.append((t*2.2,i/(count_arc+count_split-3)))
  n=len(section)
  for j in range(sections-1):
   for i in range(n):
@@ -121,8 +131,8 @@ def wood_piece(label,oak,offset):
    faces.append((a,b,b+n,a+n));mats.append(0 if i<count_arc-1 else 1)
  faces.append(tuple(reversed(range(n))));mats.append(1)
  faces.append(tuple((sections-1)*n+i for i in range(n)));mats.append(1)
- ob=mesh(label,v,faces,mats=[mat,wood_edge],side_indices=mats)
- transform(ob,(offset*.27,offset*.07,0),(.05*offset,.08*offset,offset*.09))
+ ob=mesh(label,v,faces,uv=uv_coords,mats=[mat,wood_edge],side_indices=mats)
+ transform(ob,(offset*.13,offset*.17,0),(.12*offset,1.36+.04*offset,offset*.11))
  # Raised longitudinal fractured fibers along the exposed plane; low budget.
  strip_mat=wood_edge
  for strand in range(11 if oak else 9):
@@ -148,10 +158,10 @@ def hide(cow):
    rim=abs(u-.5)*2;edge=abs(t-.5)*2
    xx+=.065*sin(8*t+1.2)*(rim**6)
    yy+=.072*sin(8*u+2.1)*(edge**6)
-   fold= .13*sin(u*7.7+sin(t*3.2)) if cow else .074*sin(u*13.5+t*6)
-   crease= .07*math.exp(-((u-(.54+.08*sin(t*4)))/.083)**2)
+   fold= .079*sin(u*7.7+sin(t*3.2)) if cow else .054*sin(u*13.5+t*6)
+   crease= .052*math.exp(-((u-(.54+.08*sin(t*4)))/.083)**2)
    fine=(.013 if cow else .027)*sin(26*t+9*u)*sin(7*u)
-   zz=.08+fold+crease+fine +.12*(u-.5)**2
+   zz=.042+fold+crease+fine +.065*(u-.5)**2
    if not cow:zz+=.055*sin((u+t)*17)*math.exp(-((u-.77)/.16)**2)
    v.append((xx,yy,zz));uv.append((u,t))
  for j in range(ny-1):
@@ -184,7 +194,7 @@ def cord(hemp):
   for j in range(steps):
    t=j/(steps-1)
    ang=2*pi*turns*t
-   R=.13+.47*t if hemp else .10+.37*t
+   R=(.13+.47*t+.012*sin(ang*2.4)) if hemp else (.10+.37*t+.006*sin(ang*3.7))
    cx=R*cos(ang);cy=R*sin(ang)
    cz=.036+.014*sin(ang*2)+.015*(t*t)
    # A free tip extends away from the last turn for a natural loose end.
@@ -240,7 +250,7 @@ bpy.ops.object.camera_add(location=(2.7,-3.2,2.5))
 camera=bpy.context.object
 SCENE.camera=camera
 camera.data.type="ORTHO"
-camera.data.ortho_scale=2.35 if K.startswith("dry-") else (2.20 if K.startswith("tanned-") else 1.8)
+camera.data.ortho_scale=2.35 if K.startswith("dry-") else (2.20 if K.startswith("tanned-") else 1.43)
 for loc,power,size in [((3,-4,5),850,4.5),((-3,1,3.5),650,3.8),((.5,3,5),470,3)]:
  bpy.ops.object.light_add(type="AREA",location=loc)
  light=bpy.context.object;light.data.energy=power;light.data.shape="DISK";light.data.size=size
@@ -268,14 +278,14 @@ original=[color_node.image,rough_node.image,normal_node.image]
 for node,im in zip((color_node,rough_node,normal_node),original):
  small=im.copy()
  small.scale(1536,max(1,round(1536*im.size[1]/im.size[0])))
- small.filepath_raw=str((out/(im.name+"_1536.png")).resolve())
- small.file_format="PNG"
+ small.filepath_raw=str((out/(im.name+"_1536."+("png" if node==normal_node else "jpg"))).resolve())
+ small.file_format="PNG" if node==normal_node else "JPEG"
  small.save()
  node.image=small
 export(out/(K+".glb"))
 tris=sum(max(0,len(f.vertices)-2) for o in objects for f in o.data.polygons)
 report={
- "asset":K,"version":"V002_candidate","objects":len(objects),
+ "asset":K,"version":"V003_candidate","objects":len(objects),
  "triangles_mesh":tris,"triangles_goal_under":30000,
  "master_bytes":(out/(K+"_master.glb")).stat().st_size,
  "glb_bytes":(out/(K+".glb")).stat().st_size,
