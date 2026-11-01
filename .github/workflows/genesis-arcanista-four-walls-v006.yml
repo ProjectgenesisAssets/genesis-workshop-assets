@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 85
     env:
-      OPENBLAS_NUM_THREADS: "2"
-      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@v4
       - name: Validate generator script
@@ -69,8 +69,18 @@ jobs:
       - name: Sculpt geometry, create PBR, export model and render four views
         run: |
           set -euo pipefail
-          /tmp/genesis-blender/blender -b -t 3 --python-exit-code 1 \
-            --python scripts/genesis_arcanist_four_walls_v006.py
+          ulimit -c 0
+          set +e
+          PYTHONFAULTHANDLER=1 /tmp/genesis-blender/blender -b -t 1 --python-exit-code 1 \
+            --python scripts/genesis_arcanist_four_walls_v006.py > /tmp/arcane-blender-v006.log 2>&1
+          result=$?
+          set -e
+          cat /tmp/arcane-blender-v006.log
+          if [ "$result" -ne 0 ]; then
+            echo "--- Blender error diagnostics ---"
+            if test -f /tmp/blender.crash.txt; then tail -n 100 /tmp/blender.crash.txt; fi
+            exit "$result"
+          fi
       - name: Validate deliverables and mesh audit
         run: |
           set -euo pipefail
