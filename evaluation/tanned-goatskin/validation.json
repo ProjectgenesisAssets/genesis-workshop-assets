@@ -1,11 +1,11 @@
 {
   "asset": "tanned-goatskin",
-  "version": "V010_candidate",
+  "version": "V013_candidate",
   "objects": 2,
-  "triangles_mesh": 12280,
+  "triangles_mesh": 13064,
   "triangles_goal_under": 30000,
-  "master_bytes": 62928144,
-  "glb_bytes": 4853320,
+  "master_bytes": 62897852,
+  "glb_bytes": 4823028,
   "master_texture_px": [
     4096,
     4096
@@ -23,20 +23,20 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V010 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
+  "notes": "V013 geometry authored for natural wood fracture, irregular hides and hand-laid natural cord. CC0 PBR surface scans. Artist validation and PlayCanvas device profiling pending.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_leather_red_02_NormalGL.png_V010_web",
+      "name": "A000_PolyHaven_leather_red_02_NormalGL.png_V013_web",
       "mime": "image/png",
       "bytes": 2328257
     },
     {
-      "name": "A000_PolyHaven_leather_red_02_Color.jpg_V010_web",
+      "name": "A000_PolyHaven_leather_red_02_Color.jpg_V013_web",
       "mime": "image/jpeg",
       "bytes": 983279
     },
     {
-      "name": "A000_PolyHaven_leather_red_02_Roughness.jpg_V010_web",
+      "name": "A000_PolyHaven_leather_red_02_Roughness.jpg_V013_web",
       "mime": "image/png",
       "bytes": 1260412
     }
