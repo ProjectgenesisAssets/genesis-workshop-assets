@@ -1,4 +1,4 @@
-name: Genesis production run index (V019 linen cut-end audit)
+name: Genesis production run index (grounded linen and hemp repair audit)
 on:
   push:
     branches: [main]
@@ -54,7 +54,12 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/ProjectgenesisAssets/genesis-workshop-assets/actions/workflows/genesis-linen-v019.yml/runs?per_page=5" \
             | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps([{"run_id":r["id"],"status":r["status"],"conclusion":r.get("conclusion"),"url":r["html_url"]} for r in d.get("workflow_runs",[])],indent=2))' \
-            > evaluation/fibers/v019-run-index.json
+            > evaluation/fibers/v019-run-index.json evaluation/fibers/physical-fix-run-index.json
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/ProjectgenesisAssets/genesis-workshop-assets/actions/workflows/genesis-fiber-physical-fix.yml/runs?per_page=8" \
+            | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps([{"run_id":r["id"],"status":r["status"],"conclusion":r.get("conclusion"),"url":r["html_url"]} for r in d.get("workflow_runs",[])],indent=2))' \
+            > evaluation/fibers/physical-fix-run-index.json
       - name: Publish discoverable run index
         run: |
           git config user.name "github-actions[bot]"
