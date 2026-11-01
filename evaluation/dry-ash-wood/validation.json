@@ -1,11 +1,11 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V013_candidate",
+  "version": "V014_candidate",
   "objects": 16,
   "triangles_mesh": 10228,
   "triangles_goal_under": 30000,
-  "master_bytes": 119959932,
-  "glb_bytes": 9274248,
+  "master_bytes": 120840500,
+  "glb_bytes": 5928876,
   "master_texture_px": [
     4096,
     4096
@@ -23,41 +23,46 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V013 geometry authored for natural wood fracture, irregular hides and hand-laid natural cord. CC0 PBR surface scans. Artist validation and PlayCanvas device profiling pending.",
+  "notes": "V014 CC0 PBR materials; authored split hardwood with baked endgrain, adjusted hide rims and attached hemp tip fibers; 8/10 visual review and PlayCanvas GPU test still required.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V013_web",
+      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V014_web",
       "mime": "image/png",
-      "bytes": 4768718
+      "bytes": 2646807
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V013_web",
+      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V014_web",
       "mime": "image/jpeg",
-      "bytes": 465148
+      "bytes": 205762
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V013_web",
+      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V014_web",
       "mime": "image/png",
-      "bytes": 1159508
+      "bytes": 643345
     },
     {
-      "name": "zz_v006_bark_NormalGL.png_V013_1k",
+      "name": "zz_v006_bark_NormalGL.png_V014_1k",
       "mime": "image/png",
-      "bytes": 1366728
+      "bytes": 615029
     },
     {
-      "name": "zz_v006_bark_Color.jpg_V013_1k",
+      "name": "zz_v006_bark_Color.jpg_V014_1k",
       "mime": "image/jpeg",
-      "bytes": 442735
+      "bytes": 240053
     },
     {
-      "name": "zz_v006_bark_Roughness.jpg_V013_1k",
+      "name": "zz_v006_bark_Roughness.jpg_V014_1k",
       "mime": "image/png",
-      "bytes": 840947
+      "bytes": 466844
+    },
+    {
+      "name": "dry-ash-wood_cut_endgrain_V014",
+      "mime": "image/png",
+      "bytes": 880757
     }
   ],
   "glb_meshes": 16,
-  "glb_materials": 5,
-  "normal_mapped_materials": 5,
-  "total_embedded_image_bytes": 9043784
+  "glb_materials": 4,
+  "normal_mapped_materials": 4,
+  "total_embedded_image_bytes": 5698597
 }
