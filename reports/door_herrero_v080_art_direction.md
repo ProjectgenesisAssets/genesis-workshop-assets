@@ -1,13 +1,13 @@
 # Door Herrero V080 – Art direction based on actual V079 QA (2026-11-01)
 
-Status: **AUDITED, NOT ART APPROVED**. No new render/GLB is asserted by this note.
+Status update 2026-11-01: **V079 nearly functional, user approves overall look and specifically the existing color.** V080 must preserve the hue and increase apparent physical roughness/microrelief plus moderate metallic response. New render/GLB must still be verified before final approval.
 
 ## Inputs inspected
 - Successful V079 run: https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/41330078898
 - V079 artifact ID 13093625089, 32 contents including A/B/C/D renders and PBR QA.
 - Baseline V011 geometry, V068-C ornaments, retained Curtidor V073 branch.
 
-## Actual visible outcome
+## Actual visible outcome (superseded by user's later approval of V079's color)
 - Candidate B (warm blackened iron at studio power 40%) is preferred starting point over A/C.
 - Door reads as dark iron, but large panel surfaces are too matte, even and gray.
 - Patina must not resemble leather, marble or cloud camouflage.
@@ -38,3 +38,9 @@ Status: **AUDITED, NOT ART APPROVED**. No new render/GLB is asserted by this not
 - No conspicuous marble/stone/leather effect.
 - Reproducible Blender run completes; no missing PNG/GLB.
 - WebGL QA completed separately.
+
+## V080 production work
+- Python script: `scripts/puerta_herreria_art_080.py`
+- Workflow: `.github/workflows/door-herrero-v080-preview.yml`
+- Render variants: A medium texture/metallicity and B stronger texture/metallicity. Both are required to have bit-identical albedo maps from the approved warm V079 color.
+- User did NOT request integrating to PlayCanvas yet; retain V079 until the new V080 renders are reviewed.
