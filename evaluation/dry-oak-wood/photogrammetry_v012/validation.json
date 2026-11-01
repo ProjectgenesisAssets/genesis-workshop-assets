@@ -1,0 +1,15 @@
+{
+  "asset": "dry-oak-wood",
+  "version": "V012_photogrammetry_candidate",
+  "photogrammetry": true,
+  "license": "CC0-1.0",
+  "species_verified": false,
+  "source": "https://polyhaven.com/a/dead_tree_trunk",
+  "scanned_triangles_before_decimation": 101802,
+  "triangles_mesh": 25797,
+  "glb_bytes": 9561888,
+  "master_bytes": 9561860,
+  "quality_approved": false,
+  "visual_score": null,
+  "note": "Three individually transformed CC0-scanned geometry pieces, not species authenticated. Candidate for artistic review only."
+}
