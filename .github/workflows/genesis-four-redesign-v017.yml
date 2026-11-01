@@ -1,0 +1,119 @@
+name: Genesis V017 | four single-piece wood and leather redesigns
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-four-redesign-v017.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-four-redesign-v017
+  cancel-in-progress: false
+jobs:
+  candidate:
+    name: ${{ matrix.asset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        asset: [dry-oak-wood, dry-ash-wood, tanned-cowhide, tanned-goatskin]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: asset/${{ matrix.asset }}
+      - name: Install Blender and check script syntax
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+          python3 -m py_compile tools/asset_v017_redesign.py tools/geometry_v017_redesign.py
+      - name: Fetch traceable CC0 photographic PBR
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 tools/fetch_polyhaven_v005.py || echo "Optional source unavailable"
+          if [ ! -f "sources/$ASSET_KIND/provenance.json" ]; then python3 tools/fetch_cc0_scans.py; fi
+          python3 tools/fetch_secondary_v006.py || echo "Optional bark scan unavailable"
+          test -f "sources/$ASSET_KIND/provenance.json"
+      - name: Build physical one-piece mesh and real GLB
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v017_redesign.py
+      - name: Validate geometry, photographic PBR and five rendered views
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import json,os,struct,pathlib
+          n=os.environ["ASSET_KIND"];root=pathlib.Path("output")/n
+          r=json.loads((root/"validation.json").read_text())
+          assert r["version"]=="V017_redesign_candidate"
+          assert r["single_object"] and r["closed_surface"]
+          assert not r["quality_approved"]
+          assert 200 < r["triangles_mesh"] < 30000
+          assert r["normal_mapped_materials"] >= 1
+          assert r["total_embedded_image_bytes"] < 28*1024*1024
+          for view in ("three_quarter","front","side","top","detail"):
+            assert (root/(view+".png")).stat().st_size > 1024
+          for file in (root/(n+".glb"),root/(n+"_master.glb")):
+            with file.open("rb") as f:h=f.read(12)
+            assert h[:4]==b"glTF" and struct.unpack("<I",h[4:8])[0]==2
+          print(json.dumps({"asset":n,"glb_bytes":r["glb_bytes"],"triangles":r["triangles_mesh"],"approved":False}))
+          PY
+      - name: Publish new V017 evaluation without replacing old candidate
+        if: success()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import os,pathlib,shutil
+          from PIL import Image
+          n=os.environ["ASSET_KIND"];src=pathlib.Path("output")/n
+          dst=pathlib.Path("evaluation")/n/"v017_redesign";dst.mkdir(parents=True,exist_ok=True)
+          for view in ("three_quarter","front","side","top","detail"):
+            rgba=Image.open(src/(view+".png")).convert("RGBA")
+            bg=Image.new("RGBA",rgba.size,(43,46,52,255));bg.alpha_composite(rgba)
+            img=bg.convert("RGB");img.thumbnail((850,850))
+            img.save(dst/(view+".jpg"),quality=90,optimize=True)
+          shutil.copyfile(src/"validation.json",dst/"validation.json")
+          shutil.copyfile(pathlib.Path("sources")/n/"provenance.json",dst/"provenance.json")
+          secondary=pathlib.Path("sources")/n/"secondary_sources.json"
+          if secondary.exists():shutil.copyfile(secondary,dst/"secondary_sources.json")
+          (dst/"STATUS.md").write_text("V017 one-piece material candidate. Awaiting visual approval. V016 untouched. No PlayCanvas integration.\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/v017_redesign"
+          if ! git diff --cached --quiet; then
+            git commit -m "evaluation: V017 physically redesigned $ASSET_KIND [skip ci]"
+            git pull --rebase origin "asset/$ASSET_KIND"
+            git push origin "HEAD:asset/$ASSET_KIND"
+          fi
+      - name: Save failed build receipt
+        if: failure()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p "evaluation/$ASSET_KIND/v017_redesign"
+          echo "Failure: https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/$RUN_ID" > "evaluation/$ASSET_KIND/v017_redesign/BUILD_FAILURE.md"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/v017_redesign/BUILD_FAILURE.md"
+          if ! git diff --cached --quiet; then
+            git commit -m "diagnostics: V017 failure $RUN_ID [skip ci]"
+            git pull --rebase origin "asset/$ASSET_KIND"
+            git push origin "HEAD:asset/$ASSET_KIND"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-V017-${{ matrix.asset }}-${{ github.run_id }}
+          path: |
+            output/${{ matrix.asset }}/
+            sources/${{ matrix.asset }}/provenance.json
+            sources/${{ matrix.asset }}/secondary_sources.json
+          if-no-files-found: warn
+          retention-days: 14
