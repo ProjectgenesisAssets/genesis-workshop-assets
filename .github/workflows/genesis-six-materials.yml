@@ -81,7 +81,10 @@ jobs:
           dest=pathlib.Path("evaluation")/n
           dest.mkdir(parents=True,exist_ok=True)
           for view in ["three_quarter","front","side","top","detail"]:
-              im=Image.open(src/(view+".png")).convert("RGB")
+              rgba=Image.open(src/(view+".png")).convert("RGBA")
+              backdrop=Image.new("RGBA",rgba.size,(43,46,52,255))
+              backdrop.alpha_composite(rgba)
+              im=backdrop.convert("RGB")
               im.thumbnail((640,640),Image.Resampling.LANCZOS)
               im.save(dest/(view+".jpg"),"JPEG",quality=83,optimize=True)
           shutil.copyfile(src/"validation.json",dest/"validation.json")
