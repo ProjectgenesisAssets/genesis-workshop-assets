@@ -1,11 +1,11 @@
 {
   "asset": "tanned-goatskin",
-  "version": "V005_candidate",
+  "version": "V007_candidate",
   "objects": 2,
-  "triangles_mesh": 12032,
+  "triangles_mesh": 12280,
   "triangles_goal_under": 30000,
-  "master_bytes": 62882188,
-  "glb_bytes": 9187896,
+  "master_bytes": 62928096,
+  "glb_bytes": 4853272,
   "master_texture_px": [
     4096,
     4096
@@ -18,9 +18,31 @@
   ],
   "source_id": "PolyHaven/leather_red_02",
   "source_url": "https://polyhaven.com/a/leather_red_02",
+  "secondary_scan_used": false,
   "license": "CC0-1.0",
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+  "glb_images": [
+    {
+      "name": "A000_PolyHaven_leather_red_02_NormalGL.png_V007_web",
+      "mime": "image/png",
+      "bytes": 2328257
+    },
+    {
+      "name": "A000_PolyHaven_leather_red_02_Color.jpg_V007_web",
+      "mime": "image/jpeg",
+      "bytes": 983279
+    },
+    {
+      "name": "A000_PolyHaven_leather_red_02_Roughness.jpg_V007_web",
+      "mime": "image/png",
+      "bytes": 1260412
+    }
+  ],
+  "glb_meshes": 2,
+  "glb_materials": 1,
+  "normal_mapped_materials": 1,
+  "total_embedded_image_bytes": 4571948
 }
