@@ -1,0 +1,164 @@
+name: Genesis | physically attached linen V020 + subtle hemp V018
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-fiber-physical-fix.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-fibers-physical-fix
+  cancel-in-progress: false
+jobs:
+  candidate:
+    name: ${{ matrix.asset }} - ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - asset: linen-thread
+            version: V020_candidate
+            script: tools/asset_v020.py
+            folder: v020
+          - asset: hemp-cord
+            version: V018_hemp_candidate
+            script: tools/asset_v018_hemp.py
+            folder: v018
+    steps:
+      - name: Checkout isolated public asset branch
+        uses: actions/checkout@v4
+        with:
+          ref: asset/${{ matrix.asset }}
+          persist-credentials: true
+      - name: Set up Blender and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-pil python3-numpy
+          python3 -m py_compile tools/asset_v020.py tools/geometry_v020.py 2>/dev/null || test "${{ matrix.asset }}" = "hemp-cord"
+          python3 -m py_compile "${{ matrix.script }}"
+          if [ "${{ matrix.asset }}" = "linen-thread" ]; then python3 -m py_compile tools/geometry_v020.py; fi
+          if [ "${{ matrix.asset }}" = "hemp-cord" ]; then python3 -m py_compile tools/geometry_v018_hemp.py tools/texture_v017.py; fi
+          blender --version
+      - name: Acquire traceable CC0 photographic PBR
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 tools/fetch_polyhaven_v005.py || echo "Poly Haven unavailable; retain verified CC0 ambientCG source"
+          if [ ! -f "sources/$ASSET_KIND/provenance.json" ]; then
+            python3 tools/fetch_cc0_scans.py
+          fi
+          python3 tools/fetch_secondary_v006.py || echo "Optional bobbin scan unavailable"
+      - name: Preserve original CC0 hemp PBR and prepare fine fiber color variation
+        if: matrix.asset == 'hemp-cord'
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: python3 tools/texture_v017.py
+      - name: Render actual studio views and export GLB master and WebGL variant
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: blender -b -t 2 --python-exit-code 1 --python "${{ matrix.script }}"
+      - name: Check GLB topology, photographic PBR, and physical contact
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+          EXPECTED_VERSION: ${{ matrix.version }}
+        run: |
+          python3 - <<'PY'
+          import os,json,struct,pathlib
+          n=os.environ["ASSET_KIND"]
+          root=pathlib.Path("output")/n
+          data=json.loads((root/"validation.json").read_text())
+          assert data["version"]==os.environ["EXPECTED_VERSION"], data["version"]
+          assert data["quality_approved"] is False
+          assert 0<data["triangles_mesh"]<30000
+          assert data["normal_mapped_materials"]>=1
+          assert data["total_embedded_image_bytes"]<28*1024*1024
+          for view in ["three_quarter","front","side","top","detail"]+(
+                   ["cut_detail","attachment_detail"] if n=="linen-thread" else []):
+              assert (root/(view+".png")).stat().st_size>1024,view
+          for path in [root/(n+".glb"),root/(n+"_master.glb")]:
+              with path.open("rb") as f: h=f.read(12)
+              assert h[:4]==b"glTF" and struct.unpack("<I",h[4:8])[0]==2,path
+              assert path.stat().st_size>1024,path
+          if n=="linen-thread":
+              a=data["tail_attachment"]
+              assert a["root_gap_m"]<0.000001
+              assert a["crosses_flange_without_intersection"] is True
+              assert a["flange_min_clearance_m"]>=-0.0002
+              assert 0<a["outside_flange_face_gap_m"]<0.012
+              assert a["free_fibers"]==5
+          else:
+              a=data["fiber_refinement"]
+              assert a["main_silhouette_preserved"]
+              assert a["fibers_attached_to_existing_strand_vertices"]
+              assert a["additional_microfibers"]==10
+          print(json.dumps({"status":"verified_3d_candidate","asset":n,
+               "glb_bytes":data["glb_bytes"],"tris":data["triangles_mesh"],
+               "physical_validation":a,"approved":False},indent=2))
+          PY
+      - name: Publish small review photos and report to matching public branch
+        if: success()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+          FOLDER: ${{ matrix.folder }}
+        run: |
+          python3 - <<'PY'
+          import pathlib,os,shutil
+          from PIL import Image
+          n=os.environ["ASSET_KIND"]
+          root=pathlib.Path("output")/n
+          dst=pathlib.Path("evaluation")/n/os.environ["FOLDER"]
+          dst.mkdir(parents=True,exist_ok=True)
+          views=["three_quarter","front","side","top","detail"]+(
+              ["cut_detail","attachment_detail"] if n=="linen-thread" else [])
+          for view in views:
+              rgba=Image.open(root/(view+".png")).convert("RGBA")
+              bg=Image.new("RGBA",rgba.size,(43,46,52,255))
+              bg.alpha_composite(rgba)
+              im=bg.convert("RGB")
+              im.thumbnail((900,900),Image.Resampling.LANCZOS)
+              im.save(dst/(view+".jpg"),"JPEG",quality=90,optimize=True)
+          shutil.copyfile(root/"validation.json",dst/"validation.json")
+          shutil.copyfile(pathlib.Path("sources")/n/"provenance.json",dst/"provenance.json")
+          d=pathlib.Path("sources")/n/"derivation_v017.json"
+          if d.exists():shutil.copyfile(d,dst/"derivation_v017.json")
+          (dst/"STATUS.md").write_text("# Physical correction candidate\n\nNot approved. V016/V017/V018/V019 remain preserved.\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/$FOLDER"
+          if ! git diff --cached --quiet; then
+            git commit -m "evaluation: publish grounded fiber and spool-contact Blender render [skip ci]"
+            git pull --rebase origin "asset/$ASSET_KIND"
+            git push origin "HEAD:asset/$ASSET_KIND"
+          fi
+      - name: Publish diagnostic failure receipt
+        if: failure()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+          FOLDER: ${{ matrix.folder }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p "evaluation/$ASSET_KIND/$FOLDER"
+          echo "Blender validation failed. Run: https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/$RUN_ID" > "evaluation/$ASSET_KIND/$FOLDER/BUILD_FAILURE.md"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/$FOLDER/BUILD_FAILURE.md"
+          if ! git diff --cached --quiet; then
+            git commit -m "diagnostics: physical fiber correction failed $RUN_ID [skip ci]"
+            git pull --rebase origin "asset/$ASSET_KIND"
+            git push origin "HEAD:asset/$ASSET_KIND"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-${{ matrix.asset }}-${{ matrix.folder }}-${{ github.run_id }}
+          path: |
+            output/${{ matrix.asset }}/
+            sources/${{ matrix.asset }}/provenance.json
+            sources/${{ matrix.asset }}/derivation_v017.json
+          if-no-files-found: warn
+          retention-days: 14
