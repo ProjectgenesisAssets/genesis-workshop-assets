@@ -1,6 +1,6 @@
 {
   "asset": "dry-oak-wood",
-  "version": "V014_candidate",
+  "version": "V015_candidate",
   "objects": 20,
   "triangles_mesh": 10236,
   "triangles_goal_under": 30000,
@@ -23,35 +23,35 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V014 CC0 PBR materials; authored split hardwood with baked endgrain, adjusted hide rims and attached hemp tip fibers; 8/10 visual review and PlayCanvas GPU test still required.",
+  "notes": "V015 irregular split hardwood, trimmed natural hides, slightly imperfect natural fibers. Separate CC0 surface scans. Artist approval and PlayCanvas profiling not completed.",
   "glb_images": [
     {
-      "name": "Wood049_4K-PNG_NormalGL.png_V014_web",
+      "name": "Wood049_4K-PNG_NormalGL.png_V015_web",
       "mime": "image/png",
       "bytes": 3012232
     },
     {
-      "name": "Wood049_4K-PNG_Color.png_V014_web",
+      "name": "Wood049_4K-PNG_Color.png_V015_web",
       "mime": "image/jpeg",
       "bytes": 221480
     },
     {
-      "name": "Wood049_4K-PNG_Roughness.png_V014_web",
+      "name": "Wood049_4K-PNG_Roughness.png_V015_web",
       "mime": "image/png",
       "bytes": 633329
     },
     {
-      "name": "zz_v006_bark_NormalGL.png_V014_1k",
+      "name": "zz_v006_bark_NormalGL.png_V015_1k",
       "mime": "image/png",
       "bytes": 3008995
     },
     {
-      "name": "zz_v006_bark_Color.jpg_V014_1k",
+      "name": "zz_v006_bark_Color.jpg_V015_1k",
       "mime": "image/jpeg",
       "bytes": 445502
     },
     {
-      "name": "zz_v006_bark_Roughness.jpg_V014_1k",
+      "name": "zz_v006_bark_Roughness.jpg_V015_1k",
       "mime": "image/png",
       "bytes": 855633
     },
