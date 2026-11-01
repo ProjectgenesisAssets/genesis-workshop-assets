@@ -1,4 +1,4 @@
-name: Genesis V002 | 6 independent CC0-PBR Blender candidates
+name: Genesis V003 | 6 independent CC0-PBR Blender candidates
 on:
   push:
     branches: [main]
@@ -64,7 +64,7 @@ jobs:
           manifest=json.load(open("sources/"+n+"/provenance.json"))
           report=json.load(open(root+"/validation.json"))
           assert report["glb_bytes"]>1024 and report["master_bytes"]>1024 and report["triangles_mesh"]>0
-          assert report["version"]=="V002_candidate"
+          assert report["version"]=="V003_candidate"
           assert report["triangles_mesh"]<30000,"Exceeds 30k triangle web budget"
           print(json.dumps({"asset":n,"status":"candidate_binary_valid","glb_bytes":report["glb_bytes"],"tris":report["triangles_mesh"],"source":manifest["source_url"],"visual_approved":False},indent=2))
           PY
@@ -90,7 +90,7 @@ jobs:
           shutil.copyfile(src/"validation.json",dest/"validation.json")
           shutil.copyfile(pathlib.Path("sources")/n/"provenance.json",dest/"provenance.json")
           (dest/"STATUS.md").write_text(
-              "# Experimental Blender candidate\n\n"
+              "# Experimental Blender V003 candidate\n\n"
               "GLB and full-resolution PNG are available in GitHub Actions artifacts.\n"
               "These previews are automated technical outputs, NOT visually approved assets.\n"
           )
