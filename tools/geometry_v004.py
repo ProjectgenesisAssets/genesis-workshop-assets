@@ -33,6 +33,11 @@ def v4_endgrain_material():
         before=bs.inputs["Base Color"].links[0].from_socket
         l.new(before,mix.inputs[1])
         l.new(mix.outputs["Color"],bs.inputs["Base Color"])
+        rings=n.new("ShaderNodeMixRGB");rings.blend_type="MULTIPLY"
+        rings.inputs[0].default_value=.28
+        l.new(mix.outputs["Color"],rings.inputs[1])
+        l.new(wave.outputs["Color"],rings.inputs[2])
+        l.new(rings.outputs["Color"],bs.inputs["Base Color"])
     return m
 def wood_piece(label,oak,offset):
     bark=v4_bark_material()
