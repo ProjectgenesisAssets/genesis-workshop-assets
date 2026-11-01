@@ -1,11 +1,11 @@
 {
   "asset": "tanned-cowhide",
-  "version": "V002_candidate",
+  "version": "V003_candidate",
   "objects": 1,
   "triangles_mesh": 6860,
   "triangles_goal_under": 30000,
-  "master_bytes": 105184440,
-  "glb_bytes": 17280628,
+  "master_bytes": 105184436,
+  "glb_bytes": 15096576,
   "master_texture_px": [
     4096,
     4096
