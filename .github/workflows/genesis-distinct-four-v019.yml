@@ -1,0 +1,125 @@
+name: Genesis V019 | distinguish oak ash bovine goat
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-distinct-four-v019.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: genesis-distinct-four-v019
+  cancel-in-progress: false
+jobs:
+  material:
+    name: ${{ matrix.asset }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        asset: [dry-oak-wood, dry-ash-wood, tanned-cowhide, tanned-goatskin]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: asset/${{ matrix.asset }}
+      - name: Blender tools and syntax QA
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+          python3 -m py_compile tools/asset_v019_distinct.py tools/geometry_v019_distinct.py
+      - name: Fetch real CC0 photographic PBR and provenance
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 tools/fetch_polyhaven_v005.py || echo "Poly Haven optional candidate unavailable"
+          if [ ! -f "sources/$ASSET_KIND/provenance.json" ]; then python3 tools/fetch_cc0_scans.py; fi
+          python3 tools/fetch_secondary_v006.py || echo "Optional extra bark scan not available"
+          test -f "sources/$ASSET_KIND/provenance.json"
+      - name: Generate genuinely distinct geometry and render 5 real views
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: blender -b -t 2 --python-exit-code 1 --python tools/asset_v019_distinct.py
+      - name: GLB and topology technical verification
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import json,os,struct,pathlib
+          n=os.environ["ASSET_KIND"]
+          p=pathlib.Path("output")/n
+          d=json.loads((p/"validation.json").read_text())
+          assert d["version"]=="V019_distinct_candidate"
+          assert d["difference_is_geometric"] and d["distinctive_profile"]
+          assert d["single_object"] and d["closed_surface"] and d["one_piece_validated"]
+          assert d["quality_approved"] is False and d["visual_review_status"]=="NOT_APPROVED"
+          assert 200<d["triangles_mesh"]<30000
+          assert d["normal_mapped_materials"]>=1
+          assert d["total_embedded_image_bytes"]<28*1024*1024
+          for name in ("three_quarter","front","side","top","detail"):
+            assert (p/(name+".png")).stat().st_size>1024,name
+          for name in (n+".glb",n+"_master.glb"):
+            with (p/name).open("rb") as f:h=f.read(12)
+            assert h[:4]==b"glTF" and struct.unpack("<I",h[4:8])[0]==2
+          print(json.dumps({"asset":n,"profile":d["distinctive_profile"],
+             "triangles":d["triangles_mesh"],"web_mb":round(d["glb_bytes"]/1e6,3),
+             "approved":False},indent=2))
+          PY
+      - name: Publish new candidate evaluation only, preserve V017 and V018
+        if: success()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+        run: |
+          python3 - <<'PY'
+          import pathlib,os,shutil
+          from PIL import Image
+          n=os.environ["ASSET_KIND"]
+          origin=pathlib.Path("output")/n
+          folder=pathlib.Path("evaluation")/n/"v019_distinct"
+          folder.mkdir(parents=True,exist_ok=True)
+          for view in ("three_quarter","front","side","top","detail"):
+            rgba=Image.open(origin/(view+".png")).convert("RGBA")
+            bg=Image.new("RGBA",rgba.size,(42,45,51,255))
+            bg.alpha_composite(rgba)
+            img=bg.convert("RGB");img.thumbnail((850,850))
+            img.save(folder/(view+".jpg"),quality=90,optimize=True)
+          shutil.copyfile(origin/"validation.json",folder/"validation.json")
+          shutil.copyfile(pathlib.Path("sources")/n/"provenance.json",folder/"provenance.json")
+          secondary=pathlib.Path("sources")/n/"secondary_sources.json"
+          if secondary.exists():shutil.copyfile(secondary,folder/"secondary_sources.json")
+          (folder/"STATUS.md").write_text("V019 independent silhouette correction. Not approved. Prior versions and the two approved fiber materials remain unchanged.\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/v019_distinct"
+          if ! git diff --cached --quiet; then
+            git commit -m "review: V019 distinct silhouette for $ASSET_KIND [skip ci]"
+            git pull --rebase origin "asset/$ASSET_KIND"
+            git push origin "HEAD:asset/$ASSET_KIND"
+          fi
+      - name: Record failure without promoting a candidate
+        if: failure()
+        env:
+          ASSET_KIND: ${{ matrix.asset }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p "evaluation/$ASSET_KIND/v019_distinct"
+          echo "V019 failure. https://github.com/ProjectgenesisAssets/genesis-workshop-assets/actions/runs/$RUN_ID" > "evaluation/$ASSET_KIND/v019_distinct/BUILD_FAILURE.md"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "evaluation/$ASSET_KIND/v019_distinct/BUILD_FAILURE.md"
+          if ! git diff --cached --quiet; then
+            git commit -m "diagnostic: V019 unsuccessful $RUN_ID [skip ci]"
+            git pull --rebase origin "asset/$ASSET_KIND"
+            git push origin "HEAD:asset/$ASSET_KIND"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-V019-${{ matrix.asset }}-${{ github.run_id }}
+          path: |
+            output/${{ matrix.asset }}/
+            sources/${{ matrix.asset }}/provenance.json
+          if-no-files-found: warn
+          retention-days: 14
