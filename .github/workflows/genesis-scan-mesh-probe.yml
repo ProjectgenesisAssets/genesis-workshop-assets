@@ -1,0 +1,40 @@
+name: Genesis scan-mesh CC0 discovery
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/genesis-scan-mesh-probe.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Query Poly Haven actual 3D photogrammetry packages
+        run: |
+          python3 - <<'PY'
+          import urllib.request,json,pathlib
+          hdr={"User-Agent":"ProjectGenesis-CC0-3DMesh/1.0 Powered by Poly Haven"}
+          report={}
+          for name in ("dead_tree_trunk","dead_tree_trunk_02","tree_stump_01"):
+            req=urllib.request.Request("https://api.polyhaven.com/files/"+name,headers=hdr)
+            with urllib.request.urlopen(req,timeout=50) as f:data=json.load(f)
+            formats={}
+            for k,v in data.items():
+              if k.lower() in ("gltf","blend","fbx","usd","obj"):
+                formats[k]={res:{fmt:{"url":d.get("url"),"size":d.get("size"),"includes":len(d.get("include",[]))} for fmt,d in q.items() if isinstance(d,dict) and d.get("url")} for res,q in v.items() if isinstance(q,dict)}
+            report[name]={"license":"CC0-1.0","source":"https://polyhaven.com/a/"+name,"formats":formats}
+          p=pathlib.Path("evaluation/scans");p.mkdir(parents=True,exist_ok=True)
+          (p/"polyhaven_3d_scan_packages.json").write_text(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2)[:12000])
+          PY
+      - name: Publish 3D scan options and provenance for asset artisans
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/scans/polyhaven_3d_scan_packages.json
+          git commit -m "research: record CC0 photogrammetric mesh download choices [skip ci]"
+          git push origin HEAD:main
