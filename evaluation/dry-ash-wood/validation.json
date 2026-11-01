@@ -1,6 +1,6 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V009_candidate",
+  "version": "V010_candidate",
   "objects": 24,
   "triangles_mesh": 7596,
   "triangles_goal_under": 30000,
@@ -23,35 +23,35 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V009 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
+  "notes": "V010 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V009_web",
+      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V010_web",
       "mime": "image/png",
       "bytes": 4768718
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V009_web",
+      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V010_web",
       "mime": "image/jpeg",
       "bytes": 465148
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V009_web",
+      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V010_web",
       "mime": "image/png",
       "bytes": 1159508
     },
     {
-      "name": "zz_v006_bark_NormalGL.png_V009_1k",
+      "name": "zz_v006_bark_NormalGL.png_V010_1k",
       "mime": "image/png",
       "bytes": 1366728
     },
     {
-      "name": "zz_v006_bark_Color.jpg_V009_1k",
+      "name": "zz_v006_bark_Color.jpg_V010_1k",
       "mime": "image/jpeg",
       "bytes": 442735
     },
     {
-      "name": "zz_v006_bark_Roughness.jpg_V009_1k",
+      "name": "zz_v006_bark_Roughness.jpg_V010_1k",
       "mime": "image/png",
       "bytes": 840947
     }
