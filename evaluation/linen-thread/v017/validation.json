@@ -1,0 +1,64 @@
+{
+  "asset": "linen-thread",
+  "version": "V017_candidate",
+  "objects": 5,
+  "triangles_mesh": 22440,
+  "triangles_goal_under": 30000,
+  "master_bytes": 133454404,
+  "glb_bytes": 7002440,
+  "master_texture_px": [
+    4096,
+    4096
+  ],
+  "web_texture_px": 1024,
+  "production_focus": "irregular fine flax winding and tapered loose end",
+  "pbr_maps": [
+    "Color",
+    "Roughness",
+    "NormalGL"
+  ],
+  "source_id": "Fabric019",
+  "source_url": "https://ambientcg.com/a/Fabric019",
+  "secondary_scan_used": true,
+  "license": "CC0-1.0",
+  "species_or_fiber_verified": false,
+  "quality_approved": false,
+  "visual_score": null,
+  "notes": "V017 revises only hemp or linen, preserves originals. Original CC0 image provenance remains; color/roughness derivative only for hemp. 8/10 human review and PlayCanvas perf pending.",
+  "glb_images": [
+    {
+      "name": "zz_v006_bobbin_NormalGL.png_V017_1k",
+      "mime": "image/png",
+      "bytes": 1820176
+    },
+    {
+      "name": "zz_v006_bobbin_Color.jpg_V017_1k",
+      "mime": "image/jpeg",
+      "bytes": 105793
+    },
+    {
+      "name": "zz_v006_bobbin_Roughness.jpg_V017_1k",
+      "mime": "image/png",
+      "bytes": 635204
+    },
+    {
+      "name": "Fabric019_4K-PNG_NormalGL.png_V017_web",
+      "mime": "image/png",
+      "bytes": 3237980
+    },
+    {
+      "name": "Fabric019_4K-PNG_Color.png_V017_web",
+      "mime": "image/jpeg",
+      "bytes": 245583
+    },
+    {
+      "name": "Fabric019_4K-PNG_Roughness.png_V017_web",
+      "mime": "image/png",
+      "bytes": 451802
+    }
+  ],
+  "glb_meshes": 5,
+  "glb_materials": 2,
+  "normal_mapped_materials": 2,
+  "total_embedded_image_bytes": 6496538
+}
