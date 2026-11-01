@@ -1,11 +1,11 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V004_candidate",
+  "version": "V005_candidate",
   "objects": 28,
   "triangles_mesh": 8236,
   "triangles_goal_under": 30000,
-  "master_bytes": 127029056,
-  "glb_bytes": 143336476,
+  "master_bytes": 105330332,
+  "glb_bytes": 14032060,
   "master_texture_px": [
     4096,
     4096
@@ -16,11 +16,11 @@
     "Roughness",
     "NormalGL"
   ],
-  "source_id": "Wood096",
-  "source_url": "https://ambientcg.com/a/Wood096",
+  "source_id": "PolyHaven/ash_veneer",
+  "source_url": "https://polyhaven.com/a/ash_veneer",
   "license": "CC0-1.0",
-  "species_or_fiber_verified": false,
+  "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V004 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
 }
