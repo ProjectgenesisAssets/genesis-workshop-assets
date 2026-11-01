@@ -1,11 +1,11 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V010_candidate",
-  "objects": 24,
-  "triangles_mesh": 7596,
+  "version": "V013_candidate",
+  "objects": 16,
+  "triangles_mesh": 10228,
   "triangles_goal_under": 30000,
-  "master_bytes": 119916592,
-  "glb_bytes": 9230860,
+  "master_bytes": 119959932,
+  "glb_bytes": 9274248,
   "master_texture_px": [
     4096,
     4096
@@ -23,40 +23,40 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V010 handmade sculptural geometry with CC0 PBR photographic references, not geometry from photogrammetry. Artist review and PlayCanvas real-device performance pending.",
+  "notes": "V013 geometry authored for natural wood fracture, irregular hides and hand-laid natural cord. CC0 PBR surface scans. Artist validation and PlayCanvas device profiling pending.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V010_web",
+      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V013_web",
       "mime": "image/png",
       "bytes": 4768718
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V010_web",
+      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V013_web",
       "mime": "image/jpeg",
       "bytes": 465148
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V010_web",
+      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V013_web",
       "mime": "image/png",
       "bytes": 1159508
     },
     {
-      "name": "zz_v006_bark_NormalGL.png_V010_1k",
+      "name": "zz_v006_bark_NormalGL.png_V013_1k",
       "mime": "image/png",
       "bytes": 1366728
     },
     {
-      "name": "zz_v006_bark_Color.jpg_V010_1k",
+      "name": "zz_v006_bark_Color.jpg_V013_1k",
       "mime": "image/jpeg",
       "bytes": 442735
     },
     {
-      "name": "zz_v006_bark_Roughness.jpg_V010_1k",
+      "name": "zz_v006_bark_Roughness.jpg_V013_1k",
       "mime": "image/png",
       "bytes": 840947
     }
   ],
-  "glb_meshes": 24,
+  "glb_meshes": 16,
   "glb_materials": 5,
   "normal_mapped_materials": 5,
   "total_embedded_image_bytes": 9043784
