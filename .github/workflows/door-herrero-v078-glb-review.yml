@@ -1,0 +1,72 @@
+name: Herrero Door V078 - export visible V077 black-iron GLB and inspect PBR
+on:
+  push:
+    branches:
+      - production/door-herrero-v078-glb-qa
+    paths:
+      - 'scripts/puerta_herreria_art_078_glb_review.py'
+      - '.github/workflows/door-herrero-v078-glb-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  export-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check CC0 scan provenance and original source without alteration
+        run: |
+          set -euo pipefail
+          p=assets/door_herrero/materials/rusted_scratched_iron_4k
+          for layer in color normalgl roughness metalness displacement; do
+            test -s "$p/rusted-scratched-iron_4k_${layer}.jpg"
+          done
+          test -s "$p/LICENSE.txt"
+          python3 -m py_compile scripts/puerta_herreria_art_077.py scripts/puerta_herreria_art_078_glb_review.py
+      - name: Install official Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 --max-time 300 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Download neutral CC0 studio HDRI (preview only)
+        run: |
+          curl -fsSL --retry 4 --max-time 300 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr -o studio_small_09_1k.hdr
+          test -s studio_small_09_1k.hdr
+      - name: Reproduce four V077 views, export V078 GLB and audit fidelity
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_078_glb_review.py
+      - name: Verify source appearance, GLB archive and inspection report
+        run: |
+          set -euo pipefail
+          test -s output_blacksmith_door_art_078/Blacksmith_Door_V078_Blackened_Iron_Review.glb
+          test -s output_blacksmith_door_art_078/V078_GLTF_AUDIT.json
+          for view in A_blackened_iron_40pct_studio B_warm_blackened_iron_40pct_studio C_blackened_iron_25pct_studio D_blackened_iron_closeup_40pct; do
+            test -s "output_blacksmith_door_art_077/${view}.png"
+          done
+          python3 - <<'PY'
+          import json
+          r=json.load(open("output_blacksmith_door_art_078/V078_GLTF_AUDIT.json"))
+          assert r["geometry_unchanged"]
+          assert r["glb_images"]>0 and r["glb_normal_textures"]>0 and r["glb_metallic_roughness_textures"]>0
+          assert not r["playcanvas_import_tested"]
+          print("GLB bytes",r["glb_bytes"],"triangles",r["evaluated_triangles"],"textures",r["glb_images"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: herrero-door-v078-review-glb-and-reference-v077-renders
+          path: |
+            output_blacksmith_door_art_078/*.glb
+            output_blacksmith_door_art_078/*.json
+            output_blacksmith_door_art_077/A_blackened_iron_40pct_studio.png
+            output_blacksmith_door_art_077/B_warm_blackened_iron_40pct_studio.png
+            output_blacksmith_door_art_077/C_blackened_iron_25pct_studio.png
+            output_blacksmith_door_art_077/D_blackened_iron_closeup_40pct.png
+          retention-days: 7
+          if-no-files-found: warn
