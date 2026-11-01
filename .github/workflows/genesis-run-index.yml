@@ -1,4 +1,4 @@
-name: Genesis production run index (V018 linen refinement audit)
+name: Genesis production run index (V018 corrected runner audit)
 on:
   push:
     branches: [main]
