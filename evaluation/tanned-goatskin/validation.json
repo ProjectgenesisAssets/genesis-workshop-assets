@@ -1,11 +1,11 @@
 {
   "asset": "tanned-goatskin",
-  "version": "V015_candidate",
+  "version": "V016_candidate",
   "objects": 2,
   "triangles_mesh": 12664,
   "triangles_goal_under": 30000,
-  "master_bytes": 62937712,
-  "glb_bytes": 4862888,
+  "master_bytes": 62937772,
+  "glb_bytes": 4862948,
   "master_texture_px": [
     4096,
     4096
@@ -23,20 +23,20 @@
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V015 irregular split hardwood, trimmed natural hides, slightly imperfect natural fibers. Separate CC0 surface scans. Artist approval and PlayCanvas profiling not completed.",
+  "notes": "V016 preserves V015 hand-split wood and adds distinct tension-fold cured hides and less uniform wound flax. Visual acceptance and WebGL runtime benchmark pending.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_leather_red_02_NormalGL.png_V015_web",
+      "name": "A000_PolyHaven_leather_red_02_NormalGL.png_V016_web",
       "mime": "image/png",
       "bytes": 2328257
     },
     {
-      "name": "A000_PolyHaven_leather_red_02_Color.jpg_V015_web",
+      "name": "A000_PolyHaven_leather_red_02_Color.jpg_V016_web",
       "mime": "image/jpeg",
       "bytes": 983279
     },
     {
-      "name": "A000_PolyHaven_leather_red_02_Roughness.jpg_V015_web",
+      "name": "A000_PolyHaven_leather_red_02_Roughness.jpg_V016_web",
       "mime": "image/png",
       "bytes": 1260412
     }
