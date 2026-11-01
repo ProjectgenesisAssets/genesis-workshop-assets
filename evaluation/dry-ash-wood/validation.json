@@ -1,11 +1,11 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V015_candidate",
+  "version": "V016_candidate",
   "objects": 16,
   "triangles_mesh": 10228,
   "triangles_goal_under": 30000,
-  "master_bytes": 120840484,
-  "glb_bytes": 5928860,
+  "master_bytes": 120840500,
+  "glb_bytes": 5928876,
   "master_texture_px": [
     4096,
     4096
@@ -23,46 +23,46 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V015 irregular split hardwood, trimmed natural hides, slightly imperfect natural fibers. Separate CC0 surface scans. Artist approval and PlayCanvas profiling not completed.",
+  "notes": "V016 preserves V015 hand-split wood and adds distinct tension-fold cured hides and less uniform wound flax. Visual acceptance and WebGL runtime benchmark pending.",
   "glb_images": [
     {
-      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V015_web",
+      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V016_web",
       "mime": "image/png",
       "bytes": 2646807
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V015_web",
+      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V016_web",
       "mime": "image/jpeg",
       "bytes": 205762
     },
     {
-      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V015_web",
+      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V016_web",
       "mime": "image/png",
       "bytes": 643345
     },
     {
-      "name": "zz_v006_bark_NormalGL.png_V015_1k",
+      "name": "zz_v006_bark_NormalGL.png_V016_1k",
       "mime": "image/png",
       "bytes": 615029
     },
     {
-      "name": "zz_v006_bark_Color.jpg_V015_1k",
+      "name": "zz_v006_bark_Color.jpg_V016_1k",
       "mime": "image/jpeg",
       "bytes": 240053
     },
     {
-      "name": "zz_v006_bark_Roughness.jpg_V015_1k",
+      "name": "zz_v006_bark_Roughness.jpg_V016_1k",
       "mime": "image/png",
       "bytes": 466844
     },
     {
       "name": "dry-ash-wood_cut_endgrain_V014",
       "mime": "image/png",
-      "bytes": 880742
+      "bytes": 880757
     }
   ],
   "glb_meshes": 16,
   "glb_materials": 4,
   "normal_mapped_materials": 4,
-  "total_embedded_image_bytes": 5698582
+  "total_embedded_image_bytes": 5698597
 }
