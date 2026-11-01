@@ -1,0 +1,100 @@
+{
+  "asset": "tanned-goatskin",
+  "id": "Leather038",
+  "title": "Leather 038",
+  "source_url": "https://ambientcg.com/a/Leather038",
+  "download_url": "https://ambientcg.com/get?file=Leather038_4K-PNG.zip",
+  "source_package": "4K-PNG",
+  "license": "CC0-1.0",
+  "sha256": "e4b2d40e3038afd9e90fcd64086e342bfc4183333a823abe1e72c49e34bc84e4",
+  "scan_technique_confirmed": false,
+  "species_or_fiber_verified": false,
+  "visual_approval": false,
+  "caution": "A CC0 PBR texture is not necessarily a photogrammetric scan or proof of a biological species.",
+  "shortlist": [
+    {
+      "id": "Leather038",
+      "title": "Leather 038",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather038"
+    },
+    {
+      "id": "Leather039",
+      "title": "Leather 039",
+      "score": 24,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather039"
+    },
+    {
+      "id": "Leather037",
+      "title": "Leather 037",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather037"
+    },
+    {
+      "id": "Leather030",
+      "title": "Leather 030",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather030"
+    },
+    {
+      "id": "Leather026",
+      "title": "Leather 026",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather026"
+    },
+    {
+      "id": "Leather034C",
+      "title": "Leather 034 C",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather034C"
+    },
+    {
+      "id": "Leather027",
+      "title": "Leather 027",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather027"
+    },
+    {
+      "id": "Leather035D",
+      "title": "Leather 035 D",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather035D"
+    },
+    {
+      "id": "Leather033A",
+      "title": "Leather 033 A",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather033A"
+    },
+    {
+      "id": "Leather033C",
+      "title": "Leather 033 C",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather033C"
+    },
+    {
+      "id": "Leather032",
+      "title": "Leather 032",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather032"
+    },
+    {
+      "id": "Leather028",
+      "title": "Leather 028",
+      "score": 12,
+      "package": "4K-PNG",
+      "url": "https://ambientcg.com/a/Leather028"
+    }
+  ]
+}
