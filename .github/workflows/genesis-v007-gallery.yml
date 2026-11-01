@@ -7,14 +7,17 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: genesis-v007-contact-sheet
+  cancel-in-progress: true
 jobs:
   gallery:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Install image support
         run: sudo apt-get update && sudo apt-get install -y python3-pil
       - name: Wait for all six verified V007 material reports on public branches
@@ -22,7 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           for round in $(seq 1 24); do
-            git fetch origin '+refs/heads/asset/*:refs/remotes/origin/asset/*' --quiet
+            git fetch --depth 1 origin '+refs/heads/asset/*:refs/remotes/origin/asset/*' --quiet
             ready=0
             for asset in dry-oak-wood dry-ash-wood tanned-cowhide tanned-goatskin hemp-cord linen-thread; do
               if git show "origin/asset/$asset:evaluation/$asset/validation.json" 2>/dev/null | grep -q '"V007_candidate"'; then
