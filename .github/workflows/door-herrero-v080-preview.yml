@@ -1,0 +1,85 @@
+name: Herrero Door V080 - approved color, increased roughness and metallicity
+on:
+  push:
+    branches:
+      - production/door-herrero-v080-art-direction
+    paths:
+      - scripts/puerta_herreria_art_080.py
+      - .github/workflows/door-herrero-v080-preview.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm original unpacked 4K PBR source stays unchanged
+        run: |
+          set -euo pipefail
+          p=assets/door_herrero/materials/rusted_scratched_iron_4k
+          for layer in color normalgl roughness metalness displacement; do
+            test -s "$p/rusted-scratched-iron_4k_${layer}.jpg"
+          done
+          test -s "$p/LICENSE.txt"
+      - name: Install Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 --max-time 300 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Download neutral studio HDRI
+        run: |
+          curl -fsSL --retry 4 --max-time 300 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr -o studio_small_09_1k.hdr
+          test -s studio_small_09_1k.hdr
+      - name: Validate Python scene code before expensive Blender render
+        run: |
+          python3 -m py_compile scripts/puerta_herreria_art_080.py
+      - name: Blender V080 art review - preserve approved hue, increase roughness and metal response
+        env:
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: |
+          /tmp/blender/blender -b -t 3 --python-exit-code 1 --python scripts/puerta_herreria_art_080.py
+      - name: Verify rendered comparisons
+        run: |
+          set -euo pipefail
+          for variant in A_V080_medium_roughness_metalness B_V080_stronger_roughness_metalness C_V080_medium_surface_detail D_V080_stronger_surface_detail; do
+            test -s "output_blacksmith_door_art_080/${variant}.png"
+          done
+          test -s output_blacksmith_door_art_080/DESIGN_AUDIT.json
+          test -s output_blacksmith_door_art_080/V080_PBR_QA.json
+          test -s output_blacksmith_door_art_080/V080_METAL_VS_LEATHER_QA.json
+          test -s output_blacksmith_door_art_080/V080_VISUAL_QA.json
+          test -s output_blacksmith_door_art_080/V080_USER_COLOR_PRESERVATION_QA.json
+          for map in V080_normal_opengl V080_A_approved_color_medium_albedo V080_A_approved_color_medium_metalness V080_A_approved_color_medium_roughness V080_B_approved_color_textured_albedo V080_B_approved_color_textured_metalness V080_B_approved_color_textured_roughness; do
+            test -s "output_blacksmith_door_art_080/${map}.png"
+          done
+          sha256sum output_blacksmith_door_art_080/{A_V080_medium_roughness_metalness,B_V080_stronger_roughness_metalness,C_V080_medium_surface_detail,D_V080_stronger_surface_detail}.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blacksmith-door-v080-approved-color-rough-metal
+          path: |
+            output_blacksmith_door_art_080/*.png
+            output_blacksmith_door_art_080/*.json
+          retention-days: 7
+      - name: Publish preview renders
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p previews/door_herrero_v080
+          for variant in A_V080_medium_roughness_metalness B_V080_stronger_roughness_metalness C_V080_medium_surface_detail D_V080_stronger_surface_detail; do
+            cp "output_blacksmith_door_art_080/${variant}.png" "previews/door_herrero_v080/${variant}.png"
+          done
+          cp output_blacksmith_door_art_080/A_V080_medium_roughness_metalness.png previews/door_herrero_v080/three_quarter.png
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add previews/door_herrero_v080
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish V080 physically oxidized forged iron previews [skip ci]'
+            git pull --rebase origin production/door-herrero-v080-art-direction
+            git push origin HEAD:production/door-herrero-v080-art-direction
+          fi
