@@ -1,7 +1,7 @@
 """V014 evaluation-driven realism: exposed radial wood fracture and baked end-grain,
 irregular cured hide outline, connected natural hemp fibers. No autonomous approval."""
 import math
-from math import sin, cos, pi
+from math import sin, cos, pi, exp
 from mathutils import Quaternion, Vector
 _v013_wood=wood_piece
 _v013_hide=hide
