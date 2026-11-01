@@ -1,0 +1,42 @@
+{
+  "candidate": "dry-ash-wood",
+  "mesh_source": "dead_tree_trunk_02",
+  "asset_page": "https://polyhaven.com/a/dead_tree_trunk_02",
+  "license": "CC0-1.0",
+  "credit": "Powered by Poly Haven",
+  "mesh_type": "photogrammetry",
+  "species_verified": false,
+  "visual_approved": false,
+  "files": [
+    {
+      "path": "dead_tree_trunk_02_2k.gltf",
+      "size": 2849,
+      "sha256": "47699d11f00d22d5f87f8776f94c9f2516f839a0de9c5da80126b355200edd42",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/dead_tree_trunk_02/dead_tree_trunk_02_2k.gltf"
+    },
+    {
+      "path": "textures/dead_tree_trunk_02_nor_gl_2k.jpg",
+      "size": 4920531,
+      "sha256": "c01134451c6610e3c9225f16d8da2080b0eaba4df137e2bf1a7980d7ce417f35",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/dead_tree_trunk_02/dead_tree_trunk_02_nor_gl_2k.jpg"
+    },
+    {
+      "path": "textures/dead_tree_trunk_02_diff_2k.jpg",
+      "size": 3484654,
+      "sha256": "d5b928c12885249e5a5fbe13619ac9693a67f6196137cc9eadedd5a6b90a87de",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/dead_tree_trunk_02/dead_tree_trunk_02_diff_2k.jpg"
+    },
+    {
+      "path": "textures/dead_tree_trunk_02_arm_2k.jpg",
+      "size": 2968937,
+      "sha256": "0be2e1a7c945090c385c7ae2636e6e6c341d4da14d741164b5cfe3080655331d",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/dead_tree_trunk_02/dead_tree_trunk_02_arm_2k.jpg"
+    },
+    {
+      "path": "dead_tree_trunk_02.bin",
+      "size": 1974352,
+      "sha256": "2b1b7ca07d98396ddc1987e367dcff9734df16b62e997c14837512d134687ded",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/dead_tree_trunk_02/dead_tree_trunk_02.bin"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "asset": "dry-ash-wood",
+  "version": "V011_photogrammetry_candidate",
+  "photogrammetry": true,
+  "license": "CC0-1.0",
+  "species_verified": false,
+  "source": "https://polyhaven.com/a/dead_tree_trunk_02",
+  "scanned_triangles_before_decimation": 83128,
+  "triangles_mesh": 25598,
+  "glb_bytes": 12023140,
+  "master_bytes": 12023112,
+  "quality_approved": false,
+  "visual_score": null,
+  "note": "Actual CC0 scan geometry, but species unverified; alternative proposal only."
+}
