@@ -1,11 +1,11 @@
 {
   "asset": "tanned-cowhide",
-  "version": "V005_candidate",
+  "version": "V007_candidate",
   "objects": 2,
-  "triangles_mesh": 12032,
+  "triangles_mesh": 12280,
   "triangles_goal_under": 30000,
-  "master_bytes": 53734048,
-  "glb_bytes": 8672996,
+  "master_bytes": 53779964,
+  "glb_bytes": 4441088,
   "master_texture_px": [
     4096,
     4096
@@ -18,9 +18,31 @@
   ],
   "source_id": "PolyHaven/brown_leather",
   "source_url": "https://polyhaven.com/a/brown_leather",
+  "secondary_scan_used": false,
   "license": "CC0-1.0",
   "species_or_fiber_verified": false,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V005 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+  "glb_images": [
+    {
+      "name": "A000_PolyHaven_brown_leather_NormalGL.png_V007_web",
+      "mime": "image/png",
+      "bytes": 2115192
+    },
+    {
+      "name": "A000_PolyHaven_brown_leather_Color.jpg_V007_web",
+      "mime": "image/jpeg",
+      "bytes": 619460
+    },
+    {
+      "name": "A000_PolyHaven_brown_leather_Roughness.jpg_V007_web",
+      "mime": "image/png",
+      "bytes": 1425106
+    }
+  ],
+  "glb_meshes": 2,
+  "glb_materials": 1,
+  "normal_mapped_materials": 1,
+  "total_embedded_image_bytes": 4159758
 }
