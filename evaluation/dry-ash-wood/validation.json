@@ -1,11 +1,11 @@
 {
   "asset": "dry-ash-wood",
-  "version": "V006_candidate",
+  "version": "V007_candidate",
   "objects": 28,
   "triangles_mesh": 8236,
   "triangles_goal_under": 30000,
   "master_bytes": 119933352,
-  "glb_bytes": 17763120,
+  "glb_bytes": 9247600,
   "master_texture_px": [
     4096,
     4096
@@ -23,5 +23,41 @@
   "species_or_fiber_verified": true,
   "quality_approved": false,
   "visual_score": null,
-  "notes": "V006 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending."
+  "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+  "glb_images": [
+    {
+      "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V007_web",
+      "mime": "image/png",
+      "bytes": 4768718
+    },
+    {
+      "name": "A000_PolyHaven_ash_veneer_Color.jpg_V007_web",
+      "mime": "image/jpeg",
+      "bytes": 465148
+    },
+    {
+      "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V007_web",
+      "mime": "image/png",
+      "bytes": 1159508
+    },
+    {
+      "name": "zz_v006_bark_NormalGL.png_V007_1k",
+      "mime": "image/png",
+      "bytes": 1366728
+    },
+    {
+      "name": "zz_v006_bark_Color.jpg_V007_1k",
+      "mime": "image/jpeg",
+      "bytes": 442735
+    },
+    {
+      "name": "zz_v006_bark_Roughness.jpg_V007_1k",
+      "mime": "image/png",
+      "bytes": 840947
+    }
+  ],
+  "glb_meshes": 28,
+  "glb_materials": 5,
+  "normal_mapped_materials": 5,
+  "total_embedded_image_bytes": 9043784
 }
