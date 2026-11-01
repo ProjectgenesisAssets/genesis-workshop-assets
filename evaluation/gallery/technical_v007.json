@@ -1,0 +1,335 @@
+[
+  {
+    "asset": "dry-oak-wood",
+    "version": "V007_candidate",
+    "objects": 36,
+    "triangles_mesh": 8252,
+    "triangles_goal_under": 30000,
+    "master_bytes": 179776336,
+    "glb_bytes": 16331744,
+    "master_texture_px": [
+      4096,
+      4096
+    ],
+    "web_texture_px": 1536,
+    "pbr_maps": [
+      "Color",
+      "Roughness",
+      "NormalGL"
+    ],
+    "source_id": "Wood049",
+    "source_url": "https://ambientcg.com/a/Wood049",
+    "secondary_scan_used": true,
+    "license": "CC0-1.0",
+    "species_or_fiber_verified": true,
+    "quality_approved": false,
+    "visual_score": null,
+    "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+    "glb_images": [
+      {
+        "name": "Wood049_4K-PNG_NormalGL.png_V007_web",
+        "mime": "image/png",
+        "bytes": 5390163
+      },
+      {
+        "name": "Wood049_4K-PNG_Color.png_V007_web",
+        "mime": "image/jpeg",
+        "bytes": 472909
+      },
+      {
+        "name": "Wood049_4K-PNG_Roughness.png_V007_web",
+        "mime": "image/png",
+        "bytes": 1160099
+      },
+      {
+        "name": "zz_v006_bark_NormalGL.png_V007_1k",
+        "mime": "image/png",
+        "bytes": 6756075
+      },
+      {
+        "name": "zz_v006_bark_Color.jpg_V007_1k",
+        "mime": "image/jpeg",
+        "bytes": 796530
+      },
+      {
+        "name": "zz_v006_bark_Roughness.jpg_V007_1k",
+        "mime": "image/png",
+        "bytes": 1543260
+      }
+    ],
+    "glb_meshes": 36,
+    "glb_materials": 5,
+    "normal_mapped_materials": 5,
+    "total_embedded_image_bytes": 16119036
+  },
+  {
+    "asset": "dry-ash-wood",
+    "version": "V007_candidate",
+    "objects": 28,
+    "triangles_mesh": 8236,
+    "triangles_goal_under": 30000,
+    "master_bytes": 119933352,
+    "glb_bytes": 9247600,
+    "master_texture_px": [
+      4096,
+      4096
+    ],
+    "web_texture_px": 1536,
+    "pbr_maps": [
+      "Color",
+      "Roughness",
+      "NormalGL"
+    ],
+    "source_id": "PolyHaven/ash_veneer",
+    "source_url": "https://polyhaven.com/a/ash_veneer",
+    "secondary_scan_used": true,
+    "license": "CC0-1.0",
+    "species_or_fiber_verified": true,
+    "quality_approved": false,
+    "visual_score": null,
+    "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+    "glb_images": [
+      {
+        "name": "A000_PolyHaven_ash_veneer_NormalGL.png_V007_web",
+        "mime": "image/png",
+        "bytes": 4768718
+      },
+      {
+        "name": "A000_PolyHaven_ash_veneer_Color.jpg_V007_web",
+        "mime": "image/jpeg",
+        "bytes": 465148
+      },
+      {
+        "name": "A000_PolyHaven_ash_veneer_Roughness.jpg_V007_web",
+        "mime": "image/png",
+        "bytes": 1159508
+      },
+      {
+        "name": "zz_v006_bark_NormalGL.png_V007_1k",
+        "mime": "image/png",
+        "bytes": 1366728
+      },
+      {
+        "name": "zz_v006_bark_Color.jpg_V007_1k",
+        "mime": "image/jpeg",
+        "bytes": 442735
+      },
+      {
+        "name": "zz_v006_bark_Roughness.jpg_V007_1k",
+        "mime": "image/png",
+        "bytes": 840947
+      }
+    ],
+    "glb_meshes": 28,
+    "glb_materials": 5,
+    "normal_mapped_materials": 5,
+    "total_embedded_image_bytes": 9043784
+  },
+  {
+    "asset": "tanned-cowhide",
+    "version": "V007_candidate",
+    "objects": 2,
+    "triangles_mesh": 12280,
+    "triangles_goal_under": 30000,
+    "master_bytes": 53779964,
+    "glb_bytes": 4441088,
+    "master_texture_px": [
+      4096,
+      4096
+    ],
+    "web_texture_px": 1536,
+    "pbr_maps": [
+      "Color",
+      "Roughness",
+      "NormalGL"
+    ],
+    "source_id": "PolyHaven/brown_leather",
+    "source_url": "https://polyhaven.com/a/brown_leather",
+    "secondary_scan_used": false,
+    "license": "CC0-1.0",
+    "species_or_fiber_verified": false,
+    "quality_approved": false,
+    "visual_score": null,
+    "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+    "glb_images": [
+      {
+        "name": "A000_PolyHaven_brown_leather_NormalGL.png_V007_web",
+        "mime": "image/png",
+        "bytes": 2115192
+      },
+      {
+        "name": "A000_PolyHaven_brown_leather_Color.jpg_V007_web",
+        "mime": "image/jpeg",
+        "bytes": 619460
+      },
+      {
+        "name": "A000_PolyHaven_brown_leather_Roughness.jpg_V007_web",
+        "mime": "image/png",
+        "bytes": 1425106
+      }
+    ],
+    "glb_meshes": 2,
+    "glb_materials": 1,
+    "normal_mapped_materials": 1,
+    "total_embedded_image_bytes": 4159758
+  },
+  {
+    "asset": "tanned-goatskin",
+    "version": "V007_candidate",
+    "objects": 2,
+    "triangles_mesh": 12280,
+    "triangles_goal_under": 30000,
+    "master_bytes": 62928096,
+    "glb_bytes": 4853272,
+    "master_texture_px": [
+      4096,
+      4096
+    ],
+    "web_texture_px": 1536,
+    "pbr_maps": [
+      "Color",
+      "Roughness",
+      "NormalGL"
+    ],
+    "source_id": "PolyHaven/leather_red_02",
+    "source_url": "https://polyhaven.com/a/leather_red_02",
+    "secondary_scan_used": false,
+    "license": "CC0-1.0",
+    "species_or_fiber_verified": false,
+    "quality_approved": false,
+    "visual_score": null,
+    "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+    "glb_images": [
+      {
+        "name": "A000_PolyHaven_leather_red_02_NormalGL.png_V007_web",
+        "mime": "image/png",
+        "bytes": 2328257
+      },
+      {
+        "name": "A000_PolyHaven_leather_red_02_Color.jpg_V007_web",
+        "mime": "image/jpeg",
+        "bytes": 983279
+      },
+      {
+        "name": "A000_PolyHaven_leather_red_02_Roughness.jpg_V007_web",
+        "mime": "image/png",
+        "bytes": 1260412
+      }
+    ],
+    "glb_meshes": 2,
+    "glb_materials": 1,
+    "normal_mapped_materials": 1,
+    "total_embedded_image_bytes": 4571948
+  },
+  {
+    "asset": "hemp-cord",
+    "version": "V007_candidate",
+    "objects": 25,
+    "triangles_mesh": 19302,
+    "triangles_goal_under": 30000,
+    "master_bytes": 60425540,
+    "glb_bytes": 4040680,
+    "master_texture_px": [
+      4096,
+      2048
+    ],
+    "web_texture_px": 1536,
+    "pbr_maps": [
+      "Color",
+      "Roughness",
+      "NormalGL"
+    ],
+    "source_id": "Rope001",
+    "source_url": "https://ambientcg.com/a/Rope001",
+    "secondary_scan_used": false,
+    "license": "CC0-1.0",
+    "species_or_fiber_verified": false,
+    "quality_approved": false,
+    "visual_score": null,
+    "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+    "glb_images": [
+      {
+        "name": "Rope001_4K-PNG_NormalGL.png_V007_web",
+        "mime": "image/png",
+        "bytes": 2851507
+      },
+      {
+        "name": "Rope001_4K-PNG_Color.png_V007_web",
+        "mime": "image/jpeg",
+        "bytes": 340993
+      },
+      {
+        "name": "Rope001_4K-PNG_Roughness.png_V007_web",
+        "mime": "image/png",
+        "bytes": 402135
+      }
+    ],
+    "glb_meshes": 25,
+    "glb_materials": 1,
+    "normal_mapped_materials": 1,
+    "total_embedded_image_bytes": 3594635
+  },
+  {
+    "asset": "linen-thread",
+    "version": "V007_candidate",
+    "objects": 5,
+    "triangles_mesh": 22440,
+    "triangles_goal_under": 30000,
+    "master_bytes": 133454404,
+    "glb_bytes": 11460480,
+    "master_texture_px": [
+      4096,
+      4096
+    ],
+    "web_texture_px": 1536,
+    "pbr_maps": [
+      "Color",
+      "Roughness",
+      "NormalGL"
+    ],
+    "source_id": "Fabric019",
+    "source_url": "https://ambientcg.com/a/Fabric019",
+    "secondary_scan_used": true,
+    "license": "CC0-1.0",
+    "species_or_fiber_verified": false,
+    "quality_approved": false,
+    "visual_score": null,
+    "notes": "V007 modeled morphology with real CC0 surface PBR. Not photogrammetric geometry; artistic approval pending.",
+    "glb_images": [
+      {
+        "name": "zz_v006_bobbin_NormalGL.png_V007_1k",
+        "mime": "image/png",
+        "bytes": 2630571
+      },
+      {
+        "name": "zz_v006_bobbin_Color.jpg_V007_1k",
+        "mime": "image/jpeg",
+        "bytes": 204852
+      },
+      {
+        "name": "zz_v006_bobbin_Roughness.jpg_V007_1k",
+        "mime": "image/png",
+        "bytes": 1156458
+      },
+      {
+        "name": "Fabric019_4K-PNG_NormalGL.png_V007_web",
+        "mime": "image/png",
+        "bytes": 5736679
+      },
+      {
+        "name": "Fabric019_4K-PNG_Color.png_V007_web",
+        "mime": "image/jpeg",
+        "bytes": 453042
+      },
+      {
+        "name": "Fabric019_4K-PNG_Roughness.png_V007_web",
+        "mime": "image/png",
+        "bytes": 772962
+      }
+    ],
+    "glb_meshes": 5,
+    "glb_materials": 2,
+    "normal_mapped_materials": 2,
+    "total_embedded_image_bytes": 10954564
+  }
+]
