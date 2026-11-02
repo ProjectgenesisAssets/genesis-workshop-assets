@@ -163,7 +163,7 @@ def export_render(obj,prefix,az,el,scale,targetz):
     scene.render.image_settings.color_mode="RGBA"
     scene.render.image_settings.color_depth="8"
     scene.render.filepath=str(renders/(prefix+".png"))
-    bpy.ops.render.render(write_still=True)
+    bpy.data.images["Render Result"].save_render(str(renders/(prefix+".png")),scene=scene)
     print("REAL_CYCLES_RENDERED",prefix,"32BIT_EXR_AND_PNG",flush=True)
 
 export_render(boards,"Tablas_Fresno_V03_HDRI_3cuartos",38,26,2.06,.12)
