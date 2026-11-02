@@ -1,61 +1,58 @@
-import asyncio, json, re
+import asyncio,json,re
 from pathlib import Path
 from playwright.async_api import async_playwright
+
 pages=[
-"https://www.meshy.ai/tags/firewood",
-"https://www.meshy.ai/tags/lumber",
-"https://www.meshy.ai/tags/plank",
-"https://www.meshy.ai/tags/planks",
-"https://www.meshy.ai/tags/timber",
-"https://www.meshy.ai/tags/log",
+ "https://www.meshy.ai/tags/firewood",
+ "https://www.meshy.ai/tags/lumber",
+ "https://www.meshy.ai/tags/plank",
+ "https://www.meshy.ai/tags/planks",
+ "https://www.meshy.ai/tags/timber",
+ "https://www.meshy.ai/tags/log",
 ]
-terms=["Stacked Logs","Forest Log","Firewood Stack","Wood Pile","Wooden Plank",
- "wooden plank","Weathered Plank","Rustic Plank Patterns","Log Slice",
- "Stack of Logs","Tree Log","Wood Log"]
+terms=["stacked logs","forest log","firewood stack","wood pile","wooden plank","weathered plank",
+ "rustic plank patterns","log slice","stack of logs","wood log","stacked firewood",
+ "pile of cut wooden logs","lumberyard","log bundle"]
 async def main():
- output=Path("output")
- output.mkdir(exist_ok=True)
- results=[]
+ out=Path("output");out.mkdir(exist_ok=True)
+ records=[];unique={}
  async with async_playwright() as p:
-  browser=await p.chromium.launch(headless=True,args=["--no-sandbox","--use-gl=angle","--use-angle=swiftshader"])
-  page=await browser.new_page(viewport={"width":1365,"height":800})
+  browser=await p.chromium.launch(headless=True,args=["--no-sandbox"])
+  page=await browser.new_page(viewport={"width":1200,"height":900})
   for url in pages:
-   print("PAGE",url,flush=True)
    try:
-    resp=await page.goto(url,wait_until="domcontentloaded",timeout=45000)
-    await page.wait_for_timeout(6000)
-    records=await page.evaluate("""(terms) => {
-      const set=new Set(terms.map(v=>v.toLowerCase()));
+    resp=await page.goto(url,wait_until="domcontentloaded",timeout=40000)
+    await page.wait_for_timeout(1300)
+    cards=await page.evaluate("""(terms)=>{
       let out=[];
-      const els=[...document.querySelectorAll('h3, h2, a, div, span, p')];
-      for(const e of els){
-        let t=(e.innerText||'').trim().replace(/\\s+/g,' ');
-        if(!set.has(t.toLowerCase()))continue;
-        let parents=[];
-        let n=e;
-        for(let i=0;n&&i<7;i++,n=n.parentElement){
-          parents.push({tag:n.tagName,cls:String(n.className||'').slice(0,150),href:n.getAttribute('href'),
-            role:n.getAttribute('role'),onclick:n.getAttribute('onclick'),html:n.outerHTML.slice(0,900)});
+      const titles=[...document.querySelectorAll('div,span,h3,p')].filter(el=>{
+         const text=(el.textContent||'').trim().toLowerCase();
+         return terms.some(v=>text===v||text.startsWith(v+','));
+      });
+      for(const el of titles){
+        let card=el;
+        for(let i=0;i<7&&card;i++,card=card.parentElement){
+          const a=card.querySelector('a[href*="/posts/"]');
+          if(a){
+            const img=a.querySelector('img');
+            out.push({title:(el.textContent||'').trim().slice(0,240),post:new URL(a.getAttribute('href'),location.origin).href,
+              image:img?.currentSrc||img?.src||null, alt:img?.alt||null});
+            break;
+          }
         }
-        out.push({title:t,parents});
-        if(out.length>=65)break;
       }
-      let links=[...document.querySelectorAll('a[href]')].filter(a=>/posts\\/|3d-models\\//.test(a.href)).slice(0,100).map(a=>({text:(a.innerText||'').trim().slice(0,110),href:a.href}));
-      let imgs=[...document.querySelectorAll('img')].slice(0,35).map(i=>({alt:i.alt,src:i.currentSrc||i.src}));
-      return {records:out,links,imgs,title:document.title,bodyLength:document.body.innerText.length};
+      return [...new Map(out.map(row=>[row.post,row])).values()].slice(0,80);
     }""",terms)
-    html=await page.content()
-    uuids=re.findall(r"(?i)\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b",html)
-    records["url"]=url
-    records["status"]=resp.status if resp else None
-    records["uuid_count"]=len(uuids)
-    results.append(records)
-    print("PAGE_RESULT",json.dumps({k:v for k,v in records.items() if k not in ("records","imgs","links")}),"POST_LINKS",json.dumps(records["links"][:15]),flush=True)
-    for item in records["records"][:25]:
-     print("MATCH",item["title"],"HTML",json.dumps(item["parents"][:4])[:2600],flush=True)
+    records.append({"url":url,"status":resp.status if resp else None,"cards":cards})
+    for c in cards:unique.setdefault(c["post"],c)
+    print("PAGE",url,"STATUS",resp.status if resp else None,"MATCHES",len(cards),flush=True)
+    for c in cards[:18]:print("CANDIDATE",c["title"][:85],c["post"],flush=True)
    except Exception as e:
-    results.append({"url":url,"error":str(e)})
-    print("ERROR",url,str(e),flush=True)
+    print("ERROR",url,str(e)[:140],flush=True)
+    records.append({"url":url,"error":str(e)[:250]})
+   finally:
+    (out/"meshy_geometry_discovery.json").write_text(json.dumps(records,ensure_ascii=False,indent=2))
   await browser.close()
- (output/"meshy_geometry_discovery.json").write_text(json.dumps(results,ensure_ascii=False,indent=2))
+ (out/"meshy_candidate_posts.json").write_text(json.dumps(list(unique.values()),ensure_ascii=False,indent=2))
+ print("UNIQUE_CANDIDATES",len(unique),flush=True)
 asyncio.run(main())
