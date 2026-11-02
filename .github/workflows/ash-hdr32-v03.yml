@@ -1,0 +1,110 @@
+name: Ash V03 real Blender HDRI 32bit EXR - boards and log
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/ash-hdr32-v03.yml
+      - tools/render_ash_hdr32_v03.py
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-fresno-v02-troncos-tablas-blender
+          run-id: 41503321995
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: ref_v02
+      - name: Install Blender for real mesh rendering and image manipulation
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy python3-pil
+          python - <<'PY'
+          import ast
+          ast.parse(open('tools/render_ash_hdr32_v03.py').read())
+          print("PYTHON_SYNTAX_OK")
+          PY
+      - name: Prepare validated V02 GLB sources, texture albedos and genuine public CC0 HDRI
+        run: |
+          set -euo pipefail
+          mkdir -p input output
+          cp ref_v02/models/ProjectGenesis_Tablas_Fresno_V02.glb input/
+          cp ref_v02/models/ProjectGenesis_Tronco_Fresno_V02.glb input/
+          cp ref_v02/textures/fresno_natural_color.jpg input/
+          cp ref_v02/textures/fresno_corte_anillos.png input/
+          curl -fLsS --retry 3 --connect-timeout 30 --max-time 180 \
+            "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr" \
+            -o input/studio_small_09_2k.hdr
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("input/studio_small_09_2k.hdr")
+          data=p.open("rb").read(32)
+          assert b"RADIANCE" in data or b"RGBE" in data,(p.stat().st_size,data)
+          assert p.stat().st_size>250_000
+          print("VERIFIED_REAL_HDRI",p.stat().st_size,repr(data))
+          PY
+      - name: Create warm realistic PBR V03 GLB and render HDRI in 32-bit float OpenEXR
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/render_ash_hdr32_v03.py -- input output 2>&1 | tee output/blender_log.txt
+      - name: Check actual EXR 32-bit channels, output GLB geometry and images
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import struct,json
+          out=Path("output")
+          report=json.loads((out/"report.json").read_text())
+          expected=["Tablas_Fresno_V03_HDRI_3cuartos","Tablas_Fresno_V03_HDRI_cantos",
+                    "Tronco_Fresno_V02_HDRI_3cuartos","Tronco_Fresno_V02_HDRI_corte"]
+          for stem in expected:
+            png=out/"renders"/(stem+".png");exr=out/"renders"/(stem+".exr")
+            assert png.stat().st_size>100_000 and exr.stat().st_size>100_000
+            assert exr.open("rb").read(4)==b"\x76\x2f\x31\x01"
+            data=exr.read_bytes()[:32768]
+            assert b"\x02" in data
+            # Half-float has pixel type=1, full-float is pixel type=2
+            assert b"\x02\x00\x00\x00" in data, "Missing float pixel type"
+            print("EXR_32_FLOAT",exr.name,exr.stat().st_size)
+          f=out/"models/ProjectGenesis_Tablas_Fresno_V03_Calido_HDRI.glb"
+          with f.open("rb") as s:
+            magic,version,size,n,typ=struct.unpack("<4sIIII",s.read(20))
+            assert magic==b"glTF" and version==2 and size==f.stat().st_size and typ==0x4e4f534a
+            doc=json.loads(s.read(n))
+          triangles=sum(doc["accessors"][prim["indices"]]["count"]//3 for mesh in doc["meshes"] for prim in mesh["primitives"])
+          assert triangles==10000 and doc.get("images") and doc.get("materials")
+          assert len(report["albedo_replacements"])>=2
+          print("VALIDATED_REAL_V03",triangles,"TRIS",f.stat().st_size,"BYTES")
+          PY
+      - name: Create real render side-by-side board
+        run: |
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          p=Path("output/renders");out=Path("output")
+          names=["Tablas_Fresno_V03_HDRI_3cuartos","Tablas_Fresno_V03_HDRI_cantos",
+                 "Tronco_Fresno_V02_HDRI_3cuartos","Tronco_Fresno_V02_HDRI_corte"]
+          canvas=Image.new("RGB",(2400,1880),(37,41,47))
+          d=ImageDraw.Draw(canvas)
+          for idx,name in enumerate(names):
+            im=Image.open(p/(name+".png")).convert("RGBA")
+            assert im.size==(1200,900),im.size
+            canvas.paste(im.convert("RGB"),((idx%2)*1200,(idx//2)*940+40))
+            d.text(((idx%2)*1200+20,(idx//2)*940+13),name.replace("_"," "),fill=(245,228,190))
+          canvas.save(out/"ProjectGenesis_Fresno_HDRI32_Real_Cycles_V03.jpg",quality=95)
+          print("ACTUAL_CYCLES_PREVIEW_BOARD",canvas.size)
+          PY
+      - name: Preserve actual GLB, 32-bit EXR masters and PNG render previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-fresno-v03-hdri32-cycles
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
