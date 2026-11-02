@@ -68,6 +68,78 @@ jobs:
           print("OTHER_UUIDS",json.dumps(dict(list(all_ids.items())[:25]),ensure_ascii=False,indent=2))
           with open("output/candidate-task-ids.json","w") as f:json.dump(all_ids,f,indent=2)
           PY
+      - name: Inspect public 3D viewer through headless Chrome
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          python -m pip install --user playwright
+          python -m playwright install chromium
+          python - <<'PY' 2>&1 | tee output/browser-diagnostics.txt
+          from playwright.sync_api import sync_playwright
+          from pathlib import Path
+          from urllib.parse import urlparse
+          from collections import Counter
+          import re,json,traceback
+          target="https://www.meshy.ai/es/posts/0194fd29-73ec-776b-9767-835d64751522"
+          captures=[]
+          candidate_files=[]
+          def response_handler(response):
+              url=response.url
+              path=urlparse(url).path
+              lower=path.lower()
+              if "/meshyd-api/" in lower and any(x in lower for x in ("posts","task","model")):
+                  entry={"type":"api","status":response.status,"path":path}
+                  captures.append(entry)
+                  print("API",response.status,path,flush=True)
+                  if "json" in response.headers.get("content-type",""):
+                      try:
+                          data=response.text()
+                          for mark in ["modelUrl","taskId","model.meshy"]:
+                              i=data.find(mark)
+                              if i>=0: print("JSON_MARKER",mark,data[max(0,i-80):i+180][:260],flush=True)
+                      except Exception as e: print("API_READ_ERROR",str(e)[:180])
+              if lower.endswith((".meshy",".glb")) or "/model.meshy" in lower:
+                  print("MODEL_RESPONSE",response.status,path,flush=True)
+                  if response.status!=200:return
+                  try:
+                      data=response.body()
+                      print("MODEL_BYTES",len(data),data[:8],flush=True)
+                      if len(data)>1000 and data[:8] in (b"MESHY.AI",b"glTF"):
+                          p=Path("output/browser-captured"+(".glb" if data[:4]==b"glTF" else ".meshy"))
+                          p.write_bytes(data)
+                          candidate_files.append(str(p))
+                  except Exception as e: print("MODEL_READ_ERROR",str(e)[:180],flush=True)
+          with sync_playwright() as p:
+              browser=p.chromium.launch(headless=True,args=["--no-sandbox","--use-gl=angle","--use-angle=swiftshader","--enable-webgl"])
+              page=browser.new_page(viewport={"width":1440,"height":900})
+              page.on("response",response_handler)
+              try:
+                  res=page.goto(target,wait_until="domcontentloaded",timeout=35000)
+                  print("PAGE_STATUS",res.status if res else None,flush=True)
+                  page.wait_for_timeout(18000)
+                  print("PAGE_TITLE",page.title(),"CANVAS",page.locator("canvas").count(),flush=True)
+                  html=page.content()
+                  uid="0194fd29-73ec-776b-9767-835d64751522"
+                  for m in list(re.finditer(uid,html))[:4]:
+                      print("POST_CONTEXT",html[max(0,m.start()-400):m.end()+600].replace("\\n"," ")[:1100],flush=True)
+              except Exception as e:print("BROWSER_ERROR",type(e).__name__,str(e)[:500],flush=True)
+              finally:browser.close()
+          Path("output/browser-requests.json").write_text(json.dumps(captures,indent=2),encoding="utf-8")
+          file=Path("output/browser-captured.meshy")
+          if file.is_file():
+              try:
+                  from meshy_glb.core import ensure_loader,decrypt_meshy,validate_glb
+                  js,wasm=ensure_loader()
+                  decrypt_meshy(str(file),"output/merchant.glb",js,wasm)
+                  print("DECRYPTED_GLB",json.dumps(validate_glb("output/merchant.glb")),flush=True)
+              except Exception as e:print("DECRYPT_ERROR",type(e).__name__,str(e)[:500],flush=True)
+              finally:file.unlink(missing_ok=True)
+          if Path("output/browser-captured.glb").is_file():
+              Path("output/browser-captured.glb").replace("output/merchant.glb")
+              print("DIRECT_GLB_CAPTURED",flush=True)
+          print("CAPTURE_COUNT",len(captures),"MODEL_FILES",len(candidate_files),flush=True)
+          PY
       - name: Validate result and write diagnostics
         if: always()
         shell: bash
