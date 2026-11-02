@@ -1,0 +1,66 @@
+name: Ash boards V03 FAST genuine HDRI 32bit render
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/ash-hdr32-v03-fast.yml
+      - tools/render_ash_hdr32_v03_fast.py
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  boards:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-fresno-v03-hdri32-cycles
+          run-id: 41513346275
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: old_v03
+      - name: Prepare source GLB and real studio environment
+        run: |
+          set -euo pipefail
+          mkdir -p input output
+          cp old_v03/models/ProjectGenesis_Tablas_Fresno_V03_Calido_HDRI.glb input/
+          curl -fLsS --retry 2 --connect-timeout 20 --max-time 120 \
+            "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr" \
+            -o input/studio_small_09_2k.hdr
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('input/studio_small_09_2k.hdr')
+          assert b'RADIANCE' in p.read_bytes()[:32] and p.stat().st_size>200000
+          assert Path('input/ProjectGenesis_Tablas_Fresno_V03_Calido_HDRI.glb').stat().st_size>100000
+          print('GLB_AND_REAL_HDRI_CONFIRMED')
+          PY
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+      - name: Render actual 10k triangle ash boards from two viewpoints to EXR 32bit and PNG
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/render_ash_hdr32_v03_fast.py -- input output 2>&1 | tee output/real_blender_log.txt
+      - name: Check 32-bit EXR and actual PNG previews
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import struct
+          for stem in ('Tablas_Fresno_V03_HDR32_3cuartos','Tablas_Fresno_V03_HDR32_cantos'):
+            exr=Path('output')/(stem+'.exr')
+            png=Path('output')/(stem+'.png')
+            assert exr.is_file() and exr.stat().st_size>200000
+            assert exr.open('rb').read(4)==b'\x76\x2f\x31\x01'
+            assert png.is_file() and png.open('rb').read(8)==b'\x89PNG\r\n\x1a\n'
+            print('VALID_RENDER',stem,exr.stat().st_size,png.stat().st_size)
+          PY
+      - name: Export true Blender renders
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-fresno-v03-hdr32-fast-preview
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
