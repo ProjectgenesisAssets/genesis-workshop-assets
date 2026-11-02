@@ -1,0 +1,42 @@
+name: Publish verified Genesis merchant V02 GLB to asset staging
+
+on:
+  push:
+    branches: [delivery/merchant-v02-glb-20261102]
+    paths: [.github/workflows/deliver-merchant-v02-glb.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  deliver:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+            web-assets
+          sparse-checkout-cone-mode: true
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-merchant-meshopt-highres
+          run-id: 41461815663
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: source
+      - name: Verify exact visual-approved candidate and publish into staging
+        run: |
+          set -euxo pipefail
+          mkdir -p web-assets/characters
+          test "$(sha256sum source/inputs/ratio70.glb | cut -d ' ' -f1)" = "8bd0c2423e55404c401890bf84cb0ec9d7c11b3818b0cbb6aad14e20d5be8bf4"
+          cp source/inputs/ratio70.glb web-assets/characters/mercader-v02-75962.glb
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add web-assets/characters/mercader-v02-75962.glb
+          git commit -m 'asset: stage verified merchant V02 75962 triangle GLB'
+          git push origin HEAD:delivery/merchant-v02-glb-20261102
