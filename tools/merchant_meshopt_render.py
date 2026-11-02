@@ -1,5 +1,5 @@
 """Render the untouched V01 and gltfpack variants with identical Cycles settings."""
-import bpy,sys,math,json
+import bpy,sys,math,json,os
 from pathlib import Path
 from mathutils import Vector
 args=sys.argv[sys.argv.index("--")+1:]
@@ -49,15 +49,15 @@ cam.data.type="ORTHO"
 cam.data.ortho_scale=span*1.48
 scene.render.engine="CYCLES"
 scene.cycles.device="CPU"
-scene.cycles.samples=25
+scene.cycles.samples=int(os.environ.get("MERCHANT_SAMPLES","25"))
 scene.render.threads_mode="FIXED"
 scene.render.threads=4
 scene.view_layers[0].cycles.use_denoising=False
 scene.render.image_settings.file_format="PNG"
 scene.render.image_settings.color_mode="RGBA"
 scene.render.film_transparent=True
-scene.render.resolution_x=650
-scene.render.resolution_y=820
+scene.render.resolution_x=int(os.environ.get("MERCHANT_WIDTH","650"))
+scene.render.resolution_y=int(os.environ.get("MERCHANT_HEIGHT","820"))
 scene.view_settings.view_transform="AgX"
 for deg in (0,45,90,180,270):
     angle=math.radians(deg)
