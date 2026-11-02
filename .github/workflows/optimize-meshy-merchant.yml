@@ -1,0 +1,85 @@
+name: Optimize Meshy merchant with Blender <=3pct visual error
+
+on:
+  push:
+    branches:
+      - experiment/meshy-merchant-download-20261102
+    paths:
+      - tools/meshy_merchant_optimize.py
+      - tools/meshy_merchant_quality.py
+      - .github/workflows/optimize-meshy-merchant.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  optimize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout isolated experiment
+        uses: actions/checkout@v4
+      - name: Download previously validated original merchant GLB
+        uses: actions/download-artifact@v4
+        with:
+          name: meshy-merchant-download-test
+          run-id: 41443764495
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: \${{ github.token }}
+          path: input
+      - name: Install Blender and validation packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender
+          python -m pip install --user numpy pillow trimesh
+          blender --version
+          ls -lh input/merchant.glb
+          mkdir -p output
+      - name: Generate decimation candidates and real Cycles comparison renders
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/meshy_merchant_optimize.py -- candidates input/merchant.glb output 2>&1 | tee output/blender_candidate_log.txt
+      - name: Select lowest-polygon candidate satisfying quality limits
+        run: |
+          python tools/meshy_merchant_quality.py output | tee output/quality_selection_log.txt
+      - name: Export selected GLB and 48-sample Cycles renders
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/meshy_merchant_optimize.py -- final input/merchant.glb output 2>&1 | tee output/blender_final_log.txt
+      - name: Produce original vs optimized render comparison
+        run: |
+          python tools/meshy_merchant_quality.py output | tee output/quality_final_log.txt
+      - name: Verify GLB and deliverable metadata
+        run: |
+          python - <<'PY'
+          import json,struct
+          from pathlib import Path
+          src=Path("input/merchant.glb")
+          dst=Path("output/ProjectGenesis_Mercader_Optimizado.glb")
+          sel=json.load(open("output/selected.json"))
+          out={}
+          for name,p in (("original",src),("optimized",dst)):
+              with p.open("rb") as f:
+                  header=f.read(20)
+                  magic,ver,total,json_size,chunk_type=struct.unpack("<4sIIII",header)
+                  assert magic==b"glTF" and ver==2 and total==p.stat().st_size and chunk_type==0x4e4f534a
+                  doc=json.loads(f.read(json_size))
+              out[name]={"size_bytes":p.stat().st_size,"meshes":len(doc.get("meshes",[])),
+                         "materials":len(doc.get("materials",[])),"textures":len(doc.get("textures",[])),
+                         "animations":len(doc.get("animations",[])),"skins":len(doc.get("skins",[]))}
+              assert out[name]["meshes"]>=1 and out[name]["materials"]>=1 and out[name]["textures"]>=1
+          out["selection"]=sel
+          Path("output/validation.json").write_text(json.dumps(out,indent=2))
+          assert sel["passed"], "No optimized candidate passed quality criteria; do not declare result approved."
+          print(json.dumps(out,indent=2))
+          PY
+      - name: Publish final GLB and Cycles renders
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-genesis-merchant-blender-quality
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
