@@ -45,13 +45,17 @@ def analyze(a_path,b_path):
             "local_tile_count":len(local)}
 
 def decide(stats,highres=False):
-    # Deliberately stricter than the user's 3% envelope.
+    # For 480px previews, use stricter gate to avoid accepting a candidate
+    # that only develops unacceptable localized changes at 900px.
     factor=4 if highres else 1
-    return (stats["silhouette_pct"]<=0.30 and
-            stats["visible_rgb_mae_pct"]<=1.1 and
+    max_color=1.1 if highres else .62
+    max_local=5 if highres else 1.2
+    max_silhouette=.30 if highres else .16
+    return (stats["silhouette_pct"]<=max_silhouette and
+            stats["visible_rgb_mae_pct"]<=max_color and
             stats["new_dark_pixels"]<=18*factor and
             stats["large_darkening_pixels"]<=38*factor and
-            stats["worst_local_tile_mae_pct"]<=5)
+            stats["worst_local_tile_mae_pct"]<=max_local)
 
 def write_board(path,prefix_a,prefix_b):
     # Two rows (0,45 degrees) and one zoom at 90 degrees.
