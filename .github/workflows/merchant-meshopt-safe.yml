@@ -1,0 +1,74 @@
+name: Merchant meshoptimizer attribute-aware reduction QA
+
+on:
+  push:
+    branches:
+      - experiment/merchant-v02-conservative-optimization-20261102
+    paths:
+      - .github/workflows/merchant-meshopt-safe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  meshopt:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-merchant-targeted-repair
+          run-id: 41454954137
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: input
+      - name: Install gltfpack, Blender and image QA
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy
+          npm install -g gltfpack
+          python -m pip install --user numpy pillow
+          python -m py_compile tools/merchant_meshopt_render.py tools/merchant_meshopt_qa.py
+          mkdir -p output/inputs output/renders
+          gltfpack -h || true
+      - name: Prepare non-compressed, GLB-compatible variants without texture recoding
+        run: |
+          set -euxo pipefail
+          base=input/ProjectGenesis_Mercader_Reparado_108525.glb
+          gltfpack -i "$base" -o output/inputs/packed.glb -kn -km -ke -vpf
+          gltfpack -i "$base" -o output/inputs/ratio90.glb -kn -km -ke -vpf -si 0.9
+          gltfpack -i "$base" -o output/inputs/ratio80.glb -kn -km -ke -vpf -si 0.8
+          gltfpack -i "$base" -o output/inputs/ratio70.glb -kn -km -ke -vpf -si 0.7
+          python - <<'PY'
+          import struct,json
+          from pathlib import Path
+          for p in sorted(Path('output/inputs').glob('*.glb')):
+              with p.open('rb') as f:
+                  magic,version,size,length,kind=struct.unpack('<4sIIII',f.read(20))
+                  assert magic==b'glTF' and version==2 and size==p.stat().st_size and kind==0x4e4f534a
+                  doc=json.loads(f.read(length))
+              count=0
+              for mesh in doc['meshes']:
+                  for primitive in mesh['primitives']:
+                      count+=doc['accessors'][primitive['indices']]['count']//3
+              assert doc.get('images') and doc.get('materials') and doc.get('textures')
+              print('VALID',p.name,'triangles',count,'bytes',size)
+          PY
+      - name: Compare source and variants through Blender Cycles at five camera angles
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/merchant_meshopt_render.py -- input/ProjectGenesis_Mercader_Reparado_108525.glb output/inputs output/renders 2>&1 | tee output/meshopt_cycles_log.txt
+      - name: Build view-by-view comparative panels and quantitative report
+        run: |
+          python tools/merchant_meshopt_qa.py output/renders input/ProjectGenesis_Mercader_Reparado_108525.glb
+      - name: Upload all experiment outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-merchant-meshoptimizer-compare
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
