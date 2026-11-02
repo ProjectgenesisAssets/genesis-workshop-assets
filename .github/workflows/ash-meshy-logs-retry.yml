@@ -1,0 +1,31 @@
+name: Retry Meshy public stacked logs asset from task ID
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/ash-meshy-logs-retry.yml
+      - tools/ash_meshed_logs_fallback.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  logs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download free public log mesh with real model task id
+        run: |
+          python -m pip install --user "git+https://github.com/Shuvam-Banerji-Seal/meshy-glb-downloader.git"
+          mkdir -p output
+          python tools/ash_meshed_logs_fallback.py 2>&1 | tee output/stacked_logs_download_log.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-ash-meshy-logs-stack-recovered
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
