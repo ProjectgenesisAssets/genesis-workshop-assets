@@ -1,0 +1,50 @@
+name: Stage approved Merchant V02 GLB for Project Genesis game
+on:
+  push:
+    branches: [experiment/merchant-v02-conservative-optimization-20261102]
+    paths:
+      - .github/workflows/stage-merchant-for-game.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  stage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-merchant-meshopt-highres
+          run-id: 41461815663
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: input
+      - name: Stage original approved exact 75962-triangle binary as public repository asset
+        run: |
+          set -euo pipefail
+          mkdir -p public/characters
+          cp input/inputs/ratio70.glb public/characters/merchant_v02_75962.glb
+          python - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          p=Path("public/characters/merchant_v02_75962.glb")
+          with p.open("rb") as f:
+              magic,ver,size,jlen,jtype=struct.unpack("<4sIIII",f.read(20))
+              assert magic==b"glTF" and ver==2 and size==p.stat().st_size and jtype==0x4e4f534a
+              doc=json.loads(f.read(jlen))
+          tris=sum(doc["accessors"][prim["indices"]]["count"]//3 for mesh in doc["meshes"] for prim in mesh["primitives"])
+          assert tris==75962, tris
+          assert doc.get("images") and doc.get("materials") and doc.get("textures")
+          print("SOURCE_GLTF_OK",tris,"BYTES",size,"SHA256",hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Publish binary only in isolated assets branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/characters/merchant_v02_75962.glb
+          git diff --cached --quiet || git commit -m "asset: stage approved Project Genesis merchant V02 GLB for main game"
+          git push origin HEAD:experiment/merchant-v02-conservative-optimization-20261102
