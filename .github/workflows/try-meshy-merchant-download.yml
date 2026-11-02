@@ -29,6 +29,45 @@ jobs:
         run: |
           set -o pipefail
           python -m meshy_glb "https://www.meshy.ai/es/posts/0194fd29-73ec-776b-9767-835d64751522" -o output/merchant.glb -v 2>&1 | tee output/attempt-log.txt
+      - name: Inspect public Meshy post metadata
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY' 2>&1 | tee output/public-post-diagnostics.txt
+          import urllib.request,urllib.error,re,html,json
+          uid="0194fd29-73ec-776b-9767-835d64751522"
+          urls=[
+            f"https://www.meshy.ai/es/posts/{uid}",
+            f"https://www.meshy.ai/posts/{uid}",
+            f"https://www.meshy.ai/meshyd-api/web/public/v2/posts/{uid}",
+            f"https://www.meshy.ai/meshyd-api/web/public/v1/posts/{uid}",
+          ]
+          headers={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36","Accept":"text/html,application/json"}
+          pat=re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",re.I)
+          all_ids={}
+          for url in urls:
+              print("CHECK",url,flush=True)
+              try:
+                  req=urllib.request.Request(url,headers=headers)
+                  with urllib.request.urlopen(req,timeout=25) as response:
+                      raw=response.read(4_000_000)
+                      data=raw.decode("utf-8","replace")
+                      print("STATUS",response.status,"SIZE",len(raw),"TYPE",response.headers.get("Content-Type"),"FINAL",response.url)
+                      title=re.search(r"<title[^>]*>(.*?)</title>",data,re.I|re.S)
+                      if title: print("TITLE",html.unescape(title.group(1))[:250])
+                      matches=list(pat.finditer(data))
+                      print("UUID_OCCURRENCES",len(matches))
+                      for m in matches:
+                          if m.group().lower()==uid: continue
+                          context=data[max(0,m.start()-95):min(len(data),m.end()+95)].replace("\\","").replace("\\n"," ")[:230]
+                          all_ids.setdefault(m.group().lower(),context)
+                      for marker in ["modelUrl","taskId","model.meshy","3d-models","generationId"]:
+                          j=data.find(marker)
+                          if j>=0: print("MARKER",marker,data[max(0,j-100):j+240].replace("\\n"," ")[:340])
+              except Exception as exc: print("ERROR",type(exc).__name__,str(exc)[:300])
+          print("OTHER_UUIDS",json.dumps(dict(list(all_ids.items())[:25]),ensure_ascii=False,indent=2))
+          with open("output/candidate-task-ids.json","w") as f:json.dump(all_ids,f,indent=2)
+          PY
       - name: Validate result and write diagnostics
         if: always()
         shell: bash
