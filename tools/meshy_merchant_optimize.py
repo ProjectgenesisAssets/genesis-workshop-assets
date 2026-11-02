@@ -72,8 +72,8 @@ def studio():
     s.render.threads=4
 
 def visible(obj):
-    original.hide_render=(obj is not original)
-    if obj is not original: obj.hide_render=False
+    for mesh_obj in (o for o in bpy.context.scene.objects if o.type=="MESH"):
+        mesh_obj.hide_render=(mesh_obj is not obj)
 
 def decimate(ratio):
     obj=original.copy()
