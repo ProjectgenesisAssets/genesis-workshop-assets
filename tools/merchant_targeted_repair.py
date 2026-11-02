@@ -44,10 +44,10 @@ for p in data.polygons:
 picked=[]
 face_ids=[]
 for component,faces in groups.items():
-    vv=[co[i] for i in verts[component]]
+    vv=[mesh.matrix_world @ Vector(co[i]) for i in verts[component]]
     lo=[min(v[axis] for v in vv) for axis in range(3)]
     hi=[max(v[axis] for v in vv) for axis in range(3)]
-    # Tight bounding envelope of the *floating vertical shard*, disconnected
+    # Tight WORLD-SPACE bounding envelope of the floating vertical shard, disconnected
     # from the merchant's body. Never use a global small-component deletion.
     if (
       -.311 <= lo[0] and hi[0] <= -.281 and
