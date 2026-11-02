@@ -47,16 +47,18 @@ for component,faces in groups.items():
     vv=[mesh.matrix_world @ Vector(co[i]) for i in verts[component]]
     lo=[min(v[axis] for v in vv) for axis in range(3)]
     hi=[max(v[axis] for v in vv) for axis in range(3)]
-    # Tight WORLD-SPACE bounding envelope of the floating vertical shard, disconnected
-    # from the merchant's body. Never use a global small-component deletion.
+    # glTF is Y-up, Blender is Z-up. Transform source bounds (x,y,z)
+    # into Blender world (x,-z,y); never use local-space thresholds.
     if (
       -.311 <= lo[0] and hi[0] <= -.281 and
-      .150 <= lo[1] and hi[1] <= .267 and
-      -.017 <= lo[2] and hi[2] <= .033 and
+      -.033 <= lo[1] and hi[1] <= .017 and
+      .150 <= lo[2] and hi[2] <= .267 and
       2 <= len(faces) <= 40
     ):
         face_ids.extend(faces)
         picked.append({"triangles":len(faces),"min":[round(x,5) for x in lo],"max":[round(x,5) for x in hi]})
+print("OBJECT_MATRIX",str(mesh.matrix_world),flush=True)
+print("WORLD_BBOX",[(min((mesh.matrix_world @ Vector(c))[i] for c in mesh.bound_box),max((mesh.matrix_world @ Vector(c))[i] for c in mesh.bound_box)) for i in range(3)],flush=True)
 print("COMPONENTS_MATCHED",json.dumps(picked),flush=True)
 # Require exactly the six previously diagnosed connected-component shards.
 assert len(picked)==6 and len(face_ids)==127, "Geometry layout changed; refusing unsafe repair."
