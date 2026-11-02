@@ -37,8 +37,8 @@ def adjust_color(inpath,outpath,wood_kind):
         arr=np.clip(arr*np.array([.93,.90,.86],dtype=np.float32),0,1)
     Image.fromarray(np.uint8(np.rint(arr*255)),mode="RGB").save(
       outpath,quality=95,subsampling=0)
-    return {'source_mean_rgb':list(np.round(np.asarray(srcimg).mean(axis=(0,1)),1)),
-      'result_mean_rgb':list(np.round((arr*255).mean(axis=(0,1)),1))}
+    return {'source_mean_rgb':np.round(np.asarray(srcimg).mean(axis=(0,1)),1).astype(float).tolist(),
+      'result_mean_rgb':np.round((arr*255).mean(axis=(0,1)),1).astype(float).tolist()}
 wood_name=textures/"fresno_v03_natural_calido.jpg"
 end_name=textures/"fresno_v03_testas_anillos.png"
 stats={}
