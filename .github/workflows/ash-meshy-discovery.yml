@@ -1,0 +1,33 @@
+name: Discover actual Meshy logs and planks 3D model pages
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/ash-meshy-discovery.yml
+      - tools/ash_meshy_discovery.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  geometry-discovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Headless Meshy public gallery inspection
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install chromium
+          mkdir -p output
+          python tools/ash_meshy_discovery.py 2>&1 | tee output/discovery_log.txt
+      - name: Upload model URLs and visual source metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-ash-logs-planks-meshy-discovery
+          path: output/
+          retention-days: 7
+          if-no-files-found: error
