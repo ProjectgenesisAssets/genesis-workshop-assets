@@ -1,0 +1,31 @@
+name: Download real Meshy ash grain and bark PBR textures
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/ash-meshy-pbr-download.yml
+      - tools/ash_pbr_meshy_download.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  textures:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download and verify texture map archives
+        run: |
+          python -m pip install pillow
+          mkdir -p output
+          python tools/ash_pbr_meshy_download.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-ash-fresno-pbr-meshy-textures
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
