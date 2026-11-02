@@ -1,0 +1,73 @@
+name: Merchant repair QA Blender conservative variants
+
+on:
+  push:
+    branches:
+      - experiment/meshy-merchant-download-20261102
+    paths:
+      - .github/workflows/merchant-repair-qa.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  merchant-repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve original, unmodified Meshy GLB
+        uses: actions/download-artifact@v4
+        with:
+          name: meshy-merchant-download-test
+          run-id: 41443764495
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: input
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender
+          python -m pip install --user numpy pillow
+          mkdir -p output/r40 output/r50
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          for label,ratio in [('r40',0.4),('r50',0.5)]:
+              Path('output',label,'selected.json').write_text(json.dumps({'ratio':ratio}))
+          PY
+      - name: Produce reduced 40 percent mesh and original reference in real Cycles
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/meshy_merchant_optimize.py -- final input/merchant.glb output/r40 2>&1 | tee output/r40/blender_log.txt
+      - name: Produce reduced 50 percent mesh and original reference in real Cycles
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/meshy_merchant_optimize.py -- final input/merchant.glb output/r50 2>&1 | tee output/r50/blender_log.txt
+      - name: Compare new dark spots, color and render crops
+        run: |
+          python tools/merchant_repair_compare.py | tee output/repair_qa_log.txt
+      - name: Validate exports
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,struct
+          for x in ('r40','r50'):
+              file=Path('output')/x/'ProjectGenesis_Mercader_Optimizado.glb'
+              with file.open('rb') as f:
+                  magic,version,size,jsonsize,kind=struct.unpack('<4sIIII',f.read(20))
+                  assert magic==b'glTF' and version==2 and size==file.stat().st_size and kind==0x4e4f534a
+                  doc=json.loads(f.read(jsonsize))
+                  assert len(doc.get('meshes',[])) and len(doc.get('materials',[])) and len(doc.get('textures',[]))
+              print('VALID',x,file.stat().st_size)
+          PY
+      - name: Publish both candidates and comparison renders
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: merchant-repair-conservative-cycles
+          path: output/
+          if-no-files-found: error
+          retention-days: 14
