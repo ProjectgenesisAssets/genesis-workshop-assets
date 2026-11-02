@@ -140,7 +140,7 @@ scene.render.resolution_x=1200;scene.render.resolution_y=900
 scene.render.resolution_percentage=100
 scene.render.film_transparent=False
 scene.view_settings.view_transform="AgX"
-scene.view_settings.look="Medium High Contrast"
+scene.view_settings.look="AgX - Medium High Contrast"
 scene.view_settings.exposure=-0.45
 scene.view_settings.gamma=1.0
 
