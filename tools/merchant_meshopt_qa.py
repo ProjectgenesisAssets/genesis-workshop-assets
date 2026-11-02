@@ -4,7 +4,7 @@ import numpy as np
 import json,sys
 folder=Path(sys.argv[1])
 source=Path(sys.argv[2])
-variants=['packed','ratio90','ratio80','ratio70']
+variants=[p.stem for p in sorted((folder.parent/'inputs').glob('*.glb'))]
 angles=[0,45,90,180,270]
 def metrics(a,b):
     x=np.asarray(Image.open(a).convert("RGBA"),dtype=np.int16)
@@ -26,8 +26,8 @@ for tag in variants:
     print('VARIANT',json.dumps(scores),flush=True)
 (folder/'meshopt_qa.json').write_text(json.dumps(rows,indent=2))
 for tag in variants:
-    w,h=650,820
-    board=Image.new('RGB',(w*6,h*2+30),(35,42,54))
+    w,h=Image.open(folder/'v01_0.png').size
+    board=Image.new('RGB',(w*len(angles),h*2+30),(35,42,54))
     d=ImageDraw.Draw(board)
     for i,angle in enumerate(angles):
         for row,name in enumerate(('v01',tag)):
