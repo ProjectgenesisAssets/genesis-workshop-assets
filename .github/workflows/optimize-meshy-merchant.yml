@@ -27,7 +27,7 @@ jobs:
           name: meshy-merchant-download-test
           run-id: 41443764495
           repository: ProjectgenesisAssets/genesis-workshop-assets
-          github-token: \${{ github.token }}
+          github-token: ${{ github.token }}
           path: input
       - name: Install Blender and validation packages
         run: |
