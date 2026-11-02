@@ -1,0 +1,40 @@
+name: Download public Meshy 3D logs and plank GLBs
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/ash-meshy-download.yml
+      - tools/ash_meshy_download.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare public model downloader and headless 3D viewer
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m pip install "git+https://github.com/Shuvam-Banerji-Seal/meshy-glb-downloader.git"
+          python -m playwright install chromium
+          mkdir -p output
+      - name: Fetch real GLB candidates without account or paid credits
+        run: |
+          set -o pipefail
+          python tools/ash_meshy_download.py 2>&1 | tee output/download_log.txt
+      - name: Save geometry and validation receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-ash-logs-planks-real-meshy-glb
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
