@@ -1,0 +1,94 @@
+name: Build Project Genesis Fresno trunk and planks PBR V02
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/build-fresno-inventory-v02.yml
+      - tools/build_ash_inventory_v02.py
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  make-fresno:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-ash-logs-planks-real-meshy-glb
+          run-id: 41495142994
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: source_geometry
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-ash-fresno-pbr-meshy-textures
+          run-id: 41495954527
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: source_pbr
+      - name: Prepare original geometry and color normal roughness archives
+        run: |
+          mkdir -p input output
+          cp source_geometry/ash_log_single.glb input/
+          cp source_geometry/ash_planks_stack.glb input/
+          cp source_pbr/ash_wood_grain_pbr_4k.zip input/
+          cp source_pbr/weathered_tree_bark_pbr_4k.zip input/
+          ls -lh input/
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy python3-pil
+          blender --version
+          python - <<'PY'
+          import ast
+          ast.parse(open('tools/build_ash_inventory_v02.py').read())
+          print('Script syntax OK')
+          PY
+      - name: Real Blender geometry, independent bark wood endgrain PBR, full Cycles renders
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/build_ash_inventory_v02.py -- input output 2>&1 | tee output/blender_fresno_build_log.txt
+      - name: Validate both exported GLBs and make side-by-side full-render presentation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageOps
+          import json,struct,hashlib
+          out=Path('output')
+          models=list((out/'models').glob('*.glb'))
+          assert len(models)==2,models
+          data=[]
+          for p in models:
+              with p.open('rb') as f:
+                  magic,version,size,jlen,kind=struct.unpack('<4sIIII',f.read(20))
+                  assert magic==b'glTF' and version==2 and size==p.stat().st_size and kind==0x4e4f534a
+                  doc=json.loads(f.read(jlen))
+              tri=sum(doc['accessors'][prim['indices']]['count']//3 for mesh in doc['meshes'] for prim in mesh['primitives'])
+              assert len(doc.get('materials',[]))>=2 and len(doc.get('textures',[]))>=2
+              assert tri>5000
+              data.append({'filename':p.name,'triangles':tri,'bytes':size,'images':len(doc.get('images',[])),'materials':len(doc.get('materials',[])),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          previews=[
+            'Tronco_Fresno_V02_tres_cuartos.png',
+            'Tronco_Fresno_V02_extremo_y_corteza.png',
+            'Tablas_Fresno_V02_tres_cuartos.png',
+            'Tablas_Fresno_V02_cantos.png'
+          ]
+          canvas=Image.new('RGB',(2160,1730),(32,38,47))
+          d=ImageDraw.Draw(canvas)
+          for i,n in enumerate(previews):
+              im=Image.open(out/'renders'/n).convert('RGB')
+              canvas.paste(im,((i%2)*1080,(i//2)*860+30))
+              d.text(((i%2)*1080+26,(i//2)*860+8),n.replace('.png','').replace('_',' '),fill=(245,230,202))
+          canvas.save(out/'ProjectGenesis_Fresno_V02_Blender_Cycles_Comparacion.jpg',quality=93)
+          (out/'validated_glbs.json').write_text(json.dumps(data,indent=2))
+          print('VALIDATION',json.dumps(data))
+          PY
+      - name: Save real GLBs and renders for visual approval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-fresno-v02-troncos-tablas-blender
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
