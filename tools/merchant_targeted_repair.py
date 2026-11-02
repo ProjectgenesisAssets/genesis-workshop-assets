@@ -131,6 +131,7 @@ scene=bpy.context.scene
 scene.render.engine="CYCLES"
 scene.cycles.device="CPU"
 scene.cycles.samples=30
+scene.view_layers[0].cycles.use_denoising=False
 scene.render.threads_mode="FIXED"
 scene.render.threads=4
 scene.render.image_settings.file_format="PNG"
