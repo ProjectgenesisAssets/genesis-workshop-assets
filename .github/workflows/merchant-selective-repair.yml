@@ -30,7 +30,8 @@ jobs:
       - name: Prepare Blender
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
+          python -m pip install --user numpy pillow
           mkdir -p output
           ls -lh input/r50/ProjectGenesis_Mercader_Optimizado.glb
       - name: Remove isolated floating waist fragments, no other mesh changes
