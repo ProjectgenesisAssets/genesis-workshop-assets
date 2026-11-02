@@ -1,0 +1,95 @@
+name: Real Fresno V03 32bit EXR HDRI Blender Cycles renders
+
+on:
+  push:
+    branches: [experiment/fresno-v03-32bit-hdri-20261102]
+    paths:
+      - .github/workflows/fresno-v03-32bit-hdri.yml
+      - tools/fresno_v03_hdri_32bit.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  blender-float32-hdri:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-fresno-v02-troncos-tablas-blender
+          run-id: 41503321995
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: input
+      - name: Install Blender and 32-bit EXR utilities
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender python3-numpy python3-pil libopenexr-dev
+          mkdir -p output input/hdri
+          ls -lh input/models/*.glb
+          blender --version
+      - name: Download authentic Poly Haven Studio Small 08 HDRI 4K EXR
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 3 \
+            "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/4k/studio_small_08_4k.exr" \
+            -o input/hdri/studio_small_08_4k.exr
+          python3 - <<'PY'
+          import struct
+          from pathlib import Path
+          p=Path("input/hdri/studio_small_08_4k.exr")
+          magic=struct.unpack('<I',p.read_bytes()[:4])[0]
+          assert magic==20000630, f"Not an authentic EXR: {magic}"
+          assert p.stat().st_size>1_000_000
+          print('REAL_HDRI_EXR_VERIFIED',p.stat().st_size)
+          PY
+      - name: True Blender Cycles path-traced lighting with float32 environment
+        run: |
+          set -o pipefail
+          blender -b -t 4 --python tools/fresno_v03_hdri_32bit.py -- input output input/hdri/studio_small_08_4k.exr 2>&1 | tee output/blender_cycles_hdr32_log.txt
+      - name: Validate real 32bit EXR, GLB, PNGs and side-by-side board
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageOps
+          out=Path("output")
+          glb=out/"models/ProjectGenesis_Tablas_Fresno_V03_HDR32.glb"
+          with glb.open('rb') as f:
+            magic,version,size,jlen,kind=struct.unpack('<4sIIII',f.read(20))
+            assert magic==b'glTF' and version==2 and size==glb.stat().st_size and kind==0x4e4f534a
+            doc=json.loads(f.read(jlen))
+          assert len(doc.get('images',[]))>=5 and len(doc.get('materials',[]))>=2
+          tris=sum(doc['accessors'][p['indices']]['count']//3 for m in doc['meshes'] for p in m['primitives'])
+          assert tris==10000,tris
+          exr=out/"renders/Tablas_V03_HDRI_32bit_corrected_color.exr"
+          assert struct.unpack('<I',exr.read_bytes()[:4])[0]==20000630
+          report=json.loads((out/"HDR32_report.json").read_text())
+          assert report['hdri_is_float'] and '32-bit' in report['hdr_render']
+          images=[("V02 original PBR + HDRI 32bit","Tablas_V02_HDRI_32bit_original_color.png"),
+                  ("V03 material corregido + HDRI 32bit","Tablas_V03_HDRI_32bit_corrected_color.png"),
+                  ("V03 corte y canto, HDRI 32bit","Tablas_V03_HDRI_32bit_close_endgrain.png"),
+                  ("Tronco original V02, HDRI 32bit","Tronco_V02_HDRI_32bit_unchanged.png")]
+          board=Image.new("RGB",(2240,1760),(27,32,40))
+          draw=ImageDraw.Draw(board)
+          for i,(label,file) in enumerate(images):
+              im=Image.open(out/'renders'/file).convert('RGB')
+              assert im.size==(1120,840)
+              x=(i%2)*1120;y=(i//2)*880
+              board.paste(im,(x,y+28))
+              draw.text((x+22,y+7),label,fill=(245,241,226))
+          board.save(out/"ProjectGenesis_Fresno_V03_HDRI32_Real_Blender_Cycles.jpg",quality=94,subsampling=0)
+          print("QA_SUCCESS",tris,exr.stat().st_size,glb.stat().st_size)
+          PY
+      - name: Publish render evidence, GLB and full-precision OpenEXR
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-fresno-v03-authentic-32bit-hdri-cycles
+          path: output/
+          retention-days: 14
+          if-no-files-found: error
