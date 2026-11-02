@@ -48,9 +48,9 @@ def decide(stats,highres=False):
     # For 480px previews, use stricter gate to avoid accepting a candidate
     # that only develops unacceptable localized changes at 900px.
     factor=4 if highres else 1
-    max_color=1.1 if highres else .62
-    max_local=5 if highres else 1.2
-    max_silhouette=.30 if highres else .16
+    max_color=1.1 if highres else .30
+    max_local=5 if highres else .60
+    max_silhouette=.30 if highres else .05
     return (stats["silhouette_pct"]<=max_silhouette and
             stats["visible_rgb_mae_pct"]<=max_color and
             stats["new_dark_pixels"]<=18*factor and
