@@ -1,0 +1,62 @@
+name: Test public Meshy merchant GLB export
+
+on:
+  push:
+    branches:
+      - experiment/meshy-merchant-download-20261102
+
+permissions:
+  contents: read
+
+jobs:
+  try-merchant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Prepare runtime
+        run: |
+          python --version
+          node --version
+          python -m pip --version
+          mkdir -p output
+      - name: Install open-source downloader
+        run: |
+          python -m pip install --user "git+https://github.com/Shuvam-Banerji-Seal/meshy-glb-downloader.git"
+      - name: Test the exact public Meshy post
+        id: attempt
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m meshy_glb "https://www.meshy.ai/es/posts/0194fd29-73ec-776b-9767-835d64751522" -o output/merchant.glb -v 2>&1 | tee output/attempt-log.txt
+      - name: Validate result and write diagnostics
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,struct
+          f=Path("output/merchant.glb")
+          result={"url":"https://www.meshy.ai/es/posts/0194fd29-73ec-776b-9767-835d64751522","model_present":f.is_file()}
+          if f.is_file():
+              size=f.stat().st_size
+              with f.open("rb") as stream:
+                  hdr=stream.read(20)
+                  if len(hdr)==20:
+                      magic,version,declared,json_len,json_type=struct.unpack("<4sIIII",hdr)
+                      result.update({"bytes":size,"valid_header":magic==b"glTF" and version==2 and declared==size and json_type==0x4e4f534a})
+                      if result["valid_header"]:
+                          doc=json.loads(stream.read(json_len).decode("utf-8"))
+                          result.update({k:len(doc.get(k,[])) for k in ("meshes","materials","textures","images","animations","skins")})
+                          result["generator"]=doc.get("asset",{}).get("generator")
+          Path("output/report.json").write_text(json.dumps(result,indent=2), encoding="utf-8")
+          print(json.dumps(result,indent=2))
+          PY
+      - name: Upload GLB and test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meshy-merchant-download-test
+          path: output/
+          if-no-files-found: error
+          retention-days: 7
