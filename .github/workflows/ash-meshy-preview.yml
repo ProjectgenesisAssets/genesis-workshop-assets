@@ -1,0 +1,38 @@
+name: Ash inventory 3D geometry public Meshy preview gallery
+on:
+  push:
+    branches: [experiment/ash-geometry-discovery-20261102]
+    paths:
+      - .github/workflows/ash-meshy-preview.yml
+      - tools/ash_meshy_preview.py
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  gallery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-ash-logs-planks-meshy-discovery
+          run-id: 41493993720
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: input
+      - name: Assemble real Meshy model cover contact sheet
+        run: |
+          python -m pip install pillow
+          python tools/ash_meshy_preview.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-ash-3d-meshy-contact-sheet
+          path: output/
+          retention-days: 10
+          if-no-files-found: error
