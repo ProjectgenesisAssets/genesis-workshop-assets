@@ -163,6 +163,182 @@
       "purpose": "approved-forge-v038",
       "origin": "upstream",
       "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "arcanistDoorV027",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/588de60f6888c7e3d4db20e31ee60b3e19918968/deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb",
+      "kind": "glb",
+      "purpose": "approved-arcane-door",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "arcanistWallsV006",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/workshop-arcanist-four-walls-v006/public/models/arcanista-four-walls-v006/batched/arcanista_four_walls_preview.glb",
+      "kind": "glb",
+      "purpose": "approved-arcane-walls",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithWallsV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/integration/herrero-v082-arched-doorway/public/models/blacksmith-v082-arched-portal/blacksmith_four_walls_arched_v082.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-walls",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithRoofV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_roof_preview.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-roof",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithChimneyV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_chimney_candidate_preview.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-chimney",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithDoorV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/production/door-herrero-v082-subtle-forging/public/models/door-herrero-v082-b/door-herrero-v082-b.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-door",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
     }
   ],
   "note": "anvilReal086 and bellowsReal086 are obsolete 404 sources; the game substitutes existing embedded anvil085 and bellows085 before startup."
