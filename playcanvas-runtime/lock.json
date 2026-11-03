@@ -444,6 +444,248 @@
           "sha256": "98586529d4f33e9ae06434896e2a157c22090b574d5d666e75de01a8805955b8"
         }
       }
+    },
+    {
+      "id": "tree_v005_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod1.glb",
+      "entry": "tree_v005_oak_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_oak_lod1/src/lod1.glb": {
+          "bytes": 6995784,
+          "sha256": "413549f919316f13a80b650cfbb909f77a3589ac84e938507ae4fa5578321936"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod1.glb",
+      "entry": "tree_v003_oak_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_oak_lod1/src/lod1.glb": {
+          "bytes": 13315732,
+          "sha256": "9663f6fbc5649a0625777535acaf3f6f877a590bd6279d095aa5aae6481d4543"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod2.glb",
+      "entry": "tree_v005_oak_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_oak_lod2/src/lod2.glb": {
+          "bytes": 5533288,
+          "sha256": "c48ed3c5bd8cf924616c2117dbf0396b2e45f6ac10ff73ad76e5d6b7b1be581c"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod2.glb",
+      "entry": "tree_v003_oak_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_oak_lod2/src/lod2.glb": {
+          "bytes": 12651700,
+          "sha256": "fc960098a22de4bc6cd4baada2129b73dbcfea2901aaffb21d754ee43626d09a"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod1.glb",
+      "entry": "tree_v005_ash_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_ash_lod1/src/lod1.glb": {
+          "bytes": 6861436,
+          "sha256": "0535587b898ce2f9cf6ea72305dd27d0dfa0f57754809310608b0a69cb6c582d"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod1.glb",
+      "entry": "tree_v003_ash_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_ash_lod1/src/lod1.glb": {
+          "bytes": 13547684,
+          "sha256": "8123e6decde566183aecc34236d5ceb9975e12a9298987782d469bd8c11f4c6f"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod2.glb",
+      "entry": "tree_v005_ash_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_ash_lod2/src/lod2.glb": {
+          "bytes": 5398940,
+          "sha256": "312d2e8e68eeccdf95b0438003863729897213c5a855bd1ad364614d5633390d"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod2.glb",
+      "entry": "tree_v003_ash_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_ash_lod2/src/lod2.glb": {
+          "bytes": 12796712,
+          "sha256": "3d70d254dedd2a8ef391d0036674f4c15d97b8a29d19e583e9975de345b0d506"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod1.glb",
+      "entry": "tree_v005_linden_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_linden_lod1/src/lod1.glb": {
+          "bytes": 6956564,
+          "sha256": "b709e906ec0d2664949d5c89730904fa205390c96ef9694dafd1913e101a9ab0"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod1.glb",
+      "entry": "tree_v003_linden_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_linden_lod1/src/lod1.glb": {
+          "bytes": 13619812,
+          "sha256": "dc2722f68bd19e4ad92c876e5d220d077e17b29736b3301fedce9e8f15ed8e94"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod2.glb",
+      "entry": "tree_v005_linden_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_linden_lod2/src/lod2.glb": {
+          "bytes": 5494068,
+          "sha256": "8cb4da851826a005846f07c86d4bc0ea2ad03d553b360a139f52cca368bf63be"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod2.glb",
+      "entry": "tree_v003_linden_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_linden_lod2/src/lod2.glb": {
+          "bytes": 12695828,
+          "sha256": "967b706721c588882b0b0e844809c11390278588d2dea958f6cd32cf6275e087"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod1.glb",
+      "entry": "tree_v005_maple_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_maple_lod1/src/lod1.glb": {
+          "bytes": 6484460,
+          "sha256": "3f4d48ae36dcb4c643145db003ad6871c239257fd3c1d9f251df83d298db7c25"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod1.glb",
+      "entry": "tree_v003_maple_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_maple_lod1/src/lod1.glb": {
+          "bytes": 12968804,
+          "sha256": "21785865c93b6f9fd3914193e76731dd907fc5676f63479aec464f61f88a5169"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod2.glb",
+      "entry": "tree_v005_maple_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_maple_lod2/src/lod2.glb": {
+          "bytes": 5021964,
+          "sha256": "67ad2dd4b962a864ae420bad3d66a338e2ca98b29762bf758431e526794a01ab"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod2.glb",
+      "entry": "tree_v003_maple_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_maple_lod2/src/lod2.glb": {
+          "bytes": 12327084,
+          "sha256": "9de1c457a069fa1235276574a5447c620615872882c6dcb57f884493ce30d5dc"
+        }
+      }
+    },
+    {
+      "id": "arcanistDoorV027",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/588de60f6888c7e3d4db20e31ee60b3e19918968/deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb",
+      "entry": "arcanistDoorV027/src/Arcanist_Door_V027_WebGL.glb",
+      "files": {
+        "arcanistDoorV027/src/Arcanist_Door_V027_WebGL.glb": {
+          "bytes": 4034004,
+          "sha256": "217db58b85f2b5bcf259fdc302dc9c8e6a8e2584bf5968bb4b737923c19ba894"
+        }
+      }
+    },
+    {
+      "id": "arcanistWallsV006",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/workshop-arcanist-four-walls-v006/public/models/arcanista-four-walls-v006/batched/arcanista_four_walls_preview.glb",
+      "entry": "arcanistWallsV006/src/arcanista_four_walls_preview.glb",
+      "files": {
+        "arcanistWallsV006/src/arcanista_four_walls_preview.glb": {
+          "bytes": 1026104,
+          "sha256": "2e2a4c1156e99a828962fb96b17ca466b291cd2234bafca93d92369d8f20b1f2"
+        }
+      }
+    },
+    {
+      "id": "blacksmithWallsV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/integration/herrero-v082-arched-doorway/public/models/blacksmith-v082-arched-portal/blacksmith_four_walls_arched_v082.glb",
+      "entry": "blacksmithWallsV082/src/blacksmith_four_walls_arched_v082.glb",
+      "files": {
+        "blacksmithWallsV082/src/blacksmith_four_walls_arched_v082.glb": {
+          "bytes": 2253616,
+          "sha256": "f8bf44d2d54f75310b96bd0e73b9f762c82a2a842dc237bdc5c6a8fe0ed91cdf"
+        }
+      }
+    },
+    {
+      "id": "blacksmithRoofV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_roof_preview.glb",
+      "entry": "blacksmithRoofV013/src/blacksmith_roof_preview.glb",
+      "files": {
+        "blacksmithRoofV013/src/blacksmith_roof_preview.glb": {
+          "bytes": 1147056,
+          "sha256": "6d2aafbbeba6a89d5fd12451bb11a87043cf37667108f3ed839d19f995f80d82"
+        }
+      }
+    },
+    {
+      "id": "blacksmithChimneyV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_chimney_candidate_preview.glb",
+      "entry": "blacksmithChimneyV013/src/blacksmith_chimney_candidate_preview.glb",
+      "files": {
+        "blacksmithChimneyV013/src/blacksmith_chimney_candidate_preview.glb": {
+          "bytes": 662156,
+          "sha256": "0623fe1d2ba3434db99f6313800cdba69fcf2b1ccb4df50206558603d5132eae"
+        }
+      }
+    },
+    {
+      "id": "blacksmithDoorV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/production/door-herrero-v082-subtle-forging/public/models/door-herrero-v082-b/door-herrero-v082-b.glb",
+      "entry": "blacksmithDoorV082/src/door-herrero-v082-b.glb",
+      "files": {
+        "blacksmithDoorV082/src/door-herrero-v082-b.glb": {
+          "bytes": 15887816,
+          "sha256": "929a7ac230bf309e68ae9e664f149f3b6759a5aef3ef7874f69bafb92d4420a1"
+        }
+      }
     }
   ],
   "failures": [],
