@@ -1,0 +1,693 @@
+{
+  "schema": 1,
+  "assets": [
+    {
+      "id": "genesisFountainV011HQAsset",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/plaza-fuente-delfin-marmol-aaa/public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb",
+      "entry": "genesisFountainV011HQAsset/src/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb",
+      "files": {
+        "genesisFountainV011HQAsset/src/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb": {
+          "bytes": 16715688,
+          "sha256": "88108f2909b45061919c45a298597f93a3db625b9567db03bdece503b7d55c4e"
+        }
+      }
+    },
+    {
+      "id": "peasantMale086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_peasant.glb",
+      "entry": "peasantMale086/src/male_peasant.glb",
+      "files": {
+        "peasantMale086/src/male_peasant.glb": {
+          "bytes": 653892,
+          "sha256": "cc12edb13e556cdaf6ce9fb869bf0b081ae8538e4ab6d030ae207fe63f24ab8a"
+        }
+      }
+    },
+    {
+      "id": "rangerMale086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_ranger.glb",
+      "entry": "rangerMale086/src/male_ranger.glb",
+      "files": {
+        "rangerMale086/src/male_ranger.glb": {
+          "bytes": 1617696,
+          "sha256": "513203b0eadc4849aeba0e24effd5dc85b0b072ddc0d0b14b6242c0ba1847eea"
+        }
+      }
+    },
+    {
+      "id": "maleHead086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_head.glb",
+      "entry": "maleHead086/src/male_head.glb",
+      "files": {
+        "maleHead086/src/male_head.glb": {
+          "bytes": 232884,
+          "sha256": "576e31b92bc2fab0b8ca6265d880d546370c3a4b80d797858cda121958c09569"
+        }
+      }
+    },
+    {
+      "id": "hairParted086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_simpleparted.glb",
+      "entry": "hairParted086/src/hair_simpleparted.glb",
+      "files": {
+        "hairParted086/src/hair_simpleparted.glb": {
+          "bytes": 71444,
+          "sha256": "41675f7fce412f50d8ebd7fe4749eae3201e2a52414fdec3104b888434f2e73c"
+        }
+      }
+    },
+    {
+      "id": "hairBeard086",
+      "source": "https://cdn.jsdelivr.net/gh/Dallolz/moorfall-assets@main/hair/Hair_Beard.glb",
+      "entry": "hairBeard086/src/Hair_Beard.glb",
+      "files": {
+        "hairBeard086/src/Hair_Beard.glb": {
+          "bytes": 57584,
+          "sha256": "d3b387ee1820e358ff5f63b5a1c4dcf2ecced117ead9c8330e308dc7a12d3887"
+        }
+      }
+    },
+    {
+      "id": "ual1086",
+      "source": "https://cdn.jsdelivr.net/gh/Dallolz/moorfall-assets@main/animations/UAL1.glb",
+      "entry": "ual1086/src/UAL1.glb",
+      "files": {
+        "ual1086/src/UAL1.glb": {
+          "bytes": 7618436,
+          "sha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997"
+        }
+      }
+    },
+    {
+      "id": "mercHairBuzz10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_buzzed.glb",
+      "entry": "mercHairBuzz10/src/hair_buzzed.glb",
+      "files": {
+        "mercHairBuzz10/src/hair_buzzed.glb": {
+          "bytes": 53488,
+          "sha256": "3979f6178e2f43ebf5b58654d37c32e5d30ef9203376b43e6790990ee7a96e5b"
+        }
+      }
+    },
+    {
+      "id": "mercHairLong10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_long.glb",
+      "entry": "mercHairLong10/src/hair_long.glb",
+      "files": {
+        "mercHairLong10/src/hair_long.glb": {
+          "bytes": 203376,
+          "sha256": "d09832eeb223255e2c8cf241cd98f67167ca325b1020df58f439a94184bb9f36"
+        }
+      }
+    },
+    {
+      "id": "mercSword10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/props/sword.glb",
+      "entry": "mercSword10/src/sword.glb",
+      "files": {
+        "mercSword10/src/sword.glb": {
+          "bytes": 46824,
+          "sha256": "0dfe44f78849b6a3c7b1cad4153a4b6a67309ed1206acf9c040fb2e73c87c039"
+        }
+      }
+    },
+    {
+      "id": "mercShield10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/props/shield_round.glb",
+      "entry": "mercShield10/src/shield_round.glb",
+      "files": {
+        "mercShield10/src/shield_round.glb": {
+          "bytes": 59156,
+          "sha256": "86432093190d9db06ef36db92a2df71fec43593b283a27a00423ac0d704e6c0a"
+        }
+      }
+    },
+    {
+      "id": "roofReal086",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Roof_RoundTiles_6x10.gltf",
+      "entry": "roofReal086/src/Roof_RoundTiles_6x10.gltf",
+      "files": {
+        "roofReal086/src/Roof_RoundTiles_6x10.gltf": {
+          "bytes": 4344,
+          "sha256": "c91658413d74c970c6bdd166aa612d44c5fb1cd8852db76f34714ec1c4336397"
+        },
+        "roofReal086/src/Roof_RoundTiles_6x10.bin": {
+          "bytes": 210120,
+          "sha256": "92b6f11134949c894d8ec4bb7941ceab5d4ef77205878a07412ef136d5cb2201"
+        },
+        "roofReal086/src/T_WoodTrim_Normal.png": {
+          "bytes": 3596501,
+          "sha256": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8"
+        },
+        "roofReal086/src/T_WoodTrim_BaseColor.png": {
+          "bytes": 2082310,
+          "sha256": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e"
+        },
+        "roofReal086/src/T_WoodTrim_Roughness.png": {
+          "bytes": 1697111,
+          "sha256": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+        },
+        "roofReal086/src/T_RoundTiles_Normal.png": {
+          "bytes": 3792369,
+          "sha256": "e8cf202fbc1ec36c3f5389a25ab9c99f015d49ae0ca963d0404614c3e1e8f687"
+        },
+        "roofReal086/src/T_RoundTiles_BaseColor.png": {
+          "bytes": 4352034,
+          "sha256": "acf388ebd1a97346e1e5b59091cfc609ed15b4f70b83a626089f12a82a2d9997"
+        },
+        "roofReal086/src/T_RoundTiles_Roughness.png": {
+          "bytes": 1624660,
+          "sha256": "02c5cdbb6768de6ac674a343265c020c5bd6ef70fd7ba555d9b9dc7445179366"
+        }
+      }
+    },
+    {
+      "id": "floorBrick",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Floor_UnevenBrick.gltf",
+      "entry": "floorBrick/src/Floor_UnevenBrick.gltf",
+      "files": {
+        "floorBrick/src/Floor_UnevenBrick.gltf": {
+          "bytes": 2159,
+          "sha256": "8943b3e5a80a56ac7e3670ae90075e40e610f4c6fa6cbaabf643a57ff8a62dce"
+        },
+        "floorBrick/src/Floor_UnevenBrick.bin": {
+          "bytes": 280,
+          "sha256": "2205075c87d65d157c735206450b45183dfc24f8185e2e5db706974ac2b5567e"
+        },
+        "floorBrick/src/T_UnevenBrick_Normal.png": {
+          "bytes": 3866626,
+          "sha256": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad"
+        },
+        "floorBrick/src/T_UnevenBrick_BaseColor.png": {
+          "bytes": 2945342,
+          "sha256": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc"
+        },
+        "floorBrick/src/T_UnevenBrick_Roughness.png": {
+          "bytes": 1246162,
+          "sha256": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942"
+        }
+      }
+    },
+    {
+      "id": "wallWoodGrid2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_Plaster_WoodGrid.gltf",
+      "entry": "wallWoodGrid2A/src/Wall_Plaster_WoodGrid.gltf",
+      "files": {
+        "wallWoodGrid2A/src/Wall_Plaster_WoodGrid.gltf": {
+          "bytes": 4201,
+          "sha256": "63493359c240943f1d70a53ea021fdf9726175642bc765ab5af03967b3b8b0c0"
+        },
+        "wallWoodGrid2A/src/Wall_Plaster_WoodGrid.bin": {
+          "bytes": 17248,
+          "sha256": "c97643db2a58aed8e5e8b4a9f62afc08a27a23354ce746af5e4a9e626ac8408c"
+        },
+        "wallWoodGrid2A/src/T_WoodTrim_Normal.png": {
+          "bytes": 3596501,
+          "sha256": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8"
+        },
+        "wallWoodGrid2A/src/T_WoodTrim_BaseColor.png": {
+          "bytes": 2082310,
+          "sha256": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e"
+        },
+        "wallWoodGrid2A/src/T_WoodTrim_Roughness.png": {
+          "bytes": 1697111,
+          "sha256": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+        },
+        "wallWoodGrid2A/src/T_Plaster_Normal.png": {
+          "bytes": 4607606,
+          "sha256": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4"
+        },
+        "wallWoodGrid2A/src/T_Plaster_BaseColor.png": {
+          "bytes": 3316410,
+          "sha256": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4"
+        },
+        "wallWoodGrid2A/src/T_Plaster_ORM.png": {
+          "bytes": 2381579,
+          "sha256": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7"
+        }
+      }
+    },
+    {
+      "id": "wallBrick2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_UnevenBrick_Straight.gltf",
+      "entry": "wallBrick2A/src/Wall_UnevenBrick_Straight.gltf",
+      "files": {
+        "wallBrick2A/src/Wall_UnevenBrick_Straight.gltf": {
+          "bytes": 5392,
+          "sha256": "3b004772bace43cc43bf76f3c75d47f68dce175510a26690468efe63bfc05f95"
+        },
+        "wallBrick2A/src/Wall_UnevenBrick_Straight.bin": {
+          "bytes": 2768,
+          "sha256": "4d3b14acd4c5e6fe450e13d930f6c9240f719ed22b959bb2e7674e731225f103"
+        },
+        "wallBrick2A/src/T_WoodTrim_Normal.png": {
+          "bytes": 3596501,
+          "sha256": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8"
+        },
+        "wallBrick2A/src/T_WoodTrim_BaseColor.png": {
+          "bytes": 2082310,
+          "sha256": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e"
+        },
+        "wallBrick2A/src/T_WoodTrim_Roughness.png": {
+          "bytes": 1697111,
+          "sha256": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+        },
+        "wallBrick2A/src/T_Plaster_Normal.png": {
+          "bytes": 4607606,
+          "sha256": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4"
+        },
+        "wallBrick2A/src/T_Plaster_BaseColor.png": {
+          "bytes": 3316410,
+          "sha256": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4"
+        },
+        "wallBrick2A/src/T_Plaster_ORM.png": {
+          "bytes": 2381579,
+          "sha256": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7"
+        },
+        "wallBrick2A/src/T_UnevenBrick_Normal.png": {
+          "bytes": 3866626,
+          "sha256": "bbf623cc35720d67a02079b20b9a6d9641c3686952b288cda97dec41e4b8acad"
+        },
+        "wallBrick2A/src/T_UnevenBrick_BaseColor.png": {
+          "bytes": 2945342,
+          "sha256": "ee0f096df6110e943cd9739680b61bc0ffd6fe00db752c5c3797941057a95ebc"
+        },
+        "wallBrick2A/src/T_UnevenBrick_Roughness.png": {
+          "bytes": 1246162,
+          "sha256": "da170cb92ac5479b93ca0c0002b783f1186a146e6e3124891ce7bfe6e1a8a942"
+        }
+      }
+    },
+    {
+      "id": "wallDoor2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_Plaster_Door_Round.gltf",
+      "entry": "wallDoor2A/src/Wall_Plaster_Door_Round.gltf",
+      "files": {
+        "wallDoor2A/src/Wall_Plaster_Door_Round.gltf": {
+          "bytes": 5946,
+          "sha256": "15514442b52ed9e4bea685faaf83c45ca68a227810d5cec5f66b0f311f5f6fc7"
+        },
+        "wallDoor2A/src/Wall_Plaster_Door_Round.bin": {
+          "bytes": 8864,
+          "sha256": "0b347db7975bcf39d97b7df77e884e2df8877b024f396b517d0a7cb6bf56332e"
+        },
+        "wallDoor2A/src/T_WoodTrim_Normal.png": {
+          "bytes": 3596501,
+          "sha256": "5847623e4ed6c206e59f32d1718ee75dcb2b49a1d55ede7ef70a254739caf4a8"
+        },
+        "wallDoor2A/src/T_WoodTrim_BaseColor.png": {
+          "bytes": 2082310,
+          "sha256": "a59f410b07a9bc5f0664df3ba7a2c1e37acffc7979795911f3fc8730ab60e33e"
+        },
+        "wallDoor2A/src/T_WoodTrim_Roughness.png": {
+          "bytes": 1697111,
+          "sha256": "e888464fd4199d458d8cf39e00fa07d56f8a0bcb658aa03b4a7c95d466ceefa3"
+        },
+        "wallDoor2A/src/T_Plaster_Normal.png": {
+          "bytes": 4607606,
+          "sha256": "8b9617b561466cce00d5a0628eae7bef208dcf63445d72570e7f8e5057fed0d4"
+        },
+        "wallDoor2A/src/T_Plaster_BaseColor.png": {
+          "bytes": 3316410,
+          "sha256": "98547ca83888307e3ffa96384ce058b7622affe0a42add3b36d0b48618c5eda4"
+        },
+        "wallDoor2A/src/T_Plaster_ORM.png": {
+          "bytes": 2381579,
+          "sha256": "7be9d64a6154ba12bb7086e1d6774a7d5bbbc95775efb614f6ff40a4787fe0c7"
+        },
+        "wallDoor2A/src/T_RockTrim_Normal.png": {
+          "bytes": 3925938,
+          "sha256": "f93f82f7e69aa0bf1900f8ab3f252390f091b771f0b84a345c5fefb0f0155cd3"
+        },
+        "wallDoor2A/src/T_RockTrim_BaseColor.png": {
+          "bytes": 1908835,
+          "sha256": "aa571cd612091a8f4c95393f8f938bd6e5d47a8cdfd9c896b60a4b37903e2c7c"
+        },
+        "wallDoor2A/src/T_RockTrim_ORM.png": {
+          "bytes": 1625807,
+          "sha256": "5287dd9a4e9fb7423af8d8440a8de8bdb8910f9f37ba148f619a6eddf58d5bc8"
+        }
+      }
+    },
+    {
+      "id": "benchReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Workbench.gltf",
+      "entry": "benchReal/src/Workbench.gltf",
+      "files": {
+        "benchReal/src/Workbench.gltf": {
+          "bytes": 4318,
+          "sha256": "518fc5c955def18cfcb781b3b955da0e8edcf4f37830a21561ef32c03ad0397e"
+        },
+        "benchReal/src/Workbench.bin": {
+          "bytes": 63408,
+          "sha256": "d26f2a0ba01b4a8db8d6820d1bd0d281297fea30e48c9952484167d18a637b39"
+        },
+        "benchReal/src/T_Trim_Furniture_Normal.png": {
+          "bytes": 3485710,
+          "sha256": "3340c4cc47ff06d5e94a2dbe2a2a12d914d0ef055fcf66f63d876666bd160e42"
+        },
+        "benchReal/src/T_Trim_Furniture_BaseColor.png": {
+          "bytes": 2232961,
+          "sha256": "075fbc9ec2fabc15732bd4025b6f63a0b25762df38440d06bf30437565d39bab"
+        },
+        "benchReal/src/T_Trim_Furniture_ORM.png": {
+          "bytes": 2064585,
+          "sha256": "7bf417e82baf313793c5791bf48cdc8e573f1f7136197785bf0eb235cb0f8153"
+        },
+        "benchReal/src/T_Trim_Metal_Normal.png": {
+          "bytes": 3625541,
+          "sha256": "ab7315c864c9a9e6d716c940a599928506e1569d3b0c9085f8f1a64ec520d790"
+        },
+        "benchReal/src/T_Trim_Metal_BaseColor.png": {
+          "bytes": 1361221,
+          "sha256": "50422bbda9661effc259caf8b386224cac4b5ca811d2c5b3b8b25ae8efc714db"
+        },
+        "benchReal/src/T_Trim_Metal_ORM.png": {
+          "bytes": 1871475,
+          "sha256": "7407bccfc39ca74ecd68a61217395959bf56ac2063e6c93b384b11f07f5687c5"
+        }
+      }
+    },
+    {
+      "id": "barrelReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Barrel.gltf",
+      "entry": "barrelReal/src/Barrel.gltf",
+      "files": {
+        "barrelReal/src/Barrel.gltf": {
+          "bytes": 4311,
+          "sha256": "cececb2da345addb21567e3ce1b30a9da071b689bcec59d85cd7a4446f531e87"
+        },
+        "barrelReal/src/Barrel.bin": {
+          "bytes": 57144,
+          "sha256": "d8f963e2975b6bbd4b631b5cd7ade2d5dfc76dfb9f8387e2d398935f5405cf20"
+        },
+        "barrelReal/src/T_Trim_Furniture_Normal.png": {
+          "bytes": 3485710,
+          "sha256": "3340c4cc47ff06d5e94a2dbe2a2a12d914d0ef055fcf66f63d876666bd160e42"
+        },
+        "barrelReal/src/T_Trim_Furniture_BaseColor.png": {
+          "bytes": 2232961,
+          "sha256": "075fbc9ec2fabc15732bd4025b6f63a0b25762df38440d06bf30437565d39bab"
+        },
+        "barrelReal/src/T_Trim_Furniture_ORM.png": {
+          "bytes": 2064585,
+          "sha256": "7bf417e82baf313793c5791bf48cdc8e573f1f7136197785bf0eb235cb0f8153"
+        },
+        "barrelReal/src/T_Trim_Metal_Normal.png": {
+          "bytes": 3625541,
+          "sha256": "ab7315c864c9a9e6d716c940a599928506e1569d3b0c9085f8f1a64ec520d790"
+        },
+        "barrelReal/src/T_Trim_Metal_BaseColor.png": {
+          "bytes": 1361221,
+          "sha256": "50422bbda9661effc259caf8b386224cac4b5ca811d2c5b3b8b25ae8efc714db"
+        },
+        "barrelReal/src/T_Trim_Metal_ORM.png": {
+          "bytes": 1871475,
+          "sha256": "7407bccfc39ca74ecd68a61217395959bf56ac2063e6c93b384b11f07f5687c5"
+        }
+      }
+    },
+    {
+      "id": "bucketReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Bucket_Metal.gltf",
+      "entry": "bucketReal/src/Bucket_Metal.gltf",
+      "files": {
+        "bucketReal/src/Bucket_Metal.gltf": {
+          "bytes": 2206,
+          "sha256": "0601c71ce5291f7cc23e33278d3cb70817b3a4410b44588298dbef606c8efb48"
+        },
+        "bucketReal/src/Bucket_Metal.bin": {
+          "bytes": 18824,
+          "sha256": "21ed9b3699a07707180d980c9b9e16a8f19924268e199e7ba17b8b5c06c4f35f"
+        },
+        "bucketReal/src/T_Trim_Metal_Normal.png": {
+          "bytes": 3625541,
+          "sha256": "ab7315c864c9a9e6d716c940a599928506e1569d3b0c9085f8f1a64ec520d790"
+        },
+        "bucketReal/src/T_Trim_Metal_BaseColor.png": {
+          "bytes": 1361221,
+          "sha256": "50422bbda9661effc259caf8b386224cac4b5ca811d2c5b3b8b25ae8efc714db"
+        },
+        "bucketReal/src/T_Trim_Metal_ORM.png": {
+          "bytes": 1871475,
+          "sha256": "7407bccfc39ca74ecd68a61217395959bf56ac2063e6c93b384b11f07f5687c5"
+        }
+      }
+    },
+    {
+      "id": "forgeStation",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/playcanvas-herrero-arcanista-walls-preview/public/models/Forge_V038_HeaderFixed_Preview.glb",
+      "entry": "forgeStation/src/Forge_V038_HeaderFixed_Preview.glb",
+      "files": {
+        "forgeStation/src/Forge_V038_HeaderFixed_Preview.glb": {
+          "bytes": 19220220,
+          "sha256": "98586529d4f33e9ae06434896e2a157c22090b574d5d666e75de01a8805955b8"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod1.glb",
+      "entry": "tree_v005_oak_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_oak_lod1/src/lod1.glb": {
+          "bytes": 6995784,
+          "sha256": "413549f919316f13a80b650cfbb909f77a3589ac84e938507ae4fa5578321936"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod1.glb",
+      "entry": "tree_v003_oak_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_oak_lod1/src/lod1.glb": {
+          "bytes": 13315732,
+          "sha256": "9663f6fbc5649a0625777535acaf3f6f877a590bd6279d095aa5aae6481d4543"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod2.glb",
+      "entry": "tree_v005_oak_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_oak_lod2/src/lod2.glb": {
+          "bytes": 5533288,
+          "sha256": "c48ed3c5bd8cf924616c2117dbf0396b2e45f6ac10ff73ad76e5d6b7b1be581c"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod2.glb",
+      "entry": "tree_v003_oak_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_oak_lod2/src/lod2.glb": {
+          "bytes": 12651700,
+          "sha256": "fc960098a22de4bc6cd4baada2129b73dbcfea2901aaffb21d754ee43626d09a"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod1.glb",
+      "entry": "tree_v005_ash_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_ash_lod1/src/lod1.glb": {
+          "bytes": 6861436,
+          "sha256": "0535587b898ce2f9cf6ea72305dd27d0dfa0f57754809310608b0a69cb6c582d"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod1.glb",
+      "entry": "tree_v003_ash_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_ash_lod1/src/lod1.glb": {
+          "bytes": 13547684,
+          "sha256": "8123e6decde566183aecc34236d5ceb9975e12a9298987782d469bd8c11f4c6f"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod2.glb",
+      "entry": "tree_v005_ash_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_ash_lod2/src/lod2.glb": {
+          "bytes": 5398940,
+          "sha256": "312d2e8e68eeccdf95b0438003863729897213c5a855bd1ad364614d5633390d"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod2.glb",
+      "entry": "tree_v003_ash_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_ash_lod2/src/lod2.glb": {
+          "bytes": 12796712,
+          "sha256": "3d70d254dedd2a8ef391d0036674f4c15d97b8a29d19e583e9975de345b0d506"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod1.glb",
+      "entry": "tree_v005_linden_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_linden_lod1/src/lod1.glb": {
+          "bytes": 6956564,
+          "sha256": "b709e906ec0d2664949d5c89730904fa205390c96ef9694dafd1913e101a9ab0"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod1.glb",
+      "entry": "tree_v003_linden_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_linden_lod1/src/lod1.glb": {
+          "bytes": 13619812,
+          "sha256": "dc2722f68bd19e4ad92c876e5d220d077e17b29736b3301fedce9e8f15ed8e94"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod2.glb",
+      "entry": "tree_v005_linden_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_linden_lod2/src/lod2.glb": {
+          "bytes": 5494068,
+          "sha256": "8cb4da851826a005846f07c86d4bc0ea2ad03d553b360a139f52cca368bf63be"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod2.glb",
+      "entry": "tree_v003_linden_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_linden_lod2/src/lod2.glb": {
+          "bytes": 12695828,
+          "sha256": "967b706721c588882b0b0e844809c11390278588d2dea958f6cd32cf6275e087"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod1.glb",
+      "entry": "tree_v005_maple_lod1/src/lod1.glb",
+      "files": {
+        "tree_v005_maple_lod1/src/lod1.glb": {
+          "bytes": 6484460,
+          "sha256": "3f4d48ae36dcb4c643145db003ad6871c239257fd3c1d9f251df83d298db7c25"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod1.glb",
+      "entry": "tree_v003_maple_lod1/src/lod1.glb",
+      "files": {
+        "tree_v003_maple_lod1/src/lod1.glb": {
+          "bytes": 12968804,
+          "sha256": "21785865c93b6f9fd3914193e76731dd907fc5676f63479aec464f61f88a5169"
+        }
+      }
+    },
+    {
+      "id": "tree_v005_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod2.glb",
+      "entry": "tree_v005_maple_lod2/src/lod2.glb",
+      "files": {
+        "tree_v005_maple_lod2/src/lod2.glb": {
+          "bytes": 5021964,
+          "sha256": "67ad2dd4b962a864ae420bad3d66a338e2ca98b29762bf758431e526794a01ab"
+        }
+      }
+    },
+    {
+      "id": "tree_v003_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod2.glb",
+      "entry": "tree_v003_maple_lod2/src/lod2.glb",
+      "files": {
+        "tree_v003_maple_lod2/src/lod2.glb": {
+          "bytes": 12327084,
+          "sha256": "9de1c457a069fa1235276574a5447c620615872882c6dcb57f884493ce30d5dc"
+        }
+      }
+    },
+    {
+      "id": "arcanistDoorV027",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/588de60f6888c7e3d4db20e31ee60b3e19918968/deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb",
+      "entry": "arcanistDoorV027/src/Arcanist_Door_V027_WebGL.glb",
+      "files": {
+        "arcanistDoorV027/src/Arcanist_Door_V027_WebGL.glb": {
+          "bytes": 4034004,
+          "sha256": "217db58b85f2b5bcf259fdc302dc9c8e6a8e2584bf5968bb4b737923c19ba894"
+        }
+      }
+    },
+    {
+      "id": "arcanistWallsV006",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/workshop-arcanist-four-walls-v006/public/models/arcanista-four-walls-v006/batched/arcanista_four_walls_preview.glb",
+      "entry": "arcanistWallsV006/src/arcanista_four_walls_preview.glb",
+      "files": {
+        "arcanistWallsV006/src/arcanista_four_walls_preview.glb": {
+          "bytes": 1026104,
+          "sha256": "2e2a4c1156e99a828962fb96b17ca466b291cd2234bafca93d92369d8f20b1f2"
+        }
+      }
+    },
+    {
+      "id": "blacksmithWallsV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/integration/herrero-v082-arched-doorway/public/models/blacksmith-v082-arched-portal/blacksmith_four_walls_arched_v082.glb",
+      "entry": "blacksmithWallsV082/src/blacksmith_four_walls_arched_v082.glb",
+      "files": {
+        "blacksmithWallsV082/src/blacksmith_four_walls_arched_v082.glb": {
+          "bytes": 2253616,
+          "sha256": "f8bf44d2d54f75310b96bd0e73b9f762c82a2a842dc237bdc5c6a8fe0ed91cdf"
+        }
+      }
+    },
+    {
+      "id": "blacksmithRoofV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_roof_preview.glb",
+      "entry": "blacksmithRoofV013/src/blacksmith_roof_preview.glb",
+      "files": {
+        "blacksmithRoofV013/src/blacksmith_roof_preview.glb": {
+          "bytes": 1147056,
+          "sha256": "6d2aafbbeba6a89d5fd12451bb11a87043cf37667108f3ed839d19f995f80d82"
+        }
+      }
+    },
+    {
+      "id": "blacksmithChimneyV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_chimney_candidate_preview.glb",
+      "entry": "blacksmithChimneyV013/src/blacksmith_chimney_candidate_preview.glb",
+      "files": {
+        "blacksmithChimneyV013/src/blacksmith_chimney_candidate_preview.glb": {
+          "bytes": 662156,
+          "sha256": "0623fe1d2ba3434db99f6313800cdba69fcf2b1ccb4df50206558603d5132eae"
+        }
+      }
+    },
+    {
+      "id": "blacksmithDoorV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/production/door-herrero-v082-subtle-forging/public/models/door-herrero-v082-b/door-herrero-v082-b.glb",
+      "entry": "blacksmithDoorV082/src/door-herrero-v082-b.glb",
+      "files": {
+        "blacksmithDoorV082/src/door-herrero-v082-b.glb": {
+          "bytes": 15887816,
+          "sha256": "929a7ac230bf309e68ae9e664f149f3b6759a5aef3ef7874f69bafb92d4420a1"
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "complete": true
+}

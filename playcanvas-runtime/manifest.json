@@ -1,0 +1,345 @@
+{
+  "schema": 1,
+  "project": "Project Genesis",
+  "purpose": "Asset mirror for playable demo; mirrors byte-identical originals with glTF dependencies; non-gameplay Curtidor omitted",
+  "root": "public/playcanvas-runtime/externals",
+  "items": [
+    {
+      "id": "genesisFountainV011HQAsset",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/plaza-fuente-delfin-marmol-aaa/public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "peasantMale086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_peasant.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "rangerMale086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_ranger.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "maleHead086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_head.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "hairParted086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_simpleparted.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "hairBeard086",
+      "source": "https://cdn.jsdelivr.net/gh/Dallolz/moorfall-assets@main/hair/Hair_Beard.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "ual1086",
+      "source": "https://cdn.jsdelivr.net/gh/Dallolz/moorfall-assets@main/animations/UAL1.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercHairBuzz10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_buzzed.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercHairLong10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_long.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercSword10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/props/sword.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercShield10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/props/shield_round.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "roofReal086",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Roof_RoundTiles_6x10.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "floorBrick",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Floor_UnevenBrick.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "wallWoodGrid2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_Plaster_WoodGrid.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "wallBrick2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_UnevenBrick_Straight.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "wallDoor2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_Plaster_Door_Round.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "benchReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Workbench.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "barrelReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Barrel.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "bucketReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Bucket_Metal.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "forgeStation",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/playcanvas-herrero-arcanista-walls-preview/public/models/Forge_V038_HeaderFixed_Preview.glb",
+      "kind": "glb",
+      "purpose": "approved-forge-v038",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_oak_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/oak/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_oak_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/oak/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_ash_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/ash/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_ash_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/ash/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_linden_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/linden/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_linden_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/linden/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod1.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_maple_lod1",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod1.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v005_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d/assets/tree_webgl_v005/maple/lod2.glb",
+      "kind": "glb",
+      "purpose": "approved-tree-runtime",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "tree_v003_maple_lod2",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/94d2fe3262af163d9cd7277cc4e31e20acf3bcaa/assets/tree_webgl_v003/maple/lod2.glb",
+      "kind": "glb",
+      "purpose": "tree-fallback",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "arcanistDoorV027",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/588de60f6888c7e3d4db20e31ee60b3e19918968/deliverables/door_v027/webgl/Arcanist_Door_V027_WebGL.glb",
+      "kind": "glb",
+      "purpose": "approved-arcane-door",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "arcanistWallsV006",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/workshop-arcanist-four-walls-v006/public/models/arcanista-four-walls-v006/batched/arcanista_four_walls_preview.glb",
+      "kind": "glb",
+      "purpose": "approved-arcane-walls",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithWallsV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/integration/herrero-v082-arched-doorway/public/models/blacksmith-v082-arched-portal/blacksmith_four_walls_arched_v082.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-walls",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithRoofV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_roof_preview.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-roof",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithChimneyV013",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/blacksmith-workshop-windows-flue-v013/public/models/blacksmith-structural-v013/batched/blacksmith_chimney_candidate_preview.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-chimney",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "blacksmithDoorV082",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/production/door-herrero-v082-subtle-forging/public/models/door-herrero-v082-b/door-herrero-v082-b.glb",
+      "kind": "glb",
+      "purpose": "approved-smith-door",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    }
+  ],
+  "note": "anvilReal086 and bellowsReal086 are obsolete 404 sources; the game substitutes existing embedded anvil085 and bellows085 before startup."
+}
