@@ -1,0 +1,48 @@
+name: Publish real approved-candidate Fresno V02 Blender renders for viewer
+on:
+  push:
+    branches: ['experiment/ash-geometry-discovery-20261102']
+    paths: ['.github/workflows/publish-fresno-v02-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-fresno-v02-troncos-tablas-blender
+          run-id: 41503321995
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: original
+      - name: Validate actual Cycles images and publish review copies
+        run: |
+          set -euo pipefail
+          mkdir -p previews/approved-candidate-fresno-v02
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          src=Path('original')
+          names=['Tronco_Fresno_V02_tres_cuartos.png','Tronco_Fresno_V02_extremo_y_corteza.png','Tablas_Fresno_V02_tres_cuartos.png','Tablas_Fresno_V02_cantos.png']
+          for name in names:
+              p=src/'renders'/name
+              assert p.is_file(),str(p)
+              assert p.read_bytes()[:8]==b'\x89PNG\r\n\x1a\n'
+              assert p.stat().st_size>25000
+              print('VERIFIED_BLENDER_CYCLES',name,p.stat().st_size)
+              (Path('previews/approved-candidate-fresno-v02')/name).write_bytes(p.read_bytes())
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add previews/approved-candidate-fresno-v02/
+          if ! git diff --cached --quiet; then
+            git commit -m "preview: preserve actual Fresno V02 Cycles renders for technical viewer"
+            git push origin HEAD:experiment/ash-geometry-discovery-20261102
+          fi
