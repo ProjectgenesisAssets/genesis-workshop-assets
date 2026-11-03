@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "project": "Project Genesis",
+  "purpose": "Asset mirror for playable demo; mirrors byte-identical originals with glTF dependencies; non-gameplay Curtidor omitted",
+  "root": "public/playcanvas-runtime/externals",
+  "items": [
+    {
+      "id": "genesisFountainV011HQAsset",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/plaza-fuente-delfin-marmol-aaa/public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "peasantMale086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_peasant.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "rangerMale086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_ranger.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "maleHead086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/male_head.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "hairParted086",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_simpleparted.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "hairBeard086",
+      "source": "https://cdn.jsdelivr.net/gh/Dallolz/moorfall-assets@main/hair/Hair_Beard.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "ual1086",
+      "source": "https://cdn.jsdelivr.net/gh/Dallolz/moorfall-assets@main/animations/UAL1.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercHairBuzz10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_buzzed.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercHairLong10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/characters/hair_long.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercSword10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/props/sword.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "mercShield10",
+      "source": "https://cdn.jsdelivr.net/gh/Genesara/genesara-web@main/public/models/props/shield_round.glb",
+      "kind": "glb",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "roofReal086",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Roof_RoundTiles_6x10.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "anvilReal086",
+      "source": "https://cdn.jsdelivr.net/gh/dustinc555/mygame@main/assets/vendor/quaternius/fantasy_props_megakit/gltf/Anvil_Log.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "bellowsReal086",
+      "source": "https://cdn.jsdelivr.net/gh/dustinc555/mygame@main/assets/vendor/quaternius/fantasy_props_megakit/gltf/Bellows.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "floorBrick",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Floor_UnevenBrick.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "wallWoodGrid2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_Plaster_WoodGrid.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "wallBrick2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_UnevenBrick_Straight.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "wallDoor2A",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Wall_Plaster_Door_Round.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "benchReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Workbench.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "barrelReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Barrel.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "bucketReal",
+      "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Fantasy%20Props%20MegaKit%5BStandard%5D/Exports/glTF/Bucket_Metal.gltf",
+      "kind": "gltf",
+      "purpose": "original-runtime-asset",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    },
+    {
+      "id": "forgeStation",
+      "source": "https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/feature/playcanvas-herrero-arcanista-walls-preview/public/models/Forge_V038_HeaderFixed_Preview.glb",
+      "kind": "glb",
+      "purpose": "approved-forge-v038",
+      "origin": "upstream",
+      "license": "verify-upstream-before-redistribution"
+    }
+  ]
+}
