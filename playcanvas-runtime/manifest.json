@@ -101,22 +101,6 @@
       "license": "verify-upstream-before-redistribution"
     },
     {
-      "id": "anvilReal086",
-      "source": "https://cdn.jsdelivr.net/gh/dustinc555/mygame@main/assets/vendor/quaternius/fantasy_props_megakit/gltf/Anvil_Log.gltf",
-      "kind": "gltf",
-      "purpose": "original-runtime-asset",
-      "origin": "upstream",
-      "license": "verify-upstream-before-redistribution"
-    },
-    {
-      "id": "bellowsReal086",
-      "source": "https://cdn.jsdelivr.net/gh/dustinc555/mygame@main/assets/vendor/quaternius/fantasy_props_megakit/gltf/Bellows.gltf",
-      "kind": "gltf",
-      "purpose": "original-runtime-asset",
-      "origin": "upstream",
-      "license": "verify-upstream-before-redistribution"
-    },
-    {
       "id": "floorBrick",
       "source": "https://cdn.jsdelivr.net/gh/agentkaerf/FreeModels@main/Medieval%20Village%20MegaKit%5BStandard%5D/glTF/Floor_UnevenBrick.gltf",
       "kind": "gltf",
@@ -180,5 +164,6 @@
       "origin": "upstream",
       "license": "verify-upstream-before-redistribution"
     }
-  ]
+  ],
+  "note": "anvilReal086 and bellowsReal086 are obsolete 404 sources; the game substitutes existing embedded anvil085 and bellows085 before startup."
 }
