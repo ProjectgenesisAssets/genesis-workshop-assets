@@ -1,0 +1,91 @@
+name: Genesis Roble V022 | tronco color-only | HDRI32
+on:
+  push:
+    branches: [experiment/roble-v022-tronco-color-hdri32]
+    paths:
+      - '.github/workflows/roble-v022-color-hdri32.yml'
+      - 'tools/roble_v022_color_patch.py'
+      - 'tools/render_roble_v022_hdri32.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  color_and_render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/roble-v022-tronco-color-hdri32
+      - name: Download exact V021 original log and APPROVED boards from successful V021 run
+        uses: actions/download-artifact@v4
+        with:
+          name: genesis-roble-v021-tronco-tablas-hdri32
+          run-id: 41860646416
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: previous_v021
+      - name: Verify source hashes, ensure boards remain byte-identical
+        run: |
+          set -euo pipefail
+          mkdir -p input output/oak_v022/models
+          cp previous_v021/models/ProjectGenesis_Roble_Tronco_V021.glb input/
+          cp previous_v021/models/ProjectGenesis_Roble_Tablas_V021.glb input/
+          echo '08da7f3e9b345be1908a1b1318f128929243087f101c5e881ffa85f0edb36b8d  input/ProjectGenesis_Roble_Tronco_V021.glb' | sha256sum -c -
+          echo '05b05f54f68c5e5f1a1f8af8bfb82f0684ca1c4b0727e37e97c14ace070ddba1  input/ProjectGenesis_Roble_Tablas_V021.glb' | sha256sum -c -
+          python3 -m py_compile tools/roble_v022_color_patch.py tools/render_roble_v022_hdri32.py
+      - name: Install Pillow and NumPy for precise PBR albedo color-only patch
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq python3-pil python3-numpy
+      - name: Patch only oak log PBR albedos, preserving geometry / normal / roughness and approved boards
+        run: |
+          set -euo pipefail
+          python3 tools/roble_v022_color_patch.py
+      - name: Install Blender 4.5.13 LTS and authentic 32-bit HDRI
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/genesis-blender --strip-components=1
+          /tmp/genesis-blender/blender --version | head -3
+          curl -fLsS --retry 3 --connect-timeout 30 --max-time 180 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr -o input/studio_small_09_2k.hdr
+          python3 - <<'PY'
+          from pathlib import Path
+          f=Path('input/studio_small_09_2k.hdr')
+          assert f.stat().st_size>250000 and b'RADIANCE' in f.read_bytes()[:32]
+          PY
+      - name: Render actual Cycles comparison V021 and V022, V021 boards reference
+        run: |
+          set -o pipefail
+          /tmp/genesis-blender/blender -b -t 4 --python-exit-code 1 --python tools/render_roble_v022_hdri32.py 2>&1 | tee output/oak_v022/blender_log.txt
+      - name: Verify log-only GLB and all six real 32-bit EXR + PNG renders
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          root=Path('output/oak_v022')
+          c=json.loads((root/'color_report.json').read_text())
+          r=json.loads((root/'render_report.json').read_text())
+          assert c["geometry_unchanged"] and c["bark_pbr_unchanged"] and c["normal_maps_unchanged"]
+          assert c["roughness_unchanged"] and c["mesh_indices_normals_uvs_unchanged"]
+          assert c["approved_boards_sha256"]==r["model_hashes_sha256"]["ProjectGenesis_Roble_Tablas_V021.glb"]
+          assert r["candidate_log_geometry_identical_to_v021"]
+          assert len(r["render_views"])==6
+          for stem in r["render_views"]:
+              png=root/'renders'/(stem+'.png')
+              exr=root/'renders'/(stem+'.exr')
+              assert png.stat().st_size>40000 and png.read_bytes()[:8]==b"\x89PNG\r\n\x1a\n"
+              assert exr.stat().st_size>100000 and exr.read_bytes()[:4]==b"\x76\x2f\x31\x01"
+          print("GENESIS_ROBLE_V022_FULL_QA_PASSED")
+          PY
+      - name: Upload log V022 candidate, V021 baseline / approved board references and EXR32 QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-roble-V022-tronco-color-only-HDRI32-QA
+          path: output/oak_v022/
+          retention-days: 14
+          if-no-files-found: warn
