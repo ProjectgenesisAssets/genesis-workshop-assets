@@ -73,9 +73,14 @@ for a0 in (.17,1.37,2.72,4.24,5.62):
 base*=1-.33*cracks[...,None]
 base=np.clip(base,0,1)
 pixels=np.uint8(np.rint(base*255))
-from PIL import Image
 end_path=OUT/"oak_v020_true_radial_endgrain.png"
-Image.fromarray(pixels,"RGB").save(end_path,compress_level=5)
+image_rgba=np.concatenate((pixels.astype(np.float32)/255.0,
+                           np.ones((N,N,1),dtype=np.float32)),axis=2)
+generated=bpy.data.images.new("oak_v020_radial_endgrain",width=N,height=N,alpha=True)
+generated.pixels.foreach_set(image_rgba.ravel())
+generated.filepath_raw=str(end_path)
+generated.file_format="PNG"
+generated.save()
 assert end_path.stat().st_size>100000
 
 # Keep original PBR node links on both long-grain and bark materials.
