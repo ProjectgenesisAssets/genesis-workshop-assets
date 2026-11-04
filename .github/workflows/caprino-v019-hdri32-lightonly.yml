@@ -20,18 +20,28 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y blender python3-numpy python3-pil
-      - name: Restore source PBR and render unchanged V019 baseline
-        env:
-          ASSET_KIND: tanned-goatskin
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-V019-tanned-goatskin-41355877171
+          run-id: 41355877171
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: old_v019
+      - name: Verify and restore exact unmodified V019 master GLB and original baseline
         run: |
-          python3 tools/fetch_polyhaven_v005.py || true
-          if [ ! -f sources/tanned-goatskin/provenance.json ]; then python3 tools/fetch_cc0_scans.py; fi
-          python3 tools/fetch_secondary_v006.py || true
-          blender -b -t 2 --python-exit-code 1 --python tools/asset_v019_distinct.py
+          set -euo pipefail
+          mkdir -p output/tanned-goatskin
+          src="$(find old_v019 -name tanned-goatskin_master.glb -print -quit)"
+          test -n "$src"
+          cp "$src" output/tanned-goatskin/tanned-goatskin_master.glb
+          echo 'f60de9cb3cbcf1e30c60f30b4c5d8a704f68028d6935c93c09872f4a2607f22f  output/tanned-goatskin/tanned-goatskin_master.glb' | sha256sum -c -
+          cp "$(find old_v019 -name three_quarter.png -print -quit)" output/tanned-goatskin/three_quarter.png
+          cp "$(find old_v019 -name detail.png -print -quit)" output/tanned-goatskin/detail.png
+          cp "$(find old_v019 -name validation.json -print -quit)" output/tanned-goatskin/validation.json
       - name: Download actual 32bit Radiance studio HDRI and render light-only
         run: |
           curl --fail --location --retry 3 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr' -o /tmp/studio_small_09_2k.hdr
-          test -s /tmp/genesis_studio_4k.hdr
+          test -s /tmp/studio_small_09_2k.hdr
           blender -b -t 2 --python-exit-code 1 --python tools/render_caprino_hdri32_v019.py
       - uses: actions/upload-artifact@v4
         if: always()
