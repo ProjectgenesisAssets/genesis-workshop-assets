@@ -30,7 +30,7 @@ jobs:
           blender -b -t 2 --python-exit-code 1 --python tools/asset_v019_distinct.py
       - name: Download actual 32bit Radiance studio HDRI and render light-only
         run: |
-          curl --fail --location --retry 3 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/studio_small_08_4k.hdr' -o /tmp/genesis_studio_4k.hdr
+          curl --fail --location --retry 3 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr' -o /tmp/studio_small_09_2k.hdr
           test -s /tmp/genesis_studio_4k.hdr
           blender -b -t 2 --python-exit-code 1 --python tools/render_caprino_hdri32_v019.py
       - uses: actions/upload-artifact@v4
