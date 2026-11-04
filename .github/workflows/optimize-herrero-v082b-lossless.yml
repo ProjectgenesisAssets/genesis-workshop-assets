@@ -1,0 +1,43 @@
+name: Genesis Herrero V082-B — 0% Loss Baseline Optimization
+on:
+  push:
+    branches: [optimization/herrero-v082b-webgl-v001]
+    paths:
+      - 'scripts/optimize_herrero_v082b_glb.py'
+      - '.github/workflows/optimize-herrero-v082b-lossless.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  non_destructive_baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install lossless PNG and GLB audit requirements
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y optipng python3-pil
+      - name: Download exact approved V082-B source from pinned Project Genesis main commit
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/genesis-original
+          curl --fail --location --retry 3 --connect-timeout 30 --max-time 250 \
+            'https://raw.githubusercontent.com/gburdesedev/Project-genesis/96bf191ba03357a8ef27710fce56a3426e376870/assets/playcanvas/approved/workshops/herrero/doors/v082-b/door-herrero-v082-b.glb' \
+            -o /tmp/genesis-original/door-herrero-v082-b-approved.glb
+          test "$(wc -c </tmp/genesis-original/door-herrero-v082-b-approved.glb)" = 15887816
+          test "$(git hash-object /tmp/genesis-original/door-herrero-v082-b-approved.glb)" = eef69d28dd8d53b5934442279a8b027bdfbfa157
+          echo "Original approved asset V082-B verified by Git SHA and byte count; original remains unchanged."
+      - name: Audit GLB and create 0% pixel/vertex loss candidate
+        run: |
+          /usr/bin/python3 scripts/optimize_herrero_v082b_glb.py \
+            --source /tmp/genesis-original/door-herrero-v082-b-approved.glb \
+            --output reports/optimization/herrero-v082b-lossless-v001
+      - name: Preserve real results, no public integration
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: herrero-v082b-lossless-optimization-v001
+          path: reports/optimization/herrero-v082b-lossless-v001/
+          retention-days: 21
+          if-no-files-found: warn
