@@ -1,0 +1,38 @@
+name: Herrero V082-B · lossless 0% pixel-loss candidate
+on:
+  push:
+    branches: [optimization/herrero-v082b-webgl-v001]
+    paths:
+      - 'scripts/herrero_v082b_lossless_optimizer.py'
+      - '.github/workflows/herrero-v082b-lossless-candidate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install exact pixel-image decoder with WebP
+        run: python -m pip install Pillow==11.2.1
+      - name: Acquire unchanged public original (no user-approved file edits)
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/herrero-v082b
+          curl --fail -L --retry 3 --connect-timeout 30 --max-time 500 \
+            https://raw.githubusercontent.com/gburdesedev/Project-genesis/main/assets/playcanvas/approved/workshops/herrero/doors/v082-b/door-herrero-v082-b.glb \
+            -o /tmp/herrero-v082b/approved-original.glb
+      - name: Re-encode PNG to lossless WebP and prove exact pixel / geometry fidelity
+        run: |
+          python scripts/herrero_v082b_lossless_optimizer.py /tmp/herrero-v082b/approved-original.glb reports/herrero-v082b-lossless-candidate
+      - name: Deliver separate candidate GLB and validation JSON (never approved branch)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Herrero-V082B-lossless-webp-EXPERIMENT
+          path: reports/herrero-v082b-lossless-candidate/
+          retention-days: 30
