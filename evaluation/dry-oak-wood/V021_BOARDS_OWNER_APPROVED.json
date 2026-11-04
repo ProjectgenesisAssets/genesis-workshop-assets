@@ -1,0 +1,24 @@
+{
+  "schema": "genesis.approved-asset.v1",
+  "asset": "Madera seca de roble: tablas",
+  "approved_version": "V021",
+  "owner_approved": true,
+  "approved_on": "2026-11-04",
+  "visual_score": 8.1,
+  "glb_path": "evaluation/dry-oak-wood/v021_candidate/models/ProjectGenesis_Roble_Tablas_V021.glb",
+  "glb_sha256": "05b05f54f68c5e5f1a1f8af8bfb82f0684ca1c4b0727e37e97c14ace070ddba1",
+  "triangle_count": 444,
+  "includes": "Three distinct sawed boards with original V019 oak PBR source and V021 endgrain",
+  "references": {
+    "github_actions_render_run": 41860646416,
+    "genuine_hdri": "studio_small_09_2k.hdr",
+    "blender": "4.5.13 LTS; Cycles"
+  },
+  "freeze_rules": [
+    "Do not modify the board GLB bytes, images, material colors, UVs, normal or roughness maps",
+    "Later oak log revisions must use a distinct version and GLB",
+    "No change to game main, no PlayCanvas integration without separate test"
+  ],
+  "log_approval_status": "V021 NOT APPROVED; experimental V022 color correction pending",
+  "playcanvas_integrated": false
+}
