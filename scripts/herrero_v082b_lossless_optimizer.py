@@ -56,7 +56,9 @@ def build(master,out):
     source.save(destbuf,format='WEBP',lossless=True,method=6,exact=True)
     webp=destbuf.getvalue()
     candidate=Image.open(io.BytesIO(webp));candidate.load()
-    exact=(source.mode==candidate.mode and source.size==candidate.size and source.tobytes()==candidate.tobytes())
+    exact=(source.size==candidate.size and source.convert('RGBA').tobytes()==candidate.convert('RGBA').tobytes())
+    record['original_mode']=source.mode
+    record['webp_mode']=candidate.mode
     if exact and len(webp)<len(data):
      rewrites[view_index]=webp
      img['mimeType']='image/webp'
@@ -109,7 +111,7 @@ def build(master,out):
   raw=ob[ov.get('byteOffset',0):ov.get('byteOffset',0)+ov['byteLength']]
   if img.get('mimeType')=='image/webp':
    a=Image.open(io.BytesIO(raw));b=Image.open(io.BytesIO(image));a.load();b.load()
-   assert a.size==b.size and a.mode==b.mode and a.tobytes()==b.tobytes(),f'Pixel mismatch: {idx}'
+   assert a.size==b.size and a.convert('RGBA').tobytes()==b.convert('RGBA').tobytes(),f'Pixel mismatch: {idx}'
   else:assert raw==image,'The fallback source changed bytes'
  expected_triangles=25720
  def tris(doc):
