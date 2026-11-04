@@ -1,0 +1,42 @@
+{
+  "asset": "dry-oak-wood",
+  "candidate": "V021_review_not_approved",
+  "source": "V019_distinct_candidate",
+  "source_glb_sha256": "3e03b076bee64e6f82f9a0997e8f0b4b7282b0128914219b1ed9e1dd05d0b336",
+  "source_geometry_vertex_count": 3824,
+  "new_oak_log_geometry_vertex_count": 3824,
+  "geometry_original_unchanged": true,
+  "endgrain": "baked realistic radial rings, rays and checks; corrected transverse UV",
+  "side_and_bark_PBR": "from same original V019 oak, unchanged",
+  "board_geometry": "three timber boards with tiny saw irregularities and distinct thickness",
+  "renderer": "Blender 4.5.13 LTS Cycles 64 samples",
+  "lighting": {
+    "hdr": "studio_small_09_2k.hdr",
+    "format": "Radiance HDRI RGBE 32-bit environment",
+    "samples": 64,
+    "hdr_strength": 0.55,
+    "output": "32-bit float EXR and PNG"
+  },
+  "approved": false,
+  "integrated": false,
+  "outputs": [
+    {
+      "file": "ProjectGenesis_Roble_Tronco_V021.glb",
+      "sha256": "08da7f3e9b345be1908a1b1318f128929243087f101c5e881ffa85f0edb36b8d",
+      "bytes": 11970540,
+      "triangles": 7164,
+      "material_count": 3,
+      "images": 7,
+      "meshes": 1
+    },
+    {
+      "file": "ProjectGenesis_Roble_Tablas_V021.glb",
+      "sha256": "05b05f54f68c5e5f1a1f8af8bfb82f0684ca1c4b0727e37e97c14ace070ddba1",
+      "bytes": 7527692,
+      "triangles": 444,
+      "material_count": 2,
+      "images": 4,
+      "meshes": 3
+    }
+  ]
+}
