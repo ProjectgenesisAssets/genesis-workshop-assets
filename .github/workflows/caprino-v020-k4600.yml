@@ -1,0 +1,75 @@
+name: Genesis Caprino V020 - 4600K vs 6000K HDRI32
+on:
+  push:
+    branches: [experiment/caprino-v020-hdri-4600k]
+    paths:
+      - '.github/workflows/caprino-v020-k4600.yml'
+      - 'tools/render_caprino_v020_k4600.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/caprino-v020-hdri-4600k
+      - uses: actions/download-artifact@v4
+        with:
+          name: genesis-caprino-v020-hdri32-visual-QA
+          run-id: 41838383975
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: v020_original
+      - name: Verify V020 source model and scripts
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/render_caprino_v020_k4600.py
+          mkdir -p output/tanned-goatskin
+          src="$(find v020_original -type f -name caprino_v020_roughness_master.glb -print -quit)"
+          test -n "$src"
+          cp "$src" output/tanned-goatskin/caprino_v020_roughness_master.glb
+          echo '4f74f18234e23a0e266a53bc52756e91fb170afe6eb7ae7f35dd6abd6020bf95  output/tanned-goatskin/caprino_v020_roughness_master.glb' | sha256sum -c -
+      - name: Install Blender 4.5.13 LTS and verified 32-bit HDRI
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/genesis-blender-4.5.13.tar.xz
+          mkdir -p /tmp/genesis-blender-4.5.13
+          tar -xJf /tmp/genesis-blender-4.5.13.tar.xz -C /tmp/genesis-blender-4.5.13 --strip-components=1
+          /tmp/genesis-blender-4.5.13/blender --version
+          curl -fLsS --retry 3 --connect-timeout 30 --max-time 180 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr -o /tmp/studio_small_09_2k.hdr
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("/tmp/studio_small_09_2k.hdr")
+          assert p.stat().st_size>250000 and b"RADIANCE" in p.read_bytes()[:32]
+          PY
+      - name: Render 6000K and 4600K with identical geometry, roughness, HDRI and cameras
+        run: |
+          /tmp/genesis-blender-4.5.13/blender -b -t 4 --python-exit-code 1 --python tools/render_caprino_v020_k4600.py
+      - name: Validate genuine 32-bit EXR and PNG previews for both setups
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib,json
+          p=pathlib.Path("output/tanned-goatskin/HDRI32_V020_4600K_study")
+          r=json.loads((p/"render_report.json").read_text())
+          assert r["original_glb_unchanged"] and r["kelvin_tested"]==[6000,4600]
+          for kelvin in ("6000","4600"):
+              for name in ("three_quarter","side","detail"):
+                  a=p/kelvin/(name+".png")
+                  b=p/kelvin/(name+".exr")
+                  assert a.stat().st_size>20000 and a.read_bytes()[:8]==b"\x89PNG\r\n\x1a\n"
+                  assert b.stat().st_size>100000 and b.read_bytes()[:4]==b"\x76\x2f\x31\x01"
+          print("ALL SIX HDRI32 CAPRINO RENDERS VALID",r)
+          PY
+      - name: Preserve independent color temperature review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-caprino-V020-K4600-HDRI32
+          path: output/tanned-goatskin/HDRI32_V020_4600K_study/
+          retention-days: 14
+          if-no-files-found: warn
