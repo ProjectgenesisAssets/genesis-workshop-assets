@@ -1,0 +1,45 @@
+name: Caprino V019 HDRI32 isolated visual QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/caprino-v019-hdri32-lightonly.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: asset/tanned-goatskin
+      - name: Install Blender and texture helpers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender python3-numpy python3-pil
+      - name: Restore source PBR and render unchanged V019 baseline
+        env:
+          ASSET_KIND: tanned-goatskin
+        run: |
+          python3 tools/fetch_polyhaven_v005.py || true
+          if [ ! -f sources/tanned-goatskin/provenance.json ]; then python3 tools/fetch_cc0_scans.py; fi
+          python3 tools/fetch_secondary_v006.py || true
+          blender -b -t 2 --python-exit-code 1 --python tools/asset_v019_distinct.py
+      - name: Download actual 32bit Radiance studio HDRI and render light-only
+        run: |
+          curl --fail --location --retry 3 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/studio_small_08_4k.hdr' -o /tmp/genesis_studio_4k.hdr
+          test -s /tmp/genesis_studio_4k.hdr
+          blender -b -t 2 --python-exit-code 1 --python tools/render_caprino_hdri32_v019.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: caprino-v019-hdri32-studio-lightonly
+          path: |
+            output/tanned-goatskin/HDRI32_V019_LightOnly/
+            output/tanned-goatskin/three_quarter.png
+            output/tanned-goatskin/detail.png
+            output/tanned-goatskin/validation.json
+          retention-days: 14
