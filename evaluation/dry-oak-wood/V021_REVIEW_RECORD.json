@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "asset": "dry-oak-wood",
+  "version": "V021",
+  "status": "CANDIDATE_NOT_APPROVED",
+  "made_from": "V019_distinct_candidate",
+  "origin_sha256": "3e03b076bee64e6f82f9a0997e8f0b4b7282b0128914219b1ed9e1dd05d0b336",
+  "revisions": [
+    "Original oak geometry and bark preserved",
+    "Transverse UV and subtle radial annual rings corrected",
+    "Three sawed oak boards derived from existing CC0 oak PBR maps"
+  ],
+  "render": {
+    "engine": "Cycles",
+    "blender": "4.5.13 LTS",
+    "hdri": "Poly Haven studio_small_09_2k.hdr genuine Radiance HDRI, 32-bit",
+    "outputs": "6 PNG + OpenEXR 32-bit",
+    "workflow_run": 41860646416
+  },
+  "meshes": [
+    {
+      "name": "ProjectGenesis_Roble_Tronco_V021.glb",
+      "triangles": 7164,
+      "sha256": "08da7f3e9b345be1908a1b1318f128929243087f101c5e881ffa85f0edb36b8d"
+    },
+    {
+      "name": "ProjectGenesis_Roble_Tablas_V021.glb",
+      "triangles": 444,
+      "sha256": "05b05f54f68c5e5f1a1f8af8bfb82f0684ca1c4b0727e37e97c14ace070ddba1"
+    }
+  ],
+  "notes": "V020 ring contrast was excessive; V021 softens rings and matches oak brown more closely. User art approval pending. Not PlayCanvas integrated. Preserve all source versions.",
+  "approved": false,
+  "playcanvas_integrated": false
+}
