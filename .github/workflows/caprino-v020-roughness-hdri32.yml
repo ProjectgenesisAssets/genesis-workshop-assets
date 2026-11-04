@@ -1,0 +1,92 @@
+name: Caprino V020 | roughness-only HDRI 32-bit comparison
+on:
+  push:
+    branches: [experiment/caprino-v020-roughness-hdri32]
+    paths:
+      - '.github/workflows/caprino-v020-roughness-hdri32.yml'
+      - 'tools/caprino_v020_roughness_patch.py'
+      - 'tools/render_caprino_hdri32_v020.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/caprino-v020-roughness-hdri32
+      - name: Restore original V019 master and WebGL GLBs
+        uses: actions/download-artifact@v4
+        with:
+          name: genesis-V019-tanned-goatskin-41355877171
+          run-id: 41355877171
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: \${{ github.token }}
+          path: old_v019
+      - name: Verify exact source files and installed tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y python3-pil
+          mkdir -p output/tanned-goatskin
+          cp "$(find old_v019 -type f -name tanned-goatskin_master.glb -print -quit)" output/tanned-goatskin/tanned-goatskin_master.glb
+          cp "$(find old_v019 -type f -name tanned-goatskin.glb -print -quit)" output/tanned-goatskin/tanned-goatskin.glb
+          echo 'f60de9cb3cbcf1e30c60f30b4c5d8a704f68028d6935c93c09872f4a2607f22f  output/tanned-goatskin/tanned-goatskin_master.glb' | sha256sum -c -
+          echo '3d893fde2f32651178ecb4d849754d4b7ca738062a9b280a1efda773051a2b61  output/tanned-goatskin/tanned-goatskin.glb' | sha256sum -c -
+          python3 -m py_compile tools/caprino_v020_roughness_patch.py tools/render_caprino_hdri32_v020.py
+      - name: Make only the small roughness adjustment
+        run: |
+          set -euo pipefail
+          python3 tools/caprino_v020_roughness_patch.py
+      - name: Install Blender 4.5.13 LTS and the same genuine HDRI as V019
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender-4.5.13.tar.xz
+          mkdir -p /tmp/blender-4.5.13
+          tar -xJf /tmp/blender-4.5.13.tar.xz -C /tmp/blender-4.5.13 --strip-components=1
+          /tmp/blender-4.5.13/blender --version | head -3
+          curl -fLsS --retry 3 --connect-timeout 30 --max-time 180 https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr -o /tmp/studio_small_09_2k.hdr
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("/tmp/studio_small_09_2k.hdr")
+          assert p.stat().st_size>250_000
+          assert b'RADIANCE' in p.open('rb').read(32)
+          PY
+      - name: Render ORIGINAL V019 in Blender 4.5.13 with exact same HDRI
+        run: /tmp/blender-4.5.13/blender -b -t 4 --python-exit-code 1 --python tools/render_caprino_hdri32_v019.py
+      - name: Render minimally corrected V020 in Blender 4.5.13
+        run: /tmp/blender-4.5.13/blender -b -t 4 --python-exit-code 1 --python tools/render_caprino_hdri32_v020.py
+      - name: Validate five real PNG and 32-bit EXR views, and preserve both originals
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib, json
+          root=pathlib.Path("output/tanned-goatskin")
+          report=json.loads((root/"V020_roughness_only/patch_report.json").read_text())
+          assert len(report["reports"])==2
+          for version in ("HDRI32_V019_LightOnly","HDRI32_V020_RoughnessOnly"):
+              for view in ("three_quarter","front","side","top","detail"):
+                  png=root/version/(view+".png")
+                  exr=root/version/(view+".exr")
+                  assert png.stat().st_size > 10000
+                  assert exr.stat().st_size > 10000
+                  assert png.read_bytes()[:8]==b"\x89PNG\r\n\x1a\n"
+                  assert exr.read_bytes()[:4]==b"\x76\x2f\x31\x01"
+              key="source_unchanged" if version.endswith("LightOnly") else "candidate_glb_unchanged_during_render"
+              assert json.loads((root/version/"report.json").read_text())[key] is True
+          print("VERIFIED: original/candidate, identical Blender LTS and HDRI, five EXR32+PNG views each")
+          PY
+      - name: Upload candidate, 10 comparative render views and verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-caprino-v020-hdri32-visual-QA
+          path: |
+            output/tanned-goatskin/V020_roughness_only/
+            output/tanned-goatskin/HDRI32_V019_LightOnly/
+            output/tanned-goatskin/HDRI32_V020_RoughnessOnly/
+          retention-days: 14
+          if-no-files-found: warn
