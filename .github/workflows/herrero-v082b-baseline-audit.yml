@@ -1,0 +1,34 @@
+name: Herrero V082-B · baseline lossless GLB audit
+on:
+  push:
+    branches: [optimization/herrero-v082b-webgl-v001]
+    paths:
+      - 'scripts/herrero_v082b_audit.py'
+      - '.github/workflows/herrero-v082b-baseline-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download identical approved master without writing source repo
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/herrero-v082b-source
+          curl -fLsS --retry 3 --retry-all-errors --connect-timeout 30 --max-time 480 \
+            https://raw.githubusercontent.com/gburdesedev/Project-genesis/main/assets/playcanvas/approved/workshops/herrero/doors/v082-b/door-herrero-v082-b.glb \
+            -o /tmp/herrero-v082b-source/door-herrero-v082-b.glb
+          test "$(stat -c%s /tmp/herrero-v082b-source/door-herrero-v082-b.glb)" = 15887816
+      - name: Produce material/geometry/texture baseline and SHA verification
+        run: |
+          python3 scripts/herrero_v082b_audit.py /tmp/herrero-v082b-source/door-herrero-v082-b.glb --out reports/herrero_v082b_lossless_baseline
+      - name: Save audit evidence without modifying approved GLB
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: herrero-v082b-original-15mb-audit
+          path: reports/herrero_v082b_lossless_baseline/
+          retention-days: 30
