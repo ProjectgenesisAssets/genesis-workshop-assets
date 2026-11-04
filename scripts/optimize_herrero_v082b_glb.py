@@ -113,7 +113,7 @@ def optimize_images(doc, bin_data):
             assert src[:8] == b"\x89PNG\r\n\x1a\n"
             fp = Path(temp) / f"image_{view_ix}.png"
             fp.write_bytes(src)
-            result = subprocess.run(["optipng", "-quiet", "-o3", str(fp)], capture_output=True, text=True)
+            result = subprocess.run(["optipng", "-quiet", "-o3", "-nc", "-nb", "-np", str(fp)], capture_output=True, text=True)
             if result.returncode:
                 raise RuntimeError("optipng failed " + result.stderr[:1000])
             candidate = fp.read_bytes()
