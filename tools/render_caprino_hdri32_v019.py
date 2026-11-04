@@ -3,7 +3,7 @@ import bpy, json, pathlib, hashlib
 from mathutils import Vector
 root=pathlib.Path("output/tanned-goatskin")
 model=root/"tanned-goatskin_master.glb"
-hdri=pathlib.Path("/tmp/genesis_studio_4k.hdr")
+hdri=pathlib.Path("/tmp/studio_small_09_2k.hdr")
 assert model.is_file() and hdri.is_file()
 before=hashlib.sha256(model.read_bytes()).hexdigest()
 bpy.ops.object.select_all(action="SELECT")
@@ -48,10 +48,15 @@ for name,point,scale in views:
     camera.location=point
     camera.rotation_euler=(focus-camera.location).to_track_quat("-Z","Y").to_euler()
     camera.data.ortho_scale=scale
-    scene.render.filepath=str((dest/(name+".png")).resolve())
+    scene.render.image_settings.file_format="OPEN_EXR"
+    scene.render.image_settings.color_depth="32"
+    scene.render.filepath=str((dest/(name+".exr")).resolve())
     bpy.ops.render.render(write_still=True)
+    scene.render.image_settings.file_format="PNG"
+    scene.render.image_settings.color_depth="8"
+    bpy.data.images["Render Result"].save_render(str((dest/(name+".png")).resolve()),scene=scene)
 after=hashlib.sha256(model.read_bytes()).hexdigest()
 assert before==after
-result={"asset":"tanned-goatskin","version":"V019_distinct_candidate","study":"HDRI 32-bit only","hdr":"studio_small_08_4k.hdr","format":"Radiance RGBE 32bpp","blender":bpy.app.version_string,"source_sha256":before,"source_unchanged":True,"render_views":[v[0] for v in views],"approval":False}
+result={"asset":"tanned-goatskin","version":"V019_distinct_candidate","study":"HDRI 32-bit only","hdr":"studio_small_09_2k.hdr","format":"Radiance RGBE 32bpp input, 32-bit float EXR output","blender":bpy.app.version_string,"source_sha256":before,"source_unchanged":True,"render_views":[v[0] for v in views],"approval":False}
 (dest/"report.json").write_text(json.dumps(result,indent=2))
 print("GENESIS_HDRI32",json.dumps(result))
