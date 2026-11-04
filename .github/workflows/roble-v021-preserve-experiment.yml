@@ -1,0 +1,81 @@
+name: Genesis Roble V021 | Preserve experimental GLBs and renders
+on:
+  push:
+    branches: [experiment/roble-v021-natural-endgrain-hdri32]
+    paths:
+      - '.github/workflows/roble-v021-preserve-experiment.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/roble-v021-natural-endgrain-hdri32
+      - name: Recover V021 physically verified model package
+        uses: actions/download-artifact@v4
+        with:
+          name: genesis-roble-v021-tronco-tablas-hdri32
+          run-id: 41860646416
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: recovered_v021
+      - name: Recover original V019 base model for durable incremental development
+        uses: actions/download-artifact@v4
+        with:
+          name: genesis-V019-dry-oak-wood-41355877171
+          run-id: 41355877171
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: recovered_v019
+      - name: Copy exact models, verified previews and provenance into experiment only
+        run: |
+          set -euo pipefail
+          dest="evaluation/dry-oak-wood/v021_candidate"
+          mkdir -p "$dest/models" "$dest/renders" "$dest/source"
+          cp recovered_v021/models/ProjectGenesis_Roble_Tronco_V021.glb "$dest/models/"
+          cp recovered_v021/models/ProjectGenesis_Roble_Tablas_V021.glb "$dest/models/"
+          cp recovered_v021/validation.json "$dest/"
+          cp recovered_v021/oak_v021_true_radial_endgrain.png "$dest/"
+          cp recovered_v021/renders/*.png "$dest/renders/"
+          cp "$(find recovered_v019 -name dry-oak-wood.glb -print -quit)" "$dest/source/dry-oak-wood_V019_original.glb"
+          printf '%s\n' '08da7f3e9b345be1908a1b1318f128929243087f101c5e881ffa85f0edb36b8d  evaluation/dry-oak-wood/v021_candidate/models/ProjectGenesis_Roble_Tronco_V021.glb' \
+            '05b05f54f68c5e5f1a1f8af8bfb82f0684ca1c4b0727e37e97c14ace070ddba1  evaluation/dry-oak-wood/v021_candidate/models/ProjectGenesis_Roble_Tablas_V021.glb' \
+            '3e03b076bee64e6f82f9a0997e8f0b4b7282b0128914219b1ed9e1dd05d0b336  evaluation/dry-oak-wood/v021_candidate/source/dry-oak-wood_V019_original.glb' \
+            | sha256sum --check
+          cat > "$dest/STATUS.md" <<'EOF'
+          # Roble V021 — candidato de revisión, NO aprobado
+          Leño V019 recuperado y preservado como fuente original.
+          El leño V021 conserva sus 3824 vértices, geometría y PBR de corteza,
+          y corrige el mapeo radial de los extremos.
+          Las tablas V021 reutilizan la veta PBR del mismo roble.
+          Render realizado en Blender 4.5.13 LTS, Cycles, HDRI real de 32 bits.
+          Ver GitHub Actions run 41860646416 para EXR de 32-bit float y logs.
+          No integrar a PlayCanvas, no alterar main y no marcar aprobado
+          hasta que el usuario evalúe la calidad visual de ambos GLB.
+          EOF
+          python3 - <<'PY'
+          import pathlib,json
+          d=pathlib.Path('evaluation/dry-oak-wood/v021_candidate')
+          r=json.loads((d/'validation.json').read_text())
+          assert r["candidate"]=="V021_review_not_approved"
+          assert len(list((d/'renders').glob('*.png')))==6
+          assert (d/'models/ProjectGenesis_Roble_Tronco_V021.glb').stat().st_size>1000000
+          assert (d/'models/ProjectGenesis_Roble_Tablas_V021.glb').stat().st_size>1000000
+          print('CANONICAL_CANDIDATE_ARCHIVE_CONFIRMED')
+          PY
+      - name: Commit only to independent experimental branch, not main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add evaluation/dry-oak-wood/v021_candidate
+          if ! git diff --cached --quiet; then
+            git commit -m "archive: preserved original V019 and two V021 oak candidate GLBs with visual QA [skip ci]"
+            git pull --rebase origin experiment/roble-v021-natural-endgrain-hdri32
+            git push origin HEAD:experiment/roble-v021-natural-endgrain-hdri32
+          fi
