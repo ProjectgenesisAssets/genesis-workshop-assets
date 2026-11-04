@@ -1,0 +1,27 @@
+{
+  "schema": "genesis.material-visual-qa.v1",
+  "date": "2026-11-04",
+  "asset": "tanned-goatskin",
+  "version": "V020_roughness_only",
+  "purpose": "Controlled warm temperature study without material changes",
+  "source_sha256": "4f74f18234e23a0e266a53bc52756e91fb170afe6eb7ae7f35dd6abd6020bf95",
+  "blender": "4.5.13 LTS",
+  "renderer": "Cycles",
+  "environment": "Poly Haven studio_small_09_2k.hdr; Radiance HDR RGBE, 32-bit EXR output",
+  "comparison_kelvin": [
+    6000,
+    4600
+  ],
+  "extra_area_key_power": 12,
+  "visual_observation": "4600K is marginally warmer with natural brown color and readable PBR grain; overpowering 155-strength test discarded, 12-strength test preferred. Small inner-roll highlight remains.",
+  "assistant_visual_score_4600K": 8.3,
+  "owner_approved": false,
+  "integrated_in_playcanvas": false,
+  "geometry_unchanged": true,
+  "materials_unchanged": true,
+  "normals_unchanged": true,
+  "source_run_6000_vs_4600_initial_overexposed": 41844014268,
+  "source_run_6000_vs_4600_soft_final": 41845440365,
+  "artifacts": "genesis-caprino-V020-K4600-HDRI32",
+  "next": "Await owner visual approval of V020; do not touch main or original."
+}
