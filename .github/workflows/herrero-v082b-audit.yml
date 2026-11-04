@@ -1,0 +1,34 @@
+name: Herrero V082-B — GLB size diagnosis (no asset modifications)
+on:
+  push:
+    branches: [optimization/herrero-v082b-webgl-v001]
+    paths:
+      - 'scripts/optimize/herrero_v082b_audit.py'
+      - '.github/workflows/herrero-v082b-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout approved GLB master immutably from Project Genesis (read-only)
+        uses: actions/checkout@v4
+        with:
+          repository: gburdesedev/Project-genesis
+          ref: 96bf191ba03357a8ef27710fce56a3426e376870
+          path: input-project
+          sparse-checkout: |
+            assets/playcanvas/approved/workshops/herrero/doors/v082-b/door-herrero-v082-b.glb
+          sparse-checkout-cone-mode: false
+      - name: Measure GLB binary, geometry, textures, duplicated materials
+        run: |
+          set -euo pipefail
+          python3 scripts/optimize/herrero_v082b_audit.py input-project/assets/playcanvas/approved/workshops/herrero/doors/v082-b/door-herrero-v082-b.glb reports/herrero/v082b_baseline.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: herrero-v082b-baseline-audit
+          path: reports/herrero/v082b_baseline.json
+          retention-days: 30
