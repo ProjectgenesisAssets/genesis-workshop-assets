@@ -55,7 +55,7 @@ scene.collection.objects.link(light_obj)
 light_obj.location=(3.0,-4.0,5.0)
 light_data.shape="DISK"
 light_data.size=4.0
-light_data.energy=155.0
+light_data.energy=12.0
 light_data.use_nodes=True
 nodes=light_data.node_tree.nodes
 links=light_data.node_tree.links
@@ -66,7 +66,7 @@ output=next((n for n in nodes if n.type=="OUTPUT_LIGHT"),None)
 if output is None:
     output=nodes.new("ShaderNodeOutputLight")
 links.new(emission.outputs["Emission"],output.inputs["Surface"])
-emission.inputs["Strength"].default_value=155
+emission.inputs["Strength"].default_value=12.0
 blackbody=nodes.new("ShaderNodeBlackbody")
 links.new(blackbody.outputs["Color"],emission.inputs["Color"])
 camera_data=bpy.data.cameras.new("V020 original approved-review camera")
@@ -110,7 +110,7 @@ report={
     "comparison":"4600K KEY; original same HDRI 32bit environment",
     "lamp_temperature_shader":"ShaderNodeBlackbody",
     "kelvin_tested":[6000,4600],
-    "area_light":{"location":[3,-4,5],"size":4.0,"power":155},
+    "area_light":{"location":[3,-4,5],"size":4.0,"power":12},
     "environment":{"image":"studio_small_09_2k.hdr","radiance":"RGBE high dynamic range","strength":.82},
     "blender":bpy.app.version_string,
     "cycles_samples":64,
