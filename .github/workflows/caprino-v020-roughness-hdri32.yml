@@ -24,7 +24,7 @@ jobs:
           name: genesis-V019-tanned-goatskin-41355877171
           run-id: 41355877171
           repository: ProjectgenesisAssets/genesis-workshop-assets
-          github-token: \${{ github.token }}
+          github-token: ${{ github.token }}
           path: old_v019
       - name: Verify exact source files and installed tools
         run: |
