@@ -1,0 +1,88 @@
+name: Genesis V03 PlayCanvas PC procedural VFX video - cross-org renderer
+on:
+  push:
+    branches: [experiment/v03-pc-procedural-vfx-video-20261104]
+    paths: ['.github/workflows/v03-pc-procedural-vfx-video.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  playcanvas-video:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out ONLY public experimental VFX code from equipment repo
+        run: |
+          git clone --depth 1 --branch experiment/v03-playcanvas-procedural-vfx-videos-20261104 https://github.com/ProjectGenesisAssets2/genesis-equipment-assets.git vfxsource
+          test -s vfxsource/tests/pc-vfx-video/vfx.js
+      - name: Rehydrate original licensed V03 in private temporary runner, never git commit
+        env:
+          GITHUB_REPOSITORY: ProjectGenesisAssets2/genesis-equipment-assets
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          cd vfxsource
+          python3 scripts/fab_sword/hydrate_git_blobs_v03.py --manifest render-input/v03-blob-manifest.json --output /tmp/genesis-source-v03.glb
+          echo 'e2228f078b2572768416c48c0e63c2d908f214e2c0625a2ab754c877a099112b  /tmp/genesis-source-v03.glb' | sha256sum -c
+          cp /tmp/genesis-source-v03.glb tests/pc-vfx-video/source_original_v03.glb
+      - name: Install PlayCanvas engine and Chromium for headless WebGL2
+        working-directory: vfxsource
+        run: |
+          npm install --no-save --no-audit --no-fund playcanvas@2.23.3 playwright@1.56.1
+          test -s node_modules/playcanvas/build/playcanvas.mjs
+          npx playwright install chromium --with-deps
+          python3 -m pip install --user pillow numpy
+          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -y && sudo apt-get install -y ffmpeg; fi
+      - name: Locally serve the original sword and exact PlayCanvas VFX test
+        working-directory: vfxsource
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/pc-genesis-server.log 2>&1 &
+          sleep 2
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8765/tests/pc-vfx-video/source_original_v03.glb)" = 200
+      - name: Record four real PlayCanvas WebGL2 procedural particle demos
+        working-directory: vfxsource
+        env:
+          FRAMES: 30
+        run: |
+          node tests/pc-vfx-video/record.cjs
+          test -s vfx-video-output/playcanvas_audit.json
+          for i in 1 2 3 4; do
+             test "$(find vfx-video-output/variant_${i} -name 'frame_*.png' | wc -l)" -eq 30
+          done
+      - name: Bloom-grade only recorded VFX pixels, preserving original V175 texture
+        working-directory: vfxsource
+        run: python3 tests/pc-vfx-video/postprocess.py --root vfx-video-output
+      - name: Encode four PC-lookdev videos and final combined reel
+        working-directory: vfxsource
+        run: |
+          mkdir -p vfx-video-output/video
+          for i in 1 2 3 4; do
+            ffmpeg -y -loglevel error -framerate 12 -i "vfx-video-output/variant_${i}/frame_%03d.png" -c:v libx264 -crf 18 -preset medium -pix_fmt yuv420p -movflags +faststart "vfx-video-output/video/variant_${i}.mp4"
+            test -s "vfx-video-output/video/variant_${i}.mp4"
+          done
+          cd vfx-video-output/video
+          printf "file 'variant_1.mp4'\nfile 'variant_2.mp4'\nfile 'variant_3.mp4'\nfile 'variant_4.mp4'\n" > concat.txt
+          ffmpeg -y -loglevel error -f concat -safe 0 -i concat.txt -c copy Genesis_V03_4_Canales_Procedurales_PC.mp4
+          test -s Genesis_V03_4_Canales_Procedurales_PC.mp4
+          ffmpeg -y -loglevel error -i Genesis_V03_4_Canales_Procedurales_PC.mp4 -vf 'fps=8,scale=768:-1:flags=lanczos,palettegen' palette.png
+          ffmpeg -y -loglevel error -i Genesis_V03_4_Canales_Procedurales_PC.mp4 -i palette.png -lavfi 'fps=8,scale=768:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3' -loop 0 Genesis_V03_4_Canales_Procedurales_PC.gif
+          test -s Genesis_V03_4_Canales_Procedurales_PC.gif
+          ffprobe -v error -show_entries format=duration,size -of json Genesis_V03_4_Canales_Procedurales_PC.mp4
+      - name: Package only videos and technical proof screenshots (not licensed GLB)
+        if: success()
+        run: |
+          cd vfxsource/vfx-video-output
+          cp playcanvas_audit.json video/
+          for i in 1 2 3 4; do cp variant_${i}/frame_015.png video/Proof_Variant_${i}.png; done
+          rm -f video/concat.txt video/palette.png
+          ! find video -iname '*.glb' | grep -q .
+      - name: Upload final video and four clips for user review
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Genesis-V03-PlayCanvas-PC-ProceduralVFX-FourVideos
+          path: vfxsource/vfx-video-output/video/
+          retention-days: 7
+      - name: Secure cleanup of licensed source
+        if: always()
+        run: rm -f /tmp/genesis-source-v03.glb vfxsource/tests/pc-vfx-video/source_original_v03.glb
