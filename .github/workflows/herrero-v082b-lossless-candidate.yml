@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/herrero_v082b_lossless_optimizer.py'
       - '.github/workflows/herrero-v082b-lossless-candidate.yml'
+      - 'scripts/herrero_v082b_playcanvas_browser.cjs'
+      - 'scripts/herrero_v082b_browser_probe.html'
   workflow_dispatch:
 permissions:
   contents: read
@@ -29,6 +31,25 @@ jobs:
       - name: Re-encode PNG to lossless WebP and prove exact pixel / geometry fidelity
         run: |
           python scripts/herrero_v082b_lossless_optimizer.py /tmp/herrero-v082b/approved-original.glb reports/herrero-v082b-lossless-candidate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright for a real PlayCanvas import test
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Load original and compressed door in PlayCanvas desktop + mobile
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/herrero-v082b-site/browser-probe
+          cp /tmp/herrero-v082b/approved-original.glb /tmp/herrero-v082b-site/approved-original.glb
+          cp reports/herrero-v082b-lossless-candidate/door-herrero-v082-b-lossless-webp-candidate.glb /tmp/herrero-v082b-site/lossless-candidate.glb
+          cp scripts/herrero_v082b_browser_probe.html /tmp/herrero-v082b-site/browser-probe/index.html
+          curl --fail -L --retry 3 --max-time 180 \
+            'https://raw.githubusercontent.com/gburdesedev/Project-genesis/96bf191ba03357a8ef27710fce56a3426e376870/assets/vendor/playcanvas/playcanvas.min.js' \
+            -o /tmp/herrero-v082b-site/playcanvas.min.js
+          python -m http.server 8278 --directory /tmp/herrero-v082b-site --bind 127.0.0.1 >/tmp/herrero-webgl.log 2>&1 &
+          node scripts/herrero_v082b_playcanvas_browser.cjs
       - name: Deliver separate candidate GLB and validation JSON (never approved branch)
         if: always()
         uses: actions/upload-artifact@v4
