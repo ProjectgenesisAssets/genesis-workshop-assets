@@ -1,0 +1,29 @@
+{
+  "asset": "tanned-goatskin",
+  "approved": true,
+  "version": "V020_roughness_only",
+  "approved_date": "2026-11-04",
+  "approved_use": "Consumable 3D inventory item",
+  "playcanvas_inventory_lighting": {
+    "approved_key_temperature_kelvin": 4600,
+    "reference_hdri": "studio_small_09_2k.hdr",
+    "environment_strength_blender": 0.82,
+    "area_key_blender": {
+      "power": 12,
+      "size": 4,
+      "position": [
+        3,
+        -4,
+        5
+      ]
+    },
+    "note": "Calibrate equivalent appearance in PlayCanvas; Blender energy values are not portable directly."
+  },
+  "geometry_pbr_status": "Approved V020 unchanged; 4600K is lighting only, not baked texture color",
+  "gameplay": "Consumed on crafting",
+  "source_v020_master_sha256": "4f74f18234e23a0e266a53bc52756e91fb170afe6eb7ae7f35dd6abd6020bf95",
+  "source_v020_web_sha256": "5aaeb196738d9b70cbce32102aad9ef4562b4da88550e08a2aea03ca061dca37",
+  "verified_actions_run": 41845440365,
+  "playcanvas_integrated": false,
+  "playcanvas_runtime_tested": false
+}
