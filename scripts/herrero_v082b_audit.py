@@ -119,4 +119,5 @@ def main():
  lines+=['','**Regla:** no aprobar ni integrar una optimización con pérdida visual superior al 2,5 %. Antes de reducir texturas/triángulos, probar limpieza y compresión sin pérdida. Las mediciones cuantitativas no sustituyen aprobación visual.']
  (opts.out/'baseline.md').write_text('\n'.join(lines)+'\n')
  print('BASELINE AUDIT OK',json.dumps({k:v for k,v in info.items() if k not in ('images_detail','mesh_primitives_detail')},ensure_ascii=False))
+ print('BASELINE IMAGES',json.dumps(info['images_detail'],ensure_ascii=False))
 if __name__=='__main__':main()
