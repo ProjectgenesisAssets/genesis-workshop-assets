@@ -1,0 +1,121 @@
+name: Inspect and trial-compress approved Herrero V082-B textures
+on:
+  push:
+    branches:
+      - experiment/herrero-v082b-texture-budget-20261104
+    paths:
+      - .github/workflows/door-v082b-texture-budget.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  analyze-GLB-textures:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Fetch exact approved V082-B GLB (without modifying game or master)
+        run: |
+          curl --fail --location --retry 3 --retry-delay 3 --output /tmp/herrero-approved.glb \
+            https://raw.githubusercontent.com/gburdesedev/Project-genesis/main/assets/playcanvas/approved/workshops/herrero/doors/v082-b/door-herrero-v082-b.glb
+          test "$(git hash-object /tmp/herrero-approved.glb)" = "eef69d28dd8d53b5934442279a8b027bdfbfa157"
+      - name: Prepare PIL
+        run: python -m pip install --quiet pillow
+      - name: Inspect, make nonapproved 1536 and 1024 comparison GLBs, verify geometry and glTF structure
+        run: |
+          mkdir -p /tmp/door-trials
+          cat > /tmp/door-trial.py <<'PY'
+          import io,struct,json,hashlib
+          from pathlib import Path
+          from PIL import Image
+          SRC=Path('/tmp/herrero-approved.glb')
+          ROOT=Path('/tmp/door-trials')
+          data=SRC.read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack_from('<II',data,4)==(2,len(data))
+          n,t=struct.unpack_from('<II',data,12)
+          assert t==0x4E4F534A
+          g=json.loads(data[20:20+n])
+          i=20+n
+          bn,bt=struct.unpack_from('<II',data,i)
+          assert bt==0x004E4942
+          binary=data[i+8:i+8+bn]
+          assert len(g['buffers'])==1
+          views=g['bufferViews']
+          def viewbytes(v):
+              return binary[v.get('byteOffset',0):v.get('byteOffset',0)+v['byteLength']]
+          roles={i:[] for i in range(len(g.get('images',[])))}
+          for mat in g.get('materials',[]):
+              p=mat.get('pbrMetallicRoughness',{})
+              for role,item in (('baseColor',p.get('baseColorTexture')),('metalRough',p.get('metallicRoughnessTexture')),('normal',mat.get('normalTexture')),('occlusion',mat.get('occlusionTexture')),('emissive',mat.get('emissiveTexture'))):
+                  if item is None: continue
+                  tx=g['textures'][item['index']]
+                  index=tx.get('source')
+                  if index is not None: roles[index].append(role)
+          report={'source_glb_bytes':len(data),'source_sha256':hashlib.sha256(data).hexdigest(),'meshes':len(g.get('meshes',[])),'materials':len(g.get('materials',[])),'animations':len(g.get('animations',[])),'images':[],'variants':[]}
+          imgdata={}
+          for idx,im in enumerate(g.get('images',[])):
+              info={'index':idx,'name':im.get('name'),'mime':im.get('mimeType'),'roles':sorted(set(roles[idx]))}
+              if 'bufferView' not in im:
+                  info['status']='external; untouched'
+              else:
+                  vi=im['bufferView'];blob=viewbytes(views[vi]);info['bytes']=len(blob)
+                  try:
+                      image=Image.open(io.BytesIO(blob));image.load()
+                      info.update(size=[image.width,image.height],mode=image.mode,format=image.format)
+                      if image.format in ('PNG','JPEG'): imgdata[vi]=(idx,blob,image)
+                      else: info['status']='unsupported; untouched'
+                  except Exception as ex:
+                      info['status']=str(ex)
+              report['images'].append(info)
+          print('Source bytes:',len(data),'Image count:',len(report['images']),flush=True)
+          print(json.dumps(report['images'],indent=2),flush=True)
+          for cap in (1536,1024):
+              newg=json.loads(json.dumps(g))
+              edits={};details=[]
+              for vi,(idx,blob,image) in imgdata.items():
+                  if max(image.size)<=cap: continue
+                  ratio=cap/max(image.size)
+                  sz=tuple(max(1,round(x*ratio)) for x in image.size)
+                  small=image.resize(sz,Image.Resampling.LANCZOS)
+                  out=io.BytesIO()
+                  if image.format=='PNG':small.save(out,format='PNG',optimize=True,compress_level=9)
+                  else:small.convert('RGB').save(out,format='JPEG',quality=91,subsampling=0,optimize=True)
+                  edits[vi]=out.getvalue()
+                  details.append({'image_index':idx,'from':list(image.size),'to':list(sz),'before_bytes':len(blob),'after_bytes':len(edits[vi])})
+              body=bytearray()
+              for vi,v in enumerate(newg['bufferViews']):
+                  chunk=edits.get(vi,viewbytes(views[vi]))
+                  body.extend(b'\0'*(-len(body)%4))
+                  v['byteOffset']=len(body)
+                  v['byteLength']=len(chunk)
+                  body.extend(chunk)
+              newg['buffers'][0]['byteLength']=len(body)
+              body.extend(b'\0'*(-len(body)%4))
+              js=json.dumps(newg,separators=(',',':'),ensure_ascii=False).encode('utf8')
+              js+=b' '*(-len(js)%4)
+              total=12+8+len(js)+8+len(body)
+              res=struct.pack('<4sII',b'glTF',2,total)+struct.pack('<II',len(js),0x4E4F534A)+js+struct.pack('<II',len(body),0x004E4942)+body
+              name=f'door-herrero-v082-b-trial-{cap}.glb'
+              (ROOT/name).write_bytes(res)
+              assert struct.unpack_from('<I',res,8)[0]==len(res)
+              # Geometry and all non-image views remain byte-for-byte intact.
+              for vi,v in enumerate(g['bufferViews']):
+                  if vi in edits:continue
+                  vnew=newg['bufferViews'][vi]
+                  old=viewbytes(v)
+                  now=body[vnew.get('byteOffset',0):vnew.get('byteOffset',0)+vnew['byteLength']]
+                  assert old==now,('nonimage GLB buffer changed',vi)
+              assert g.get('meshes',[])==newg.get('meshes',[])
+              assert g.get('materials',[])==newg.get('materials',[])
+              report['variants'].append({'max_image_dimension':cap,'filename':name,'bytes':len(res),'saving_percent':round(100*(1-len(res)/len(data)),1),'changed_images':details,'sha256':hashlib.sha256(res).hexdigest(),'integrated':False,'visually_approved':False,'geometry_and_other_buffers_preserved':True})
+              print('TRIAL',cap,'bytes',len(res),'reduction',report['variants'][-1]['saving_percent'],'modified images',len(details),flush=True)
+          (ROOT/'audit.json').write_text(json.dumps(report,indent=2,ensure_ascii=False))
+          PY
+          python /tmp/door-trial.py
+      - name: Upload technical report and candidate GLBs (not approved or deployed)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blacksmith-v082b-texture-trials-unapproved
+          path: /tmp/door-trials/
+          retention-days: 7
+          if-no-files-found: warn
