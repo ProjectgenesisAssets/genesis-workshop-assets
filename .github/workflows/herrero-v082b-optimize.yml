@@ -1,0 +1,37 @@
+name: V082B Herrero GLB Optimize — Baseline Audit
+on:
+  push:
+    branches: [optimization/herrero-v082b-webgl-v001]
+    paths:
+      - '.github/workflows/herrero-v082b-optimize.yml'
+      - 'scripts/herrero_v082b_glb_audit.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download original approved asset unchanged from public Project Genesis
+        run: |
+          set -euo pipefail
+          mkdir -p source reports
+          curl --fail --location --retry 4 --connect-timeout 30 --max-time 180 \
+            'https://raw.githubusercontent.com/gburdesedev/Project-genesis/main/assets/playcanvas/approved/workshops/herrero/doors/v082-b/door-herrero-v082-b.glb' \
+            -o source/herrero-v082b-approved.glb
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('source/herrero-v082b-approved.glb')
+          data=p.read_bytes()
+          assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\\x00'+data).hexdigest() == 'eef69d28dd8d53b5934442279a8b027bdfbfa157', 'Unexpected master blob'
+          print('MASTER ORIGINAL VERIFIED',len(data))
+          PY
+      - name: Audit GLB images, triangles and binary contents
+        run: python3 scripts/herrero_v082b_glb_audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: herrero-v082b-original-baseline
+          path: reports/v082b-baseline.json
