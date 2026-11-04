@@ -14,7 +14,7 @@ def pad4(b,pad=b'\0'):
 def readglb(path):
  b=path.read_bytes()
  assert b[:4]==b'glTF' and struct.unpack_from('<II',b,4)==(2,len(b))
- off=12;jsondoc=None,binary=None
+ off=12;jsondoc=None;binary=None
  while off<len(b):
   size,kind=struct.unpack_from('<I4s',b,off);off+=8
   chunk=b[off:off+size];off+=size
@@ -104,7 +104,6 @@ def build(master,out):
  for idx,img in enumerate(nims):
   v=njs['bufferViews'][img['bufferView']]
   image=nbytes[v['byteOffset']:v['byteOffset']+v['byteLength']]
-  srcv=json.loads(json.dumps(js)) # visual source checks use original JSON from fresh read below
   _,og,ob=readglb(master)
   ov=og['bufferViews'][og['images'][idx]['bufferView']]
   raw=ob[ov.get('byteOffset',0):ov.get('byteOffset',0)+ov['byteLength']]
