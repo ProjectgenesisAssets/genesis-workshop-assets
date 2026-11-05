@@ -1,0 +1,66 @@
+name: V014022 vendor remaining broken blacksmith models (public org experiment)
+on:
+  push:
+    branches:
+      - experiment/v014022-blacksmith-recovery-20261105
+    paths:
+      - .github/workflows/v014022-recover-additional-props.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned public-origin source models and dependent textures
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import urllib.request, json, struct, hashlib
+          root=Path('production/game_v014022/herrero_recovery/v001/blacksmith_decor_fallback')
+          root.mkdir(parents=True,exist_ok=True)
+          src='https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/'
+          alt='https://raw.githubusercontent.com/orochii/drekiGodot/e822808f6fa8f6fbf55b0b894420fc0e7cde0a61/Graphics/Scenario/props/'
+          names=['Hammer_Rack','Barrel_Dark','Bucket_Wooden_2']
+          textures=['T_Trim_Metal_Normal.jpg','T_Trim_Metal_BaseColor.jpg','T_Trim_Metal_ORM.jpg','T_Trim_Props_Normal.jpg','T_Trim_Props_BaseColor.jpg','T_Trim_Props_ORM.jpg','T_Trim_Furniture_Normal.jpg','T_Trim_Furniture_BaseColor.jpg','T_Trim_Furniture_ORM.jpg']
+          files={n+'.gltf':src+n+'.gltf' for n in names}
+          files.update({n+'.bin':src+n+'.bin' for n in names})
+          files.update({n:src+n for n in textures})
+          files['Sign_Blacksmith.glb']=alt+'sign_blacksmith.glb'
+          report=[]
+          for name,url in files.items():
+              data=urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'ProjectGenesis-AssetRecovery/1.0'}),timeout=90).read()
+              assert len(data)>50,(name,len(data))
+              (root/name).write_bytes(data)
+              report.append({'file':name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'source':url})
+              print('VENDOR_FILE',name,len(data),flush=True)
+          for name in names:
+              j=json.loads((root/(name+'.gltf')).read_text())
+              assert j['asset']['version']=='2.0'
+              for b in j.get('buffers',[]):
+                  assert (root/b['uri']).stat().st_size==b['byteLength'],(name,b)
+              for im in j.get('images',[]):
+                  assert (root/im['uri']).stat().st_size>1000,(name,im)
+              assert j.get('meshes') and j.get('materials'),name
+              print('GLTF_VALID',name,len(j['meshes']),flush=True)
+          data=(root/'Sign_Blacksmith.glb').read_bytes()
+          assert struct.unpack_from('<4sII',data,0)==(b'glTF',2,len(data))
+          print('GLB_VALID',len(data),flush=True)
+          (root/'RECOVERY.json').write_text(json.dumps({'approval':'EXPERIMENTAL_NOT_APPROVED','purpose':'Verify V014022 preload and play full Ordan tutorial','sources':{'vanai':'MIT, original Quaternius-style props','drekiGodot':'MIT, blacksmith sign'},'files':report},indent=2))
+          PY
+      - name: Publish unchanged source assets only on experiment branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add production/game_v014022/herrero_recovery/v001/blacksmith_decor_fallback
+          git diff --cached --stat
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Recover remaining V014022 blacksmith source props as unapproved candidates'
+          git push origin HEAD:refs/heads/$GITHUB_REF_NAME
+          echo 'Experimental assets published under public org, never to main.' >> "$GITHUB_STEP_SUMMARY"
