@@ -1,0 +1,50 @@
+name: V0188 vendor PlayCanvas Draco original decoder
+on:
+  push:
+    branches: [integration/v0188-plaza-approved-originals-20261105]
+    paths:
+      - '.github/workflows/v0188-vendor-draco.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  vendor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch and validate official Draco binary/glue
+        run: |
+          set -euo pipefail
+          dest=assets/approved/v0188/runtime/draco
+          mkdir -p "$dest"
+          curl --fail --location --retry 3 --silent --show-error https://developer.playcanvas.com/assets/modules/draco/draco.wasm.js -o "$dest/draco.wasm.js"
+          curl --fail --location --retry 3 --silent --show-error https://developer.playcanvas.com/assets/modules/draco/draco.wasm.wasm -o "$dest/draco.wasm.wasm"
+          curl --fail --location --retry 3 --silent --show-error https://raw.githubusercontent.com/google/draco/main/LICENSE -o "$dest/LICENSE-draco.txt"
+          python3 - <<'PY'
+          import pathlib,hashlib,json
+          base=pathlib.Path('assets/approved/v0188/runtime/draco')
+          wasm=(base/'draco.wasm.wasm').read_bytes()
+          js=(base/'draco.wasm.js').read_bytes()
+          assert wasm[:4]==b'\x00asm',f'Invalid WASM header: {wasm[:16]!r}'
+          assert len(wasm)>10000
+          assert len(js)>1000 and b'<!DOCTYPE' not in js[:500]
+          detail={'source':'https://developer.playcanvas.com/assets/modules/draco/','license':'Google Draco Apache-2.0 (LICENSE-draco.txt)','version':'V0188 frozen decoder binaries','files':{}}
+          for name in ('draco.wasm.js','draco.wasm.wasm'):
+             raw=(base/name).read_bytes()
+             detail['files'][name]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+          (base/'PROVENANCE.json').write_text(json.dumps(detail,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(detail,indent=2))
+          PY
+          node --check "$dest/draco.wasm.js"
+      - name: Commit decoder bytes to isolated asset branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/approved/v0188/runtime/draco
+          if git diff --cached --quiet; then echo 'Already vendored'; exit 0; fi
+          git commit -m 'Vendor PlayCanvas Draco WASM decoder for V0188 original fountain'
+          git push origin "HEAD:$GITHUB_REF_NAME"
