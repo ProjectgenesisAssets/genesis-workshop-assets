@@ -1,0 +1,38 @@
+name: V014022 recover original anvil and CC0 bellows candidate (isolated)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - experiment/v014022-blacksmith-recovery-20261105
+    paths:
+      - scripts/recover_v014022_blacksmith_props.py
+      - .github/workflows/recover-v014022-blacksmith-props.yml
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check script syntax
+        run: python3 -m py_compile scripts/recover_v014022_blacksmith_props.py
+      - name: Fetch original anvil files and CC0 bellows (real binary bytes)
+        run: python3 scripts/recover_v014022_blacksmith_props.py
+      - name: Commit only validated candidate assets to this experimental branch
+        run: |
+          set -euo pipefail
+          git config user.name "genesis-asset-recovery-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add production/game_v014022/herrero_recovery/v001
+          git diff --staged --stat
+          git diff --staged --quiet || git commit -m "assets(v014022): vendor original Quaternius anvil and CC0 experimental bellows"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+      - name: Upload manifest and recovered files for validation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pg-v014022-blacksmith-recovery-candidates
+          path: production/game_v014022/herrero_recovery/v001
+          if-no-files-found: warn
+          retention-days: 7
