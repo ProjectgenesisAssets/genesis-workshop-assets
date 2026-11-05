@@ -1,0 +1,15 @@
+{
+  "source": "https://developer.playcanvas.com/assets/modules/draco/",
+  "license": "Google Draco Apache-2.0 (LICENSE-draco.txt)",
+  "version": "V0188 frozen decoder binaries",
+  "files": {
+    "draco.wasm.js": {
+      "bytes": 58763,
+      "sha256": "e8049906ef3f8f75d3456c22a3f31bfdfe5b5b5bd09ccdec613b9e9a49d554d8"
+    },
+    "draco.wasm.wasm": {
+      "bytes": 285747,
+      "sha256": "c55a594e8ffd18426d36b27fea9618af3df5e173640a3e56d46f09d76f0574f2"
+    }
+  }
+}
