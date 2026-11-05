@@ -1,0 +1,82 @@
+name: Recover V014022 blacksmith props - CC0 candidates
+on:
+  push:
+    branches:
+      - experiment/v014022-cc0-anvil-bellows-v001-20261105
+    paths:
+      - .github/workflows/v014022-recover-cc0-smith-props.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  vendor-and-verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/v014022-recover-cc0-smith-props.yml
+      - name: Download CC0 source GLBs as isolated candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          D='assets/playcanvas/candidates/workshops/herrero/props/v014022-cc0-recovery'
+          mkdir -p "$D"
+          curl --fail --location --retry 4 --retry-all-errors --connect-timeout 20 --max-time 120 -o "$D/bellows-double-cc0-v001.glb" https://cdn.3dassets.dev/assets/37560/v1/model.glb
+          curl --fail --location --retry 4 --retry-all-errors --connect-timeout 20 --max-time 120 -o "$D/anvil-oak-stump-cc0-v001.glb" https://cdn.3dassets.dev/assets/37569/v1/model.glb
+          test "$(wc -c < "$D/bellows-double-cc0-v001.glb")" -gt 40000
+          test "$(wc -c < "$D/anvil-oak-stump-cc0-v001.glb")" -gt 20000
+      - name: Inspect GLB structure, enforce embedded buffers and record provenance
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,struct,hashlib,pathlib,datetime
+          base=pathlib.Path('assets/playcanvas/candidates/workshops/herrero/props/v014022-cc0-recovery')
+          refs={
+            'bellows-double-cc0-v001.glb':{'url':'https://cdn.3dassets.dev/assets/37560/v1/model.glb','kind':'animated_double_bellows','expected_animation':'pump'},
+            'anvil-oak-stump-cc0-v001.glb':{'url':'https://cdn.3dassets.dev/assets/37569/v1/model.glb','kind':'anvil_oak_stump','expected_animation':None}
+          }
+          manifest={'approval':'candidate_not_approved','license':'CC0 1.0 Universal','licenseURL':'https://creativecommons.org/publicdomain/zero/1.0/','sourcePack':'https://3dassets.dev/packs/blacksmith-forge-and-armoury','purpose':'Restore two broken runtime-critical V014022 assets, without modifying main or approved meshes','entries':{}}
+          for filename,source in refs.items():
+            p=base/filename;b=p.read_bytes()
+            assert b[:4]==b'glTF',f'{filename} invalid magic'
+            ver,total=struct.unpack_from('<II',b,4)
+            assert ver==2 and total==len(b) and len(b)>=20,(filename,ver,total,len(b))
+            length,typ=struct.unpack_from('<I4s',b,12)
+            assert typ==b'JSON' and length<len(b)
+            gltf=json.loads(b[20:20+length].decode('utf-8'))
+            assert gltf['asset']['version']=='2.0'
+            assert len(gltf.get('meshes',[]))>=1
+            assert not [x for x in gltf.get('buffers',[]) if x.get('uri')],'external buffers'
+            assert not [x for x in gltf.get('images',[]) if x.get('uri')],'external images'
+            assert not gltf.get('extensionsRequired'),f'Unexpected required decoder {gltf.get("extensionsRequired")}'
+            animations=[a.get('name','') for a in gltf.get('animations',[])]
+            if source['expected_animation']:assert source['expected_animation'] in animations,animations
+            entry={'source':source['url'],'kind':source['kind'],'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest(),'glTFVersion':ver,'meshes':len(gltf.get('meshes',[])),'animations':animations,'embeddedTextures':len(gltf.get('images',[])),'extensionsUsed':gltf.get('extensionsUsed',[])}
+            manifest['entries'][filename]=entry
+            print(filename,entry)
+          (base/'provenance.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          (base/'README.md').write_text('# V014022 candidate restoration (not approved)\n\nTwo CC0 GLB models from [Blacksmith Forge and Armoury](https://3dassets.dev/packs/blacksmith-forge-and-armoury), for **diagnostic-only** restoration of broken V014022 runtime assets. Source models are self-contained GLBs. They are not user-approved visuals. Do not merge to game main until Playwright and visual review pass.\n\nSee provenance.json for SHA-256 and source URLs.\n')
+          PY
+      - name: Commit only new candidate models on experimental asset branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          D='assets/playcanvas/candidates/workshops/herrero/props/v014022-cc0-recovery'
+          git config user.name 'genesis-assets-actions[bot]'
+          git config user.email 'genesis-assets-actions[bot]@users.noreply.github.com'
+          git add --sparse "$D"
+          if ! git diff --cached --quiet; then
+            git commit -m 'assets(v014022): vendor and validate two CC0 blacksmith candidates'
+            git push origin HEAD:experiment/v014022-cc0-anvil-bellows-v001-20261105
+          fi
+      - name: Write evidence summary
+        shell: bash
+        run: |
+          echo '## V014022 CC0 candidates downloaded and validated' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Branch: experiment/v014022-cc0-anvil-bellows-v001-20261105' >> "$GITHUB_STEP_SUMMARY"
+          cat assets/playcanvas/candidates/workshops/herrero/props/v014022-cc0-recovery/provenance.json >> "$GITHUB_STEP_SUMMARY"
