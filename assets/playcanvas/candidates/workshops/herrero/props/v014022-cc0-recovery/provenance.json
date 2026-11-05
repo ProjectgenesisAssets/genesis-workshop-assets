@@ -1,0 +1,39 @@
+{
+  "approval": "candidate_not_approved",
+  "license": "CC0 1.0 Universal",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "sourcePack": "https://3dassets.dev/packs/blacksmith-forge-and-armoury",
+  "purpose": "Restore two broken runtime-critical V014022 assets, without modifying main or approved meshes",
+  "entries": {
+    "bellows-double-cc0-v001.glb": {
+      "source": "https://cdn.3dassets.dev/assets/37560/v1/model.glb",
+      "kind": "animated_double_bellows",
+      "bytes": 95900,
+      "sha256": "383f86c08ad15375ccc034a71cb19af9f6a6e1db17394601a95ce1717183ee1b",
+      "glTFVersion": 2,
+      "meshes": 7,
+      "animations": [
+        "pump"
+      ],
+      "embeddedTextures": 2,
+      "extensionsUsed": [
+        "EXT_texture_webp",
+        "KHR_mesh_quantization"
+      ]
+    },
+    "anvil-oak-stump-cc0-v001.glb": {
+      "source": "https://cdn.3dassets.dev/assets/37569/v1/model.glb",
+      "kind": "anvil_oak_stump",
+      "bytes": 49524,
+      "sha256": "88058302b598fc4ee81919e00d5511d41e5a1f1c36d016f006b1e8004ec7d125",
+      "glTFVersion": 2,
+      "meshes": 4,
+      "animations": [],
+      "embeddedTextures": 1,
+      "extensionsUsed": [
+        "EXT_texture_webp",
+        "KHR_mesh_quantization"
+      ]
+    }
+  }
+}
