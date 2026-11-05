@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "version": "v0188",
+  "name": "Original Project Genesis V014.022 Plaza — Approved Art Assets",
+  "integrationStatus": "experimental_use_only; user visual approval pending",
+  "policy": "exact Git blob copy from approved source, no mesh decimation, material changes, re-export or overwrite",
+  "sourceProject": "Project Genesis V014.022",
+  "targetProject": "Project Genesis V0188 experimental",
+  "files": [
+    {
+      "path": "assets/approved/v0188/plaza/fountain/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb",
+      "gitBlobSha": "075fdd0457795dcadb853a8cbeadd20f58f7e097",
+      "bytes": 16715688,
+      "sourcePath": "public/models/PG_Dolphin_Fountain_V011_PlayCanvas_HQ_Optimized.glb",
+      "sourceCommit": "48b8255cd2ac04ac1533ebe98a06377e4a287f22"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/ash/lod1.glb",
+      "gitBlobSha": "2b0353aacee89d5d2cd9102107d6f9c7648c6f89",
+      "bytes": 6861436,
+      "sourcePath": "assets/tree_webgl_v005/ash/lod1.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/ash/lod2.glb",
+      "gitBlobSha": "d73c338f98b50cdb91f5bbc849f0954750875322",
+      "bytes": 5398940,
+      "sourcePath": "assets/tree_webgl_v005/ash/lod2.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/linden/lod1.glb",
+      "gitBlobSha": "2768e5df917fb6bf1b4212bf1a46011a12d3ba23",
+      "bytes": 6956564,
+      "sourcePath": "assets/tree_webgl_v005/linden/lod1.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/linden/lod2.glb",
+      "gitBlobSha": "1075db16e880b1a6dc0f5544cd5b1e014a0252e5",
+      "bytes": 5494068,
+      "sourcePath": "assets/tree_webgl_v005/linden/lod2.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/maple/lod1.glb",
+      "gitBlobSha": "05fd07404f8b3368a7848a678cf59ebefec2b267",
+      "bytes": 6484460,
+      "sourcePath": "assets/tree_webgl_v005/maple/lod1.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/maple/lod2.glb",
+      "gitBlobSha": "4c19defb91df6430f35c7e04a48588b4f360e89f",
+      "bytes": 5021964,
+      "sourcePath": "assets/tree_webgl_v005/maple/lod2.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/oak/lod1.glb",
+      "gitBlobSha": "c2426117dafe7a4f5c2ed1f596ebb5ac13feb10d",
+      "bytes": 6995784,
+      "sourcePath": "assets/tree_webgl_v005/oak/lod1.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    },
+    {
+      "path": "assets/approved/v0188/plaza/trees/oak/lod2.glb",
+      "gitBlobSha": "b066d5dda048972ea0a07cf60ce4125f60125970",
+      "bytes": 5533288,
+      "sourcePath": "assets/tree_webgl_v005/oak/lod2.glb",
+      "sourceCommit": "1801cf9ac2394ac80bbe3f2d97dc00c8fd49e57d"
+    }
+  ],
+  "expectedTreeInstances": 14,
+  "plazaTreeInstances": 4,
+  "plazaCentre": [
+    7,
+    16
+  ],
+  "fountainPosition": [
+    7,
+    0,
+    16
+  ]
+}
