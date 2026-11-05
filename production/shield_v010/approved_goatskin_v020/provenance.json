@@ -1,0 +1,36 @@
+{
+  "source_asset": "tanned-goatskin",
+  "version": "V020_roughness_only",
+  "approved": true,
+  "owner_approved_reference": "asset/tanned-goatskin:evaluation/tanned-goatskin/V020_OWNER_APPROVED.json",
+  "source_glb_sha256": "5aaeb196738d9b70cbce32102aad9ef4562b4da88550e08a2aea03ca061dca37",
+  "source_artifact_id": 13328515282,
+  "material_name": "tanned-goatskin_CC0_PBR",
+  "material_factor": {
+    "roughness": 1,
+    "metallic": 0
+  },
+  "source_glb_size_bytes": 6057508,
+  "material_albedo_dimensions": [
+    1536,
+    1536
+  ],
+  "roughness_dimensions": [
+    1024,
+    1024
+  ],
+  "derived_usage": "Shield ring material reference only; original approved GLB remains untouched",
+  "render_rule": "PBR color sRGB, roughness/normal Non-Color, physically plausible gloss",
+  "leather_normal_v020.png": {
+    "bytes": 2164299,
+    "sha256": "6618f354f0e8f918fe177993da133cad5a7a34cbd88c31140491e2f2506e3314"
+  },
+  "leather_roughness_v020.png": {
+    "bytes": 778908,
+    "sha256": "7c7fa3b77170f3cc8c19c4247620d5bb47cc9d51bf219a11571564159eb443ff"
+  },
+  "leather_albedo_v020.png": {
+    "bytes": 4317547,
+    "sha256": "000a561fee2d2a48ea88988f01d956ec15f1e8006c03db13e187445eaedebb26"
+  }
+}
