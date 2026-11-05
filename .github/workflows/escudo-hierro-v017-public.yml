@@ -1,0 +1,60 @@
+name: Genesis Shield V017 | Public organization Cycles review
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/escudo-hierro-v017-cycles-public
+      - name: Verify legally publishable source assets before expensive rendering
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s source_assets/meshy/jajar_019871b7/escudo_original.glb || { echo "::error::Original Meshy GLB absent. Verify license and publishing permission before adding to public repo."; exit 1; }
+          test -s input/PG_IRON_V175_WEB_WORKCOPY.blend || { echo "::error::V175 Blender reference absent. Verify permission before making source public."; exit 1; }
+          echo 'ca4e63a25acf84985d1c66fcef77ffc92abb0212e59f50f84821facd171b28f2  source_assets/meshy/jajar_019871b7/escudo_original.glb' | sha256sum -c -
+          echo '8b67ec62da384fb31ad80dcc35feec7a2f1bff08e03ad80ab3205f53dd6588ba  input/PG_IRON_V175_WEB_WORKCOPY.blend' | sha256sum -c -
+      - name: Retrieve verified oak V004 and caprine V020 PBR maps
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p oak_pbr_v004 approved_caprino_v020 output_escudo_meshy_v017
+          OAK='https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/28fa3d583227485940ad7db023c9f7544ba9bd86/production/tutorial_materials/generated/roble_seco/source'
+          for f in wood_albedo.jpg wood_normal.png wood_roughness.png; do curl -fL --retry 3 "$OAK/$f" -o "oak_pbr_v004/$f"; done
+          CAP='https://raw.githubusercontent.com/ProjectgenesisAssets/genesis-workshop-assets/ddfdc084bcbdc27d25c72615d1f8db3f949815ea/production/shield_v010/approved_goatskin_v020'
+          for f in leather_albedo_v020.png leather_normal_v020.png leather_roughness_v020.png; do curl -fL --retry 3 "$CAP/$f" -o "approved_caprino_v020/$f"; done
+          curl -fL --retry 3 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr' -o output_escudo_meshy_v017/studio_small_09_2k.hdr
+      - name: Install official Blender 4.5.13 LTS
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender --strip-components=1
+          /tmp/blender/blender --version | grep -F 'Blender 4.5.13'
+      - name: Render three authentic V017 Cycles views
+        run: |
+          set -euo pipefail
+          python scripts/render_escudo_hierro_meshy_v017.py
+          /tmp/blender/blender -b -t 2 --python-exit-code 1 --python output_escudo_meshy_v017/generated_render_escudo_v017.py
+          test -s output_escudo_meshy_v017/report_v017.json
+          test "$(find output_escudo_meshy_v017 -maxdepth 1 -name '*.png' | wc -l)" -eq 3
+      - name: Publish review directly to this public experimental branch (no Actions artifacts)
+        run: |
+          set -euo pipefail
+          mkdir -p review/escudo_hierro_meshy_v017
+          cp output_escudo_meshy_v017/*.png review/escudo_hierro_meshy_v017/
+          cp output_escudo_meshy_v017/report_v017.json review/escudo_hierro_meshy_v017/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add review/escudo_hierro_meshy_v017
+          if ! git diff --cached --quiet; then
+            git commit -m 'Review V017: genuine Cycles renders and report [skip ci]'
+            git fetch origin experiment/escudo-hierro-v017-cycles-public
+            git rebase FETCH_HEAD
+            git push origin HEAD:experiment/escudo-hierro-v017-cycles-public
+          fi
