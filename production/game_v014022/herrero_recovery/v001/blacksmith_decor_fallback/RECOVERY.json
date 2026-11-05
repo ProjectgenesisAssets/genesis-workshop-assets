@@ -1,0 +1,106 @@
+{
+  "approval": "EXPERIMENTAL_NOT_APPROVED",
+  "purpose": "Verify V014022 preload and play full Ordan tutorial",
+  "sources": {
+    "vanai": "MIT, original Quaternius-style props",
+    "drekiGodot": "MIT, blacksmith sign"
+  },
+  "files": [
+    {
+      "file": "Hammer_Rack.gltf",
+      "bytes": 2862,
+      "sha256": "24163236db272c5ddb9d8b425c5e36c791f67765971034f42c336fcc492abec3",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/Hammer_Rack.gltf"
+    },
+    {
+      "file": "Barrel_Dark.gltf",
+      "bytes": 3197,
+      "sha256": "e07bcb751442a7f5afddb25e82aa908083f8dbde07bb5492d216b5482d6f21f7",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/Barrel_Dark.gltf"
+    },
+    {
+      "file": "Bucket_Wooden_2.gltf",
+      "bytes": 2896,
+      "sha256": "59f76f7731cb16b344f99a0d9074d9603de5a93e58f6049391dd8219ac7a61bb",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/Bucket_Wooden_2.gltf"
+    },
+    {
+      "file": "Hammer_Rack.bin",
+      "bytes": 119116,
+      "sha256": "79c60287aa31b0a47ed0bbbab6e1a116e04cd0f9523af005955f58bd1370b5ff",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/Hammer_Rack.bin"
+    },
+    {
+      "file": "Barrel_Dark.bin",
+      "bytes": 52904,
+      "sha256": "2093dabb9e24ab5574a9cf95cbb768461f94ce2b5c75c376127edf9eb3c51569",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/Barrel_Dark.bin"
+    },
+    {
+      "file": "Bucket_Wooden_2.bin",
+      "bytes": 29264,
+      "sha256": "13f11475d130ff1aae0a57226baf9c43b612622d5b7e9d89cdf90083c01da907",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/Bucket_Wooden_2.bin"
+    },
+    {
+      "file": "T_Trim_Metal_Normal.jpg",
+      "bytes": 54767,
+      "sha256": "3b341ff81163518a8ef1de29bcc48540a69adf39baa7aaf8600ec79a1a05c3cd",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Metal_Normal.jpg"
+    },
+    {
+      "file": "T_Trim_Metal_BaseColor.jpg",
+      "bytes": 37655,
+      "sha256": "d98b74c17516765c44843bcce540b5d599d959537722820a9dd6764f4435f5c9",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Metal_BaseColor.jpg"
+    },
+    {
+      "file": "T_Trim_Metal_ORM.jpg",
+      "bytes": 31794,
+      "sha256": "da6f6f0e852d772b67409256ad4a3ba514eee95c7f938a2adc4126453265027c",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Metal_ORM.jpg"
+    },
+    {
+      "file": "T_Trim_Props_Normal.jpg",
+      "bytes": 62670,
+      "sha256": "ef75d3616562ded2ee1004165edb2f1442bbd9fbaa02eb0578b6cee896173336",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Props_Normal.jpg"
+    },
+    {
+      "file": "T_Trim_Props_BaseColor.jpg",
+      "bytes": 55042,
+      "sha256": "542bd8cc6941779094b76b95acaeebf2a1636e4e1b19cb952b48edaafdbf9240",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Props_BaseColor.jpg"
+    },
+    {
+      "file": "T_Trim_Props_ORM.jpg",
+      "bytes": 59659,
+      "sha256": "627f881eda3dc522b58ad71d472131e11ec94560df594581fac5390611adf476",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Props_ORM.jpg"
+    },
+    {
+      "file": "T_Trim_Furniture_Normal.jpg",
+      "bytes": 55403,
+      "sha256": "98e64e7dac65d7f7895a5ae6905a0b6da8a27e0fe91d16436a23d425cb7dc337",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Furniture_Normal.jpg"
+    },
+    {
+      "file": "T_Trim_Furniture_BaseColor.jpg",
+      "bytes": 44826,
+      "sha256": "b13f20416ba70aeebfbd9431faeb0725b0a83063996cd47ce37fee9dc3e0a374",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Furniture_BaseColor.jpg"
+    },
+    {
+      "file": "T_Trim_Furniture_ORM.jpg",
+      "bytes": 46430,
+      "sha256": "56b9aac819612903ecd6955e435dab4e4d3e1a3eb3b44f766c5509083ad5ceb6",
+      "source": "https://raw.githubusercontent.com/philipqnguyen/vanai/289b77a7032db3cc7033d7832ef8df18d0df902d/client/public/models/props/T_Trim_Furniture_ORM.jpg"
+    },
+    {
+      "file": "Sign_Blacksmith.glb",
+      "bytes": 6024,
+      "sha256": "7da346e157782e3af1a9cd5527f7823fb256d56596c3d825b8a5705439a865f4",
+      "source": "https://raw.githubusercontent.com/orochii/drekiGodot/e822808f6fa8f6fbf55b0b894420fc0e7cde0a61/Graphics/Scenario/props/sign_blacksmith.glb"
+    }
+  ]
+}
