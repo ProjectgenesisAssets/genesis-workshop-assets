@@ -1,0 +1,59 @@
+name: Publish already validated V008 GLBs without rerender
+on:
+  push:
+    branches: [experiment/v014022-blacksmith-bellows-anvil-v008-20261105]
+    paths: [.github/workflows/v014022-publish-v008-reuse.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reuse existing successful Blender GLBs
+        uses: actions/download-artifact@v4
+        with:
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          run-id: 42080750174
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: recovered-existing-v008-*-GLB
+          path: /tmp/recovered
+      - name: Find artifact files and publish under candidates on this branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in anvil bellows; do
+            root="/tmp/recovered/recovered-existing-v008-$asset-GLB"
+            find "$root" -maxdepth 4 -type f -printf '%P %s bytes\n'
+            src="$(find "$root" -type f -name "$asset\_hero_v008.glb" -print -quit)"
+            audit="$(find "$root" -type f -name AUDIT.json -print -quit)"
+            if [ -z "$src" ]; then src="$(find "$root" -type f -name "${asset}_hero_v008.glb" -print -quit)"; fi
+            test -s "$src"
+            test -s "$audit"
+            mkdir -p "candidates/v014022-equipment-v008/$asset"
+            cp "$src" "candidates/v014022-equipment-v008/$asset/${asset}_hero_v008.glb"
+            cp "$audit" "candidates/v014022-equipment-v008/$asset/AUDIT.json"
+          done
+          python3 - <<'PY'
+          import json,struct,pathlib
+          for name in ('anvil','bellows'):
+              p=pathlib.Path('candidates/v014022-equipment-v008/'+name+'/'+name+'_hero_v008.glb')
+              data=p.read_bytes()
+              assert struct.unpack_from('<4sII',data,0)==(b'glTF',2,len(data))
+              length,k=struct.unpack_from('<I4s',data,12)
+              assert k==b'JSON'
+              j=json.loads(data[20:20+length])
+              assert j.get('meshes') and j.get('materials') and j.get('images')
+              assert all('uri' not in i for i in j['images'])
+              print('GLB_VALID',name,len(data),'embedded images',len(j['images']))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add candidates/v014022-equipment-v008
+          git diff --cached --stat
+          if ! git diff --cached --quiet; then git commit -m 'Publish V008 bellows and anvil in public org experiment'; fi
+          git push origin HEAD:refs/heads/$GITHUB_REF_NAME
+          echo 'Experimental candidates only; main is untouched' >> "$GITHUB_STEP_SUMMARY"
