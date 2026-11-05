@@ -1,0 +1,98 @@
+name: Genesis Shield V010 | Exact approved caprino V020 PBR source
+on:
+  push:
+    branches:
+      - experiment/escudo-cuero-v010-source-v020
+    paths:
+      - ".github/workflows/escudo-cuero-v010-source-v020.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  extract_approved_pbr:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover exact owner-approved V020 caprine asset from successful run
+        uses: actions/download-artifact@v4
+        with:
+          name: genesis-caprino-v020-hdri32-visual-QA
+          run-id: 41838383975
+          repository: ProjectgenesisAssets/genesis-workshop-assets
+          github-token: ${{ github.token }}
+          path: original_v020_artifact
+      - name: Extract approved basecolor/roughness/normal directly from verified V020 GLB
+        run: |
+          set -euo pipefail
+          python -m pip install "Pillow==11.3.0"
+          python - <<'PY'
+          import hashlib,json,struct,io,pathlib
+          from PIL import Image
+          root=pathlib.Path("original_v020_artifact")
+          candidates=sorted(root.rglob("caprino_v020_roughness_web.glb"))
+          if len(candidates)!=1:raise RuntimeError("Exact V020 web GLB not unique or missing: "+str(candidates))
+          data=candidates[0].read_bytes()
+          digest=hashlib.sha256(data).hexdigest()
+          assert digest=="5aaeb196738d9b70cbce32102aad9ef4562b4da88550e08a2aea03ca061dca37",digest
+          assert data[:4]==b"glTF"
+          _,version,total=struct.unpack_from("<4sII",data)
+          assert version==2 and total==len(data)
+          jsonlen,jtype=struct.unpack_from("<I4s",data,12)
+          assert jtype==b"JSON"
+          gltf=json.loads(data[20:20+jsonlen])
+          offset=20+jsonlen
+          binlen,bintype=struct.unpack_from("<I4s",data,offset)
+          assert bintype==b"BIN\x00"
+          bindata=data[offset+8:offset+8+binlen]
+          mats=gltf["materials"]
+          print("MATERIAL_COUNT",len(mats),[x.get("name") for x in mats])
+          def texbytes(texinfo):
+              if texinfo is None:return None
+              idx=texinfo["index"]
+              tx=gltf["textures"][idx]
+              img=gltf["images"][tx["source"]]
+              assert "bufferView" in img,"No embedded original material image"
+              view=gltf["bufferViews"][img["bufferView"]]
+              p=view.get("byteOffset",0)
+              chunk=bindata[p:p+view["byteLength"]]
+              assert len(chunk)>100
+              return chunk
+          mat=mats[0]
+          pbr=mat["pbrMetallicRoughness"]
+          rootout=pathlib.Path("production/shield_v010/approved_goatskin_v020")
+          rootout.mkdir(parents=True,exist_ok=True)
+          albedo=texbytes(pbr.get("baseColorTexture"))
+          rough=texbytes(pbr.get("metallicRoughnessTexture"))
+          assert albedo and rough,"The approved original PBR texture is absent"
+          im=Image.open(io.BytesIO(albedo)).convert("RGB")
+          im.save(rootout/"leather_albedo_v020.png","PNG",optimize=True)
+          metallicrough=Image.open(io.BytesIO(rough)).convert("RGB")
+          metallicrough.getchannel("G").save(rootout/"leather_roughness_v020.png","PNG",optimize=True)
+          normalbytes=texbytes(mat.get("normalTexture"))
+          if normalbytes:
+              Image.open(io.BytesIO(normalbytes)).convert("RGB").save(rootout/"leather_normal_v020.png","PNG",optimize=True)
+          meta={"source_asset":"tanned-goatskin","version":"V020_roughness_only","approved":True,
+            "owner_approved_reference":"asset/tanned-goatskin:evaluation/tanned-goatskin/V020_OWNER_APPROVED.json",
+            "source_glb_sha256":digest,"source_artifact_id":13328515282,
+            "material_name":mat.get("name"),"material_factor":{"roughness":pbr.get("roughnessFactor",1),"metallic":pbr.get("metallicFactor",1)},
+            "source_glb_size_bytes":len(data),
+            "material_albedo_dimensions":list(im.size),"roughness_dimensions":list(metallicrough.size),
+            "derived_usage":"Shield ring material reference only; original approved GLB remains untouched",
+            "render_rule":"PBR color sRGB, roughness/normal Non-Color, physically plausible gloss"}
+          for f in rootout.glob("*.png"):
+              meta[f.name]={"bytes":f.stat().st_size,"sha256":hashlib.sha256(f.read_bytes()).hexdigest()}
+          (rootout/"provenance.json").write_text(json.dumps(meta,indent=2,ensure_ascii=False),encoding="utf-8")
+          print("CAPRINO_V020_SHIELD_MATERIAL_EXTRACTED",json.dumps(meta,ensure_ascii=False))
+          PY
+      - name: Publish PBR material maps only (no original GLB or master)
+        run: |
+          set -euo pipefail
+          git config user.name "genesis-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add production/shield_v010/approved_goatskin_v020/
+          git diff --cached --quiet || git commit -m "Extract verified owner-approved V020 goat leather PBR maps for shield test"
+          git fetch origin experiment/escudo-cuero-v010-source-v020
+          git rebase FETCH_HEAD
+          git push origin HEAD:experiment/escudo-cuero-v010-source-v020
