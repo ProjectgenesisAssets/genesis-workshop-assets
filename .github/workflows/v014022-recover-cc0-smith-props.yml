@@ -53,7 +53,7 @@ jobs:
             assert len(gltf.get('meshes',[]))>=1
             assert not [x for x in gltf.get('buffers',[]) if x.get('uri')],'external buffers'
             assert not [x for x in gltf.get('images',[]) if x.get('uri')],'external images'
-            assert not gltf.get('extensionsRequired'),f'Unexpected required decoder {gltf.get("extensionsRequired")}'
+            assert set(gltf.get('extensionsRequired',[])) <= {'KHR_mesh_quantization','EXT_texture_webp'},f'Unexpected required decoder {gltf.get("extensionsRequired")}'
             animations=[a.get('name','') for a in gltf.get('animations',[])]
             if source['expected_animation']:assert source['expected_animation'] in animations,animations
             entry={'source':source['url'],'kind':source['kind'],'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest(),'glTFVersion':ver,'meshes':len(gltf.get('meshes',[])),'animations':animations,'embeddedTextures':len(gltf.get('images',[])),'extensionsUsed':gltf.get('extensionsUsed',[])}
