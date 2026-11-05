@@ -1,0 +1,43 @@
+{
+  "asset": "anvil",
+  "version": "V008",
+  "status": "VISUAL_CANDIDATE_NOT_APPROVED",
+  "art_direction": "functional medieval photorealism, never stylized",
+  "metric_bounds_m": [
+    [
+      -0.8550000190734863,
+      -0.2840000092983246,
+      -0.36500000953674316
+    ],
+    [
+      0.5649999976158142,
+      0.2840000092983246,
+      0.7770000100135803
+    ]
+  ],
+  "mesh_parts": 16,
+  "source": "independent Blender generator, no historical master reused",
+  "pbr_materials": [
+    "anvil_forged_wrought_iron",
+    "anvil_polished_hardened_steel",
+    "anvil_old_oak_base",
+    "anvil_cut_mark_oxidation"
+  ],
+  "maps": [
+    "textures/anvil_forged_wrought_iron_albedo.png",
+    "textures/anvil_forged_wrought_iron_roughness.png",
+    "textures/anvil_forged_wrought_iron_normal.png",
+    "textures/anvil_polished_hardened_steel_albedo.png",
+    "textures/anvil_polished_hardened_steel_roughness.png",
+    "textures/anvil_polished_hardened_steel_normal.png",
+    "textures/anvil_old_oak_base_albedo.png",
+    "textures/anvil_old_oak_base_roughness.png",
+    "textures/anvil_old_oak_base_normal.png",
+    "textures/anvil_cut_mark_oxidation_albedo.png",
+    "textures/anvil_cut_mark_oxidation_roughness.png",
+    "textures/anvil_cut_mark_oxidation_normal.png"
+  ],
+  "render_samples": 52,
+  "approval": "requires 4-view visual review and at least 8/10 by user",
+  "photographic_cc0_sources": {}
+}

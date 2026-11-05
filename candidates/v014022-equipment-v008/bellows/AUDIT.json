@@ -1,0 +1,49 @@
+{
+  "asset": "bellows",
+  "version": "V008",
+  "status": "VISUAL_CANDIDATE_NOT_APPROVED",
+  "art_direction": "functional medieval photorealism, never stylized",
+  "metric_bounds_m": [
+    [
+      -0.9300000071525574,
+      -0.3838517963886261,
+      0.07699999958276749
+    ],
+    [
+      0.8655000329017639,
+      0.3838517963886261,
+      0.5630000233650208
+    ]
+  ],
+  "mesh_parts": 37,
+  "source": "independent Blender generator, no historical master reused",
+  "pbr_materials": [
+    "bellows_aged_oak_long_grain",
+    "bellows_creased_dark_oxblood_leather",
+    "bellows_oxidized_hand_forged_iron",
+    "bellows_patina_riveted_brass"
+  ],
+  "maps": [
+    "textures/bellows_aged_oak_long_grain_albedo.png",
+    "textures/bellows_aged_oak_long_grain_roughness.png",
+    "textures/bellows_aged_oak_long_grain_normal.png",
+    "textures/bellows_creased_dark_oxblood_leather_albedo.png",
+    "textures/bellows_creased_dark_oxblood_leather_roughness.png",
+    "textures/bellows_creased_dark_oxblood_leather_normal.png",
+    "textures/bellows_scanned_old_oak_CC0_1k.jpg",
+    "textures/bellows_scanned_worn_leather_CC0_1k.jpg",
+    "textures/bellows_oxidized_hand_forged_iron_albedo.png",
+    "textures/bellows_oxidized_hand_forged_iron_roughness.png",
+    "textures/bellows_oxidized_hand_forged_iron_normal.png",
+    "textures/bellows_patina_riveted_brass_albedo.png",
+    "textures/bellows_patina_riveted_brass_roughness.png",
+    "textures/bellows_patina_riveted_brass_normal.png"
+  ],
+  "render_samples": 52,
+  "approval": "requires 4-view visual review and at least 8/10 by user",
+  "photographic_cc0_sources": {
+    "oak": "https://polyhaven.com/a/fine_grained_wood",
+    "leather": "https://polyhaven.com/a/brown_leather",
+    "credit": "Powered by Poly Haven"
+  }
+}
