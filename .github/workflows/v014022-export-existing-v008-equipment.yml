@@ -1,0 +1,100 @@
+name: V014022 recover existing V008 blacksmith equipment GLBs (isolated)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - experiment/v014022-blacksmith-bellows-anvil-v008-20261105
+    paths:
+      - .github/workflows/v014022-export-existing-v008-equipment.yml
+permissions:
+  contents: write
+jobs:
+  export:
+    strategy:
+      fail-fast: false
+      matrix:
+        asset: [anvil, bellows]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore official Blender 4.5.13 LTS
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 --retry-all-errors --max-time 420 https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz -o /tmp/blender.tar.xz
+          mkdir -p /tmp/blender45
+          tar -xJf /tmp/blender.tar.xz -C /tmp/blender45 --strip-components=1
+          /tmp/blender45/blender --version
+      - name: Create temporary export-only copy without new visuals
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          src=Path('scripts/genesis_hero_assets_v008.py').read_text()
+          needle='bpy.ops.object.select_all(action="DESELECT")\nfor suffix,pos in [('
+          assert src.count(needle)==1, "V008 source marker changed; stop rather than rewrite model"
+          src=src.replace(needle,'print("CANDIDATE_GLB_EXPORTED_NO_VISUAL_APPROVAL",KIND,flush=True)\nraise SystemExit(0)\n'+needle)
+          Path('/tmp/export_existing_v008.py').write_text(src)
+          PY
+      - name: Export previously designed asset and textures to GLB
+        shell: bash
+        run: /tmp/blender45/blender -b -t 2 --python-exit-code 1 --python /tmp/export_existing_v008.py -- ${{ matrix.asset }}
+      - name: Validate binary GLB and provenance
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,struct,pathlib
+          asset='${{ matrix.asset }}'
+          folder=pathlib.Path('output_hero_'+asset+'_v008')
+          f=folder/(asset+'_hero_v008.glb')
+          raw=f.read_bytes()
+          magic,version,total=struct.unpack_from('<4sII',raw,0)
+          assert (magic,version,total)==(b'glTF',2,len(raw))
+          length,typ=struct.unpack_from('<I4s',raw,12)
+          assert typ==b'JSON'
+          j=json.loads(raw[20:20+length])
+          assert len(j.get('meshes',[]))>0
+          assert len(j.get('materials',[]))>0
+          assert len(j.get('images',[]))>=1
+          assert (folder/'AUDIT.json').is_file()
+          print('GLB_VALID',asset,len(raw),'meshes',len(j['meshes']),'images',len(j['images']), 'textures_embedded',all('uri' not in i for i in j['images']))
+          assert all('uri' not in i for i in j['images']),'External image dependency'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recovered-existing-v008-${{ matrix.asset }}-GLB
+          path: |
+            output_hero_${{ matrix.asset }}_v008/*.glb
+            output_hero_${{ matrix.asset }}_v008/AUDIT.json
+          if-no-files-found: error
+          retention-days: 6
+  publish-candidates:
+    needs: export
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: recovered-existing-v008-*-GLB
+          path: /tmp/genesis-recovered
+      - name: Commit candidate GLBs only on this experimental branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in anvil bellows; do
+            from="/tmp/genesis-recovered/recovered-existing-v008-${asset}-GLB/output_hero_${asset}_v008"
+            test -s "${from}/${asset}_hero_v008.glb"
+            mkdir -p "candidates/v014022-equipment-v008/${asset}"
+            cp "${from}/${asset}_hero_v008.glb" "candidates/v014022-equipment-v008/${asset}/"
+            cp "${from}/AUDIT.json" "candidates/v014022-equipment-v008/${asset}/"
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add candidates/v014022-equipment-v008
+          git diff --cached --stat
+          git commit -m 'Export existing V008 anvil and bellows candidates for isolated V014022 load test'
+          git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+          echo "Experimental assets only, nothing merged to main" >> "$GITHUB_STEP_SUMMARY"
