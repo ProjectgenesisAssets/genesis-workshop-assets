@@ -20,7 +20,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 - <<'PY'
-          import hashlib,io,json,os,pathlib,urllib.request,zipfile
+          import hashlib,io,json,os,pathlib,urllib.request,urllib.parse,zipfile
           repo="ProjectgenesisAssets/genesis-workshop-assets"
           approved=[
             ("hemp-cord",13096250978,"843cba9d3181cffe544ba9a0799c7dbf2d77d4304e08a75ff931308b8a1af46f",3916368,"cordel_canamo/v018/cordel_canamo_v018.glb"),
@@ -30,7 +30,14 @@ jobs:
           for name,artifact,expected_sha,expected_bytes,rel in approved:
             url=f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact}/zip"
             req=urllib.request.Request(url,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json","User-Agent":"genesis-immutable-asset-audit"})
-            with urllib.request.urlopen(req,timeout=120) as response:
+            class RedirectWithoutBearer(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, old, fp, code, msg, headers, newurl):
+                redirected=super().redirect_request(old,fp,code,msg,headers,newurl)
+                if redirected and urllib.parse.urlparse(newurl).hostname != 'api.github.com':
+                  redirected.remove_header('Authorization')
+                return redirected
+            opener=urllib.request.build_opener(RedirectWithoutBearer())
+            with opener.open(req,timeout=120) as response:
               archive=response.read()
             with zipfile.ZipFile(io.BytesIO(archive)) as z:
               candidates=[p for p in z.namelist() if p.endswith("/"+name+".glb") or p==name+".glb"]
