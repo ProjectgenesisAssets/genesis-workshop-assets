@@ -1,0 +1,64 @@
+name: Genesis | recover exact approved V018/V021 fibers for isolated 3D QA
+on:
+  push:
+    branches:
+      - experiment/approved-fibers-glb-publish-20261106
+    paths:
+      - .github/workflows/approved-fibers-glb-publish-20261106.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify-immutable-glbs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover the immutable approved GLBs from original GitHub Actions artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import hashlib,io,json,os,pathlib,urllib.request,zipfile
+          repo="ProjectgenesisAssets/genesis-workshop-assets"
+          approved=[
+            ("hemp-cord",13096250978,"843cba9d3181cffe544ba9a0799c7dbf2d77d4304e08a75ff931308b8a1af46f",3916368,"cordel_canamo/v018/cordel_canamo_v018.glb"),
+            ("linen-thread",13096771197,"2a0018a6354113662f535a19aef2bdf1c4e8659bc1e23649d7b5eca163b7ac0d",7010672,"hilo_lino/v021/hilo_lino_v021.glb"),
+          ]
+          results=[]
+          for name,artifact,expected_sha,expected_bytes,rel in approved:
+            url=f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact}/zip"
+            req=urllib.request.Request(url,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json","User-Agent":"genesis-immutable-asset-audit"})
+            with urllib.request.urlopen(req,timeout=120) as response:
+              archive=response.read()
+            with zipfile.ZipFile(io.BytesIO(archive)) as z:
+              candidates=[p for p in z.namelist() if p.endswith("/"+name+".glb") or p==name+".glb"]
+              if len(candidates)!=1: raise RuntimeError(f"{name}: expected one web GLB in artifact {artifact}, found {candidates}; possible paths {z.namelist()[:30]}")
+              blob=z.read(candidates[0])
+            digest=hashlib.sha256(blob).hexdigest()
+            if digest!=expected_sha or len(blob)!=expected_bytes or blob[:4]!=b"glTF":
+              raise RuntimeError(f"{name}: approved invariant mismatch: sha={digest} bytes={len(blob)} target={expected_sha} expected_bytes={expected_bytes}")
+            target=pathlib.Path("production/approved_fibers_experimental")/rel
+            target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(blob)
+            results.append(dict(name=name,artifact=artifact,path=str(target),sha256=digest,bytes=len(blob),verified=True,approved_source=True,runtime_validated=False))
+            print("IMMUTABLE_SOURCE_VERIFIED",json.dumps(results[-1]))
+          (pathlib.Path("production/approved_fibers_experimental")/"manifest.json").write_text(json.dumps({"assets":results,"production_promotion":False,"reason":"3D runtime QA only"},indent=2)+"\n")
+          PY
+      - name: Keep both GLBs on public experimental asset branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add production/approved_fibers_experimental/
+          if ! git diff --cached --quiet; then
+            git commit -m 'assets: recover approved V018 hemp and V021 linen GLBs by exact SHA (isolated)'
+            git push origin HEAD:experiment/approved-fibers-glb-publish-20261106
+          fi
+      - name: Audit provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-approved-fibers-immutable-audit
+          path: production/approved_fibers_experimental/manifest.json
+          if-no-files-found: warn
+          retention-days: 7
