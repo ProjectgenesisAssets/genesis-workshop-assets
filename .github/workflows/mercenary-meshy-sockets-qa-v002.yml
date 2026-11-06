@@ -1,0 +1,66 @@
+name: Genesis | Meshy CC0 mercenary rig and sockets V002 (experimental)
+on:
+  push:
+    branches:
+      - experiment/mercenary-meshy-sockets-v002
+    paths:
+      - scripts/mercenary_meshy_cc0_sockets_v002.py
+      - .github/workflows/mercenary-meshy-sockets-qa-v002.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    name: Inspect rig, attach test sword/shield, Cycles HDRI32 review
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch CC0 Meshy character and existing TEMPORARY equipment
+        run: |
+          set -euo pipefail
+          mkdir -p sources
+          curl -fSL --retry 4 --connect-timeout 30 --max-time 180 -A 'ProjectGenesis-Asset-Review/1.0' 'https://vibeassets.io/download/9h7odik5fl' -o sources/mercenary_captain_meshy_cc0.glb
+          curl -fSL --retry 3 'https://raw.githubusercontent.com/gburdesedev/Project-genesis/main/assets/vendor/genesis/externals/mercSword10/src/sword.glb' -o sources/mercenary_sword_test_only.glb
+          curl -fSL --retry 3 'https://raw.githubusercontent.com/gburdesedev/Project-genesis/main/assets/vendor/genesis/externals/mercShield10/src/shield_round.glb' -o sources/mercenary_shield_test_only.glb
+          curl -fSL --retry 3 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr' -o sources/studio_small_09_2k.hdr
+      - name: Verify real downloaded source skins/animation and 32bit HDRI
+        run: |
+          python3 - <<'PY'
+          import json,struct,pathlib
+          for name in ('mercenary_captain_meshy_cc0.glb','mercenary_sword_test_only.glb','mercenary_shield_test_only.glb'):
+              p=pathlib.Path('sources')/name
+              data=p.read_bytes()
+              assert data[:4]==b'glTF' and struct.unpack_from('<I',data,4)[0]==2
+              assert struct.unpack_from('<I',data,8)[0]==len(data)
+              n,kind=struct.unpack_from('<I4s',data,12)
+              assert kind==b'JSON'
+              j=json.loads(data[20:20+n])
+              if name.startswith('mercenary_captain'):
+                  assert len(j.get('skins',[]))>=1,'Meshy candidate has no skin'
+                  assert len(j.get('animations',[]))>=1,'Meshy candidate has no animations'
+                  print('Original source:',len(data),'bytes,',len(j['skins']),'skins,',len(j['animations']),'clips')
+          hdri=(pathlib.Path('sources')/'studio_small_09_2k.hdr').read_bytes()
+          assert hdri.startswith((b'#?RADIANCE',b'#?RGBE')),'HDRI is not 32-bit HDR/RGBE'
+          print('32-bit HDR environment',len(hdri),'bytes')
+          PY
+      - name: Install pinned Blender 4.5.13 LTS, not default apt blender
+        run: |
+          set -euo pipefail
+          curl -fSL --retry 3 --connect-timeout 40 --max-time 360 'https://download.blender.org/release/Blender4.5/blender-4.5.13-linux-x64.tar.xz' -o /tmp/blender-4.5.13.tar.xz
+          sudo mkdir -p /opt/genesis-blender
+          sudo tar -xJf /tmp/blender-4.5.13.tar.xz --strip-components=1 -C /opt/genesis-blender
+          /opt/genesis-blender/blender -b --version | head -n 2
+      - name: Real rig/sockets GLB export and Cycles HDRI renders
+        run: |
+          set -euo pipefail
+          /opt/genesis-blender/blender -b -t 2 --python-exit-code 1 --python scripts/mercenary_meshy_cc0_sockets_v002.py
+          test -s output/mercenary_meshy_cc0_v002/validation.json
+      - name: Upload only experiment (GLBs, rig report, four real views)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-mercenary-cc0-sockets-v002
+          path: output/mercenary_meshy_cc0_v002/
+          if-no-files-found: warn
+          retention-days: 2
