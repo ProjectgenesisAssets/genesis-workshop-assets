@@ -1,0 +1,26 @@
+{
+  "assets": [
+    {
+      "name": "hemp-cord",
+      "artifact": 13096250978,
+      "path": "production/approved_fibers_experimental/cordel_canamo/v018/cordel_canamo_v018.glb",
+      "sha256": "843cba9d3181cffe544ba9a0799c7dbf2d77d4304e08a75ff931308b8a1af46f",
+      "bytes": 3916368,
+      "verified": true,
+      "approved_source": true,
+      "runtime_validated": false
+    },
+    {
+      "name": "linen-thread",
+      "artifact": 13096771197,
+      "path": "production/approved_fibers_experimental/hilo_lino/v021/hilo_lino_v021.glb",
+      "sha256": "2a0018a6354113662f535a19aef2bdf1c4e8659bc1e23649d7b5eca163b7ac0d",
+      "bytes": 7010672,
+      "verified": true,
+      "approved_source": true,
+      "runtime_validated": false
+    }
+  ],
+  "production_promotion": false,
+  "reason": "3D runtime QA only"
+}
