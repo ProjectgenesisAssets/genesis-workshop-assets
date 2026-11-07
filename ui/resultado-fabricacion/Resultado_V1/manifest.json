@@ -1,0 +1,85 @@
+{
+  "project": "Project Genesis",
+  "screen": "Resultado de fabricación",
+  "version": "Resultado V1",
+  "branch": "resultado-v1",
+  "state": "referencia exacta, aun no integrada",
+  "source_file": "image(20261107-231219).png",
+  "source_size": {
+    "width": 1365,
+    "height": 811
+  },
+  "source_sha256": "10751db5f3f46bb5fd2bc4c6ada65253374ac806027c5added078c1c6336bfee",
+  "preserve": {
+    "layout": true,
+    "channel_order": true,
+    "channel_values": true,
+    "subchannels": true,
+    "expand_collapse": true,
+    "sword": true,
+    "rarity": true,
+    "description": true
+  },
+  "channels": [
+    {
+      "name": "Base",
+      "value": 85,
+      "expanded": [
+        "Sangrado:28"
+      ]
+    },
+    {
+      "name": "Luz",
+      "value": 42
+    },
+    {
+      "name": "Sombra",
+      "value": 60
+    },
+    {
+      "name": "Fuego",
+      "value": 78,
+      "expanded": [
+        "Quemadura:32"
+      ]
+    },
+    {
+      "name": "Hielo",
+      "value": 38
+    },
+    {
+      "name": "Naturaleza",
+      "value": 66,
+      "expanded": [
+        "Veneno:24"
+      ]
+    },
+    {
+      "name": "Tierra",
+      "value": 46
+    },
+    {
+      "name": "Rayo",
+      "value": 72
+    }
+  ],
+  "approved_ora_references": [
+    "01_Base.ora",
+    "02_Luz.ora",
+    "03_Sombra.ora",
+    "04_Fuego.ora",
+    "05_Hielo.ora",
+    "06_Naturaleza.ora",
+    "07_Tierra.ora",
+    "08_Rayo.ora"
+  ],
+  "rules": [
+    "No rediseño",
+    "No valores nuevos",
+    "No cambiar presentación",
+    "Modificar ornamentos sólo bajo instrucción",
+    "Conservar V1 como punto de restauración",
+    "No modificar main"
+  ],
+  "binary_status": "Paquete ZIP generado y entregable en conversación; archivos originales aún no cargados a Github"
+}
