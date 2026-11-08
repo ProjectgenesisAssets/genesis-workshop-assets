@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: gburdesedev/Project-genesis
-          ref: 2135f9bf79d5da7c5b9907f815d1eb396396c580
+          ref: 36694b8b9e82d4f9a98ca481ed99d1f1991d1630
           path: game
       - uses: actions/setup-node@v4
         with:
@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: gburdesedev/Project-genesis
-          ref: 2135f9bf79d5da7c5b9907f815d1eb396396c580
+          ref: 36694b8b9e82d4f9a98ca481ed99d1f1991d1630
           path: game
       - uses: actions/setup-node@v4
         with:
