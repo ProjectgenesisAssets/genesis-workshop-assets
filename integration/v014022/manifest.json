@@ -1,0 +1,108 @@
+{
+  "source": "gburdesedev/Project-genesis@d11635aa6f63",
+  "files": {
+    "interiorFinish": {
+      "path": "integration/v014022/embedded/interiorFinish-33c29f15b622.glb",
+      "sha256": "33c29f15b6221e6f489e27418839c067810b571b09c695de589e776861284cca",
+      "bytes": 136436,
+      "mime": "model/gltf-binary"
+    },
+    "chimneySoot": {
+      "path": "integration/v014022/embedded/chimneySoot-2b5d8b35eb36.glb",
+      "sha256": "2b5d8b35eb36e95b13a40271a129cf5cd4d689f401c3dc49a59067355dd57cd9",
+      "bytes": 3404,
+      "mime": "model/gltf-binary"
+    },
+    "doorFrame083": {
+      "path": "integration/v014022/embedded/doorFrame083-2321fb2c18f6.glb",
+      "sha256": "2321fb2c18f677c24beb462d5edca350b1c747be27adc48f242ace7d0a8df693",
+      "bytes": 4144,
+      "mime": "model/gltf-binary"
+    },
+    "doorLeaf083": {
+      "path": "integration/v014022/embedded/doorLeaf083-0958a43c55e7.glb",
+      "sha256": "0958a43c55e7a71dedeecd5c289d30cfd3b199149c49835ed6382742ae4ab630",
+      "bytes": 11312,
+      "mime": "model/gltf-binary"
+    },
+    "roofDamage083": {
+      "path": "integration/v014022/embedded/roofDamage083-46f4a09b0a53.glb",
+      "sha256": "46f4a09b0a53bbd81bbd5fbcc4d49834ea2edfe378bd3bc1275021479f6598cf",
+      "bytes": 4756,
+      "mime": "model/gltf-binary"
+    },
+    "roofRepair085": {
+      "path": "integration/v014022/embedded/roofRepair085-bfb21b7a4596.glb",
+      "sha256": "bfb21b7a45967ab4f682e68aa16bc16137315fdce45f1e94d3d898eef0f1cf2e",
+      "bytes": 6424,
+      "mime": "model/gltf-binary"
+    },
+    "debris083": {
+      "path": "integration/v014022/embedded/debris083-09843c44784e.glb",
+      "sha256": "09843c44784ef9d511cd042408bfd53d75bd3a407d3ed075119de00386607153",
+      "bytes": 25080,
+      "mime": "model/gltf-binary"
+    },
+    "anvil085": {
+      "path": "integration/v014022/embedded/anvil085-e259b295ac13.glb",
+      "sha256": "e259b295ac13fe9cd67e9cd7e55fa6ad241b76a2fb29f3789bbe8c402a0941cd",
+      "bytes": 17084,
+      "mime": "model/gltf-binary"
+    },
+    "workshopShell": {
+      "path": "integration/v014022/embedded/workshopShell-6a471120a419.glb",
+      "sha256": "6a471120a419225f944af7662c6cb4865e10f74a6a3ab979a0c14f32e1066364",
+      "bytes": 117432,
+      "mime": "model/gltf-binary"
+    },
+    "bellows085": {
+      "path": "integration/v014022/embedded/bellows085-b1edbd70389a.glb",
+      "sha256": "b1edbd70389ad2a02036f88fcd0e4856ab61909438e464bce731fa3db6b1e6ca",
+      "bytes": 17244,
+      "mime": "model/gltf-binary"
+    },
+    "coalPile": {
+      "path": "integration/v014022/embedded/coalPile-ff6630df67dc.glb",
+      "sha256": "ff6630df67dc64c0b17e4f7bbb56ea02aef90c3e55710688bb21f4e468464b36",
+      "bytes": 10140,
+      "mime": "model/gltf-binary"
+    },
+    "genesisChest": {
+      "path": "integration/v014022/embedded/genesisChest-e93068f670d9.glb",
+      "sha256": "e93068f670d907b2e9d3a9488d8b1e9e1194b6835b9439ba8d54c654cfcb0d0c",
+      "bytes": 957520,
+      "mime": "model/gltf-binary"
+    },
+    "floorTex": {
+      "path": "integration/v014022/embedded/floorTex-7b5cba593dc9.bin",
+      "sha256": "7b5cba593dc95f590b9a09ea1506276e92161cd0f826a2bf1dcb1704555abbd2",
+      "bytes": 3242,
+      "mime": "image/webp"
+    },
+    "stoneFloorTex085": {
+      "path": "integration/v014022/embedded/stoneFloorTex085-0f82e9fbdb8b.bin",
+      "sha256": "0f82e9fbdb8bdd80dcd1de1aff0737563c964f70e58c227665deb921813dab31",
+      "bytes": 16934,
+      "mime": "image/webp"
+    },
+    "plasterTex085": {
+      "path": "integration/v014022/embedded/plasterTex085-a2de90d91112.bin",
+      "sha256": "a2de90d911124c1f0c269fe26c89bd8cabdfa3c158d12cd5c4dcd2a28b600b04",
+      "bytes": 17588,
+      "mime": "image/webp"
+    },
+    "stoneWallTex085": {
+      "path": "integration/v014022/embedded/stoneWallTex085-3fb3b01574c9.bin",
+      "sha256": "3fb3b01574c9766d30a93ebc66c7175832b759c6b599530f33f5a2cc0cd57ff1",
+      "bytes": 5478,
+      "mime": "image/webp"
+    },
+    "oakTex085": {
+      "path": "integration/v014022/embedded/oakTex085-718759b7ce1d.bin",
+      "sha256": "718759b7ce1d0df88ce7886d080d01c93a5529634bc2a428f2322c6745eb2971",
+      "bytes": 13410,
+      "mime": "image/webp"
+    }
+  },
+  "skipped": []
+}
