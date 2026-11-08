@@ -1,0 +1,65 @@
+name: Extract V014022 inline GLB assets into organization repository
+on:
+  push:
+    branches: ['experiment/v014022-externalize-embedded-20261108']
+    paths: ['.github/workflows/v014022-inline-assets-import.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/v014022-externalize-embedded-20261108
+          persist-credentials: true
+      - name: Fetch original public V014022 game
+        run: curl -fLSs --retry 3 --max-time 240 'https://raw.githubusercontent.com/gburdesedev/Project-genesis/d11635aa6f63/index.html' -o /tmp/genesis-v014022-index.html
+      - name: Decode inline glTF assets and write manifest
+        run: |
+          python3 - <<'PY'
+          import re,base64,hashlib,json,pathlib
+          html=pathlib.Path('/tmp/genesis-v014022-index.html').read_text()
+          destination=pathlib.Path('integration/v014022/embedded')
+          destination.mkdir(parents=True,exist_ok=True)
+          manifest={'source':'gburdesedev/Project-genesis@d11635aa6f63','files':{},'skipped':[]}
+          found=0
+          for tag in re.findall(r'<pc-asset\b[^>]*>',html):
+            get=lambda key: (re.search(key+r'="([^"]*)"',tag).group(1) if re.search(key+r'="([^"]*)"',tag) else '')
+            asset_id=get('id')
+            src=get('src')
+            if not src.startswith('data:'):continue
+            found+=1
+            if ',' not in src:
+              manifest['skipped'].append({'id':asset_id,'reason':'bad-uri'});continue
+            header,encoded=src.split(',',1)
+            if ';base64' not in header:
+              manifest['skipped'].append({'id':asset_id,'reason':'not-base64'});continue
+            extension='.glb' if 'gltf-binary' in header else '.bin'
+            try:binary=base64.b64decode(encoded,validate=True)
+            except Exception as e:
+              manifest['skipped'].append({'id':asset_id,'reason':'decode:'+str(e)});continue
+            if len(binary)>90*1024*1024:
+              manifest['skipped'].append({'id':asset_id,'reason':'file-over-90MiB','bytes':len(binary)});continue
+            digest=hashlib.sha256(binary).hexdigest()
+            safe=re.sub(r'[^A-Za-z0-9_-]','-',asset_id)[:65]
+            name=safe+'-'+digest[:12]+extension
+            target=destination/name
+            if not target.exists():target.write_bytes(binary)
+            manifest['files'][asset_id]={'path':str(target),'sha256':digest,'bytes':len(binary),'mime':header[5:].split(';')[0]}
+          pathlib.Path('integration/v014022/manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
+          print('INLINE_ASSET_IMPORT',json.dumps({'found':found,'extracted':len(manifest['files']),'totalMiB':round(sum(x['bytes'] for x in manifest['files'].values())/1048576,2),'skipped':manifest['skipped'][:20],'largest':sorted([{'id':k,'MiB':round(v['bytes']/1048576,2)} for k,v in manifest['files'].items()],key=lambda x:-x['MiB'])[:20]}))
+          if not manifest['files']:raise SystemExit('No extractable inline models found; do not publish empty manifest')
+          PY
+      - name: Commit only to isolated experimental branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add integration/v014022/
+          if ! git diff --cached --quiet; then
+            git commit -m 'assets(v014022): vendor original embedded models and hashes'
+            git push origin HEAD:experiment/v014022-externalize-embedded-20261108
+          fi
