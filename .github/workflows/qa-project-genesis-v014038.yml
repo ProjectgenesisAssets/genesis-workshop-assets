@@ -1,0 +1,58 @@
+name: Public assets organization | Project Genesis V014038 gameplay QA
+on:
+  push:
+    branches: ['experiment/genesis-v014038-public-game-qa-20261108']
+    paths:
+      - '.github/workflows/qa-project-genesis-v014038.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  current-game-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout exact public Project Genesis V038 candidate
+        uses: actions/checkout@v4
+        with:
+          repository: gburdesedev/Project-genesis
+          ref: 69c88f26815faed44a35e9db98eabf6161844415
+          path: game
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check actual candidate and run contracts
+        working-directory: game
+        run: |
+          node --check village_world.js
+          node --check genesis_market_cinematic_v001.js
+          node tests/v014038_release_contract_20261108.cjs
+          node tests/v014037_arrival_contract.cjs
+          node tests/v014038_market_cinema_contract.cjs
+  actual-webgl-game:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 19
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
+    steps:
+      - name: Checkout exact public Project Genesis V038 candidate
+        uses: actions/checkout@v4
+        with:
+          repository: gburdesedev/Project-genesis
+          ref: 69c88f26815faed44a35e9db98eabf6161844415
+          path: game
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install matching Playwright
+        run: npm install --prefix /tmp/genesis-v038-orga playwright@1.56.1
+      - name: Run actual V038 from public organization
+        working-directory: game
+        run: NODE_PATH=/tmp/genesis-v038-orga/node_modules node tests/v014038_full_boot_live.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-v014038-qa-from-public-assets-organization
+          path: game/previews/v014038-full-boot/
+          retention-days: 14
