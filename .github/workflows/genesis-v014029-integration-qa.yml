@@ -1,0 +1,57 @@
+name: Genesis V014.029 | External public repo integration QA
+on:
+  push:
+    branches:
+      - experiment/genesis-v014029-qa-20261109
+  pull_request:
+    paths:
+      - .github/workflows/genesis-v014029-integration-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  genesis-result-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+    steps:
+      - name: Checkout isolated Project Genesis candidate (no main writes)
+        uses: actions/checkout@v4
+        with:
+          repository: gburdesedev/Project-genesis
+          ref: a0f7453a13598650b166c280334a38cc5a7f50c9
+          path: game
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source syntax and safety
+        working-directory: game
+        run: |
+          node --check tests/v014028_approved_sword_result.cjs
+          node --check tests/v014029_historic_result_qa.cjs
+          node --check tests/approved_ui_four_screens.cjs
+          node --check preparacion_control.js
+          node --check genesis_ui_approved.js
+          node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');if(!s.includes('renderGenesisHistoricCreationResult(item)}<div class=\\\"actions\\\"')||!s.includes('genesisHistoricalResultStyle')||!s.includes('Project Genesis v0.14.029'))process.exit(1)"
+      - name: Verify original V014.028 approved sword
+        working-directory: game
+        run: node tests/v014028_approved_sword_result.cjs
+      - name: Install Playwright test dependency
+        run: npm install --prefix /tmp/genesis-playwright playwright@1.56.1
+      - name: Real Chromium results V014.029 Base and Fuego
+        working-directory: game
+        run: NODE_PATH=/tmp/genesis-playwright/node_modules node tests/v014029_historic_result_qa.cjs
+      - name: Regression: inventoried swords and approved screen layout
+        working-directory: game
+        run: NODE_PATH=/tmp/genesis-playwright/node_modules node tests/approved_ui_four_screens.cjs
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-v014029-external-qa-screenshots
+          path: |
+            game/previews/v014029-historic-result/
+            game/previews/approved-ui-four-screens/
+          retention-days: 14
