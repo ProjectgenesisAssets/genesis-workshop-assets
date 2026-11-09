@@ -1,0 +1,38 @@
+name: Genesis assets | ORA originales Resultado V016.001
+on:
+  push:
+    branches:
+      - integration/resultado-ora-v016001-20261109
+    paths:
+      - 'APROBADOS/UI/Jugador/Resultado/Canales/**'
+      - '.github/workflows/resultado-ora-v016001-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-ora:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Auditar cada ORA contra PNG exacto e integridad
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,zipfile,hashlib,struct
+          d=Path('APROBADOS/UI/Jugador/Resultado/Canales')
+          m=json.loads((d/'manifest.sha256.json').read_text())
+          assert len(m['channels'])==8
+          for c in m['channels']:
+           ora=(d/c['ora']).read_bytes()
+           png=(d/c['png']).read_bytes()
+           assert hashlib.sha256(ora).hexdigest()==c['ora_sha256'],c['ora']
+           assert hashlib.sha256(png).hexdigest()==c['png_sha256'],c['png']
+           assert len(ora)==c['ora_bytes'] and len(png)==c['png_bytes'],c['name']
+           with zipfile.ZipFile(d/c['ora']) as z:
+            assert z.read('mergedimage.png')==png,c['name']
+            assert 'stack.xml' in z.namelist(),c['name']
+           assert png[:8]==b'\\x89PNG\\r\\n\\x1a\\n'
+           print('ORA_OK',c['name'],len(ora),len(png))
+          print('VERIFIED 8 original ORA+PNG sets')
+          PY
