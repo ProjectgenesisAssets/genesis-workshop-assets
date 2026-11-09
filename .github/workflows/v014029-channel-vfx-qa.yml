@@ -22,6 +22,7 @@ jobs:
           cd /tmp/genesis-v014029
           node --check genesis_result_dynamic_v001.js
           node --check tests/v014029_result_real_vfx.cjs
+          echo 'VFX clocks include normal animation-frame advancement';
           echo 'Rayo V07 and Fuego V01 ES modules checked in candidate:'
           test -s vfx/approved/Genesis_Rayo_Helicoidal_V07.mjs
           test -s vfx/experimental/Genesis_Fuego_Filo_V01.mjs
