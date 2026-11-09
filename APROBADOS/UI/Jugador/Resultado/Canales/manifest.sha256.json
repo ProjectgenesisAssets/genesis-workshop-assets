@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "title": "Project Genesis — barras de canal originales ORA V3.2",
+  "status": "source files recovered, runtime integration under validation",
+  "recovery_date": "2026-11-09",
+  "policy": "do not modify approved ORA; PNG must match ORA mergedimage.png",
+  "channels": [
+    {
+      "name": "Base",
+      "ora": "01_Base.ora",
+      "png": "01_Base.png",
+      "ora_sha256": "871b50ffbc5c26369cc614c8f6fea09eeadbf343a65394a7000d05eb3922e36e",
+      "png_sha256": "c3d5194118a7ed971f1426214ada2a26c84e5a20c8dcc048cf378920fec50b8f",
+      "ora_bytes": 615305,
+      "png_bytes": 307334,
+      "merged_image_identical_png": true
+    },
+    {
+      "name": "Luz",
+      "ora": "02_Luz.ora",
+      "png": "02_Luz.png",
+      "ora_sha256": "7c15262e4661efd033ef6d71c7ac60e95e4dc5e3a266000cc5279c6d96e977d9",
+      "png_sha256": "7b845119482d33b725b8905f30fa0467b9fd69e3eaf8bdbd2d5cbf08fcecf715",
+      "ora_bytes": 611533,
+      "png_bytes": 305449,
+      "merged_image_identical_png": true
+    },
+    {
+      "name": "Sombra",
+      "ora": "03_Sombra.ora",
+      "png": "03_Sombra.png",
+      "ora_sha256": "d99c54029a88178db44d0fca615639600648bd3fbb1a5910ca60d55c45b7a32a",
+      "png_sha256": "fc02b2719f20ab253d20762c0fb9f05bc08adeb9d774491bd3a32b04da6260da",
+      "ora_bytes": 601063,
+      "png_bytes": 300211,
+      "merged_image_identical_png": true
+    },
+    {
+      "name": "Fuego",
+      "ora": "04_Fuego.ora",
+      "png": "04_Fuego.png",
+      "ora_sha256": "d3b97504a96cd1aa1ae1e6e4bbb4bac2aa8a47daa8e24088e3e7bc170b1b3332",
+      "png_sha256": "1ab3b281965981d6fdd82b374ddb159f7c6d9b1c0fc0bb1364bb8a8810dff35e",
+      "ora_bytes": 575529,
+      "png_bytes": 287445,
+      "merged_image_identical_png": true
+    },
+    {
+      "name": "Hielo",
+      "ora": "05_Hielo.ora",
+      "png": "05_Hielo.png",
+      "ora_sha256": "5009bf6067eb8ebe6dc3b450a8d7c42e483c345f6e6385dc97f6177e1ce2e61f",
+      "png_sha256": "b02f36ab9f7e13bad61688dce332e279dfab90c1b3d34dd9e59beedcf3475829",
+      "ora_bytes": 592593,
+      "png_bytes": 295977,
+      "merged_image_identical_png": true
+    },
+    {
+      "name": "Naturaleza",
+      "ora": "06_Naturaleza.ora",
+      "png": "06_Naturaleza.png",
+      "ora_sha256": "2d7a0d2e4b38a53f31bbcaea314d2011afd1f1130538077787e3c434495b661a",
+      "png_sha256": "e9985f170b36bcd658cc5bcbba7b3f57c43aabf51a3d3993d49194ade1b61e33",
+      "ora_bytes": 538973,
+      "png_bytes": 269162,
+      "merged_image_identical_png": true
+    },
+    {
+      "name": "Tierra",
+      "ora": "07_Tierra.ora",
+      "png": "07_Tierra.png",
+      "ora_sha256": "f56dafdf1179b9c17dce10a9ee7442ae4ec5da9965aab47605714735212baae3",
+      "png_sha256": "79bb921ecab2a03149fdd26062372a9fe0567d56aafdad7aea4eae948da09513",
+      "ora_bytes": 604835,
+      "png_bytes": 302097,
+      "merged_image_identical_png": true
+    },
+    {
+      "name": "Rayo",
+      "ora": "08_Rayo.ora",
+      "png": "08_Rayo.png",
+      "ora_sha256": "8fb0b54a1c783b5dabf516cc3ed38ffdcb518ae366e58417e64c4ebb338bb249",
+      "png_sha256": "a397ed2ab6b355ea2aca8478a92677253879d9871dc733ac1874e472f4cbf978",
+      "ora_bytes": 609333,
+      "png_bytes": 304348,
+      "merged_image_identical_png": true
+    }
+  ]
+}
