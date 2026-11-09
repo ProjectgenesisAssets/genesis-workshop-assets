@@ -32,7 +32,7 @@ jobs:
            with zipfile.ZipFile(d/c['ora']) as z:
             assert z.read('mergedimage.png')==png,c['name']
             assert 'stack.xml' in z.namelist(),c['name']
-           assert png[:8]==b'\\x89PNG\\r\\n\\x1a\\n'
+           assert png[:8].hex()=='89504e470d0a1a0a',c['name']
            print('ORA_OK',c['name'],len(ora),len(png))
           print('VERIFIED 8 original ORA+PNG sets')
           PY
