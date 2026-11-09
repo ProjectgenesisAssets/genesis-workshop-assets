@@ -1,0 +1,38 @@
+name: Genesis V014.029 | GLB real + efectos NGE sobre hoja
+on:
+  push:
+    branches:
+      - integration/resultado-ora-v016001-20261109
+    paths:
+      - '.github/workflows/v014029-channel-vfx-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render-real-channels:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+    steps:
+      - name: Clone exact game main-based V014029 candidate
+        shell: bash
+        run: |
+          git clone --depth 1 --single-branch --branch release/v014029-ora-live-vfx-candidate-20261109 https://github.com/gburdesedev/Project-genesis.git /tmp/genesis-v014029
+          cd /tmp/genesis-v014029
+          node --check genesis_result_dynamic_v001.js
+          node --check tests/v014029_result_real_vfx.cjs
+      - name: Install Playwright in public organization CI
+        run: npm install --prefix /tmp/genesis-vfx-test playwright@1.56.1
+      - name: Render approved Rayo V07 and experimental Fuego V01 at exact values
+        shell: bash
+        run: |
+          cd /tmp/genesis-v014029
+          NODE_PATH=/tmp/genesis-vfx-test/node_modules node tests/v014029_result_real_vfx.cjs
+      - name: Retain 3D screenshots, test results and visual evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: genesis-v014029-v175-v12b-channel-vfx-visual
+          path: /tmp/genesis-v014029/previews/v014029-result-real-vfx/
+          retention-days: 14
