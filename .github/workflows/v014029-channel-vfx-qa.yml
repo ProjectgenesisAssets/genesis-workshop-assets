@@ -22,6 +22,9 @@ jobs:
           cd /tmp/genesis-v014029
           node --check genesis_result_dynamic_v001.js
           node --check tests/v014029_result_real_vfx.cjs
+          echo 'Rayo V07 and Fuego V01 ES modules checked in candidate:'
+          test -s vfx/approved/Genesis_Rayo_Helicoidal_V07.mjs
+          test -s vfx/experimental/Genesis_Fuego_Filo_V01.mjs
       - name: Install Playwright in public organization CI
         run: npm install --prefix /tmp/genesis-vfx-test playwright@1.56.1
       - name: Render approved Rayo V07 and experimental Fuego V01 at exact values
