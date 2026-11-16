@@ -10,66 +10,84 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 16
     steps:
-      - name: Install Playwright + Chromium
+      - name: Install Chromium
         run: |
           python3 -m pip install -q --break-system-packages playwright
           python3 -m playwright install --with-deps chromium
-      - name: Capture published game (real browser)
+      - name: Capture live pages and isolated QA previews
         shell: bash
         run: |
           mkdir -p captures
           cat >/tmp/genesis_capture.py <<'PY'
+          import json,traceback
           from pathlib import Path
-          import json, traceback
           from playwright.sync_api import sync_playwright
-          output=Path("captures")
-          output.mkdir(exist_ok=True)
+          out=Path("captures");out.mkdir(exist_ok=True)
+          sites=[
+             ("fabricaciones_qa","https://gburdesedev.github.io/Project-genesis-backup/fabricaciones-v004-preview.html"),
+             ("mercenario_qa","https://gburdesedev.github.io/Project-genesis-backup/pruebas/mercenario/v04/index.html"),
+             ("espada_qa","https://gburdesedev.github.io/Project-genesis-backup/preview/v016001/genesis_sword_runtime_v001.html"),
+             ("juego_main","https://gburdesedev.github.io/Project-genesis/")]
           report={}
           with sync_playwright() as p:
-              browser=p.chromium.launch(headless=True,args=["--use-gl=angle","--use-angle=swiftshader","--enable-webgl","--disable-dev-shm-usage","--no-sandbox"])
-              for key,url in [("main","https://gburdesedev.github.io/Project-genesis/"),("backup","https://gburdesedev.github.io/Project-genesis-backup/")]:
-                  ctx=browser.new_context(viewport={"width":1920,"height":1080},device_scale_factor=1.5,ignore_https_errors=True)
-                  page=ctx.new_page()
-                  page.set_default_timeout(3000)
-                  d={"url":url,"shots":[],"errors":[]}
-                  report[key]=d
-                  page.on("pageerror",lambda e: d["errors"].append(str(e)[:400]))
-                  page.on("requestfailed",lambda r: d["errors"].append("request: "+r.url[:300]))
-                  def take(stage):
-                      name=key+"_"+stage+".png"
-                      page.screenshot(path=str(output/name),timeout=30000,animations="disabled")
-                      buttons=page.locator("button").evaluate_all("bs=>bs.map(b=>b.innerText.slice(0,100)).filter(Boolean).slice(0,50)")
-                      d["shots"].append({"stage":stage,"image":name,"title":page.title(),"buttons":buttons})
+              browser=p.chromium.launch(headless=True,args=["--enable-webgl","--use-gl=angle","--use-angle=swiftshader","--disable-dev-shm-usage","--no-sandbox"])
+              for key,url in sites:
+                  context=browser.new_context(viewport={"width":1920,"height":1080},device_scale_factor=1.5,ignore_https_errors=True)
+                  page=context.new_page();page.set_default_timeout(5000)
+                  rec={"url":url,"screens":[],"errors":[]}
+                  report[key]=rec
+                  page.on("pageerror",lambda e:rec["errors"].append(str(e)[:500]))
+                  page.on("requestfailed",lambda r:rec["errors"].append("request: "+r.url[:240]))
+                  def snap(stage):
+                      filename=key+"_"+stage+".png"
+                      page.screenshot(path=str(out/filename),animations="disabled",timeout=30000)
+                      buttons=page.locator("button").evaluate_all("bs=>bs.map(b=>b.innerText.slice(0,100)).filter(Boolean).slice(0,40)")
+                      visible=page.locator("body").inner_text(timeout=10000)[:900]
+                      rec["screens"].append({"stage":stage,"image":filename,"title":page.title(),"buttons":buttons,"visible_text":visible})
                   try:
                       page.goto(url,wait_until="domcontentloaded",timeout=60000)
-                      page.wait_for_timeout(7000)
-                      take("inicio_7s")
-                      page.wait_for_timeout(20000)
-                      take("inicio_27s")
-                      for label in ["Comenzar","Continuar","Jugar","Iniciar","Saltar","Herrero","Preparación","Fabricación","Inventario","Comparación","Resultado","Mercenario"]:
-                          try:
-                              loc=page.get_by_text(label,exact=True)
-                              if loc.count() and loc.first.is_visible() and loc.first.is_enabled():
-                                  loc.first.click(timeout=3000)
-                                  page.wait_for_timeout(2000)
-                                  take("click_"+str(len(d["shots"]))+"_"+str(len(label)))
-                          except Exception as e:
-                              d["errors"].append("click "+label+": "+str(e)[:100])
-                      take("final")
-                  except Exception as e:
-                      d["errors"].append(traceback.format_exc()[-1200:])
-                      try:take("error")
-                      except Exception:pass
-                  ctx.close()
+                      page.wait_for_timeout(9000)
+                      snap("inicio")
+                      if key=="fabricaciones_qa":
+                          for label in ["Espada","Escudo"]:
+                              try:
+                                  page.get_by_role("button",name=label,exact=True).click(timeout=5000)
+                                  page.wait_for_timeout(2500)
+                                  snap("seleccion_"+label.lower())
+                              except Exception as exc:rec["errors"].append(str(exc)[:220])
+                      if key=="mercenario_qa":
+                          for label in ["Espadas","Escudos"]:
+                              try:
+                                  loc=page.get_by_role("button",name=label,exact=True)
+                                  if loc.count() and loc.first.is_visible():
+                                      loc.first.click(timeout=4000)
+                                      page.wait_for_timeout(1800)
+                                      snap("filtrar_"+label.lower())
+                              except Exception as exc:rec["errors"].append(str(exc)[:220])
+                      if key=="juego_main":
+                          for s in [45,95,155]:
+                              page.wait_for_timeout((s-(9 if s==45 else 45 if s==95 else 95))*1000)
+                              snap("carga_"+str(s)+"s")
+                          for label in ["PC + mouse","Herrero","Preparación","Fabricación","Inventario","Comparación"]:
+                              try:
+                                  matches=page.get_by_role("button",name=lambda x:label.lower() in x.lower())
+                                  if matches.count() and matches.first.is_visible() and matches.first.is_enabled():
+                                      matches.first.click(timeout=4000)
+                                      page.wait_for_timeout(2200)
+                                      snap("click_"+str(len(rec["screens"])))
+                              except Exception as exc:rec["errors"].append("click "+label+": "+str(exc)[:180])
+                  except Exception:
+                      rec["errors"].append(traceback.format_exc()[-1300:])
+                  context.close()
               browser.close()
-          (output/"diagnostico.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
-          print(json.dumps({k:{"shots":len(v["shots"]),"errors":len(v["errors"])} for k,v in report.items()}))
+          (out/"diagnostico.json").write_text(json.dumps(report,indent=2,ensure_ascii=False))
+          print(json.dumps({k:{"screens":len(v["screens"]),"errors":len(v["errors"])} for k,v in report.items()}))
           PY
           python3 /tmp/genesis_capture.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: genesis-anuario-live-playwright-v01
+          name: genesis-anuario-playwright-v02
           path: captures/
           if-no-files-found: warn
           retention-days: 7
