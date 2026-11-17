@@ -1,0 +1,45 @@
+name: Anuario UI approved snapshots - read only
+on:
+  push:
+    branches:
+      - experiment/anuario-playwright-capture-20261116
+    paths:
+      - '.github/workflows/anuario-ui-approved-sources-20261117.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  approved-images:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Download original approved UI art and audit SHA1 git blob
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p captures
+          python3 - <<'PY'
+          import urllib.request,hashlib,os,json,struct
+          base="https://raw.githubusercontent.com/gburdesedev/Project-genesis/main/assets/ui/approved/"
+          imgs={
+           "Fabricaciones_V07_APROBADA_1672x941.png":"ad907f36fcc23efde5dda3ca759023dbc23f4c5f",
+           "Preparacion_APROBADA_1672x941.png":"e0e3e5be74a05fddbe113a33ae91e9f3c2a75661"}
+          report={}
+          for name,hash_expected in imgs.items():
+            req=urllib.request.Request(base+name,headers={"User-Agent":"Project-Genesis-Anuario-Approved-UI"})
+            with urllib.request.urlopen(req,timeout=50) as resp: b=resp.read()
+            if b[:8]!=b'\x89PNG\r\n\x1a\n': raise ValueError("Not png "+name)
+            wh=struct.unpack_from('>II',b,16)
+            git_sha=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+            if git_sha!=hash_expected or wh!=(1672,941):raise ValueError((name,git_sha,wh))
+            open('captures/'+name,'wb').write(b)
+            report[name]={"git_blob_sha1":git_sha,"width":wh[0],"height":wh[1],"size":len(b),"origin":base+name}
+          open('captures/PROVENIENCIA.json','w').write(json.dumps(report,ensure_ascii=False,indent=2))
+          print("APPROVED_PNG_ASSETS_VERIFIED",json.dumps(report))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: genesis-anuario-approved-ui-v07-20261117
+          path: captures/
+          if-no-files-found: error
+          retention-days: 14
