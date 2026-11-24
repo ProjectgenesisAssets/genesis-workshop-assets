@@ -1,21 +1,21 @@
-# PrusaSlicer Vega 300 PLA — pared 200×60×10mm
+# PrusaSlicer Vega 300 PLA — pared 200×60×10mm, sin brim, giroide 10%
 
 {
   "RAPIDO": {
-    "size_bytes": 6592735,
-    "sha256": "c9817d8b287730e5259b38d3719b043735998c7025672df6d9c66d55627e8845",
+    "size_bytes": 3387311,
+    "sha256": "4cbc208888f8a3b5dc9e47becdb36432d804e88d8b4330dfd01b4bafcc428b0f",
     "printing_time": [
       [
         "normal mode",
-        "3h 42m 58s"
+        "2h 43m 34s"
       ],
       [
         "silent mode",
-        "3h 30m 42s"
+        "2h 38m 33s"
       ]
     ],
     "filament_weight_grams": [
-      "63.51"
+      "56.97"
     ],
     "layer_count": 187,
     "first_three_z": [
@@ -26,20 +26,20 @@
     "last_z": 59.84
   },
   "REFERENCIA": {
-    "size_bytes": 6614199,
-    "sha256": "49b89d3fe1bbbd1899c88fc27044ee715acfc06957d5e5edc3ac7d4026be6551",
+    "size_bytes": 3410245,
+    "sha256": "037e792b1d2a72dde7906dc874eefbdab30b2494059e6ca1f39d36ea92c5929c",
     "printing_time": [
       [
         "normal mode",
-        "4h 23m 22s"
+        "3h 23m 8s"
       ],
       [
         "silent mode",
-        "4h 9m 48s"
+        "3h 18m 18s"
       ]
     ],
     "filament_weight_grams": [
-      "63.51"
+      "56.97"
     ],
     "layer_count": 187,
     "first_three_z": [
