@@ -141,7 +141,7 @@ jobs:
                       a[i]=line.replace('G1 F360','G1 F1200')
                       edits[name]+=1
               assert edits[name]>=1,(name,edits)
-              p.write_text('; Postproceso: primera capa, solo relleno solido a 20 mm/s; perimetros a 6 mm/s.\\n'+''.join(a))
+              p.write_text('; Postproceso: primera capa, solo relleno solido a 20 mm/s; perimetros a 6 mm/s.\n'+''.join(a))
               print(name,dict(edits))
           PYFAST
       - name: Validar y comparar G-code
@@ -162,7 +162,7 @@ jobs:
               assert len(zvals)>150, f'Pocas capas: {name}, {len(zvals)}'
               assert abs(zvals[0]-0.32)<.005 and abs(zvals[1]-0.64)<.005, f'Secuencia Z {name} {zvals[:3]}'
               assert 'gyroid' in txt and 'fill_density = 10%' in txt, 'No es 10% gyroid'
-    assert '; brim_width = 0' in txt and '; skirts = 0' in txt and ';TYPE:Skirt/Brim' not in txt, 'Error: brim o skirt presente'
+          assert '; brim_width = 0' in txt and '; skirts = 0' in txt and ';TYPE:Skirt/Brim' not in txt, 'Error: brim o skirt presente'
           print(json.dumps(result,indent=2))
           pathlib.Path('RESULTADOS.json').write_text(json.dumps(result,indent=2))
           pathlib.Path('RESULTADOS.md').write_text('# PrusaSlicer Vega 300 PLA — pared 200×60×10mm, sin brim, giroide 10%\n\n'+json.dumps(result,indent=2)+'\n')
