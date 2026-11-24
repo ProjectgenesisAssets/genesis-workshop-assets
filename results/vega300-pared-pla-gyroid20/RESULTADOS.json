@@ -1,0 +1,50 @@
+{
+  "RAPIDO": {
+    "size_bytes": 6592735,
+    "sha256": "c9817d8b287730e5259b38d3719b043735998c7025672df6d9c66d55627e8845",
+    "printing_time": [
+      [
+        "normal mode",
+        "3h 42m 58s"
+      ],
+      [
+        "silent mode",
+        "3h 30m 42s"
+      ]
+    ],
+    "filament_weight_grams": [
+      "63.51"
+    ],
+    "layer_count": 187,
+    "first_three_z": [
+      0.32,
+      0.64,
+      0.96
+    ],
+    "last_z": 59.84
+  },
+  "REFERENCIA": {
+    "size_bytes": 6614199,
+    "sha256": "49b89d3fe1bbbd1899c88fc27044ee715acfc06957d5e5edc3ac7d4026be6551",
+    "printing_time": [
+      [
+        "normal mode",
+        "4h 23m 22s"
+      ],
+      [
+        "silent mode",
+        "4h 9m 48s"
+      ]
+    ],
+    "filament_weight_grams": [
+      "63.51"
+    ],
+    "layer_count": 187,
+    "first_three_z": [
+      0.32,
+      0.64,
+      0.96
+    ],
+    "last_z": 59.84
+  }
+}
