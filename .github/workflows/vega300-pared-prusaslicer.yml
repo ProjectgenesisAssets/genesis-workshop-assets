@@ -111,7 +111,7 @@ jobs:
           min_print_speed = 10
           seam_position = aligned
           elefant_foot_compensation = 0.15
-          start_gcode = M107\nG21\nG90\nM82\nM140 S[first_layer_bed_temperature]\nM104 S[first_layer_temperature]\nG28\nG29\nM420 S1\nM190 S[first_layer_bed_temperature]\nM109 S[first_layer_temperature]\nG1 Z5 F900\nG1 X10 Y10 F6000\nG1 Z0.32 F900\nG92 E0\nG1 X110 Y10 E6 F450\nG92 E0\nG1 Z2 F900
+          start_gcode = M107\nG21\nG90\nM82\nM140 S[first_layer_bed_temperature]\nM104 S150\nM190 S[first_layer_bed_temperature]\nG28\nG29\nM420 S1\nM109 S[first_layer_temperature]\nG1 Z5 F900\nG1 X10 Y10 F6000\nG1 Z0.32 F900\nG92 E0\nG1 X110 Y10 E6 F450\nG92 E0\nG1 Z2 F900
           end_gcode = M104 S0\nM140 S0\nM107\nG28 X\nG1 Y300 F6000\nM84
           
           ENDPROFILE
