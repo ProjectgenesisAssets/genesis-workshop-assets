@@ -14,11 +14,11 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Instalar PrusaSlicer nativo 2.7.2
+      - name: Instalar PrusaSlicer CLI disponible en Ubuntu
         run: |
           sudo apt-get update
           sudo apt-get install -y prusa-slicer
-          prusa-slicer --version
+          command -v prusa-slicer
       - name: Preparar STL y perfiles
         env:
           STL_B64: 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
@@ -119,9 +119,9 @@ jobs:
           sed -i -e 's/perimeter_speed = 70/perimeter_speed = 45/' -e 's/external_perimeter_speed = 42/external_perimeter_speed = 30/' -e 's/infill_speed = 75/infill_speed = 50/' -e 's/solid_infill_speed = 60/solid_infill_speed = 40/' -e 's/top_solid_infill_speed = 42/top_solid_infill_speed = 30/' -e 's/max_print_speed = 100/max_print_speed = 70/' -e 's/perimeter_acceleration = 1000/perimeter_acceleration = 750/' -e 's/external_perimeter_acceleration = 700/external_perimeter_acceleration = 600/' -e 's/infill_acceleration = 1200/infill_acceleration = 800/' REFERENCIA.ini
           sha256sum "Pared Prueba Pla.stl"
       - name: PrusaSlicer — laminar el perfil optimizado
-        run: prusa-slicer --export-gcode --load RAPIDO.ini --center 25,150 --output RAPIDO.gcode "Pared Prueba Pla.stl"
+        run: prusa-slicer --export-gcode --load RAPIDO.ini --center 150,150 --output RAPIDO.gcode "Pared Prueba Pla.stl"
       - name: PrusaSlicer — laminar perfil conservador
-        run: prusa-slicer --export-gcode --load REFERENCIA.ini --center 25,150 --output REFERENCIA.gcode "Pared Prueba Pla.stl"
+        run: prusa-slicer --export-gcode --load REFERENCIA.ini --center 150,150 --output REFERENCIA.gcode "Pared Prueba Pla.stl"
       - name: Validar y comparar G-code
         run: |
           cat > validar.py <<'ENDPY'
