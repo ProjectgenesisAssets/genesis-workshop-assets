@@ -1,0 +1,168 @@
+name: Vega300 — PrusaSlicer comparacion PLA 20 Gyroid
+on:
+  push:
+    branches:
+      - experiment/vega300-pared-pla-gyroid20-20261124
+    paths:
+      - .github/workflows/vega300-pared-prusaslicer.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  slice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar PrusaSlicer nativo 2.7.2
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y prusa-slicer
+          prusa-slicer --version
+      - name: Preparar STL y perfiles
+        env:
+          STL_B64: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAAACAPwAAAAAAAAAAAACwwgAA8sIf14Y2AACwwgAAnkIf14Y2AACwwgAA8sLs/G9CAAAAAIA/AAAAAAAAAAAAALDCAACeQuz8b0IAALDCAADywuz8b0IAALDCAACeQh/XhjYAAAAAgL8AAAAAAAAAAAAAxMIAAJ5C7PxvQgAAxMIAAJ5CH9eGNgAAxMIAAPLCH9eGNgAAAACAvwAAAAAAAAAAAADEwgAAnkLs/G9CAADEwgAA8sIf14Y2AADEwgAA8sLs/G9CAAAAAAAAAAAAAAAAgD/lULPC+v5Wwuz8b0IAALDCAACeQuz8b0LsUbrC9P1Pwuz8b0IAAAAAAAAAAIC/AAAAAAAAsMIAAPLC7PxvQgAAxMIAAPLC7PxvQgAAxMIAAPLCH9eGNgAAAAAAAAAAgL8AAAAAAACwwgAA8sIf14Y2AACwwgAA8sLs/G9CAADEwgAA8sIf14Y2AAAAAAAAAAAAAAAAgD/lULPCBgFlwuz8b0IAALDCAADywuz8b0LlULPC+v5Wwuz8b0IAAAAAAAAAAAAAAACAPwAAsMIAAJ5C7PxvQuVQs8L6/lbC7PxvQgAAsMIAAPLC7PxvQgAAAAAAAAAAgD8AAAAAAADEwgAAnkLs/G9CAACwwgAAnkIf14Y2AADEwgAAnkIf14Y2AAAAAAAAAAAAAAAAgD8AAMTCAADywuz8b0IAALDCAADywuz8b0LsUbrCEgNswuz8b0IAAAAAAAAAAAAAAACAP3VTwcIGAWXC7PxvQgAAxMIAAPLC7PxvQuxRusISA2zC7PxvQgAAAAAAAAAAAAAAAIA/5VCzwgYBZcLs/G9C7FG6whIDbMLs/G9CAACwwgAA8sLs/G9CAAAAAAAAAACAPwAAAAAAALDCAACeQuz8b0IAALDCAACeQh/XhjYAAMTCAACeQuz8b0IAALb45L5d+WS/AAAAAOVQs8L6/lbCf+sfQeVQs8L6/lbC7PxvQuxRusL0/U/C7PxvQgAAtvjkvl35ZL8AAAAA5VCzwvr+VsJ/6x9B7FG6wvT9T8Ls/G9C7FG6wvT9T8J/6x9BAAAAAAAAAAAAAAAAgL8AAMTCAACeQh/XhjYAALDCAACeQh/XhjYAALDCAADywh/XhjYAAAAAAAAAAAAAAACAPwAAxMIAAJ5C7PxvQgAAxMIAAPLC7PxvQnVTwcL6/lbC7PxvQgAAAAAAAAAAAAAAAIA/7FG6wvT9T8Ls/G9CAADEwgAAnkLs/G9CdVPBwvr+VsLs/G9CAAAAAAAAAAAAAAAAgD8AALDCAACeQuz8b0IAAMTCAACeQuz8b0LsUbrC9P1Pwuz8b0IAAAAAAAAAAAAAAACAP3VTwcIGAWXC7PxvQnVTwcL6/lbC7PxvQgAAxMIAAPLC7PxvQgAAIQflPhb2ZD8AAAAA7FG6whIDbMLs/G9C7FG6whIDbMJ/6x9BdVPBwgYBZcJ/6x9BAAAhB+U+FvZkPwAAAADsUbrCEgNswuz8b0J1U8HCBgFlwn/rH0F1U8HCBgFlwuz8b0IAAAAAgL8AAAAAAAAAAOVQs8L6/lbC7PxvQuVQs8L6/lbCf+sfQeVQs8IGAWXCf+sfQQAAAACAvwAAAAAAAAAA5VCzwvr+VsLs/G9C5VCzwgYBZcJ/6x9B5VCzwgYBZcLs/G9CAAAAAIA/AAAAAAAAAAB1U8HC+v5Wwn/rH0F1U8HC+v5Wwuz8b0J1U8HCBgFlwuz8b0IAAAAAgD8AAAAAAAAAAHVTwcL6/lbCf+sfQXVTwcIGAWXC7PxvQnVTwcIGAWXCf+sfQQAAmuvkPqT8ZL8AAAAA7FG6wvT9T8J/6x9B7FG6wvT9T8Ls/G9CdVPBwvr+VsLs/G9CAACa6+Q+pPxkvwAAAADsUbrC9P1Pwn/rH0F1U8HC+v5Wwuz8b0J1U8HC+v5Wwn/rH0EAADwU5b7Q8mQ/AAAAAOVQs8IGAWXC7PxvQuVQs8IGAWXCf+sfQexRusISA2zCf+sfQQAAPBTlvtDyZD8AAAAA5VCzwgYBZcLs/G9C7FG6whIDbMJ/6x9B7FG6whIDbMLs/G9CAAAAAAAAAAAAAAAAgL8AAMTCAADywh/XhjYAAMTCAACeQh/XhjYAALDCAADywh/XhjYAAAAAAAAAAAAAAACAP+VQs8L6/lbCf+sfQexRusL0/U/Cf+sfQeVQs8IGAWXCf+sfQQAAAAAAAAAAAAAAAIA/7FG6whIDbMJ/6x9B5VCzwgYBZcJ/6x9B7FG6wvT9T8J/6x9BAAAAAAAAAAAAAAAAgD91U8HCBgFlwn/rH0HsUbrCEgNswn/rH0HsUbrC9P1Pwn/rH0EAAAAAAAAAAAAAAACAP3VTwcIGAWXCf+sfQexRusL0/U/Cf+sfQXVTwcL6/lbCf+sfQQAA
+        run: |
+          printf '%s' "$STL_B64" | base64 --decode > "Pared Prueba Pla.stl"
+          cat > RAPIDO.ini <<'ENDPROFILE'
+          bed_shape = 0x0,300x0,300x300,0x300
+          max_print_height = 250
+          nozzle_diameter = 0.4
+          gcode_flavor = marlin2
+          machine_limits_usage = emit_to_gcode
+          machine_max_acceleration_x = 2000,1000
+          machine_max_acceleration_y = 2000,1000
+          machine_max_acceleration_z = 500,200
+          machine_max_acceleration_e = 5000,5000
+          machine_max_acceleration_extruding = 1000,1250
+          machine_max_acceleration_retracting = 1500,1250
+          machine_max_acceleration_travel = 1500,1250
+          machine_max_feedrate_x = 200,200
+          machine_max_feedrate_y = 200,200
+          machine_max_feedrate_z = 12,12
+          machine_max_feedrate_e = 120,120
+          machine_max_jerk_x = 6,8
+          machine_max_jerk_y = 6,8
+          machine_max_jerk_z = 0.4,0.4
+          machine_max_jerk_e = 5,5
+          filament_diameter = 1.75
+          filament_density = 1.24
+          filament_type = PLA
+          first_layer_temperature = 210
+          temperature = 205
+          first_layer_bed_temperature = 60
+          bed_temperature = 60
+          filament_max_volumetric_speed = 12
+          max_volumetric_speed = 12
+          layer_height = 0.32
+          first_layer_height = 0.32
+          perimeters = 3
+          external_perimeters_first = 0
+          extra_perimeters = 0
+          fill_density = 20%
+          fill_pattern = gyroid
+          infill_overlap = 25%
+          infill_anchor = 600%
+          infill_anchor_max = 20
+          bottom_solid_layers = 4
+          top_solid_layers = 4
+          brim_width = 4
+          brim_type = outer_only
+          support_material = 0
+          skirts = 1
+          skirt_distance = 6
+          first_layer_speed = 6
+          first_layer_infill_speed = 25
+          first_layer_acceleration = 450
+          perimeter_speed = 70
+          external_perimeter_speed = 42
+          infill_speed = 75
+          solid_infill_speed = 60
+          top_solid_infill_speed = 42
+          small_perimeter_speed = 25
+          bridge_speed = 30
+          gap_fill_speed = 25
+          max_print_speed = 100
+          travel_speed = 150
+          default_acceleration = 1000
+          perimeter_acceleration = 1000
+          external_perimeter_acceleration = 700
+          infill_acceleration = 1200
+          solid_infill_acceleration = 900
+          travel_acceleration = 1500
+          first_layer_extrusion_width = 0.42
+          extrusion_width = 0.45
+          external_perimeter_extrusion_width = 0.45
+          perimeter_extrusion_width = 0.45
+          infill_extrusion_width = 0.45
+          solid_infill_extrusion_width = 0.45
+          top_infill_extrusion_width = 0.4
+          perimeter_generator = arachne
+          retract_length = 2
+          retract_speed = 40
+          retract_before_travel = 2
+          retract_lift = 0
+          fan_always_on = 1
+          disable_fan_first_layers = 2
+          min_fan_speed = 100
+          max_fan_speed = 100
+          cooling = 1
+          slowdown_below_layer_time = 5
+          min_print_speed = 10
+          seam_position = aligned
+          elefant_foot_compensation = 0.15
+          start_gcode = M107\nG21\nG90\nM82\nM140 S[first_layer_bed_temperature]\nM104 S[first_layer_temperature]\nG28\nG29\nM420 S1\nM190 S[first_layer_bed_temperature]\nM109 S[first_layer_temperature]\nG1 Z5 F900\nG1 X10 Y10 F6000\nG1 Z0.32 F900\nG92 E0\nG1 X110 Y10 E6 F450\nG92 E0\nG1 Z2 F900
+          end_gcode = M104 S0\nM140 S0\nM107\nG28 X\nG1 Y300 F6000\nM84
+          
+          ENDPROFILE
+          cp RAPIDO.ini REFERENCIA.ini
+          sed -i -e 's/perimeter_speed = 70/perimeter_speed = 45/' -e 's/external_perimeter_speed = 42/external_perimeter_speed = 30/' -e 's/infill_speed = 75/infill_speed = 50/' -e 's/solid_infill_speed = 60/solid_infill_speed = 40/' -e 's/top_solid_infill_speed = 42/top_solid_infill_speed = 30/' -e 's/max_print_speed = 100/max_print_speed = 70/' -e 's/perimeter_acceleration = 1000/perimeter_acceleration = 750/' -e 's/external_perimeter_acceleration = 700/external_perimeter_acceleration = 600/' -e 's/infill_acceleration = 1200/infill_acceleration = 800/' REFERENCIA.ini
+          sha256sum "Pared Prueba Pla.stl"
+      - name: PrusaSlicer — laminar el perfil optimizado
+        run: prusa-slicer --export-gcode --load RAPIDO.ini --center 25,150 --output RAPIDO.gcode "Pared Prueba Pla.stl"
+      - name: PrusaSlicer — laminar perfil conservador
+        run: prusa-slicer --export-gcode --load REFERENCIA.ini --center 25,150 --output REFERENCIA.gcode "Pared Prueba Pla.stl"
+      - name: Validar y comparar G-code
+        run: |
+          cat > validar.py <<'ENDPY'
+          import pathlib,re,json,hashlib
+          from datetime import timedelta
+          r=pathlib.Path('.')
+          result={}
+          for name in ('RAPIDO','REFERENCIA'):
+              p=r/f'{name}.gcode'
+              txt=p.read_text(errors='replace')
+              estimate=re.findall(r';\s*estimated printing time \(([^)]+)\)\s*=\s*(.+)',txt,re.I)
+              qty=re.findall(r';\s*filament used \[g\]\s*=\s*(.+)',txt,re.I)
+              zvals=[float(x) for x in re.findall(r';Z:([0-9.]+)',txt)]
+              first=txt.split(';LAYER_CHANGE',2)[1] if ';LAYER_CHANGE' in txt else txt
+              result[name]={'size_bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'printing_time':estimate,'filament_weight_grams':qty,'layer_count':len(zvals),'first_three_z':zvals[:3],'last_z':zvals[-1] if zvals else None}
+              assert len(zvals)>150, f'Pocas capas: {name}, {len(zvals)}'
+              assert abs(zvals[0]-0.32)<.005 and abs(zvals[1]-0.64)<.005, f'Secuencia Z {name} {zvals[:3]}'
+              assert 'gyroid' in txt and 'fill_density = 20%' in txt, 'No es 20% gyroid'
+          print(json.dumps(result,indent=2))
+          pathlib.Path('RESULTADOS.json').write_text(json.dumps(result,indent=2))
+          pathlib.Path('RESULTADOS.md').write_text('# PrusaSlicer Vega 300 PLA — pared 200×60×10mm\n\n'+json.dumps(result,indent=2)+'\n')
+          
+          ENDPY
+          python3 validar.py
+      - name: Publicar archivos para revision
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vega300-PLA-20Gyroid-PrusaSlicer
+          path: |
+            *.gcode
+            *.ini
+            RESULTADOS.*
+            Pared Prueba Pla.stl
+            validar.py
+      - name: Guardar resultado en rama experimental
+        run: |
+          mkdir -p results/vega300-pared-pla-gyroid20
+          cp RESULTADOS.* results/vega300-pared-pla-gyroid20/
+          cp RAPIDO.gcode REFERENCIA.gcode RAPIDO.ini REFERENCIA.ini results/vega300-pared-pla-gyroid20/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/vega300-pared-pla-gyroid20
+          git commit -m "Experimental: PrusaSlicer Vega300 PLA gyroid 20%"
+          git push
